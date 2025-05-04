@@ -63,6 +63,7 @@ const additionalIncomeSchema = z.object({
   shortTermCapitalGains: z.string().optional(),
   longTermCapitalGains: z.string().optional(),
   businessIncome: z.string().optional(),
+  businessExpenses: z.string().optional(),
   interestIncome: z.string().optional(),
   dividendIncome: z.string().optional(),
   otherSources: z.string().optional(),
@@ -71,6 +72,8 @@ const additionalIncomeSchema = z.object({
   annualRentReceived: z.string().optional(),
   municipalTaxes: z.string().optional(),
   homeLoanInterest: z.string().optional(),
+  // Business details
+  businessType: z.enum(["business", "profession", "commission"]).optional(),
 });
 
 // Combine schemas for Indian income
@@ -120,6 +123,7 @@ const TaxFilingWizard = () => {
         shortTermCapitalGains: "",
         longTermCapitalGains: "",
         businessIncome: "",
+        businessExpenses: "",
         interestIncome: "",
         dividendIncome: "",
         otherSources: "",
@@ -127,6 +131,7 @@ const TaxFilingWizard = () => {
         annualRentReceived: "",
         municipalTaxes: "",
         homeLoanInterest: "",
+        businessType: "business",
       },
     },
   });
@@ -175,6 +180,8 @@ const TaxFilingWizard = () => {
         shortTermCapitalGains: data.additionalIncome.shortTermCapitalGains?.replace(/,/g, "") || "",
         longTermCapitalGains: data.additionalIncome.longTermCapitalGains?.replace(/,/g, "") || "",
         businessIncome: data.additionalIncome.businessIncome?.replace(/,/g, "") || "",
+        businessExpenses: data.additionalIncome.businessExpenses?.replace(/,/g, "") || "",
+        businessType: data.additionalIncome.businessType || "business",
         interestIncome: data.additionalIncome.interestIncome?.replace(/,/g, "") || "",
         dividendIncome: data.additionalIncome.dividendIncome?.replace(/,/g, "") || "",
         otherSources: data.additionalIncome.otherSources?.replace(/,/g, "") || "",
@@ -785,6 +792,92 @@ const TaxFilingWizard = () => {
                         {/* Document Upload for House Property Income */}
                         <FileUpload 
                           documentType="House Property Documents"
+                          taxFormId={taxFormId}
+                        />
+                      </div>
+                    )}
+                    
+                    {/* Business Income Section */}
+                    {form.watch("additionalIncome.hasBusinessIncome") && (
+                      <div className="mb-6 p-5 bg-background rounded-lg border border-[#E9ECEF]">
+                        <h4 className="font-medium mb-3">Business/Professional Income</h4>
+                        
+                        <div className="mb-4">
+                          <FormField
+                            control={form.control}
+                            name="additionalIncome.businessType"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Business Type</FormLabel>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select business type" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="business">Business</SelectItem>
+                                    <SelectItem value="profession">Profession</SelectItem>
+                                    <SelectItem value="commission">Commission/Agency</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-4 mb-4">
+                          <FormField
+                            control={form.control}
+                            name="additionalIncome.businessIncome"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Gross Business Receipts</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
+                                      ₹
+                                    </span>
+                                    <Input
+                                      {...field}
+                                      className="pl-8"
+                                    />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="additionalIncome.businessExpenses"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Total Business Expenses</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
+                                      ₹
+                                    </span>
+                                    <Input
+                                      {...field}
+                                      className="pl-8"
+                                    />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        {/* Document Upload for Business Income */}
+                        <FileUpload 
+                          documentType="Business Income Documents"
                           taxFormId={taxFormId}
                         />
                       </div>
