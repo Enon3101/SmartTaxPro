@@ -298,8 +298,185 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Set up the uploads directory to serve files
   app.use("/uploads", express.static(uploadDir));
 
-  // Mount the API router
+  // Admin API routes
+  const adminRouter = express.Router();
+
+  // Get all users (admin only)
+  adminRouter.get("/users", async (req, res) => {
+    try {
+      const { users } = await import("@shared/schema");
+      const { db } = await import("./db");
+      const allUsers = await db.select().from(users);
+      res.json(allUsers);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  // Create new user (admin only)
+  adminRouter.post("/users", async (req, res) => {
+    try {
+      const { username, email, password, role } = req.body;
+      if (!username || !email || !password) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      const user = await storage.createUser({
+        username,
+        email,
+        password,
+        role: role || "user"
+      });
+      
+      res.status(201).json(user);
+    } catch (error) {
+      console.error("Error creating user:", error);
+      res.status(400).json({ message: error instanceof Error ? error.message : "Failed to create user" });
+    }
+  });
+
+  // Delete user (admin only)
+  adminRouter.delete("/users/:id", async (req, res) => {
+    try {
+      const { users } = await import("@shared/schema");
+      const { db } = await import("./db");
+      const { eq } = await import("drizzle-orm");
+      const userId = Number(req.params.id);
+      
+      await db.delete(users).where(eq(users.id, userId));
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      res.status(500).json({ message: "Failed to delete user" });
+    }
+  });
+
+  // Get all tax forms (admin only)
+  adminRouter.get("/tax-forms", async (req, res) => {
+    try {
+      const { taxForms } = await import("@shared/schema");
+      const { db } = await import("./db");
+      const allForms = await db.select().from(taxForms);
+      res.json(allForms);
+    } catch (error) {
+      console.error("Error fetching tax forms:", error);
+      res.status(500).json({ message: "Failed to fetch tax forms" });
+    }
+  });
+
+  // Update tax form status (admin only)
+  adminRouter.patch("/tax-forms/:id/status", async (req, res) => {
+    try {
+      const { status } = req.body;
+      if (!status) {
+        return res.status(400).json({ message: "Status is required" });
+      }
+
+      const taxForm = await storage.updateTaxFormStatus(req.params.id, status);
+      if (!taxForm) {
+        return res.status(404).json({ message: "Tax form not found" });
+      }
+      res.json(taxForm);
+    } catch (error) {
+      console.error("Error updating tax form status:", error);
+      res.status(500).json({ message: "Failed to update status" });
+    }
+  });
+
+  // Get all documents (admin only)
+  adminRouter.get("/documents", async (req, res) => {
+    try {
+      const { documents } = await import("@shared/schema");
+      const { db } = await import("./db");
+      const allDocuments = await db.select().from(documents);
+      res.json(allDocuments);
+    } catch (error) {
+      console.error("Error fetching documents:", error);
+      res.status(500).json({ message: "Failed to fetch documents" });
+    }
+  });
+
+  // Get dashboard stats (admin only)
+  adminRouter.get("/stats", async (req, res) => {
+    try {
+      const { users, taxForms, documents } = await import("@shared/schema");
+      const { db } = await import("./db");
+      const { count, eq, sql } = await import("drizzle-orm");
+      
+      // Get total user count
+      const [userCount] = await db.select({ value: count() }).from(users);
+      
+      // Get new users this month
+      const firstDayOfMonth = new Date();
+      firstDayOfMonth.setDate(1);
+      firstDayOfMonth.setHours(0, 0, 0, 0);
+      
+      const [newUserCount] = await db
+        .select({ value: count() })
+        .from(users)
+        .where(sql`${users.createdAt} >= ${firstDayOfMonth}`);
+      
+      // Get tax form counts
+      const [totalTaxForms] = await db.select({ value: count() }).from(taxForms);
+      
+      // Get tax form counts by status
+      const draftCount = await db
+        .select({ value: count() })
+        .from(taxForms)
+        .where(eq(taxForms.status, "in_progress"))
+        .then(res => res[0]?.value || 0);
+        
+      const submittedCount = await db
+        .select({ value: count() })
+        .from(taxForms)
+        .where(eq(taxForms.status, "completed"))
+        .then(res => res[0]?.value || 0);
+        
+      const filedCount = await db
+        .select({ value: count() })
+        .from(taxForms)
+        .where(eq(taxForms.status, "filed"))
+        .then(res => res[0]?.value || 0);
+      
+      // Get document count
+      const [documentCount] = await db.select({ value: count() }).from(documents);
+      
+      // Mock revenue data (in a real app, would come from payment tracking)
+      const totalRevenue = 12500;
+      const thisMonthRevenue = 3400;
+      
+      res.json({
+        users: {
+          total: userCount.value,
+          new: newUserCount.value
+        },
+        taxForms: {
+          total: totalTaxForms.value,
+          draft: draftCount,
+          submitted: submittedCount,
+          processing: 0,
+          completed: 0,
+          filed: filedCount,
+          rejected: 0
+        },
+        documents: {
+          total: documentCount.value
+        },
+        revenue: {
+          total: totalRevenue, 
+          thisMonth: thisMonthRevenue
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+      res.status(500).json({ message: "Failed to fetch dashboard statistics" });
+    }
+  });
+
+  // Mount the API routers
   app.use("/api", apiRouter);
+  app.use("/api/admin", adminRouter);
 
   const httpServer = createServer(app);
 

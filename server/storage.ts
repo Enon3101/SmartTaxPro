@@ -31,197 +31,245 @@ export interface IStorage {
   deleteDocument(id: string): Promise<void>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private taxForms: Map<string, TaxForm>;
-  private documents: Map<string, Document>;
-  private currentUserId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.taxForms = new Map();
-    this.documents = new Map();
-    this.currentUserId = 1;
-  }
-
+export class DatabaseStorage implements IStorage {
   // User operations
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const createdAt = new Date();
-    const user: User = { ...insertUser, id, createdAt };
-    this.users.set(id, user);
+    const { db } = await import("./db");
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
   // Tax form operations
   async createTaxForm(insertTaxForm: InsertTaxForm): Promise<TaxForm> {
+    const { db } = await import("./db");
     const createdAt = new Date();
     const updatedAt = new Date();
-    const taxForm: TaxForm = {
+    
+    const taxFormData = {
       ...insertTaxForm,
-      personalInfo: null,
+      personalInfo: insertTaxForm.personalInfo ?? null,
       formType: insertTaxForm.formType || "ITR-1",
-      incomeData: null,
-      deductions80C: null,
-      deductions80D: null,
-      otherDeductions: null,
-      taxPaid: null,
+      incomeData: insertTaxForm.incomeData ?? null,
+      deductions80C: insertTaxForm.deductions80C ?? null,
+      deductions80D: insertTaxForm.deductions80D ?? null,
+      otherDeductions: insertTaxForm.otherDeductions ?? null,
+      taxPaid: insertTaxForm.taxPaid ?? null,
       assessmentYear: insertTaxForm.assessmentYear || "2024-25",
       createdAt,
       updatedAt
     };
-    this.taxForms.set(insertTaxForm.id, taxForm);
+    
+    const [taxForm] = await db
+      .insert(taxForms)
+      .values(taxFormData)
+      .returning();
+      
     return taxForm;
   }
 
   async getTaxFormById(id: string): Promise<TaxForm | undefined> {
-    return this.taxForms.get(id);
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    const [taxForm] = await db.select().from(taxForms).where(eq(taxForms.id, id));
+    return taxForm || undefined;
   }
 
   async getTaxFormsByUserId(userId: number): Promise<TaxForm[]> {
-    return Array.from(this.taxForms.values()).filter(
-      (taxForm) => taxForm.userId === userId
-    );
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    return db.select().from(taxForms).where(eq(taxForms.userId, userId));
   }
 
   async updateTaxFormPersonalInfo(id: string, personalInfo: any): Promise<TaxForm | undefined> {
-    const taxForm = this.taxForms.get(id);
-    if (!taxForm) return undefined;
-
-    const updatedTaxForm: TaxForm = {
-      ...taxForm,
-      personalInfo,
-      updatedAt: new Date()
-    };
-    this.taxForms.set(id, updatedTaxForm);
-    return updatedTaxForm;
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    
+    const [updatedTaxForm] = await db
+      .update(taxForms)
+      .set({ 
+        personalInfo, 
+        updatedAt: new Date() 
+      })
+      .where(eq(taxForms.id, id))
+      .returning();
+      
+    return updatedTaxForm || undefined;
   }
 
   async updateTaxFormIncomeData(id: string, incomeData: any): Promise<TaxForm | undefined> {
-    const taxForm = this.taxForms.get(id);
-    if (!taxForm) return undefined;
-
-    const updatedTaxForm: TaxForm = {
-      ...taxForm,
-      incomeData,
-      updatedAt: new Date()
-    };
-    this.taxForms.set(id, updatedTaxForm);
-    return updatedTaxForm;
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    
+    const [updatedTaxForm] = await db
+      .update(taxForms)
+      .set({ 
+        incomeData, 
+        updatedAt: new Date() 
+      })
+      .where(eq(taxForms.id, id))
+      .returning();
+      
+    return updatedTaxForm || undefined;
   }
 
   async updateTaxFormDeductions80C(id: string, deductions80C: any): Promise<TaxForm | undefined> {
-    const taxForm = this.taxForms.get(id);
-    if (!taxForm) return undefined;
-
-    const updatedTaxForm: TaxForm = {
-      ...taxForm,
-      deductions80C,
-      updatedAt: new Date()
-    };
-    this.taxForms.set(id, updatedTaxForm);
-    return updatedTaxForm;
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    
+    const [updatedTaxForm] = await db
+      .update(taxForms)
+      .set({ 
+        deductions80C, 
+        updatedAt: new Date() 
+      })
+      .where(eq(taxForms.id, id))
+      .returning();
+      
+    return updatedTaxForm || undefined;
   }
 
   async updateTaxFormDeductions80D(id: string, deductions80D: any): Promise<TaxForm | undefined> {
-    const taxForm = this.taxForms.get(id);
-    if (!taxForm) return undefined;
-
-    const updatedTaxForm: TaxForm = {
-      ...taxForm,
-      deductions80D,
-      updatedAt: new Date()
-    };
-    this.taxForms.set(id, updatedTaxForm);
-    return updatedTaxForm;
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    
+    const [updatedTaxForm] = await db
+      .update(taxForms)
+      .set({ 
+        deductions80D, 
+        updatedAt: new Date() 
+      })
+      .where(eq(taxForms.id, id))
+      .returning();
+      
+    return updatedTaxForm || undefined;
   }
 
   async updateTaxFormOtherDeductions(id: string, otherDeductions: any): Promise<TaxForm | undefined> {
-    const taxForm = this.taxForms.get(id);
-    if (!taxForm) return undefined;
-
-    const updatedTaxForm: TaxForm = {
-      ...taxForm,
-      otherDeductions,
-      updatedAt: new Date()
-    };
-    this.taxForms.set(id, updatedTaxForm);
-    return updatedTaxForm;
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    
+    const [updatedTaxForm] = await db
+      .update(taxForms)
+      .set({ 
+        otherDeductions, 
+        updatedAt: new Date() 
+      })
+      .where(eq(taxForms.id, id))
+      .returning();
+      
+    return updatedTaxForm || undefined;
   }
 
   async updateTaxFormTaxPaid(id: string, taxPaid: any): Promise<TaxForm | undefined> {
-    const taxForm = this.taxForms.get(id);
-    if (!taxForm) return undefined;
-
-    const updatedTaxForm: TaxForm = {
-      ...taxForm,
-      taxPaid,
-      updatedAt: new Date()
-    };
-    this.taxForms.set(id, updatedTaxForm);
-    return updatedTaxForm;
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    
+    const [updatedTaxForm] = await db
+      .update(taxForms)
+      .set({ 
+        taxPaid, 
+        updatedAt: new Date() 
+      })
+      .where(eq(taxForms.id, id))
+      .returning();
+      
+    return updatedTaxForm || undefined;
   }
 
   async updateTaxFormType(id: string, formType: string): Promise<TaxForm | undefined> {
-    const taxForm = this.taxForms.get(id);
-    if (!taxForm) return undefined;
-
-    const updatedTaxForm: TaxForm = {
-      ...taxForm,
-      formType,
-      updatedAt: new Date()
-    };
-    this.taxForms.set(id, updatedTaxForm);
-    return updatedTaxForm;
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    
+    const [updatedTaxForm] = await db
+      .update(taxForms)
+      .set({ 
+        formType, 
+        updatedAt: new Date() 
+      })
+      .where(eq(taxForms.id, id))
+      .returning();
+      
+    return updatedTaxForm || undefined;
   }
 
   async updateTaxFormStatus(id: string, status: string): Promise<TaxForm | undefined> {
-    const taxForm = this.taxForms.get(id);
-    if (!taxForm) return undefined;
-
-    const updatedTaxForm: TaxForm = {
-      ...taxForm,
-      status,
-      updatedAt: new Date()
-    };
-    this.taxForms.set(id, updatedTaxForm);
-    return updatedTaxForm;
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    
+    const [updatedTaxForm] = await db
+      .update(taxForms)
+      .set({ 
+        status, 
+        updatedAt: new Date() 
+      })
+      .where(eq(taxForms.id, id))
+      .returning();
+      
+    return updatedTaxForm || undefined;
   }
 
   // Document operations
   async createDocument(insertDocument: InsertDocument): Promise<Document> {
-    const uploadedAt = new Date();
-    const document: Document = {
-      ...insertDocument,
-      uploadedAt
-    };
-    this.documents.set(insertDocument.id, document);
+    const { db } = await import("./db");
+    
+    const [document] = await db
+      .insert(documents)
+      .values({
+        ...insertDocument,
+        uploadedAt: new Date()
+      })
+      .returning();
+      
     return document;
   }
 
   async getDocumentById(id: string): Promise<Document | undefined> {
-    return this.documents.get(id);
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    
+    const [document] = await db
+      .select()
+      .from(documents)
+      .where(eq(documents.id, id));
+      
+    return document || undefined;
   }
 
   async getDocumentsByTaxFormId(taxFormId: string): Promise<Document[]> {
-    return Array.from(this.documents.values()).filter(
-      (document) => document.taxFormId === taxFormId
-    );
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    
+    return db
+      .select()
+      .from(documents)
+      .where(eq(documents.taxFormId, taxFormId));
   }
 
   async deleteDocument(id: string): Promise<void> {
-    this.documents.delete(id);
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    
+    await db
+      .delete(documents)
+      .where(eq(documents.id, id));
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
