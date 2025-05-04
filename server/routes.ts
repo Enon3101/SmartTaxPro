@@ -110,35 +110,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update deductions data in a tax form
-  apiRouter.post("/tax-forms/:id/deductions", async (req, res) => {
+  // Update Section 80C deductions data
+  apiRouter.post("/tax-forms/:id/deductions-80c", async (req, res) => {
     try {
       const taxForm = await storage.getTaxFormById(req.params.id);
       if (!taxForm) {
         return res.status(404).json({ message: "Tax form not found" });
       }
       
-      const updatedTaxForm = await storage.updateTaxFormDeductionsData(req.params.id, req.body);
+      const updatedTaxForm = await storage.updateTaxFormDeductions80C(req.params.id, req.body);
       res.json(updatedTaxForm);
     } catch (error) {
-      console.error("Error updating deductions data:", error);
-      res.status(500).json({ message: "Failed to update deductions data" });
+      console.error("Error updating Section 80C deductions data:", error);
+      res.status(500).json({ message: "Failed to update Section 80C deductions data" });
     }
   });
 
-  // Update credits data in a tax form
-  apiRouter.post("/tax-forms/:id/credits", async (req, res) => {
+  // Update Section 80D deductions data
+  apiRouter.post("/tax-forms/:id/deductions-80d", async (req, res) => {
     try {
       const taxForm = await storage.getTaxFormById(req.params.id);
       if (!taxForm) {
         return res.status(404).json({ message: "Tax form not found" });
       }
       
-      const updatedTaxForm = await storage.updateTaxFormCreditsData(req.params.id, req.body);
+      const updatedTaxForm = await storage.updateTaxFormDeductions80D(req.params.id, req.body);
       res.json(updatedTaxForm);
     } catch (error) {
-      console.error("Error updating credits data:", error);
-      res.status(500).json({ message: "Failed to update credits data" });
+      console.error("Error updating Section 80D deductions data:", error);
+      res.status(500).json({ message: "Failed to update Section 80D deductions data" });
+    }
+  });
+
+  // Update other deductions data
+  apiRouter.post("/tax-forms/:id/other-deductions", async (req, res) => {
+    try {
+      const taxForm = await storage.getTaxFormById(req.params.id);
+      if (!taxForm) {
+        return res.status(404).json({ message: "Tax form not found" });
+      }
+      
+      const updatedTaxForm = await storage.updateTaxFormOtherDeductions(req.params.id, req.body);
+      res.json(updatedTaxForm);
+    } catch (error) {
+      console.error("Error updating other deductions data:", error);
+      res.status(500).json({ message: "Failed to update other deductions data" });
+    }
+  });
+
+  // Update tax paid data
+  apiRouter.post("/tax-forms/:id/tax-paid", async (req, res) => {
+    try {
+      const taxForm = await storage.getTaxFormById(req.params.id);
+      if (!taxForm) {
+        return res.status(404).json({ message: "Tax form not found" });
+      }
+      
+      const updatedTaxForm = await storage.updateTaxFormTaxPaid(req.params.id, req.body);
+      res.json(updatedTaxForm);
+    } catch (error) {
+      console.error("Error updating tax paid data:", error);
+      res.status(500).json({ message: "Failed to update tax paid data" });
+    }
+  });
+  
+  // Update form type
+  apiRouter.post("/tax-forms/:id/form-type", async (req, res) => {
+    try {
+      const { formType } = req.body;
+      if (!formType || !["ITR-1", "ITR-2", "ITR-3", "ITR-4"].includes(formType)) {
+        return res.status(400).json({ message: "Invalid form type" });
+      }
+      
+      const taxForm = await storage.getTaxFormById(req.params.id);
+      if (!taxForm) {
+        return res.status(404).json({ message: "Tax form not found" });
+      }
+      
+      const updatedTaxForm = await storage.updateTaxFormType(req.params.id, formType);
+      res.json(updatedTaxForm);
+    } catch (error) {
+      console.error("Error updating form type:", error);
+      res.status(500).json({ message: "Failed to update form type" });
     }
   });
 

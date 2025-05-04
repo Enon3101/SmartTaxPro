@@ -17,8 +17,11 @@ export interface IStorage {
   getTaxFormsByUserId(userId: number): Promise<TaxForm[]>;
   updateTaxFormPersonalInfo(id: string, personalInfo: any): Promise<TaxForm | undefined>;
   updateTaxFormIncomeData(id: string, incomeData: any): Promise<TaxForm | undefined>;
-  updateTaxFormDeductionsData(id: string, deductionsData: any): Promise<TaxForm | undefined>;
-  updateTaxFormCreditsData(id: string, creditsData: any): Promise<TaxForm | undefined>;
+  updateTaxFormDeductions80C(id: string, deductions80C: any): Promise<TaxForm | undefined>;
+  updateTaxFormDeductions80D(id: string, deductions80D: any): Promise<TaxForm | undefined>;
+  updateTaxFormOtherDeductions(id: string, otherDeductions: any): Promise<TaxForm | undefined>;
+  updateTaxFormTaxPaid(id: string, taxPaid: any): Promise<TaxForm | undefined>;
+  updateTaxFormType(id: string, formType: string): Promise<TaxForm | undefined>;
   updateTaxFormStatus(id: string, status: string): Promise<TaxForm | undefined>;
   
   // Document operations
@@ -67,9 +70,13 @@ export class MemStorage implements IStorage {
     const taxForm: TaxForm = {
       ...insertTaxForm,
       personalInfo: null,
+      formType: insertTaxForm.formType || "ITR-1",
       incomeData: null,
-      deductionsData: null,
-      creditsData: null,
+      deductions80C: null,
+      deductions80D: null,
+      otherDeductions: null,
+      taxPaid: null,
+      assessmentYear: insertTaxForm.assessmentYear || "2024-25",
       createdAt,
       updatedAt
     };
@@ -113,26 +120,65 @@ export class MemStorage implements IStorage {
     return updatedTaxForm;
   }
 
-  async updateTaxFormDeductionsData(id: string, deductionsData: any): Promise<TaxForm | undefined> {
+  async updateTaxFormDeductions80C(id: string, deductions80C: any): Promise<TaxForm | undefined> {
     const taxForm = this.taxForms.get(id);
     if (!taxForm) return undefined;
 
     const updatedTaxForm: TaxForm = {
       ...taxForm,
-      deductionsData,
+      deductions80C,
       updatedAt: new Date()
     };
     this.taxForms.set(id, updatedTaxForm);
     return updatedTaxForm;
   }
 
-  async updateTaxFormCreditsData(id: string, creditsData: any): Promise<TaxForm | undefined> {
+  async updateTaxFormDeductions80D(id: string, deductions80D: any): Promise<TaxForm | undefined> {
     const taxForm = this.taxForms.get(id);
     if (!taxForm) return undefined;
 
     const updatedTaxForm: TaxForm = {
       ...taxForm,
-      creditsData,
+      deductions80D,
+      updatedAt: new Date()
+    };
+    this.taxForms.set(id, updatedTaxForm);
+    return updatedTaxForm;
+  }
+
+  async updateTaxFormOtherDeductions(id: string, otherDeductions: any): Promise<TaxForm | undefined> {
+    const taxForm = this.taxForms.get(id);
+    if (!taxForm) return undefined;
+
+    const updatedTaxForm: TaxForm = {
+      ...taxForm,
+      otherDeductions,
+      updatedAt: new Date()
+    };
+    this.taxForms.set(id, updatedTaxForm);
+    return updatedTaxForm;
+  }
+
+  async updateTaxFormTaxPaid(id: string, taxPaid: any): Promise<TaxForm | undefined> {
+    const taxForm = this.taxForms.get(id);
+    if (!taxForm) return undefined;
+
+    const updatedTaxForm: TaxForm = {
+      ...taxForm,
+      taxPaid,
+      updatedAt: new Date()
+    };
+    this.taxForms.set(id, updatedTaxForm);
+    return updatedTaxForm;
+  }
+
+  async updateTaxFormType(id: string, formType: string): Promise<TaxForm | undefined> {
+    const taxForm = this.taxForms.get(id);
+    if (!taxForm) return undefined;
+
+    const updatedTaxForm: TaxForm = {
+      ...taxForm,
+      formType,
       updatedAt: new Date()
     };
     this.taxForms.set(id, updatedTaxForm);

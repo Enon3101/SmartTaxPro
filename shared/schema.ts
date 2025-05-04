@@ -56,6 +56,8 @@ export const insertTaxFormSchema = createInsertSchema(taxForms).pick({
   id: true,
   userId: true,
   status: true,
+  formType: true,
+  assessmentYear: true,
 });
 
 // Schema for inserting documents
