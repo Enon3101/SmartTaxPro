@@ -101,10 +101,10 @@ const Home = () => {
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                   <CheckCircle className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">Accuracy Guarantee</h3>
+                <h3 className="text-xl font-bold mb-2">ITR Accuracy Guarantee</h3>
                 <p className="text-[#ADB5BD]">
-                  Our software double-checks your return to help you avoid errors 
-                  and maximize your refund.
+                  Our software double-checks your ITR to help you avoid errors 
+                  and maximize your tax savings using all applicable deductions.
                 </p>
               </CardContent>
             </Card>
@@ -114,10 +114,10 @@ const Home = () => {
                 <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
                   <Shield className="h-6 w-6 text-secondary" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">Secure Filing</h3>
+                <h3 className="text-xl font-bold mb-2">Secure ITR Filing</h3>
                 <p className="text-[#ADB5BD]">
-                  Your data is protected with industry-leading encryption and 
-                  security practices at every step.
+                  Your PAN, Aadhaar and financial data are protected with industry-leading 
+                  encryption and security practices at every step.
                 </p>
               </CardContent>
             </Card>
@@ -127,10 +127,10 @@ const Home = () => {
                 <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
                   <FilePlus className="h-6 w-6 text-accent" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">Easy Document Upload</h3>
+                <h3 className="text-xl font-bold mb-2">Form 16 & Documents Upload</h3>
                 <p className="text-[#ADB5BD]">
-                  Simply upload your tax documents and we'll automatically fill in 
-                  the right information for you.
+                  Simply upload your Form 16, Form 26AS and other tax documents, and 
+                  we'll automatically fill the right information for your ITR.
                 </p>
               </CardContent>
             </Card>
@@ -142,14 +142,14 @@ const Home = () => {
       <section className="py-16 bg-primary/5">
         <div className="container mx-auto px-6">
           <div className="bg-white rounded-xl shadow-sm p-8 md:p-12 text-center">
-            <h2 className="text-3xl font-bold mb-4">Ready to Start Your Tax Return?</h2>
+            <h2 className="text-3xl font-bold mb-4">Ready to Start Your ITR for AY 2024-25?</h2>
             <p className="text-[#ADB5BD] max-w-2xl mx-auto mb-8">
               It takes just minutes to get started with our simple step-by-step process.
-              Most people complete their taxes in under an hour.
+              Most people complete their Income Tax Return filing in under an hour.
             </p>
             <Link href="/file-taxes">
               <Button size="lg">
-                Start Filing Now <ArrowRight className="ml-2 h-5 w-5" />
+                Start ITR Filing <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
           </div>

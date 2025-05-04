@@ -40,7 +40,7 @@ const Header = () => {
                 : "hover:text-primary transition-colors"
             }`}
           >
-            File Taxes
+            File ITR
           </a>
         </Link>
       </li>
@@ -53,7 +53,7 @@ const Header = () => {
                 : "hover:text-primary transition-colors"
             }`}
           >
-            Tax Resources
+            ITR Resources
           </a>
         </Link>
       </li>
@@ -121,12 +121,12 @@ const Header = () => {
               </Link>
               <Link href="/file-taxes">
                 <a className="font-medium hover:text-primary transition-colors">
-                  File Taxes
+                  File ITR
                 </a>
               </Link>
               <Link href="/tax-resources">
                 <a className="font-medium hover:text-primary transition-colors">
-                  Tax Resources
+                  ITR Resources
                 </a>
               </Link>
               <Link href="/support">
