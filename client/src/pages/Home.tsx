@@ -30,64 +30,16 @@ const Home = () => {
           </div>
 
           {/* Pricing cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
-            {/* Mobile App Filing */}
-            <Card className="relative overflow-hidden border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+            {/* Salary Income Plan */}
+            <Card className="border-gray-200 relative overflow-hidden">
               <div className="absolute -rotate-45 bg-blue-100 text-blue-600 text-xs py-1 px-10 font-semibold -left-10 top-3">
-                Limited Time Offer
+                Most Popular
               </div>
               <CardContent className="p-6">
                 <div className="mb-4">
                   <span className="text-gray-500 text-xl">₹</span>
-                  <span className="text-3xl font-bold">99</span>
-                </div>
-                <h3 className="text-lg font-bold mb-1">Mobile App Filing</h3>
-                <p className="text-sm text-gray-500 mb-4">Android and iOS</p>
-                
-                <ul className="space-y-2 mb-6">
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Salary, Pension</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Bank Interest</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Capital Gain</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>House Property</span>
-                  </li>
-                </ul>
-                
-                <Button className="w-full bg-blue-500 hover:bg-blue-600 mb-3">
-                  Download Now
-                </Button>
-                
-                <p className="text-xs text-gray-500 text-center">
-                  Pay only after seeing your refund
-                </p>
-                
-                <div className="mt-4 pt-4 border-t border-gray-100 text-center">
-                  <Link href="/assisted-filing">
-                    <div className="text-blue-500 text-sm hover:underline cursor-pointer">
-                      CA Assisted Filing
-                    </div>
-                  </Link>
-                  <p className="text-xs text-gray-500">starts at ₹ 499/- only</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* Salary Income Plan */}
-            <Card className="border-gray-200">
-              <CardContent className="p-6">
-                <div className="mb-4">
-                  <span className="text-gray-500 text-xl">₹</span>
-                  <span className="text-3xl font-bold">199</span>
+                  <span className="text-3xl font-bold">799</span>
                 </div>
                 <h3 className="text-lg font-bold mb-1">Salary Income Plan</h3>
                 <p className="text-sm text-gray-500 mb-4">For Salary, Interest, etc</p>
@@ -125,7 +77,7 @@ const Home = () => {
                       CA Assisted Filing
                     </div>
                   </Link>
-                  <p className="text-xs text-gray-500">starts at ₹ 499/- only</p>
+                  <p className="text-xs text-gray-500">starts at ₹ 1,399/- only</p>
                 </div>
               </CardContent>
             </Card>
@@ -135,7 +87,7 @@ const Home = () => {
               <CardContent className="p-6">
                 <div className="mb-4">
                   <span className="text-gray-500 text-xl">₹</span>
-                  <span className="text-3xl font-bold">199</span>
+                  <span className="text-3xl font-bold">999</span>
                   <span className="text-sm text-gray-500">onwards</span>
                 </div>
                 <h3 className="text-lg font-bold mb-1">All Income Plan</h3>
@@ -174,7 +126,7 @@ const Home = () => {
                       CA Assisted Filing
                     </div>
                   </Link>
-                  <p className="text-xs text-gray-500">starts at ₹ 499/- only</p>
+                  <p className="text-xs text-gray-500">starts at ₹ 1,399/- only</p>
                 </div>
               </CardContent>
             </Card>
@@ -184,7 +136,7 @@ const Home = () => {
               <CardContent className="p-6">
                 <div className="mb-4">
                   <span className="text-gray-500 text-xl">₹</span>
-                  <span className="text-3xl font-bold">499</span>
+                  <span className="text-3xl font-bold">1399</span>
                   <span className="text-sm text-gray-500">onwards</span>
                 </div>
                 <h3 className="text-lg font-bold mb-1">Assisted Filing</h3>
@@ -223,7 +175,7 @@ const Home = () => {
                       Notice Assistance
                     </div>
                   </Link>
-                  <p className="text-xs text-gray-500">starts at ₹ 1,499/- only</p>
+                  <p className="text-xs text-gray-500">starts at ₹ 1,999/- only</p>
                 </div>
               </CardContent>
             </Card>
@@ -293,13 +245,13 @@ const Home = () => {
                 <div className="bg-blue-50 p-4 rounded-lg w-14 h-14 flex items-center justify-center mb-4">
                   <CalendarDays className="h-6 w-6 text-blue-500" />
                 </div>
-                <h3 className="text-lg font-bold mb-2">Mobile App Filing</h3>
+                <h3 className="text-lg font-bold mb-2">Expert Assistance</h3>
                 <p className="text-gray-600 text-sm mb-4">
-                  File your taxes conveniently on our user-friendly mobile app, designed for on-the-go filing.
+                  Get expert help from our CA professionals who will take care of your entire tax filing process.
                 </p>
-                <Link href="/app">
+                <Link href="/assisted-filing">
                   <div className="text-blue-500 hover:underline flex items-center cursor-pointer">
-                    Download Now <ArrowRight className="ml-1 h-4 w-4" />
+                    Get Started <ArrowRight className="ml-1 h-4 w-4" />
                   </div>
                 </Link>
               </CardContent>
