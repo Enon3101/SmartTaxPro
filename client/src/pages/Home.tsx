@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
-import { ArrowRight, CheckCircle, Star, FileText, Calculator, CalendarDays, Upload } from "lucide-react";
+import { ArrowRight, CheckCircle, Star, FileText, Calculator, CalendarDays, Upload, Phone } from "lucide-react";
+import { LoginDialog } from "@/components/LoginDialog";
+import { useAuth } from "@/context/AuthContext";
 
 const Home = () => {
   return (

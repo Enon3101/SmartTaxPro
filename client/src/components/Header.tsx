@@ -23,9 +23,16 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Header = () => {
   const [location] = useLocation();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const isActive = (path: string) => {
     return location === path;
+  };
+
+  // Get initials for avatar
+  const getInitials = (name: string) => {
+    if (!name) return "U";
+    return name.charAt(0).toUpperCase();
   };
 
   return (
@@ -73,17 +80,50 @@ const Header = () => {
             </Button>
           </Link>
           
-          <Link href="/login">
-            <Button variant="ghost" size="sm" className="font-medium text-gray-600">
-              Log in
-            </Button>
-          </Link>
-          
-          <Link href="/signup">
-            <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white">
-              New User
-            </Button>
-          </Link>
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-primary text-white">
+                      {getInitials(user?.username || "")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="font-medium">{user?.username}</span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem className="cursor-pointer">
+                  <User className="mr-2 h-4 w-4" />
+                  <span>My Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  <FileCheck className="mr-2 h-4 w-4" />
+                  <span>My Tax Forms</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="cursor-pointer text-red-600" onClick={logout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <LoginDialog buttonText="Log in" buttonVariant="ghost" />
+              
+              <Link href="/start-filing">
+                <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white">
+                  New User
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
         
         <Sheet>
@@ -94,6 +134,17 @@ const Header = () => {
           </SheetTrigger>
           <SheetContent>
             <div className="flex flex-col py-4 space-y-4">
+              {isAuthenticated && (
+                <div className="flex items-center gap-2 mb-4 pb-4 border-b border-gray-100">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-primary text-white">
+                      {getInitials(user?.username || "")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="font-medium">{user?.username}</span>
+                </div>
+              )}
+              
               <Link href="/file-taxes">
                 <div className="font-medium hover:text-primary transition-colors">
                   File ITR
@@ -119,17 +170,50 @@ const Header = () => {
                   Support
                 </div>
               </Link>
+              
               <div className="border-t border-gray-100 my-2 pt-2"></div>
-              <Link href="/login">
-                <div className="font-medium hover:text-primary transition-colors">
-                  Log in
-                </div>
-              </Link>
-              <Link href="/signup">
-                <div className="font-medium text-blue-500 hover:text-blue-600 transition-colors">
-                  New User
-                </div>
-              </Link>
+              
+              {isAuthenticated ? (
+                <>
+                  <Link href="/profile">
+                    <div className="font-medium hover:text-primary transition-colors flex items-center">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>My Profile</span>
+                    </div>
+                  </Link>
+                  <Link href="/my-forms">
+                    <div className="font-medium hover:text-primary transition-colors flex items-center">
+                      <FileCheck className="mr-2 h-4 w-4" />
+                      <span>My Tax Forms</span>
+                    </div>
+                  </Link>
+                  <Link href="/settings">
+                    <div className="font-medium hover:text-primary transition-colors flex items-center">
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Settings</span>
+                    </div>
+                  </Link>
+                  <div 
+                    className="font-medium text-red-600 hover:text-red-700 transition-colors flex items-center cursor-pointer"
+                    onClick={logout}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex flex-col gap-2">
+                    <LoginDialog buttonText="Log in" className="w-full" />
+                    
+                    <Link href="/start-filing">
+                      <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white">
+                        New User
+                      </Button>
+                    </Link>
+                  </div>
+                </>
+              )}
             </div>
           </SheetContent>
         </Sheet>

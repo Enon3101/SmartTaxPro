@@ -35,10 +35,16 @@ export function LoginDialog({
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const { toast } = useToast();
 
+  interface SendOtpResponse {
+    message: string;
+    phone: string;
+    otp?: string;
+  }
+
   // Send OTP mutation
   const sendOtpMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest("/api/auth/send-otp", {
+      return apiRequest<SendOtpResponse>("/api/auth/send-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,12 +52,17 @@ export function LoginDialog({
         body: JSON.stringify({ phone }),
       });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setStep("otp");
       toast({
         title: "OTP Sent",
         description: "Check your phone for the OTP code",
       });
+      
+      // For development, auto-fill OTP if provided in response
+      if (data.otp) {
+        setOtp(data.otp);
+      }
     },
     onError: (error: any) => {
       toast({
@@ -62,10 +73,20 @@ export function LoginDialog({
     },
   });
 
+  interface VerifyOtpResponse {
+    message: string;
+    user: {
+      id: number;
+      username: string;
+      phone: string;
+      role: string;
+    };
+  }
+
   // Verify OTP mutation
   const verifyOtpMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest("/api/auth/verify-otp", {
+      return apiRequest<VerifyOtpResponse>("/api/auth/verify-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +94,7 @@ export function LoginDialog({
         body: JSON.stringify({ phone, otp }),
       });
     },
-    onSuccess: (data) => {
+    onSuccess: (data: VerifyOtpResponse) => {
       toast({
         title: "Login Successful",
         description: "You are now logged in",

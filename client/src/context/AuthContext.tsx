@@ -42,20 +42,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
   
+  interface UserResponse {
+    id: number;
+    username: string;
+    phone?: string;
+    role: string;
+  }
+
   // Validate the user session if we have a stored user
   const { isLoading } = useQuery({
     queryKey: ["user", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-      return apiRequest(`/api/auth/me?userId=${user.id}`);
+      return apiRequest<UserResponse>(`/api/auth/me?userId=${user.id}`);
     },
     enabled: !!user?.id,
     retry: false,
+    onSuccess: (data: UserResponse | null) => {
+      if (data) {
+        // Update user data
+        setUser(data);
+      }
+    },
     onError: () => {
       // If validation fails, log out
       logout();
     },
-  });
+  } as any);
 
   const login = (userData: User) => {
     setUser(userData);
