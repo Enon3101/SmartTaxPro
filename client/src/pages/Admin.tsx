@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import {
@@ -45,12 +45,69 @@ import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/taxCalculations";
 import { Search, FileText, User, Download, Trash2, Edit, Plus, RefreshCw } from "lucide-react";
 
+// Define types for our admin panel data
+interface UserData {
+  id: number;
+  username: string;
+  email: string;
+  role?: string;
+  createdAt: string;
+}
+
+interface TaxFormData {
+  id: string;
+  userId: number;
+  formType: string;
+  status: string;
+  assessmentYear: string;
+  personalInfo?: any;
+  incomeData?: any;
+  deductions80C?: any;
+  deductions80D?: any;
+  otherDeductions?: any;
+  taxPaid?: any;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface DocumentData {
+  id: string;
+  taxFormId: string;
+  name: string;
+  type: string;
+  size: number;
+  path?: string;
+  uploadedAt: string;
+}
+
+interface StatsData {
+  users: {
+    total: number;
+    new: number;
+  };
+  taxForms: {
+    total: number;
+    draft: number;
+    submitted: number;
+    processing: number;
+    completed: number;
+    rejected: number;
+  };
+  documents: {
+    total: number;
+  };
+  revenue: {
+    total: number;
+    thisMonth: number;
+  };
+}
+
 // User management component
 const UserManagement = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: users, isLoading, refetch } = useQuery({
+  const { data: users = [], isLoading, refetch } = useQuery<UserData[]>({
     queryKey: ["/api/admin/users"],
     refetchOnWindowFocus: false,
   });
@@ -59,7 +116,7 @@ const UserManagement = () => {
     mutationFn: async (userId: number) => {
       return await apiRequest(`/api/admin/users/${userId}`, {
         method: "DELETE",
-      });
+      } as RequestInit);
     },
     onSuccess: () => {
       toast({
@@ -230,7 +287,7 @@ const TaxFormsManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const { data: taxForms, isLoading, refetch } = useQuery({
+  const { data: taxForms = [], isLoading, refetch } = useQuery<TaxFormData[]>({
     queryKey: ["/api/admin/tax-forms"],
     refetchOnWindowFocus: false,
   });
@@ -240,7 +297,7 @@ const TaxFormsManagement = () => {
       return await apiRequest(`/api/admin/tax-forms/${id}/status`, {
         method: "PATCH",
         body: JSON.stringify({ status }),
-      });
+      } as RequestInit);
     },
     onSuccess: () => {
       toast({
@@ -266,12 +323,13 @@ const TaxFormsManagement = () => {
     return matchesSearch && form.status === statusFilter;
   });
 
-  const getStatusBadgeVariant = (status: string) => {
+  const getStatusBadgeVariant = (status: string): "default" | "destructive" | "outline" | "secondary" => {
     switch (status) {
       case "draft": return "secondary";
       case "submitted": return "default";
-      case "processing": return "warning";
-      case "completed": return "success";
+      // We need to handle our warning and success as "secondary" or other allowed values
+      case "processing": return "secondary";
+      case "completed": return "secondary";
       case "rejected": return "destructive";
       default: return "outline";
     }
@@ -392,7 +450,7 @@ const DocumentsManagement = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const { data: documents, isLoading, refetch } = useQuery({
+  const { data: documents = [], isLoading, refetch } = useQuery<DocumentData[]>({
     queryKey: ["/api/admin/documents"],
     refetchOnWindowFocus: false,
   });
@@ -401,7 +459,7 @@ const DocumentsManagement = () => {
     mutationFn: async (documentId: string) => {
       return await apiRequest(`/api/admin/documents/${documentId}`, {
         method: "DELETE",
-      });
+      } as RequestInit);
     },
     onSuccess: () => {
       toast({
@@ -509,7 +567,7 @@ const DocumentsManagement = () => {
 
 // Dashboard Overview
 const DashboardOverview = () => {
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading } = useQuery<StatsData>({
     queryKey: ["/api/admin/stats"],
     refetchOnWindowFocus: false,
   });
