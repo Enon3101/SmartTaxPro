@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Bell, Menu, User } from "lucide-react";
+import { FileText, Menu, User, ChevronDown } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const Header = () => {
@@ -16,94 +16,50 @@ const Header = () => {
     return location === path;
   };
 
-  const NavLinks = () => (
-    <ul className="flex space-x-8">
-      <li>
-        <Link href="/">
-          <a
-            className={`font-medium ${
-              isActive("/")
-                ? "text-primary border-b-2 border-primary pb-1"
-                : "hover:text-primary transition-colors"
-            }`}
-          >
-            Home
-          </a>
-        </Link>
-      </li>
-      <li>
-        <Link href="/file-taxes">
-          <a
-            className={`font-medium ${
-              isActive("/file-taxes")
-                ? "text-primary border-b-2 border-primary pb-1"
-                : "hover:text-primary transition-colors"
-            }`}
-          >
-            File ITR
-          </a>
-        </Link>
-      </li>
-      <li>
-        <Link href="/tax-resources">
-          <a
-            className={`font-medium ${
-              isActive("/tax-resources")
-                ? "text-primary border-b-2 border-primary pb-1"
-                : "hover:text-primary transition-colors"
-            }`}
-          >
-            ITR Resources
-          </a>
-        </Link>
-      </li>
-      <li>
-        <Link href="/support">
-          <a
-            className={`font-medium ${
-              isActive("/support")
-                ? "text-primary border-b-2 border-primary pb-1"
-                : "hover:text-primary transition-colors"
-            }`}
-          >
-            Support
-          </a>
-        </Link>
-      </li>
-    </ul>
-  );
-
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+    <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center">
           <Link href="/">
-            <a className="text-primary font-bold text-2xl">
-              IncomeTax<span className="text-secondary">India</span>
-            </a>
+            <div className="flex items-center cursor-pointer">
+              <FileText className="h-7 w-7 text-primary mr-2" />
+              <span className="text-primary font-bold text-xl">
+                myITR<span className="text-secondary">eturn</span>
+              </span>
+            </div>
           </Link>
         </div>
         
-        <div className="hidden md:flex items-center space-x-6">
-          <nav>
-            <NavLinks />
-          </nav>
-          <div className="flex items-center space-x-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="Notifications">
-                  <Bell className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>No new notifications</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
-            <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
-              <span className="text-sm font-medium">JD</span>
-            </div>
-          </div>
+        <div className="hidden md:flex items-center space-x-3 text-sm">
+          <Link href="/import-cg">
+            <Button variant="ghost" size="sm" className="font-medium text-gray-600">
+              Import CG / Shares
+            </Button>
+          </Link>
+          
+          <Link href="/pricing">
+            <Button variant="ghost" size="sm" className="font-medium text-gray-600">
+              Pricing
+            </Button>
+          </Link>
+          
+          <Link href="/support">
+            <Button variant="ghost" size="sm" className="font-medium text-gray-600">
+              Support
+            </Button>
+          </Link>
+          
+          <Link href="/login">
+            <Button variant="ghost" size="sm" className="font-medium text-gray-600">
+              Log in
+            </Button>
+          </Link>
+          
+          <Link href="/signup">
+            <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white">
+              New User
+            </Button>
+          </Link>
         </div>
         
         <Sheet>
@@ -114,25 +70,35 @@ const Header = () => {
           </SheetTrigger>
           <SheetContent>
             <div className="flex flex-col py-4 space-y-4">
-              <Link href="/">
-                <a className="font-medium hover:text-primary transition-colors">
-                  Home
-                </a>
+              <Link href="/import-cg">
+                <div className="font-medium hover:text-primary transition-colors">
+                  Import CG / Shares
+                </div>
               </Link>
-              <Link href="/file-taxes">
-                <a className="font-medium hover:text-primary transition-colors">
-                  File ITR
-                </a>
-              </Link>
-              <Link href="/tax-resources">
-                <a className="font-medium hover:text-primary transition-colors">
-                  ITR Resources
-                </a>
+              <Link href="/pricing">
+                <div className="font-medium hover:text-primary transition-colors">
+                  Pricing
+                </div>
               </Link>
               <Link href="/support">
-                <a className="font-medium hover:text-primary transition-colors">
+                <div className="font-medium hover:text-primary transition-colors">
                   Support
-                </a>
+                </div>
+              </Link>
+              <Link href="/login">
+                <div className="font-medium hover:text-primary transition-colors">
+                  Log in
+                </div>
+              </Link>
+              <Link href="/signup">
+                <div className="font-medium hover:text-primary transition-colors">
+                  New User
+                </div>
+              </Link>
+              <Link href="/tax-resources">
+                <div className="font-medium hover:text-primary transition-colors">
+                  Tax Resources
+                </div>
               </Link>
             </div>
           </SheetContent>
