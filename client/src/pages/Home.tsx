@@ -6,6 +6,8 @@ import { LoginDialog } from "@/components/LoginDialog";
 import { useAuth } from "@/context/AuthContext";
 
 const Home = () => {
+  const { isAuthenticated, user } = useAuth();
+  
   return (
     <div className="bg-background">
       {/* Hero section */}
@@ -254,6 +256,46 @@ const Home = () => {
               Experience the most comprehensive and user-friendly tax filing service in India. Our platform is designed to simplify your tax filing experience.
             </p>
           </div>
+          
+          {/* Mobile OTP Login Banner */}
+          {!isAuthenticated && (
+            <div className="mb-12 bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="flex flex-col md:flex-row">
+                <div className="md:w-2/3 p-6 md:p-8">
+                  <h3 className="text-xl font-bold text-blue-600 mb-2">Quick Login with Mobile OTP</h3>
+                  <p className="text-gray-600 mb-4">
+                    Use your mobile number to quickly login or register. No need to remember complex passwords!
+                  </p>
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                      <span className="text-sm">Secure</span>
+                    </div>
+                    <div className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                      <span className="text-sm">Fast</span>
+                    </div>
+                    <div className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                      <span className="text-sm">Convenient</span>
+                    </div>
+                  </div>
+                  <LoginDialog buttonText="Login Now" className="w-full md:w-auto" />
+                </div>
+                <div className="md:w-1/3 bg-blue-500 p-6 md:p-8 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="bg-white w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center">
+                      <Phone className="h-8 w-8 text-blue-500" />
+                    </div>
+                    <p className="text-white font-medium">Mobile OTP Authentication</p>
+                    <p className="text-blue-100 text-sm mt-2">
+                      Your phone is your password
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card className="bg-white border-0 shadow-sm">
