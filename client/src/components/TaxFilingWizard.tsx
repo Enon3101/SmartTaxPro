@@ -32,35 +32,43 @@ import { toast } from "@/hooks/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 
-// Define the schema for W-2 form
-const w2FormSchema = z.object({
+// Define the schema for Form 16 (Indian salary income)
+const form16Schema = z.object({
   employerName: z.string().min(1, "Employer name is required"),
-  employerEIN: z.string().min(1, "Employer EIN is required"),
-  wages: z.string().min(1, "Wages are required"),
-  federalTaxWithheld: z.string().min(1, "Federal tax withheld is required"),
-  socialSecurityWages: z.string().min(1, "Social security wages are required"),
-  socialSecurityTaxWithheld: z.string().min(1, "Social security tax withheld is required"),
-  medicareWages: z.string().min(1, "Medicare wages are required"),
-  medicareTaxWithheld: z.string().min(1, "Medicare tax withheld is required"),
+  employerTAN: z.string().min(1, "Employer TAN is required"),
+  employeePAN: z.string().min(1, "PAN is required"),
+  grossSalary: z.string().min(1, "Gross salary is required"),
+  exemptAllowances: z.string().optional(),
+  professionalTax: z.string().optional(),
+  tdsDeducted: z.string().min(1, "TDS deducted is required"),
 });
 
-// Define schema for additional income
+// Define schema for additional income sources in India
 const additionalIncomeSchema = z.object({
-  has1099Income: z.boolean().default(false),
-  hasInvestmentIncome: z.boolean().default(false),
   hasRentalIncome: z.boolean().default(false),
-  hasRetirementIncome: z.boolean().default(false),
-  hasUnemploymentIncome: z.boolean().default(false),
+  hasCapitalGains: z.boolean().default(false), 
+  hasBusinessIncome: z.boolean().default(false),
+  hasInterestIncome: z.boolean().default(false),
+  hasDividendIncome: z.boolean().default(false),
   hasOtherIncome: z.boolean().default(false),
-  dividendIncome: z.string().optional(),
+  // Income amounts
+  rentalIncome: z.string().optional(),
+  shortTermCapitalGains: z.string().optional(),
+  longTermCapitalGains: z.string().optional(),
+  businessIncome: z.string().optional(),
   interestIncome: z.string().optional(),
-  capitalGainsIncome: z.string().optional(),
-  capitalLosses: z.string().optional(),
+  dividendIncome: z.string().optional(),
+  otherSources: z.string().optional(),
+  // House property details
+  housePropertyType: z.enum(["self-occupied", "let-out", "deemed-let-out"]).optional(),
+  annualRentReceived: z.string().optional(),
+  municipalTaxes: z.string().optional(),
+  homeLoanInterest: z.string().optional(),
 });
 
-// Combine schemas
+// Combine schemas for Indian income
 const incomeFormSchema = z.object({
-  w2Forms: z.array(w2FormSchema),
+  form16: form16Schema,
   additionalIncome: additionalIncomeSchema,
 });
 
@@ -75,41 +83,43 @@ const TaxFilingWizard = () => {
     taxFormId,
     isLoading
   } = useTaxFiling();
-  const [w2Count, setW2Count] = useState(1);
-
   // Query to fetch existing tax form data if available
   const { data: taxFormData } = useQuery({
     queryKey: [`/api/tax-forms/${taxFormId}`],
     enabled: !!taxFormId,
   });
 
-  // Initialize form with default values or existing data
+  // Initialize form with default values or existing data for Indian ITR
   const form = useForm<IncomeFormValues>({
     resolver: zodResolver(incomeFormSchema),
     defaultValues: taxFormData?.incomeData || {
-      w2Forms: [
-        {
-          employerName: "",
-          employerEIN: "",
-          wages: "",
-          federalTaxWithheld: "",
-          socialSecurityWages: "",
-          socialSecurityTaxWithheld: "",
-          medicareWages: "",
-          medicareTaxWithheld: "",
-        },
-      ],
+      form16: {
+        employerName: "",
+        employerTAN: "",
+        employeePAN: "",
+        grossSalary: "",
+        exemptAllowances: "",
+        professionalTax: "",
+        tdsDeducted: "",
+      },
       additionalIncome: {
-        has1099Income: false,
-        hasInvestmentIncome: false,
         hasRentalIncome: false,
-        hasRetirementIncome: false,
-        hasUnemploymentIncome: false,
+        hasCapitalGains: false,
+        hasBusinessIncome: false,
+        hasInterestIncome: false,
+        hasDividendIncome: false,
         hasOtherIncome: false,
-        dividendIncome: "",
+        rentalIncome: "",
+        shortTermCapitalGains: "",
+        longTermCapitalGains: "",
+        businessIncome: "",
         interestIncome: "",
-        capitalGainsIncome: "",
-        capitalLosses: "",
+        dividendIncome: "",
+        otherSources: "",
+        housePropertyType: "self-occupied",
+        annualRentReceived: "",
+        municipalTaxes: "",
+        homeLoanInterest: "",
       },
     },
   });
@@ -145,44 +155,30 @@ const TaxFilingWizard = () => {
     // Format numeric fields (remove commas, etc.)
     const formattedData = {
       ...data,
-      w2Forms: data.w2Forms.map(form => ({
-        ...form,
-        wages: form.wages.replace(/,/g, ""),
-        federalTaxWithheld: form.federalTaxWithheld.replace(/,/g, ""),
-        socialSecurityWages: form.socialSecurityWages.replace(/,/g, ""),
-        socialSecurityTaxWithheld: form.socialSecurityTaxWithheld.replace(/,/g, ""),
-        medicareWages: form.medicareWages.replace(/,/g, ""),
-        medicareTaxWithheld: form.medicareTaxWithheld.replace(/,/g, ""),
-      })),
+      form16: {
+        ...data.form16,
+        grossSalary: data.form16.grossSalary.replace(/,/g, ""),
+        exemptAllowances: data.form16.exemptAllowances?.replace(/,/g, "") || "",
+        professionalTax: data.form16.professionalTax?.replace(/,/g, "") || "",
+        tdsDeducted: data.form16.tdsDeducted.replace(/,/g, ""),
+      },
       additionalIncome: {
         ...data.additionalIncome,
-        dividendIncome: data.additionalIncome.dividendIncome?.replace(/,/g, "") || "",
+        rentalIncome: data.additionalIncome.rentalIncome?.replace(/,/g, "") || "",
+        shortTermCapitalGains: data.additionalIncome.shortTermCapitalGains?.replace(/,/g, "") || "",
+        longTermCapitalGains: data.additionalIncome.longTermCapitalGains?.replace(/,/g, "") || "",
+        businessIncome: data.additionalIncome.businessIncome?.replace(/,/g, "") || "",
         interestIncome: data.additionalIncome.interestIncome?.replace(/,/g, "") || "",
-        capitalGainsIncome: data.additionalIncome.capitalGainsIncome?.replace(/,/g, "") || "",
-        capitalLosses: data.additionalIncome.capitalLosses?.replace(/,/g, "") || "",
+        dividendIncome: data.additionalIncome.dividendIncome?.replace(/,/g, "") || "",
+        otherSources: data.additionalIncome.otherSources?.replace(/,/g, "") || "",
+        annualRentReceived: data.additionalIncome.annualRentReceived?.replace(/,/g, "") || "",
+        municipalTaxes: data.additionalIncome.municipalTaxes?.replace(/,/g, "") || "",
+        homeLoanInterest: data.additionalIncome.homeLoanInterest?.replace(/,/g, "") || "",
       }
     };
     
     updateIncome(formattedData);
     saveMutation.mutate(formattedData);
-  };
-
-  const handleAddW2 = () => {
-    const currentW2Forms = form.getValues("w2Forms");
-    form.setValue("w2Forms", [
-      ...currentW2Forms,
-      {
-        employerName: "",
-        employerEIN: "",
-        wages: "",
-        federalTaxWithheld: "",
-        socialSecurityWages: "",
-        socialSecurityTaxWithheld: "",
-        medicareWages: "",
-        medicareTaxWithheld: "",
-      },
-    ]);
-    setW2Count(w2Count + 1);
   };
 
   const steps = [
@@ -195,29 +191,29 @@ const TaxFilingWizard = () => {
     },
     {
       number: 2,
-      title: "Income",
-      description: "Your earnings",
+      title: "Income Sources",
+      description: "From all sources",
       completed: currentStep > 2,
       active: currentStep === 2,
     },
     {
       number: 3,
       title: "Deductions",
-      description: "Your expenses",
+      description: "Section 80C & 80D",
       completed: currentStep > 3,
       active: currentStep === 3,
     },
     {
       number: 4,
-      title: "Credits",
-      description: "Tax benefits",
+      title: "Tax Paid",
+      description: "TDS & Advance Tax",
       completed: currentStep > 4,
       active: currentStep === 4,
     },
     {
       number: 5,
-      title: "Review & File",
-      description: "Submit return",
+      title: "Review & Submit",
+      description: "File your ITR",
       completed: currentStep > 5,
       active: currentStep === 5,
     },
@@ -240,10 +236,10 @@ const TaxFilingWizard = () => {
     <div className="container mx-auto px-4 sm:px-6 py-8">
       <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold mb-2">
-          File Your 2023 Tax Return
+          File Your ITR for AY 2024-25
         </h1>
         <p className="text-[#ADB5BD]">
-          Complete your tax return in a few simple steps.
+          Complete your Income Tax Return filing in a few simple steps.
         </p>
       </div>
 
@@ -261,209 +257,168 @@ const TaxFilingWizard = () => {
             <CardContent>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
-                  {/* W-2 Employment Income */}
-                  {Array.from({ length: w2Count }).map((_, index) => (
-                    <div key={index} className="mb-8">
-                      <h3 className="text-lg font-medium mb-4">
-                        W-2 Employment Income {w2Count > 1 ? `#${index + 1}` : ""}
-                      </h3>
+                  {/* Form 16 Employment Income Section */}
+                  <div className="mb-8">
+                    <h3 className="text-lg font-medium mb-4">
+                      Form 16 - Salary Income Details
+                    </h3>
 
-                      {/* Employer Information */}
-                      <div className="grid md:grid-cols-2 gap-4 mb-6">
-                        <FormField
-                          control={form.control}
-                          name={`w2Forms.${index}.employerName`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Employer Name</FormLabel>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`w2Forms.${index}.employerEIN`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Employer EIN</FormLabel>
-                              <FormControl>
-                                <Input
-                                  {...field}
-                                  placeholder="XX-XXXXXXX"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      {/* Income Information */}
-                      <div className="grid md:grid-cols-2 gap-4 mb-6">
-                        <FormField
-                          control={form.control}
-                          name={`w2Forms.${index}.wages`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>
-                                Wages, Tips, and Compensation (Box 1)
-                              </FormLabel>
-                              <FormControl>
-                                <div className="relative">
-                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
-                                    $
-                                  </span>
-                                  <Input
-                                    {...field}
-                                    className="pl-8"
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`w2Forms.${index}.federalTaxWithheld`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>
-                                Federal Income Tax Withheld (Box 2)
-                              </FormLabel>
-                              <FormControl>
-                                <div className="relative">
-                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
-                                    $
-                                  </span>
-                                  <Input
-                                    {...field}
-                                    className="pl-8"
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="grid md:grid-cols-2 gap-4 mb-6">
-                        <FormField
-                          control={form.control}
-                          name={`w2Forms.${index}.socialSecurityWages`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>
-                                Social Security Wages (Box 3)
-                              </FormLabel>
-                              <FormControl>
-                                <div className="relative">
-                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
-                                    $
-                                  </span>
-                                  <Input
-                                    {...field}
-                                    className="pl-8"
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`w2Forms.${index}.socialSecurityTaxWithheld`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>
-                                Social Security Tax Withheld (Box 4)
-                              </FormLabel>
-                              <FormControl>
-                                <div className="relative">
-                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
-                                    $
-                                  </span>
-                                  <Input
-                                    {...field}
-                                    className="pl-8"
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <div className="grid md:grid-cols-2 gap-4 mb-6">
-                        <FormField
-                          control={form.control}
-                          name={`w2Forms.${index}.medicareWages`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Medicare Wages (Box 5)</FormLabel>
-                              <FormControl>
-                                <div className="relative">
-                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
-                                    $
-                                  </span>
-                                  <Input
-                                    {...field}
-                                    className="pl-8"
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`w2Forms.${index}.medicareTaxWithheld`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>
-                                Medicare Tax Withheld (Box 6)
-                              </FormLabel>
-                              <FormControl>
-                                <div className="relative">
-                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
-                                    $
-                                  </span>
-                                  <Input
-                                    {...field}
-                                    className="pl-8"
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      {/* Document Upload */}
-                      <FileUpload 
-                        documentType={`W-2 ${w2Count > 1 ? `#${index + 1}` : ""}`}
-                        taxFormId={taxFormId}
+                    {/* Employer Information */}
+                    <div className="grid md:grid-cols-2 gap-4 mb-6">
+                      <FormField
+                        control={form.control}
+                        name="form16.employerName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Employer Name</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="form16.employerTAN"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Employer TAN</FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="XXXX-X-XXXX-X"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     </div>
-                  ))}
 
-                  <div className="flex justify-end">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="mb-8"
-                      onClick={handleAddW2}
-                    >
-                      <Plus className="mr-2 h-4 w-4" /> Add Another W-2
-                    </Button>
+                    <div className="grid md:grid-cols-1 gap-4 mb-6">
+                      <FormField
+                        control={form.control}
+                        name="form16.employeePAN"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Your PAN Number</FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="XXXXX-XXXX-X"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Income Information */}
+                    <div className="grid md:grid-cols-2 gap-4 mb-6">
+                      <FormField
+                        control={form.control}
+                        name="form16.grossSalary"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Gross Salary
+                            </FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
+                                  ₹
+                                </span>
+                                <Input
+                                  {...field}
+                                  className="pl-8"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="form16.exemptAllowances"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Exempt Allowances (HRA, LTA, etc.)
+                            </FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
+                                  ₹
+                                </span>
+                                <Input
+                                  {...field}
+                                  className="pl-8"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4 mb-6">
+                      <FormField
+                        control={form.control}
+                        name="form16.professionalTax"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Professional Tax
+                            </FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
+                                  ₹
+                                </span>
+                                <Input
+                                  {...field}
+                                  className="pl-8"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="form16.tdsDeducted"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              TDS Deducted
+                            </FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
+                                  ₹
+                                </span>
+                                <Input
+                                  {...field}
+                                  className="pl-8"
+                                />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Document Upload */}
+                    <FileUpload 
+                      documentType="Form 16"
+                      taxFormId={taxFormId}
+                    />
                   </div>
 
                   {/* Additional Income Sources */}
