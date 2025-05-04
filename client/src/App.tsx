@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import TaxFiling from "@/pages/TaxFiling";
 import TaxResources from "@/pages/TaxResources";
 import Support from "@/pages/Support";
+import Pricing from "@/pages/Pricing";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/file-taxes" component={TaxFiling} />
       <Route path="/tax-resources" component={TaxResources} />
       <Route path="/support" component={Support} />
+      <Route path="/pricing" component={Pricing} />
       <Route component={NotFound} />
     </Switch>
   );

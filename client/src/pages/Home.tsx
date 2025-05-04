@@ -260,6 +260,102 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Benefits of filing */}
+      <section className="py-12 bg-gradient-to-r from-blue-50 to-blue-100">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Benefits of Filing with Us</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Experience the most comprehensive and user-friendly tax filing service in India. Our platform is designed to simplify your tax filing experience.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="bg-white border-0 shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                  <CheckCircle className="h-6 w-6 text-green-500" />
+                </div>
+                <h3 className="text-lg font-bold mb-3">Maximum Tax Refund</h3>
+                <p className="text-gray-600">
+                  Our intelligent tax engine identifies all eligible deductions and exemptions to maximize your tax refund and minimize your tax liability.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-white border-0 shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-500">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold mb-3">Secure & Confidential</h3>
+                <p className="text-gray-600">
+                  Bank-level security with 256-bit encryption protects your personal and financial information. Your data is never shared with third parties.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-white border-0 shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                  <CalendarDays className="h-6 w-6 text-blue-500" />
+                </div>
+                <h3 className="text-lg font-bold mb-3">Quick & Easy</h3>
+                <p className="text-gray-600">
+                  Complete your tax return in as little as 10 minutes with our step-by-step guidance. No tax expertise required.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-white border-0 shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-500">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold mb-3">Expert Support</h3>
+                <p className="text-gray-600">
+                  Get access to our tax experts who can answer your questions and guide you through any complex tax situations.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-white border-0 shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                  <Upload className="h-6 w-6 text-blue-500" />
+                </div>
+                <h3 className="text-lg font-bold mb-3">Automatic Data Import</h3>
+                <p className="text-gray-600">
+                  Import your Form 16, capital gains data, and other tax information automatically to save time and reduce errors.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-white border-0 shadow-sm">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-500">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold mb-3">Accuracy Guarantee</h3>
+                <p className="text-gray-600">
+                  Our platform performs over 100 error checks to ensure your return is accurate and compliant with the latest tax laws.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+      
       {/* Trust badges */}
       <section className="py-12 bg-white">
         <div className="container mx-auto px-4">
