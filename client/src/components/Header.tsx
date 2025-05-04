@@ -79,7 +79,7 @@ const Header = () => {
         <div className="flex items-center">
           <Link href="/">
             <a className="text-primary font-bold text-2xl">
-              EasyTax<span className="text-secondary">.</span>
+              IncomeTax<span className="text-secondary">India</span>
             </a>
           </Link>
         </div>

@@ -13,17 +13,21 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Tax form to store user's tax filing data
+// Tax form to store user's tax filing data for Indian ITR
 export const taxForms = pgTable("tax_forms", {
   id: text("id").primaryKey(),
   userId: integer("user_id").references(() => users.id),
   status: text("status").notNull().default("in_progress"), // in_progress, completed, filed
-  personalInfo: jsonb("personal_info"),
-  incomeData: jsonb("income_data"),
-  deductionsData: jsonb("deductions_data"),
-  creditsData: jsonb("credits_data"),
+  personalInfo: jsonb("personal_info"), // PAN, Aadhaar, personal details
+  formType: text("form_type").default("ITR-1"), // ITR-1, ITR-2, ITR-3, ITR-4
+  incomeData: jsonb("income_data"), // Salary, house property, capital gains, business income
+  deductions80C: jsonb("deductions_80c"), // Section 80C, 80CCC, 80CCD deductions
+  deductions80D: jsonb("deductions_80d"), // Health insurance, medical deductions
+  otherDeductions: jsonb("other_deductions"), // Other deduction sections
+  taxPaid: jsonb("tax_paid"), // TDS, TCS, advance tax
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  assessmentYear: text("assessment_year").default("2024-25"), // Current assessment year
 });
 
 // Tax documents uploaded by users

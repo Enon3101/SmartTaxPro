@@ -12,11 +12,11 @@ const Home = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                Simple, Accurate Tax Filing for Everyone
+                Easy ITR Filing for Indian Taxpayers
               </h1>
               <p className="text-lg mb-8 text-[#ADB5BD]">
-                File your taxes with confidence using our easy-to-use platform. 
-                Get the maximum refund guaranteed.
+                File your Income Tax Return with confidence using our easy-to-use platform. 
+                Maximize deductions under Sections 80C, 80D and more.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/file-taxes">
