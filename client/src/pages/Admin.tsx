@@ -116,7 +116,7 @@ const UserManagement = () => {
     mutationFn: async (userId: number) => {
       return await apiRequest(`/api/admin/users/${userId}`, {
         method: "DELETE",
-      } as RequestInit);
+      });
     },
     onSuccess: () => {
       toast({
@@ -297,7 +297,7 @@ const TaxFormsManagement = () => {
       return await apiRequest(`/api/admin/tax-forms/${id}/status`, {
         method: "PATCH",
         body: JSON.stringify({ status }),
-      } as RequestInit);
+      });
     },
     onSuccess: () => {
       toast({
@@ -459,7 +459,7 @@ const DocumentsManagement = () => {
     mutationFn: async (documentId: string) => {
       return await apiRequest(`/api/admin/documents/${documentId}`, {
         method: "DELETE",
-      } as RequestInit);
+      });
     },
     onSuccess: () => {
       toast({
