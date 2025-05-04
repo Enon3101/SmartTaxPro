@@ -5,9 +5,21 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { FileText, Menu, User, ChevronDown } from "lucide-react";
+import {
+  FileText,
+  Menu,
+  User,
+  ChevronDown,
+  LogOut,
+  Settings,
+  FileCheck,
+} from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { LoginDialog } from "@/components/LoginDialog";
+import { useAuth } from "@/context/AuthContext";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Header = () => {
   const [location] = useLocation();

@@ -474,8 +474,130 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Authentication routes
+  const authRouter = express.Router();
+  
+  // Send OTP to mobile number
+  authRouter.post("/send-otp", async (req, res) => {
+    try {
+      const { phone } = req.body;
+      
+      if (!phone || phone.length < 10) {
+        return res.status(400).json({ message: "Valid phone number is required" });
+      }
+      
+      // Generate a 6-digit OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      // OTP expires in 10 minutes
+      const expiresAt = new Date();
+      expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+      
+      // Save OTP in database
+      await storage.createOtpVerification({
+        phone,
+        otp,
+        expiresAt,
+      });
+      
+      // In a production environment, you would send OTP via SMS using a service like Twilio
+      // For now, we'll just return it in the response (for testing purposes only)
+      console.log(`OTP for ${phone}: ${otp}`);
+      
+      res.status(200).json({ 
+        message: "OTP sent successfully",
+        phone,
+        // In production, don't return the OTP in the response!
+        // This is only for development purposes
+        otp: process.env.NODE_ENV === "development" ? otp : undefined
+      });
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      res.status(500).json({ message: "Failed to send OTP" });
+    }
+  });
+  
+  // Verify OTP and login or register
+  authRouter.post("/verify-otp", async (req, res) => {
+    try {
+      const { phone, otp } = req.body;
+      
+      if (!phone || !otp) {
+        return res.status(400).json({ message: "Phone and OTP are required" });
+      }
+      
+      // Verify the OTP
+      const isValid = await storage.verifyOtp(phone, otp);
+      
+      if (!isValid) {
+        return res.status(400).json({ message: "Invalid or expired OTP" });
+      }
+      
+      // Check if user exists
+      let user = await storage.getUserByPhone(phone);
+      
+      if (!user) {
+        // Auto-register new user with phone number as username
+        const username = `user_${phone.slice(-5)}${Math.floor(Math.random() * 1000)}`;
+        const password = Math.random().toString(36).slice(-8);
+        
+        user = await storage.createUser({
+          username,
+          password, // In a real app, hash this password
+          phone,
+          role: "user"
+        });
+      }
+      
+      // In a real app, you'd create a session here
+      // For now, just return the user object
+      res.status(200).json({ 
+        message: "Login successful", 
+        user: {
+          id: user.id,
+          username: user.username,
+          phone: user.phone,
+          role: user.role
+        } 
+      });
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      res.status(500).json({ message: "Failed to verify OTP" });
+    }
+  });
+  
+  // Check user login status
+  authRouter.get("/me", async (req, res) => {
+    try {
+      // In a real app with sessions, check for logged in user
+      // For now, we'll mock this
+      const userId = req.query.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      const user = await storage.getUser(Number(userId));
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.status(200).json({
+        id: user.id,
+        username: user.username,
+        phone: user.phone,
+        role: user.role
+      });
+    } catch (error) {
+      console.error("Error getting user:", error);
+      res.status(500).json({ message: "Failed to get user" });
+    }
+  });
+
   // Mount the API routers
   app.use("/api", apiRouter);
+  app.use("/api/auth", authRouter);
   app.use("/api/admin", adminRouter);
 
   const httpServer = createServer(app);
