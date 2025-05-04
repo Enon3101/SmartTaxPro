@@ -1,7 +1,8 @@
 import { 
   User, InsertUser, users, 
   TaxForm, InsertTaxForm, taxForms,
-  Document, InsertDocument, documents
+  Document, InsertDocument, documents,
+  OtpVerification, InsertOtpVerification, otpVerifications
 } from "@shared/schema";
 
 // Interface for storage operations
@@ -9,7 +10,14 @@ export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByPhone(phone: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  
+  // OTP operations
+  createOtpVerification(otpVerification: InsertOtpVerification): Promise<OtpVerification>;
+  getLatestOtpForPhone(phone: string): Promise<OtpVerification | undefined>;
+  verifyOtp(phone: string, otp: string): Promise<boolean>;
+  updateOtpVerificationStatus(id: number, verified: boolean): Promise<OtpVerification | undefined>;
   
   // Tax form operations
   createTaxForm(taxForm: InsertTaxForm): Promise<TaxForm>;
@@ -46,6 +54,13 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db.select().from(users).where(eq(users.username, username));
     return user || undefined;
   }
+  
+  async getUserByPhone(phone: string): Promise<User | undefined> {
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    const [user] = await db.select().from(users).where(eq(users.phone, phone));
+    return user || undefined;
+  }
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const { db } = await import("./db");
@@ -54,6 +69,72 @@ export class DatabaseStorage implements IStorage {
       .values(insertUser)
       .returning();
     return user;
+  }
+  
+  // OTP verification methods
+  async createOtpVerification(otpVerification: InsertOtpVerification): Promise<OtpVerification> {
+    const { db } = await import("./db");
+    const [verification] = await db
+      .insert(otpVerifications)
+      .values(otpVerification)
+      .returning();
+    return verification;
+  }
+  
+  async getLatestOtpForPhone(phone: string): Promise<OtpVerification | undefined> {
+    const { db } = await import("./db");
+    const { eq, desc } = await import("drizzle-orm");
+    const [latestOtp] = await db
+      .select()
+      .from(otpVerifications)
+      .where(eq(otpVerifications.phone, phone))
+      .orderBy(desc(otpVerifications.createdAt))
+      .limit(1);
+    return latestOtp || undefined;
+  }
+  
+  async verifyOtp(phone: string, otp: string): Promise<boolean> {
+    const { db } = await import("./db");
+    const { eq, and, gte } = await import("drizzle-orm");
+    
+    // Get latest non-expired OTP for this phone
+    const [otpRecord] = await db
+      .select()
+      .from(otpVerifications)
+      .where(
+        and(
+          eq(otpVerifications.phone, phone),
+          eq(otpVerifications.otp, otp),
+          eq(otpVerifications.verified, false),
+          gte(otpVerifications.expiresAt, new Date())
+        )
+      )
+      .limit(1);
+    
+    if (!otpRecord) {
+      return false;
+    }
+    
+    // Mark OTP as verified
+    await db
+      .update(otpVerifications)
+      .set({ verified: true })
+      .where(eq(otpVerifications.id, otpRecord.id));
+    
+    return true;
+  }
+  
+  async updateOtpVerificationStatus(id: number, verified: boolean): Promise<OtpVerification | undefined> {
+    const { db } = await import("./db");
+    const { eq } = await import("drizzle-orm");
+    
+    const [updatedVerification] = await db
+      .update(otpVerifications)
+      .set({ verified })
+      .where(eq(otpVerifications.id, id))
+      .returning();
+      
+    return updatedVerification || undefined;
   }
 
   // Tax form operations

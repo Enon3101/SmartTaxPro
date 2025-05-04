@@ -10,6 +10,8 @@ export const users = pgTable("users", {
   firstName: text("first_name"),
   lastName: text("last_name"),
   email: text("email"),
+  phone: text("phone"), // Added phone number field
+  role: text("role").default("user"), // user or admin
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -28,6 +30,16 @@ export const taxForms = pgTable("tax_forms", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   assessmentYear: text("assessment_year").default("2024-25"), // Current assessment year
+});
+
+// OTP verification codes
+export const otpVerifications = pgTable("otp_verifications", {
+  id: serial("id").primaryKey(),
+  phone: text("phone").notNull(),
+  otp: text("otp").notNull(),
+  verified: boolean("verified").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  expiresAt: timestamp("expires_at").notNull(),
 });
 
 // Tax documents uploaded by users
@@ -49,6 +61,15 @@ export const insertUserSchema = createInsertSchema(users).pick({
   firstName: true,
   lastName: true,
   email: true,
+  phone: true,
+  role: true,
+});
+
+// Schema for OTP verification
+export const insertOtpVerificationSchema = createInsertSchema(otpVerifications).pick({
+  phone: true,
+  otp: true,
+  expiresAt: true,
 });
 
 // Schema for inserting tax forms
@@ -80,3 +101,6 @@ export type TaxForm = typeof taxForms.$inferSelect;
 
 export type InsertDocument = z.infer<typeof insertDocumentSchema>;
 export type Document = typeof documents.$inferSelect;
+
+export type InsertOtpVerification = z.infer<typeof insertOtpVerificationSchema>;
+export type OtpVerification = typeof otpVerifications.$inferSelect;
