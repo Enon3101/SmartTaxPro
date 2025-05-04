@@ -233,7 +233,7 @@ const TaxFilingWizard = () => {
     },
   ];
 
-  const hasInvestmentIncome = form.watch("additionalIncome.hasInvestmentIncome");
+  // We don't need to watch for hasInvestmentIncome as we're using individual income type flags
 
   if (isLoading) {
     return (
