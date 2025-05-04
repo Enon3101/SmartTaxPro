@@ -8,7 +8,7 @@ const TaxResources = () => {
       <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold mb-2">Tax Resources</h1>
         <p className="text-[#ADB5BD]">
-          Helpful tools and guides to simplify your tax filing experience.
+          Helpful tools and guides to simplify your Indian tax filing experience.
         </p>
       </div>
 
@@ -16,34 +16,34 @@ const TaxResources = () => {
         <Card>
           <CardHeader>
             <FileText className="h-8 w-8 text-primary mb-2" />
-            <CardTitle>Tax Forms & Instructions</CardTitle>
-            <CardDescription>Access common IRS forms and instructions</CardDescription>
+            <CardTitle>ITR Forms & Instructions</CardTitle>
+            <CardDescription>Access common Income Tax Return forms</CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
               <li>
-                <Link href="#">
-                  <a className="text-primary hover:underline">Form 1040 (Individual Return)</a>
+                <Link href="#" className="text-primary hover:underline">
+                  ITR-1 (Sahaj) for Salaried Individuals
                 </Link>
               </li>
               <li>
-                <Link href="#">
-                  <a className="text-primary hover:underline">Form W-4 (Tax Withholding)</a>
+                <Link href="#" className="text-primary hover:underline">
+                  ITR-2 (Salary, Capital Gains, House Property)
                 </Link>
               </li>
               <li>
-                <Link href="#">
-                  <a className="text-primary hover:underline">Form 1099 Series (Independent Contractors)</a>
+                <Link href="#" className="text-primary hover:underline">
+                  ITR-3 (Business Income & Professionals)
                 </Link>
               </li>
               <li>
-                <Link href="#">
-                  <a className="text-primary hover:underline">Form 8949 (Capital Gains & Losses)</a>
+                <Link href="#" className="text-primary hover:underline">
+                  ITR-4 (Sugam) for Presumptive Income
                 </Link>
               </li>
               <li>
-                <Link href="#">
-                  <a className="text-primary hover:underline">View All Forms →</a>
+                <Link href="#" className="text-primary hover:underline">
+                  View All ITR Forms →
                 </Link>
               </li>
             </ul>
@@ -54,33 +54,33 @@ const TaxResources = () => {
           <CardHeader>
             <Calculator className="h-8 w-8 text-secondary mb-2" />
             <CardTitle>Tax Calculators</CardTitle>
-            <CardDescription>Estimate your taxes and refund</CardDescription>
+            <CardDescription>Estimate your taxes and refund under Indian tax laws</CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2">
               <li>
-                <Link href="#">
-                  <a className="text-primary hover:underline">Tax Refund Estimator</a>
+                <Link href="#" className="text-primary hover:underline">
+                  New vs Old Tax Regime Calculator
                 </Link>
               </li>
               <li>
-                <Link href="#">
-                  <a className="text-primary hover:underline">W-4 Withholding Calculator</a>
+                <Link href="#" className="text-primary hover:underline">
+                  TDS Calculator
                 </Link>
               </li>
               <li>
-                <Link href="#">
-                  <a className="text-primary hover:underline">Self-Employment Tax Calculator</a>
+                <Link href="#" className="text-primary hover:underline">
+                  HRA Exemption Calculator
                 </Link>
               </li>
               <li>
-                <Link href="#">
-                  <a className="text-primary hover:underline">Capital Gains Calculator</a>
+                <Link href="#" className="text-primary hover:underline">
+                  Capital Gains Calculator (Securities)
                 </Link>
               </li>
               <li>
-                <Link href="#">
-                  <a className="text-primary hover:underline">View All Calculators →</a>
+                <Link href="#" className="text-primary hover:underline">
+                  View All Calculators →
                 </Link>
               </li>
             </ul>
@@ -91,25 +91,25 @@ const TaxResources = () => {
           <CardHeader>
             <CalendarDays className="h-8 w-8 text-accent mb-2" />
             <CardTitle>Tax Deadlines</CardTitle>
-            <CardDescription>Stay on top of important tax dates</CardDescription>
+            <CardDescription>Stay on top of important Indian tax dates</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div>
-                <h3 className="font-semibold mb-1">April 15, 2024</h3>
-                <p className="text-sm text-[#ADB5BD]">Federal tax filing deadline for 2023 returns</p>
+                <h3 className="font-semibold mb-1">July 31, 2024</h3>
+                <p className="text-sm text-[#ADB5BD]">ITR filing deadline for non-audit cases (AY 2024-25)</p>
               </div>
               <div>
-                <h3 className="font-semibold mb-1">June 17, 2024</h3>
-                <p className="text-sm text-[#ADB5BD]">Q2 estimated tax payment due</p>
+                <h3 className="font-semibold mb-1">June 15, 2024</h3>
+                <p className="text-sm text-[#ADB5BD]">First installment of advance tax (15%)</p>
               </div>
               <div>
-                <h3 className="font-semibold mb-1">September 16, 2024</h3>
-                <p className="text-sm text-[#ADB5BD]">Q3 estimated tax payment due</p>
+                <h3 className="font-semibold mb-1">September 15, 2024</h3>
+                <p className="text-sm text-[#ADB5BD]">Second installment of advance tax (45%)</p>
               </div>
               <div>
-                <h3 className="font-semibold mb-1">October 15, 2024</h3>
-                <p className="text-sm text-[#ADB5BD]">Extended tax filing deadline</p>
+                <h3 className="font-semibold mb-1">October 31, 2024</h3>
+                <p className="text-sm text-[#ADB5BD]">ITR deadline for audit cases</p>
               </div>
             </div>
           </CardContent>
@@ -122,14 +122,14 @@ const TaxResources = () => {
           <Card>
             <CardContent className="p-6">
               <h3 className="text-xl font-semibold mb-3">
-                Understanding Tax Deductions vs. Tax Credits
+                New vs Old Tax Regime: Which Should You Choose?
               </h3>
               <p className="text-[#ADB5BD] mb-4">
-                Learn the difference between tax deductions and tax credits, and how 
-                each can impact your tax return in different ways.
+                Understand the differences between the new and old tax regimes in India, 
+                and determine which option might save you more tax based on your income and investments.
               </p>
-              <Link href="#">
-                <a className="text-primary hover:underline font-medium">Read More →</a>
+              <Link href="#" className="text-primary hover:underline font-medium">
+                Read More →
               </Link>
             </CardContent>
           </Card>
@@ -137,14 +137,14 @@ const TaxResources = () => {
           <Card>
             <CardContent className="p-6">
               <h3 className="text-xl font-semibold mb-3">
-                5 Tax Benefits for Homeowners
+                Tax Benefits Under Section 80C to 80U
               </h3>
               <p className="text-[#ADB5BD] mb-4">
-                Discover key tax advantages available to homeowners, from mortgage 
-                interest deductions to property tax considerations.
+                Explore the comprehensive list of deductions available under various subsections from 
+                80C to 80U, including investments, insurance, and medical expenses.
               </p>
-              <Link href="#">
-                <a className="text-primary hover:underline font-medium">Read More →</a>
+              <Link href="#" className="text-primary hover:underline font-medium">
+                Read More →
               </Link>
             </CardContent>
           </Card>
@@ -152,14 +152,14 @@ const TaxResources = () => {
           <Card>
             <CardContent className="p-6">
               <h3 className="text-xl font-semibold mb-3">
-                Self-Employment Tax Guidelines
+                GST for Small Businesses & Professionals
               </h3>
               <p className="text-[#ADB5BD] mb-4">
-                Navigate the complexities of self-employment taxes, quarterly estimates, 
-                and deductions available to freelancers and small business owners.
+                Navigate the Goods and Services Tax framework for small businesses, 
+                freelancers, and professionals. Learn about registration, filing requirements, and input tax credits.
               </p>
-              <Link href="#">
-                <a className="text-primary hover:underline font-medium">Read More →</a>
+              <Link href="#" className="text-primary hover:underline font-medium">
+                Read More →
               </Link>
             </CardContent>
           </Card>
@@ -167,14 +167,14 @@ const TaxResources = () => {
           <Card>
             <CardContent className="p-6">
               <h3 className="text-xl font-semibold mb-3">
-                Maximizing Your Retirement Tax Benefits
+                Tax Benefits for NPS and ELSS Investments
               </h3>
               <p className="text-[#ADB5BD] mb-4">
-                Explore tax-advantaged retirement accounts and strategies to reduce 
-                your tax burden while building your nest egg.
+                Discover the tax advantages of investing in National Pension System (NPS) and 
+                Equity-Linked Savings Schemes (ELSS) under Indian tax laws.
               </p>
-              <Link href="#">
-                <a className="text-primary hover:underline font-medium">Read More →</a>
+              <Link href="#" className="text-primary hover:underline font-medium">
+                Read More →
               </Link>
             </CardContent>
           </Card>
@@ -190,13 +190,11 @@ const TaxResources = () => {
             <div>
               <h3 className="text-xl font-bold mb-2">Have a Tax Question?</h3>
               <p className="text-[#ADB5BD] mb-4">
-                Our tax experts are ready to help you navigate complex tax situations 
+                Our tax experts are ready to help you navigate complex Indian tax situations 
                 and find the best solutions for your specific needs.
               </p>
-              <Link href="/support">
-                <a className="text-primary hover:underline font-medium">
-                  Contact Our Tax Experts →
-                </a>
+              <Link href="/support" className="text-primary hover:underline font-medium">
+                Contact Our Tax Experts →
               </Link>
             </div>
           </div>
