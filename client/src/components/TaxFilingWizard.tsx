@@ -274,7 +274,27 @@ const TaxFilingWizard = () => {
                   {/* Form 16 Employment Income Section */}
                   <div className="mb-8">
                     <h3 className="text-lg font-medium mb-4">
-                      Form 16 - Salary Income Details
+                      <div className="flex items-center">
+                        <span className="mr-2">Form 16 - Salary Income Details</span>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-md p-4">
+                              <h4 className="font-medium mb-2">Form 16 Information</h4>
+                              <ul className="space-y-2 text-sm">
+                                <li><span className="font-medium">Form 16:</span> TDS certificate issued by your employer showing salary details and tax deducted</li>
+                                <li><span className="font-medium">TAN:</span> Tax Deduction and Collection Account Number of your employer</li>
+                                <li><span className="font-medium">Gross Salary:</span> Total salary earned before any deductions</li>
+                                <li><span className="font-medium">Exempt Allowances:</span> HRA, LTA, and other allowances exempt under Section 10</li>
+                                <li><span className="font-medium">Professional Tax:</span> Tax levied by state governments on profession, trade or employment</li>
+                                <li><span className="font-medium">TDS Deducted:</span> Tax deducted at source by your employer from your salary</li>
+                              </ul>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
                     </h3>
 
                     {/* Employer Information */}
@@ -437,9 +457,29 @@ const TaxFilingWizard = () => {
 
                   {/* Additional Income Sources */}
                   <div className="mb-8">
-                    <h3 className="text-lg font-medium mb-4">
-                      Additional Income Sources
-                    </h3>
+                    <div className="flex items-center mb-4">
+                      <h3 className="text-lg font-medium mr-2">
+                        Additional Income Sources
+                      </h3>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent className="max-w-md p-4">
+                            <h4 className="font-medium mb-2">Income Sources Information</h4>
+                            <ul className="space-y-2 text-sm">
+                              <li><span className="font-medium">Rental Income:</span> Income from renting out residential or commercial property</li>
+                              <li><span className="font-medium">Capital Gains:</span> Profit from selling assets like shares, property, mutual funds</li>
+                              <li><span className="font-medium">Business Income:</span> Income from running a business or profession</li>
+                              <li><span className="font-medium">Interest Income:</span> Interest earned from savings accounts, deposits, bonds</li>
+                              <li><span className="font-medium">Dividend Income:</span> Income received as dividends from shares or mutual funds</li>
+                              <li><span className="font-medium">Other Sources:</span> Agricultural income, lottery winnings, gifts, etc.</li>
+                            </ul>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
 
                     {/* Income Checkboxes with Indian Income Types */}
                     <div className="grid sm:grid-cols-2 gap-3 mb-6">
