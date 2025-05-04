@@ -24,6 +24,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger, 
+  SelectValue,
+} from "@/components/ui/select";
 import { ChevronLeft, ChevronRight, Plus, HelpCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import FileUpload from "./FileUpload";
@@ -427,44 +434,8 @@ const TaxFilingWizard = () => {
                       Additional Income Sources
                     </h3>
 
-                    {/* Income Checkboxes */}
+                    {/* Income Checkboxes with Indian Income Types */}
                     <div className="grid sm:grid-cols-2 gap-3 mb-6">
-                      <FormField
-                        control={form.control}
-                        name="additionalIncome.has1099Income"
-                        render={({ field }) => (
-                          <FormItem className="flex items-center space-x-3">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                id="income_1099"
-                              />
-                            </FormControl>
-                            <FormLabel className="text-sm font-normal cursor-pointer">
-                              Self-Employment (1099-NEC/MISC)
-                            </FormLabel>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="additionalIncome.hasInvestmentIncome"
-                        render={({ field }) => (
-                          <FormItem className="flex items-center space-x-3">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                id="income_investment"
-                              />
-                            </FormControl>
-                            <FormLabel className="text-sm font-normal cursor-pointer">
-                              Investment Income
-                            </FormLabel>
-                          </FormItem>
-                        )}
-                      />
                       <FormField
                         control={form.control}
                         name="additionalIncome.hasRentalIncome"
@@ -478,43 +449,79 @@ const TaxFilingWizard = () => {
                               />
                             </FormControl>
                             <FormLabel className="text-sm font-normal cursor-pointer">
-                              Rental Income
+                              Income from House Property
                             </FormLabel>
                           </FormItem>
                         )}
                       />
                       <FormField
                         control={form.control}
-                        name="additionalIncome.hasRetirementIncome"
+                        name="additionalIncome.hasBusinessIncome"
                         render={({ field }) => (
                           <FormItem className="flex items-center space-x-3">
                             <FormControl>
                               <Checkbox
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
-                                id="income_retirement"
+                                id="income_business"
                               />
                             </FormControl>
                             <FormLabel className="text-sm font-normal cursor-pointer">
-                              Retirement Distributions
+                              Business/Professional Income
                             </FormLabel>
                           </FormItem>
                         )}
                       />
                       <FormField
                         control={form.control}
-                        name="additionalIncome.hasUnemploymentIncome"
+                        name="additionalIncome.hasCapitalGains"
                         render={({ field }) => (
                           <FormItem className="flex items-center space-x-3">
                             <FormControl>
                               <Checkbox
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
-                                id="income_unemployment"
+                                id="income_capital_gains"
                               />
                             </FormControl>
                             <FormLabel className="text-sm font-normal cursor-pointer">
-                              Unemployment Benefits
+                              Capital Gains
+                            </FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="additionalIncome.hasInterestIncome"
+                        render={({ field }) => (
+                          <FormItem className="flex items-center space-x-3">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                id="income_interest"
+                              />
+                            </FormControl>
+                            <FormLabel className="text-sm font-normal cursor-pointer">
+                              Interest Income
+                            </FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="additionalIncome.hasDividendIncome"
+                        render={({ field }) => (
+                          <FormItem className="flex items-center space-x-3">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                id="income_dividend"
+                              />
+                            </FormControl>
+                            <FormLabel className="text-sm font-normal cursor-pointer">
+                              Dividend Income
                             </FormLabel>
                           </FormItem>
                         )}
@@ -532,29 +539,29 @@ const TaxFilingWizard = () => {
                               />
                             </FormControl>
                             <FormLabel className="text-sm font-normal cursor-pointer">
-                              Other Income
+                              Other Sources Income
                             </FormLabel>
                           </FormItem>
                         )}
                       />
                     </div>
 
-                    {/* Investment Income Form */}
-                    {hasInvestmentIncome && (
+                    {/* Capital Gains Income Section */}
+                    {form.watch("additionalIncome.hasCapitalGains") && (
                       <div className="mb-6 p-5 bg-background rounded-lg border border-[#E9ECEF]">
-                        <h4 className="font-medium mb-3">Investment Income</h4>
+                        <h4 className="font-medium mb-3">Capital Gains Income</h4>
 
                         <div className="grid md:grid-cols-2 gap-4 mb-4">
                           <FormField
                             control={form.control}
-                            name="additionalIncome.dividendIncome"
+                            name="additionalIncome.shortTermCapitalGains"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Dividends</FormLabel>
+                                <FormLabel>Short Term Capital Gains</FormLabel>
                                 <FormControl>
                                   <div className="relative">
                                     <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
-                                      $
+                                      ₹
                                     </span>
                                     <Input
                                       {...field}
@@ -566,16 +573,53 @@ const TaxFilingWizard = () => {
                               </FormItem>
                             )}
                           />
+                          <FormField
+                            control={form.control}
+                            name="additionalIncome.longTermCapitalGains"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Long Term Capital Gains</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
+                                      ₹
+                                    </span>
+                                    <Input
+                                      {...field}
+                                      className="pl-8"
+                                    />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        {/* Document Upload for Capital Gains */}
+                        <FileUpload 
+                          documentType="Capital Gains Documents"
+                          taxFormId={taxFormId}
+                        />
+                      </div>
+                    )}
+                    
+                    {/* Interest Income Section */}
+                    {form.watch("additionalIncome.hasInterestIncome") && (
+                      <div className="mb-6 p-5 bg-background rounded-lg border border-[#E9ECEF]">
+                        <h4 className="font-medium mb-3">Interest Income</h4>
+
+                        <div className="grid md:grid-cols-1 gap-4 mb-4">
                           <FormField
                             control={form.control}
                             name="additionalIncome.interestIncome"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Interest</FormLabel>
+                                <FormLabel>Interest from Saving Accounts/FDs/Bonds</FormLabel>
                                 <FormControl>
                                   <div className="relative">
                                     <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
-                                      $
+                                      ₹
                                     </span>
                                     <Input
                                       {...field}
@@ -589,69 +633,158 @@ const TaxFilingWizard = () => {
                           />
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-4 mb-4">
-                          <FormField
-                            control={form.control}
-                            name="additionalIncome.capitalGainsIncome"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Capital Gains</FormLabel>
-                                <FormControl>
-                                  <div className="relative">
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
-                                      $
-                                    </span>
-                                    <Input
-                                      {...field}
-                                      className="pl-8"
-                                    />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="additionalIncome.capitalLosses"
-                            render={({ field }) => (
-                              <FormItem>
-                                <div className="flex items-center mb-2">
-                                  <FormLabel className="mb-0">Capital Losses</FormLabel>
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <div className="ml-2 cursor-help">
-                                          <HelpCircle className="h-4 w-4 text-[#ADB5BD]" />
-                                        </div>
-                                      </TooltipTrigger>
-                                      <TooltipContent className="max-w-[250px] text-xs">
-                                        Capital losses can offset capital gains and up to $3,000 of
-                                        other income
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                </div>
-                                <FormControl>
-                                  <div className="relative">
-                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
-                                      $
-                                    </span>
-                                    <Input
-                                      {...field}
-                                      className="pl-8"
-                                    />
-                                  </div>
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-
-                        {/* Document Upload for Investment Income */}
+                        {/* Document Upload for Interest Income */}
                         <FileUpload 
-                          documentType="1099-DIV/INT/B"
+                          documentType="Interest Certificates"
+                          taxFormId={taxFormId}
+                        />
+                      </div>
+                    )}
+                    
+                    {/* Dividend Income Section */}
+                    {form.watch("additionalIncome.hasDividendIncome") && (
+                      <div className="mb-6 p-5 bg-background rounded-lg border border-[#E9ECEF]">
+                        <h4 className="font-medium mb-3">Dividend Income</h4>
+
+                        <div className="grid md:grid-cols-1 gap-4 mb-4">
+                          <FormField
+                            control={form.control}
+                            name="additionalIncome.dividendIncome"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Dividend from Shares/Mutual Funds</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
+                                      ₹
+                                    </span>
+                                    <Input
+                                      {...field}
+                                      className="pl-8"
+                                    />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        {/* Document Upload for Dividend Income */}
+                        <FileUpload 
+                          documentType="Dividend Statements"
+                          taxFormId={taxFormId}
+                        />
+                      </div>
+                    )}
+                    
+                    {/* Income from House Property Section */}
+                    {form.watch("additionalIncome.hasRentalIncome") && (
+                      <div className="mb-6 p-5 bg-background rounded-lg border border-[#E9ECEF]">
+                        <h4 className="font-medium mb-3">Income from House Property</h4>
+                        
+                        <div className="mb-4">
+                          <FormField
+                            control={form.control}
+                            name="additionalIncome.housePropertyType"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Property Type</FormLabel>
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select property type" />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    <SelectItem value="self-occupied">Self Occupied</SelectItem>
+                                    <SelectItem value="let-out">Let Out (Rented)</SelectItem>
+                                    <SelectItem value="deemed-let-out">Deemed Let Out</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        {form.watch("additionalIncome.housePropertyType") !== "self-occupied" && (
+                          <div className="grid md:grid-cols-2 gap-4 mb-4">
+                            <FormField
+                              control={form.control}
+                              name="additionalIncome.annualRentReceived"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Annual Rent Received</FormLabel>
+                                  <FormControl>
+                                    <div className="relative">
+                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
+                                        ₹
+                                      </span>
+                                      <Input
+                                        {...field}
+                                        className="pl-8"
+                                      />
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name="additionalIncome.municipalTaxes"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Municipal Taxes Paid</FormLabel>
+                                  <FormControl>
+                                    <div className="relative">
+                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
+                                        ₹
+                                      </span>
+                                      <Input
+                                        {...field}
+                                        className="pl-8"
+                                      />
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        )}
+
+                        <div className="grid md:grid-cols-1 gap-4 mb-4">
+                          <FormField
+                            control={form.control}
+                            name="additionalIncome.homeLoanInterest"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Home Loan Interest Paid</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-[#ADB5BD]">
+                                      ₹
+                                    </span>
+                                    <Input
+                                      {...field}
+                                      className="pl-8"
+                                    />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        {/* Document Upload for House Property Income */}
+                        <FileUpload 
+                          documentType="House Property Documents"
                           taxFormId={taxFormId}
                         />
                       </div>
