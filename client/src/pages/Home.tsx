@@ -9,176 +9,159 @@ const Home = () => {
       {/* Hero section */}
       <section className="py-10 md:py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">
-              Fill, File and Smile
-            </h1>
-            <p className="text-xl text-blue-500 font-medium">
-              Easy filing wizard
-            </p>
-            
-            <div className="flex justify-center items-center mt-4 mb-2">
-              {[1, 2, 3, 4, 5].map((item, index) => (
-                <Star 
-                  key={index} 
-                  className={`h-5 w-5 ${index < 4 ? "text-yellow-400 fill-yellow-400" : "text-yellow-400"}`} 
-                  strokeWidth={index === 4 ? 1 : 2}
-                />
-              ))}
-            </div>
-            <p className="text-gray-600">4.7 | 22,500+ Reviews</p>
-          </div>
-
-          {/* Pricing cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-            {/* Salary Income Plan */}
-            <Card className="border-gray-200 relative overflow-hidden">
-              <div className="absolute -rotate-45 bg-blue-100 text-blue-600 text-xs py-1 px-10 font-semibold -left-10 top-3">
-                Most Popular
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="text-left">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                Fill, File and Smile
+              </h1>
+              <p className="text-xl text-blue-500 font-medium mb-4">
+                Easy filing wizard
+              </p>
+              
+              <div className="flex items-center mb-4">
+                {[1, 2, 3, 4, 5].map((item, index) => (
+                  <Star 
+                    key={index} 
+                    className={`h-5 w-5 ${index < 4 ? "text-yellow-400 fill-yellow-400" : "text-yellow-400"}`} 
+                    strokeWidth={index === 4 ? 1 : 2}
+                  />
+                ))}
+                <span className="ml-2 text-gray-600">4.7 | 22,500+ Reviews</span>
               </div>
-              <CardContent className="p-6">
-                <div className="mb-4">
-                  <span className="text-gray-500 text-xl">₹</span>
-                  <span className="text-3xl font-bold">799</span>
-                </div>
-                <h3 className="text-lg font-bold mb-1">Salary Income Plan</h3>
-                <p className="text-sm text-gray-500 mb-4">For Salary, Interest, etc</p>
-                
-                <ul className="space-y-2 mb-6">
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Salary</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Bank Interest</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Pension</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>House Property</span>
-                  </li>
-                </ul>
-                
-                <Button className="w-full bg-blue-500 hover:bg-blue-600 mb-3">
-                  Start Now
-                </Button>
-                
-                <p className="text-xs text-gray-500 text-center">
-                  Pay only after seeing your refund
-                </p>
-                
-                <div className="mt-4 pt-4 border-t border-gray-100 text-center">
-                  <Link href="/assisted-filing">
-                    <div className="text-blue-500 text-sm hover:underline cursor-pointer">
-                      CA Assisted Filing
-                    </div>
-                  </Link>
-                  <p className="text-xs text-gray-500">starts at ₹ 1,399/- only</p>
-                </div>
-              </CardContent>
-            </Card>
+              
+              <p className="text-gray-600 mb-6">
+                Complete your Income Tax Return in as little as 10 minutes. Get maximum refund with our intelligent tax engine.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/start-filing">
+                  <div className="inline-block">
+                    <Button size="lg" className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600">
+                      Start Filing Now <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </div>
+                </Link>
+                <Link href="/pricing">
+                  <div className="inline-block">
+                    <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                      View Pricing
+                    </Button>
+                  </div>
+                </Link>
+              </div>
+            </div>
             
-            {/* All Income Plan */}
-            <Card className="border-gray-200">
-              <CardContent className="p-6">
-                <div className="mb-4">
-                  <span className="text-gray-500 text-xl">₹</span>
-                  <span className="text-3xl font-bold">999</span>
-                  <span className="text-sm text-gray-500">onwards</span>
-                </div>
-                <h3 className="text-lg font-bold mb-1">All Income Plan</h3>
-                <p className="text-sm text-gray-500 mb-4">Simple & Complex Returns</p>
-                
-                <ul className="space-y-2 mb-6">
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Salary, Interest, Pension</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Capital Gains</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Foreign Income</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Everything else</span>
-                  </li>
-                </ul>
-                
-                <Button className="w-full bg-blue-500 hover:bg-blue-600 mb-3">
-                  Start Now
-                </Button>
-                
-                <p className="text-xs text-gray-500 text-center">
-                  Pay only after seeing your refund
-                </p>
-                
-                <div className="mt-4 pt-4 border-t border-gray-100 text-center">
-                  <Link href="/assisted-filing">
-                    <div className="text-blue-500 text-sm hover:underline cursor-pointer">
-                      CA Assisted Filing
+            <div>
+              <div className="rounded-lg p-6 bg-gradient-to-br from-blue-50 to-blue-100 shadow-sm">
+                <h2 className="text-2xl font-bold mb-4 text-center">ITR Filing Made Easy</h2>
+                <div className="space-y-5">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 flex-shrink-0">
+                      <span className="font-semibold">1</span>
                     </div>
-                  </Link>
-                  <p className="text-xs text-gray-500">starts at ₹ 1,399/- only</p>
+                    <div>
+                      <h3 className="font-semibold">Enter Your Details</h3>
+                      <p className="text-sm text-gray-600">Simple step-by-step wizard to collect your information</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 flex-shrink-0">
+                      <span className="font-semibold">2</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Review Your Information</h3>
+                      <p className="text-sm text-gray-600">Verify your details and calculate your refund</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 flex-shrink-0">
+                      <span className="font-semibold">3</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Pay & Submit</h3>
+                      <p className="text-sm text-gray-600">Make payment and file your return securely</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center mr-3 flex-shrink-0">
+                      <span className="font-semibold">4</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">e-Verify Your Return</h3>
+                      <p className="text-sm text-gray-600">Complete the process with digital verification</p>
+                    </div>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Navigation cards */}
+      <section className="py-8 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Link href="/start-filing">
+              <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 h-full flex flex-col justify-between cursor-pointer">
+                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                  <FileText className="h-6 w-6 text-blue-500" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg mb-2">File Your ITR</h3>
+                  <p className="text-sm text-gray-600">Start filing your tax return for AY 2024-25</p>
+                </div>
+              </div>
+            </Link>
             
-            {/* Assisted Filing */}
-            <Card className="border-gray-200">
-              <CardContent className="p-6">
-                <div className="mb-4">
-                  <span className="text-gray-500 text-xl">₹</span>
-                  <span className="text-3xl font-bold">1399</span>
-                  <span className="text-sm text-gray-500">onwards</span>
+            <Link href="/pricing">
+              <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 h-full flex flex-col justify-between cursor-pointer">
+                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-500">
+                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                  </svg>
                 </div>
-                <h3 className="text-lg font-bold mb-1">Assisted Filing</h3>
-                <p className="text-sm text-gray-500 mb-4">For Complete Satisfaction</p>
-                
-                <ul className="space-y-2 mb-6">
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Salary, Interest, Pension</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Capital Gains</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Foreign Income</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    <span>Everything else</span>
-                  </li>
-                </ul>
-                
-                <Button className="w-full bg-blue-500 hover:bg-blue-600 mb-3">
-                  Start Now
-                </Button>
-                
-                <p className="text-xs text-gray-500 text-center">
-                  Notice Protection Included
-                </p>
-                
-                <div className="mt-4 pt-4 border-t border-gray-100 text-center">
-                  <Link href="/notice-assistance">
-                    <div className="text-blue-500 text-sm hover:underline cursor-pointer">
-                      Notice Assistance
-                    </div>
-                  </Link>
-                  <p className="text-xs text-gray-500">starts at ₹ 1,999/- only</p>
+                <div>
+                  <h3 className="font-bold text-lg mb-2">Pricing Plans</h3>
+                  <p className="text-sm text-gray-600">View our affordable plans and services</p>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </Link>
+            
+            <Link href="/tax-resources">
+              <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 h-full flex flex-col justify-between cursor-pointer">
+                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-500">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg mb-2">Tax Resources</h3>
+                  <p className="text-sm text-gray-600">Access guides and ITR forms</p>
+                </div>
+              </div>
+            </Link>
+            
+            <Link href="/support">
+              <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 h-full flex flex-col justify-between cursor-pointer">
+                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-500">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg mb-2">Get Support</h3>
+                  <p className="text-sm text-gray-600">Contact our tax experts for help</p>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </section>

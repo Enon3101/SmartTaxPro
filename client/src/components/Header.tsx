@@ -31,6 +31,12 @@ const Header = () => {
         </div>
         
         <div className="hidden md:flex items-center space-x-3 text-sm">
+          <Link href="/file-taxes">
+            <Button variant="ghost" size="sm" className="font-medium text-gray-600">
+              File ITR
+            </Button>
+          </Link>
+          
           <Link href="/import-cg">
             <Button variant="ghost" size="sm" className="font-medium text-gray-600">
               Import CG / Shares
@@ -40,6 +46,12 @@ const Header = () => {
           <Link href="/pricing">
             <Button variant="ghost" size="sm" className="font-medium text-gray-600">
               Pricing
+            </Button>
+          </Link>
+          
+          <Link href="/tax-resources">
+            <Button variant="ghost" size="sm" className="font-medium text-gray-600">
+              Resources
             </Button>
           </Link>
           
@@ -70,6 +82,11 @@ const Header = () => {
           </SheetTrigger>
           <SheetContent>
             <div className="flex flex-col py-4 space-y-4">
+              <Link href="/file-taxes">
+                <div className="font-medium hover:text-primary transition-colors">
+                  File ITR
+                </div>
+              </Link>
               <Link href="/import-cg">
                 <div className="font-medium hover:text-primary transition-colors">
                   Import CG / Shares
@@ -80,24 +97,25 @@ const Header = () => {
                   Pricing
                 </div>
               </Link>
+              <Link href="/tax-resources">
+                <div className="font-medium hover:text-primary transition-colors">
+                  Resources
+                </div>
+              </Link>
               <Link href="/support">
                 <div className="font-medium hover:text-primary transition-colors">
                   Support
                 </div>
               </Link>
+              <div className="border-t border-gray-100 my-2 pt-2"></div>
               <Link href="/login">
                 <div className="font-medium hover:text-primary transition-colors">
                   Log in
                 </div>
               </Link>
               <Link href="/signup">
-                <div className="font-medium hover:text-primary transition-colors">
+                <div className="font-medium text-blue-500 hover:text-blue-600 transition-colors">
                   New User
-                </div>
-              </Link>
-              <Link href="/tax-resources">
-                <div className="font-medium hover:text-primary transition-colors">
-                  Tax Resources
                 </div>
               </Link>
             </div>
