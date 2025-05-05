@@ -65,6 +65,7 @@ const additionalIncomeSchema = z.object({
   annualRentReceived: z.string().optional(),
   municipalTaxes: z.string().optional(),
   homeLoanInterest: z.string().optional(),
+  rentalIncome: z.string().optional(),
   
   // Capital gains fields
   shortTermCapitalGains: z.string().optional(),
@@ -108,7 +109,7 @@ const TaxFilingWizard = () => {
   // Initialize form with default values or existing data for Indian ITR
   const form = useForm<IncomeFormValues>({
     resolver: zodResolver(incomeFormSchema),
-    defaultValues: taxFormData?.incomeData || {
+    defaultValues: (taxFormData && taxFormData.incomeData) ? taxFormData.incomeData : {
       form16: {
         employerName: "",
         employerTAN: "",
@@ -145,12 +146,11 @@ const TaxFilingWizard = () => {
   // Set up the mutation to save form data
   const saveMutation = useMutation({
     mutationFn: async (data: IncomeFormValues) => {
-      const response = await apiRequest(
-        "POST",
+      return await apiRequest(
         `/api/tax-forms/${taxFormId}/income`,
+        { method: "POST" },
         data
       );
-      return await response.json();
     },
     onSuccess: () => {
       toast({
