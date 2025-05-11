@@ -10,7 +10,8 @@ import { lazy, Suspense } from "react";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import TaxFiling from "@/pages/TaxFiling";
-import TaxResources from "@/pages/TaxResources";
+import Calculators from "@/pages/Calculators";
+import LearningResources from "@/pages/LearningResources";
 import Support from "@/pages/Support";
 import Pricing from "@/pages/Pricing";
 import StartFiling from "@/pages/StartFiling";
@@ -19,7 +20,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 // Lazy load calculator pages
-const Calculators = lazy(() => import("@/pages/calculators"));
+const CalculatorsIndex = lazy(() => import("@/pages/calculators"));
 const TaxRegimeCalculator = lazy(() => import("@/pages/calculators/tax-regime"));
 const HraCalculator = lazy(() => import("@/pages/calculators/hra"));
 const TdsCalculator = lazy(() => import("@/pages/calculators/tds"));
@@ -42,20 +43,21 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/file-taxes" component={TaxFiling} />
-      <Route path="/tax-resources" component={TaxResources} />
+      <Route path="/calculators" component={Calculators} />
+      <Route path="/learning" component={LearningResources} />
       <Route path="/support" component={Support} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/start-filing" component={StartFiling} />
       <Route path="/admin" component={Admin} />
       
       {/* Calculator Routes */}
-      <Route path="/calculators">
+      <Route path="/calculators/index">
         {(params) => {
-          // This will only run when the path is exactly /calculators
+          // This will only run when the path is exactly /calculators/index
           if (!params[0]) {
             return (
               <Suspense fallback={<PageLoading />}>
-                <Calculators />
+                <CalculatorsIndex />
               </Suspense>
             );
           }

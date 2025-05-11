@@ -57,21 +57,21 @@ const Header = () => {
             </Button>
           </Link>
           
-          <Link href="/import-cg">
+          <Link href="/calculators">
             <Button variant="ghost" size="sm" className="font-medium">
-              Import CG / Shares
+              Calculators
+            </Button>
+          </Link>
+          
+          <Link href="/learning">
+            <Button variant="ghost" size="sm" className="font-medium">
+              Learning
             </Button>
           </Link>
           
           <Link href="/pricing">
             <Button variant="ghost" size="sm" className="font-medium">
               Pricing
-            </Button>
-          </Link>
-          
-          <Link href="/tax-resources">
-            <Button variant="ghost" size="sm" className="font-medium">
-              Resources
             </Button>
           </Link>
           
@@ -153,19 +153,19 @@ const Header = () => {
                   File ITR
                 </div>
               </Link>
-              <Link href="/import-cg">
+              <Link href="/calculators">
                 <div className="font-medium hover:text-primary transition-colors">
-                  Import CG / Shares
+                  Calculators
+                </div>
+              </Link>
+              <Link href="/learning">
+                <div className="font-medium hover:text-primary transition-colors">
+                  Learning
                 </div>
               </Link>
               <Link href="/pricing">
                 <div className="font-medium hover:text-primary transition-colors">
                   Pricing
-                </div>
-              </Link>
-              <Link href="/tax-resources">
-                <div className="font-medium hover:text-primary transition-colors">
-                  Resources
                 </div>
               </Link>
               <Link href="/support">
