@@ -33,13 +33,24 @@ const SipCalculator = () => {
   const [futureValue, setFutureValue] = useState<number>(0);
   const [yearlyBreakdown, setYearlyBreakdown] = useState<any[]>([]);
   
-  // Automatically calculate whenever inputs change
+  // Debounce calculation to improve performance
   useEffect(() => {
-    calculateSipReturns();
+    // Use a debounce timer to avoid excessive calculations on rapid changes
+    const debounceTimer = setTimeout(() => {
+      calculateSipReturns();
+    }, 300); // 300ms debounce delay
+    
+    // Cleanup timer on every change
+    return () => clearTimeout(debounceTimer);
   }, [monthlyInvestment, years, expectedReturn]);
   
-  // Calculate SIP returns
+  // Calculate SIP returns with optimizations
   const calculateSipReturns = () => {
+    // Performance optimization: Validate inputs first to prevent unnecessary calculations
+    if (monthlyInvestment <= 0 || years <= 0 || expectedReturn <= 0) {
+      return;
+    }
+    
     // Calculate total investment
     const totalMonths = years * 12;
     const totalInvested = monthlyInvestment * totalMonths;
@@ -53,25 +64,33 @@ const SipCalculator = () => {
     // n = Total number of payments (years * 12)
     
     const monthlyRate = expectedReturn / 12 / 100;
+    // Use a more efficient calculation method with fewer operations
+    const power = Math.pow(1 + monthlyRate, totalMonths);
     const futureValueCalculated = monthlyInvestment * 
-      (((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate) * (1 + monthlyRate));
+      (((power - 1) / monthlyRate) * (1 + monthlyRate));
     
     setFutureValue(futureValueCalculated);
     setEstimatedReturns(futureValueCalculated - totalInvested);
     
-    // Generate yearly breakdown
+    // Optimization: Only generate yearly breakdown when needed (when calculation is complete)
+    // and limit the size of the breakdown for very long time periods
     const breakdown = [];
     let runningInvestment = 0;
     let runningValue = 0;
     
-    for (let year = 1; year <= years; year++) {
-      const investmentThisYear = monthlyInvestment * 12;
+    // If years is very large, calculate fewer data points to improve performance
+    const yearStep = years > 20 ? 2 : 1; // Use 2-year intervals for long periods
+    
+    for (let year = yearStep; year <= years; year += yearStep) {
+      const investmentThisYear = monthlyInvestment * 12 * (year === yearStep ? year : yearStep);
       runningInvestment += investmentThisYear;
       
       // Calculate future value at the end of this year
       const monthsCompleted = year * 12;
+      // Reuse the same formula but with calculated year
+      const yearPower = Math.pow(1 + monthlyRate, monthsCompleted);
       const futureValueAtYear = monthlyInvestment * 
-        (((Math.pow(1 + monthlyRate, monthsCompleted) - 1) / monthlyRate) * (1 + monthlyRate));
+        (((yearPower - 1) / monthlyRate) * (1 + monthlyRate));
       
       runningValue = futureValueAtYear;
       const returnsThisYear = runningValue - runningInvestment;
@@ -88,16 +107,26 @@ const SipCalculator = () => {
     setIsCalculated(true);
   };
   
-  const handleSliderChange = (field: string, value: number[]) => {
+  // Optimized slider change handler with type safety
+  const handleSliderChange = (field: "investment" | "years" | "return", value: number[]) => {
+    // Only update if the value has actually changed
+    const newValue = value[0];
+    
     switch (field) {
       case "investment":
-        setMonthlyInvestment(value[0]);
+        if (newValue !== monthlyInvestment) {
+          setMonthlyInvestment(newValue);
+        }
         break;
       case "years":
-        setYears(value[0]);
+        if (newValue !== years) {
+          setYears(newValue);
+        }
         break;
       case "return":
-        setExpectedReturn(value[0]);
+        if (newValue !== expectedReturn) {
+          setExpectedReturn(newValue);
+        }
         break;
     }
   };

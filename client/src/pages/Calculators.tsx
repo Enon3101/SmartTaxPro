@@ -113,7 +113,12 @@ const Calculators = () => {
                   Calculate your House Rent Allowance (HRA) exemption based on your salary and rent paid.
                 </p>
                 <Link href="/calculators/hra">
-                  <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
+                  <div 
+                    className="text-primary font-medium hover:underline text-sm"
+                    onMouseEnter={preloadHraCalculator}
+                  >
+                    Use Calculator →
+                  </div>
                 </Link>
               </div>
             </div>
@@ -129,7 +134,12 @@ const Calculators = () => {
                   Calculate tax on short-term and long-term capital gains from stocks, mutual funds, and property.
                 </p>
                 <Link href="/calculators/capital-gains">
-                  <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
+                  <div 
+                    className="text-primary font-medium hover:underline text-sm"
+                    onMouseEnter={preloadCapitalGainsCalculator}
+                  >
+                    Use Calculator →
+                  </div>
                 </Link>
               </div>
             </div>
@@ -197,7 +207,12 @@ const Calculators = () => {
                   Calculate returns on your Systematic Investment Plan (SIP) investments over time.
                 </p>
                 <Link href="/calculators/sip">
-                  <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
+                  <div 
+                    className="text-primary font-medium hover:underline text-sm"
+                    onMouseEnter={preloadSipCalculator}
+                  >
+                    Use Calculator →
+                  </div>
                 </Link>
               </div>
             </div>
@@ -229,7 +244,12 @@ const Calculators = () => {
                   Calculate returns on your Fixed Deposit investments with different interest rates and tenures.
                 </p>
                 <Link href="/calculators/fd">
-                  <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
+                  <div 
+                    className="text-primary font-medium hover:underline text-sm"
+                    onMouseEnter={preloadFdCalculator}
+                  >
+                    Use Calculator →
+                  </div>
                 </Link>
               </div>
             </div>
@@ -245,7 +265,12 @@ const Calculators = () => {
                   Calculate your Equated Monthly Installment (EMI) for home, car, or personal loans.
                 </p>
                 <Link href="/calculators/loan-emi">
-                  <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
+                  <div 
+                    className="text-primary font-medium hover:underline text-sm"
+                    onMouseEnter={preloadLoanEmiCalculator}
+                  >
+                    Use Calculator →
+                  </div>
                 </Link>
               </div>
             </div>
