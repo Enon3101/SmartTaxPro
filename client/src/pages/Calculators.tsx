@@ -345,102 +345,194 @@ const Calculators = () => {
                 </ul>
               </motion.div>
               
-              {[
-                {
-                  date: "July 31, 2025",
-                  description: "ITR filing deadline for non-audit cases (AY 2025-26)",
-                  daysLeft: 446,
-                  priority: "low"
-                },
-                {
-                  date: "June 15, 2025",
-                  description: "First installment of advance tax (15%)",
-                  daysLeft: 400,
-                  priority: "low"
-                },
-                {
-                  date: "September 15, 2025",
-                  description: "Second installment of advance tax (45%)",
-                  daysLeft: 492,
-                  priority: "low"
-                },
-                {
-                  date: "October 31, 2025",
-                  description: "ITR deadline for audit cases",
-                  daysLeft: 538,
-                  priority: "low"
-                },
-                {
-                  date: "December 15, 2025",
-                  description: "Third installment of advance tax (75%)",
-                  daysLeft: 583,
-                  priority: "low"
-                },
-                {
-                  date: "March 15, 2026",
-                  description: "Final installment of advance tax (100%)",
-                  daysLeft: 673,
-                  priority: "low"
-                }
-              ].map((deadline, index) => (
-                <motion.div 
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 0.5 + (index * 0.1) }}
-                  className="flex items-start border-b border-border pb-4 last:border-0 last:pb-0"
+              <div className="overflow-hidden rounded-md border">
+                <motion.table 
+                  className="w-full text-sm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
                 >
-                  <div className="mr-4 relative">
-                    <div className={`w-3 h-3 rounded-full absolute -left-1 top-1.5 ${
-                      deadline.priority === 'high' 
-                        ? 'bg-red-500' 
-                        : deadline.priority === 'medium' 
-                          ? 'bg-orange-500' 
-                          : 'bg-blue-500'
-                    }`}></div>
-                    <div className="pl-3 space-y-1">
-                      <div className={`font-semibold ${
-                        deadline.priority === 'high' 
-                          ? 'text-red-600 dark:text-red-400' 
-                          : deadline.priority === 'medium' 
-                            ? 'text-orange-600 dark:text-orange-400' 
-                            : ''
-                      }`}>{deadline.date}</div>
-                      <div className="text-xs text-muted-foreground flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                          <circle cx="12" cy="12" r="10" />
-                          <polyline points="12 6 12 12 16 14" />
-                        </svg>
-                        {deadline.daysLeft} days left
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-sm flex-1">{deadline.description}</div>
-                </motion.div>
-              ))}
+                  <thead className="bg-muted/50">
+                    <tr>
+                      <th className="px-4 py-3 text-left font-medium">Due Date</th>
+                      <th className="px-4 py-3 text-left font-medium">Description</th>
+                      <th className="px-4 py-3 text-left font-medium">Days Left</th>
+                      <th className="px-4 py-3 text-left font-medium">Priority</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      {
+                        date: new Date(2025, 5, 15), // June 15, 2025
+                        description: "First installment of advance tax (15%)",
+                        priority: "medium"
+                      },
+                      {
+                        date: new Date(2025, 8, 15), // September 15, 2025
+                        description: "Second installment of advance tax (45%)",
+                        priority: "low"
+                      },
+                      {
+                        date: new Date(2025, 6, 31), // July 31, 2025
+                        description: "ITR filing deadline for non-audit cases (AY 2025-26)",
+                        priority: "high"
+                      },
+                      {
+                        date: new Date(2025, 9, 31), // October 31, 2025
+                        description: "ITR deadline for audit cases",
+                        priority: "medium"
+                      },
+                      {
+                        date: new Date(2025, 11, 15), // December 15, 2025
+                        description: "Third installment of advance tax (75%)",
+                        priority: "low"
+                      },
+                      {
+                        date: new Date(2026, 2, 15), // March 15, 2026
+                        description: "Final installment of advance tax (100%)",
+                        priority: "low"
+                      }
+                    ]
+                    .sort((a, b) => a.date.getTime() - b.date.getTime())
+                    .map((deadline, index) => {
+                      // Calculate days left from today
+                      const today = new Date();
+                      const daysLeft = Math.ceil((deadline.date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                      const isPast = daysLeft < 0;
+                      
+                      // Format date to display
+                      const formattedDate = deadline.date.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      });
+                      
+                      // Determine priority color
+                      let priorityColor = '';
+                      let bgColor = '';
+                      
+                      if (deadline.priority === 'high') {
+                        priorityColor = isPast ? 'text-gray-500' : 'text-red-600 dark:text-red-400';
+                        bgColor = isPast ? 'bg-gray-100' : 'bg-red-50 dark:bg-red-950/20';
+                      } else if (deadline.priority === 'medium') {
+                        priorityColor = isPast ? 'text-gray-500' : 'text-orange-600 dark:text-orange-400';
+                        bgColor = isPast ? 'bg-gray-100' : 'bg-orange-50 dark:bg-orange-950/20';
+                      } else {
+                        priorityColor = isPast ? 'text-gray-500' : 'text-blue-600 dark:text-blue-400';
+                        bgColor = isPast ? 'bg-gray-100' : 'bg-blue-50 dark:bg-blue-950/20';
+                      }
+                      
+                      return (
+                        <motion.tr 
+                          key={index}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, delay: 0.2 + (index * 0.05) }}
+                          className={`border-b last:border-0 ${bgColor}`}
+                        >
+                          <td className={`px-4 py-3 font-medium ${priorityColor}`}>{formattedDate}</td>
+                          <td className="px-4 py-3">{deadline.description}</td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                              </svg>
+                              {isPast ? (
+                                <span className="text-gray-500">Passed</span>
+                              ) : (
+                                <span>{daysLeft} days</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${
+                              deadline.priority === 'high' 
+                                ? isPast ? 'bg-gray-200 text-gray-700' : 'bg-red-100 text-red-800' 
+                                : deadline.priority === 'medium' 
+                                  ? isPast ? 'bg-gray-200 text-gray-700' : 'bg-orange-100 text-orange-800' 
+                                  : isPast ? 'bg-gray-200 text-gray-700' : 'bg-blue-100 text-blue-800'
+                            }`}>
+                              {deadline.priority.charAt(0).toUpperCase() + deadline.priority.slice(1)}
+                            </div>
+                          </td>
+                        </motion.tr>
+                      );
+                    })}
+                  </tbody>
+                </motion.table>
+              </div>
               
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.7 }}
-                className="mt-4 p-3 bg-red-50 dark:bg-red-950/30 rounded-md border border-red-200 dark:border-red-800"
-              >
-                <h4 className="text-sm font-medium mb-2 flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-red-500">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                  </svg>
-                  Penalties for Late Filing
-                </h4>
-                <ul className="text-xs space-y-1 text-muted-foreground">
-                  <li>• ₹5,000 if filed after due date but before December 31</li>
-                  <li>• ₹10,000 if filed after December 31</li>
-                  <li>• ₹1,000 fee for income below ₹5 lakh</li>
-                  <li>• Additional 1% per month interest on due tax under Section 234A</li>
-                  <li>• Potential prosecution in case of significant tax evasion</li>
-                </ul>
-              </motion.div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.7 }}
+                  className="p-3 bg-red-50 dark:bg-red-950/30 rounded-md border border-red-200 dark:border-red-800"
+                >
+                  <h4 className="text-sm font-medium mb-2 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-red-500">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="8" x2="12" y2="12"></line>
+                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    Penalties for Late Filing
+                  </h4>
+                  <ul className="text-xs space-y-1 text-muted-foreground">
+                    <li>• ₹5,000 if filed after due date but before December 31</li>
+                    <li>• ₹10,000 if filed after December 31</li>
+                    <li>• ₹1,000 fee for income below ₹5 lakh</li>
+                    <li>• Additional 1% per month interest on due tax under Section 234A</li>
+                    <li>• Potential prosecution in case of significant tax evasion</li>
+                  </ul>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.8 }}
+                  className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-md border border-blue-200 dark:border-blue-800"
+                >
+                  <h4 className="text-sm font-medium mb-2 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-blue-500">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                      <polyline points="14 2 14 8 20 8"></polyline>
+                      <line x1="16" y1="13" x2="8" y2="13"></line>
+                      <line x1="16" y1="17" x2="8" y2="17"></line>
+                      <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    ITR Forms Summary
+                  </h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs">
+                      <thead className="bg-blue-100/50 dark:bg-blue-900/50">
+                        <tr>
+                          <th className="p-1 text-left font-medium">Form</th>
+                          <th className="p-1 text-left font-medium">For</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b border-blue-100 dark:border-blue-900/30">
+                          <td className="p-1 font-medium">ITR-1</td>
+                          <td className="p-1">Individuals with salary/pension income, one house property</td>
+                        </tr>
+                        <tr className="border-b border-blue-100 dark:border-blue-900/30">
+                          <td className="p-1 font-medium">ITR-2</td>
+                          <td className="p-1">Individuals with capital gains, foreign income, multiple properties</td>
+                        </tr>
+                        <tr className="border-b border-blue-100 dark:border-blue-900/30">
+                          <td className="p-1 font-medium">ITR-3</td>
+                          <td className="p-1">Individuals and HUFs with business/professional income</td>
+                        </tr>
+                        <tr>
+                          <td className="p-1 font-medium">ITR-4</td>
+                          <td className="p-1">Presumptive income from business/profession</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </motion.div>
+              </div>
             </div>
           </CardContent>
         </Card>

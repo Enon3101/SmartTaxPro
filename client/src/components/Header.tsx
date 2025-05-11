@@ -115,15 +115,11 @@ const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <>
-              <LoginDialog buttonText="Log in" buttonVariant="ghost" />
-              
-              <Link href="/start-filing">
-                <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white">
-                  New User
-                </Button>
-              </Link>
-            </>
+            <LoginDialog 
+              buttonText="Login / Sign Up" 
+              buttonVariant="default" 
+              className="bg-blue-500 hover:bg-blue-600 text-white" 
+            />
           )}
         </div>
         
@@ -239,21 +235,12 @@ const Header = () => {
                 <>
                   <div className="flex flex-col gap-2">
                     <LoginDialog 
-                      buttonText="Log in" 
-                      className="w-full" 
+                      buttonText="Login / Sign Up" 
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white" 
                       onOpenChange={(open: boolean) => {
                         if (open) document.body.click();
                       }}
                     />
-                    
-                    <Link href="/start-filing">
-                      <Button 
-                        className="w-full bg-blue-500 hover:bg-blue-600 text-white"
-                        onClick={() => document.body.click()}
-                      >
-                        New User
-                      </Button>
-                    </Link>
                   </div>
                 </>
               )}
