@@ -16,6 +16,8 @@ import Support from "@/pages/Support";
 import Pricing from "@/pages/Pricing";
 import StartFiling from "@/pages/StartFiling";
 import Admin from "@/pages/Admin";
+import BlogPost from "@/pages/BlogPost";
+import BlogAdmin from "@/pages/BlogAdmin";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ScrollToTop } from "@/components/ScrollToTop";
@@ -93,10 +95,16 @@ function Router() {
       <Route path="/file-taxes" component={TaxFiling} />
       <Route path="/calculators" component={Calculators} />
       <Route path="/learning" component={LearningResources} />
+      <Route path="/learning/blog/:slug">
+        {(params) => <BlogPost />}
+      </Route>
       <Route path="/support" component={Support} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/start-filing" component={StartFiling} />
       <Route path="/admin" component={Admin} />
+      <Route path="/admin/blog">
+        {(params) => <BlogAdmin />}
+      </Route>
       
       {/* Calculator Routes */}
       <Route path="/calculators/index">
