@@ -6,8 +6,26 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { TrendingUp, Calculator, IndianRupee, Clock } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TrendingUp, Calculator, IndianRupee, Clock, BarChart3, PieChart } from "lucide-react";
 import { formatCurrency } from "@/lib/taxCalculations";
+import { motion } from "framer-motion";
+import { 
+  AreaChart, 
+  Area, 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  ResponsiveContainer,
+  PieChart as RechartsPieChart,
+  Pie,
+  Cell,
+  Sector
+} from "recharts";
 
 // Component to show tooltip on hover
 const InfoTooltip = ({ children }: { children: React.ReactNode }) => (
@@ -261,97 +279,338 @@ const SipCalculator = () => {
         </div>
         
         <div className="lg:col-span-2 space-y-6">
-          <Card className="bg-muted/50 border-primary border shadow-sm">
-            <CardContent className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="space-y-1">
-                  <p className="text-sm">Total Investment</p>
-                  <p className="text-2xl font-semibold">{formatCurrency(totalInvestment)}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {formatCurrency(monthlyInvestment)} per month for {years} years
-                  </p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card className="bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/30 dark:to-gray-900 border-primary/50 border shadow-md">
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <motion.div 
+                    className="space-y-1"
+                    initial={{ scale: 0.95 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 0.3, delay: 0.1 }}
+                  >
+                    <p className="text-sm">Total Investment</p>
+                    <p className="text-2xl font-semibold relative">
+                      <span className="absolute -left-4 top-1 text-blue-500/30 text-sm">₹</span>
+                      {formatCurrency(totalInvestment).substring(1)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatCurrency(monthlyInvestment)} per month for {years} years
+                    </p>
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="space-y-1"
+                    initial={{ scale: 0.95 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 0.3, delay: 0.2 }}
+                  >
+                    <p className="text-sm">Estimated Returns</p>
+                    <p className="text-2xl font-semibold text-primary relative">
+                      <span className="absolute -left-4 top-1 text-primary/30 text-sm">₹</span>
+                      {formatCurrency(estimatedReturns).substring(1)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      At {expectedReturn}% annual returns
+                    </p>
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="space-y-1"
+                    initial={{ scale: 0.95 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 0.3, delay: 0.3 }}
+                  >
+                    <p className="text-sm">Future Value</p>
+                    <p className="text-2xl font-semibold relative">
+                      <span className="absolute -left-4 top-1 text-green-500/30 text-sm">₹</span>
+                      {formatCurrency(futureValue).substring(1)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Total corpus after {years} years
+                    </p>
+                  </motion.div>
                 </div>
                 
-                <div className="space-y-1">
-                  <p className="text-sm">Estimated Returns</p>
-                  <p className="text-2xl font-semibold text-primary">{formatCurrency(estimatedReturns)}</p>
-                  <p className="text-xs text-muted-foreground">
-                    At {expectedReturn}% annual returns
-                  </p>
+                <div className="mt-8">
+                  <div className="flex justify-between mb-2 text-sm items-center">
+                    <div className="flex items-center">
+                      <div className="w-3 h-3 rounded-sm bg-blue-600 mr-2"></div>
+                      <span>Total Investment</span>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="w-3 h-3 rounded-sm bg-green-500 mr-2"></div>
+                      <span>Estimated Returns</span>
+                    </div>
+                  </div>
+                  
+                  <div className="h-6 bg-muted overflow-hidden rounded-full flex">
+                    <motion.div
+                      className="h-full bg-blue-600 rounded-l-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(totalInvestment / futureValue) * 100}%` }}
+                      transition={{ duration: 1, delay: 0.5 }}
+                    >
+                    </motion.div>
+                    <motion.div 
+                      className="h-full bg-green-500"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(estimatedReturns / futureValue) * 100}%` }}
+                      transition={{ duration: 1, delay: 0.7 }}
+                    >
+                    </motion.div>
+                  </div>
+                  
+                  <div className="flex justify-between mt-2 text-xs">
+                    <span>{Math.round((totalInvestment / futureValue) * 100)}%</span>
+                    <span>{Math.round((estimatedReturns / futureValue) * 100)}%</span>
+                  </div>
                 </div>
-                
-                <div className="space-y-1">
-                  <p className="text-sm">Future Value</p>
-                  <p className="text-2xl font-semibold">{formatCurrency(futureValue)}</p>
-                  <p className="text-xs text-muted-foreground">
-                    Total corpus after {years} years
-                  </p>
-                </div>
-              </div>
-              
-              <div className="mt-6">
-                <div className="flex justify-between mb-1 text-sm">
-                  <span>Total Investment</span>
-                  <span>Estimated Returns</span>
-                </div>
-                <div className="relative h-4 bg-muted overflow-hidden rounded-full">
-                  <div
-                    className="absolute h-full bg-primary left-0 top-0 rounded-l-full"
-                    style={{
-                      width: `${(totalInvestment / futureValue) * 100}%`,
-                    }}
-                  ></div>
-                </div>
-                <div className="flex justify-between mt-1 text-xs">
-                  <span>{Math.round((totalInvestment / futureValue) * 100)}%</span>
-                  <span>{Math.round((estimatedReturns / futureValue) * 100)}%</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
           
-          <Card>
-            <CardHeader>
-              <CardTitle>SIP Growth Over Time</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="font-medium">Year</TableCell>
-                      <TableCell className="font-medium">Invested Amount</TableCell>
-                      <TableCell className="font-medium">Estimated Returns</TableCell>
-                      <TableCell className="font-medium">Expected Corpus</TableCell>
-                    </TableRow>
-                    
-                    {yearlyBreakdown.map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{item.year}</TableCell>
-                        <TableCell>{formatCurrency(item.investedAmount)}</TableCell>
-                        <TableCell className="text-primary">{formatCurrency(item.returns)}</TableCell>
-                        <TableCell>{formatCurrency(item.estimatedValue)}</TableCell>
-                      </TableRow>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-xl flex items-center">
+                  <BarChart3 className="mr-2 h-5 w-5 text-primary" />
+                  SIP Growth Visualization
+                </CardTitle>
+                <Tabs defaultValue="area" className="w-[400px]">
+                  <TabsList className="grid w-full grid-cols-3">
+                    <TabsTrigger value="area">Area</TabsTrigger>
+                    <TabsTrigger value="bar">Bar</TabsTrigger>
+                    <TabsTrigger value="table">Table</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="area" className="mt-0">
+                    <div className="h-[350px] mt-4">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart
+                          data={yearlyBreakdown}
+                          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                        >
+                          <defs>
+                            <linearGradient id="colorInvestment" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
+                              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1} />
+                            </linearGradient>
+                            <linearGradient id="colorReturns" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
+                              <stop offset="95%" stopColor="#10b981" stopOpacity={0.1} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                          <XAxis 
+                            dataKey="year" 
+                            label={{ value: 'Years', position: 'insideBottomRight', offset: -10 }} 
+                          />
+                          <YAxis 
+                            tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}K`}
+                            label={{ value: 'Amount (₹)', angle: -90, position: 'insideLeft' }} 
+                          />
+                          <Tooltip 
+                            formatter={(value) => formatCurrency(Number(value))}
+                            labelFormatter={(value) => `Year ${value}`}
+                          />
+                          <Legend />
+                          <Area 
+                            type="monotone" 
+                            dataKey="investedAmount" 
+                            name="Investment" 
+                            stroke="#3b82f6" 
+                            fillOpacity={1} 
+                            fill="url(#colorInvestment)" 
+                            stackId="1"
+                          />
+                          <Area 
+                            type="monotone" 
+                            dataKey="returns" 
+                            name="Returns" 
+                            stroke="#10b981" 
+                            fillOpacity={1} 
+                            fill="url(#colorReturns)" 
+                            stackId="1"
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="bar" className="mt-0">
+                    <div className="h-[350px] mt-4">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart
+                          data={yearlyBreakdown}
+                          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                          <XAxis 
+                            dataKey="year" 
+                            label={{ value: 'Years', position: 'insideBottomRight', offset: -10 }} 
+                          />
+                          <YAxis 
+                            tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}K`}
+                            label={{ value: 'Amount (₹)', angle: -90, position: 'insideLeft' }} 
+                          />
+                          <Tooltip 
+                            formatter={(value) => formatCurrency(Number(value))}
+                            labelFormatter={(value) => `Year ${value}`}
+                          />
+                          <Legend />
+                          <Bar 
+                            dataKey="investedAmount" 
+                            name="Investment" 
+                            stackId="a" 
+                            fill="#3b82f6" 
+                            animationDuration={1500}
+                          />
+                          <Bar 
+                            dataKey="returns" 
+                            name="Returns" 
+                            stackId="a" 
+                            fill="#10b981" 
+                            animationDuration={1500}
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="table" className="mt-0">
+                    <div className="overflow-x-auto mt-2">
+                      <Table>
+                        <TableBody>
+                          <TableRow className="bg-muted/50">
+                            <TableCell className="font-medium">Year</TableCell>
+                            <TableCell className="font-medium">Invested Amount</TableCell>
+                            <TableCell className="font-medium">Estimated Returns</TableCell>
+                            <TableCell className="font-medium">Expected Corpus</TableCell>
+                          </TableRow>
+                          
+                          {yearlyBreakdown.map((item, index) => (
+                            <TableRow key={index} className={index % 2 === 0 ? "bg-muted/20" : ""}>
+                              <TableCell>{item.year}</TableCell>
+                              <TableCell>{formatCurrency(item.investedAmount)}</TableCell>
+                              <TableCell className="text-green-600 dark:text-green-500">{formatCurrency(item.returns)}</TableCell>
+                              <TableCell className="font-medium">{formatCurrency(item.estimatedValue)}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </CardHeader>
+              <CardContent>
+                <div className="text-sm text-muted-foreground mt-2">
+                  <p>This visualization shows how your investment grows over time, combining both your principal investment and the returns generated.</p>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <Card className="h-full">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg flex items-center">
+                    <PieChart className="mr-2 h-5 w-5 text-primary" />
+                    Investment Breakdown
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[250px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RechartsPieChart>
+                        <Pie
+                          data={[
+                            { name: 'Total Investment', value: totalInvestment },
+                            { name: 'Estimated Returns', value: estimatedReturns }
+                          ]}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={80}
+                          paddingAngle={5}
+                          dataKey="value"
+                          labelLine={false}
+                          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                          animationBegin={200}
+                          animationDuration={1500}
+                        >
+                          <Cell fill="#3b82f6" />
+                          <Cell fill="#10b981" />
+                        </Pie>
+                        <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                      </RechartsPieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex justify-center mt-4 space-x-6">
+                    <div className="flex items-center">
+                      <div className="w-3 h-3 rounded-sm bg-blue-500 mr-2"></div>
+                      <span className="text-sm">Investment ({Math.round((totalInvestment / futureValue) * 100)}%)</span>
+                    </div>
+                    <div className="flex items-center">
+                      <div className="w-3 h-3 rounded-sm bg-green-500 mr-2"></div>
+                      <span className="text-sm">Returns ({Math.round((estimatedReturns / futureValue) * 100)}%)</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <Card className="bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/30 dark:to-gray-900 border-muted h-full">
+                <CardContent className="p-5">
+                  <h3 className="font-semibold mb-3 flex items-center">
+                    <Calculator className="mr-2 h-5 w-5 text-primary" />
+                    Things to Note
+                  </h3>
+                  <ul className="space-y-3 text-sm text-muted-foreground">
+                    {[
+                      'The calculated results are for illustrative purposes only.',
+                      'The actual returns will depend on the performance of the chosen fund.',
+                      'Past performance is not a guarantee of future returns.',
+                      'The power of compounding works better over longer investment periods.',
+                      'Increasing your SIP amount periodically can significantly boost your wealth creation.',
+                      'SIP investments in equity mutual funds are subject to market risks.'
+                    ].map((item, index) => (
+                      <motion.li 
+                        key={index} 
+                        className="flex items-start"
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: 0.5 + (index * 0.1) }}
+                      >
+                        <div className="bg-primary/10 p-1 rounded-full mr-2 mt-0.5">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary"></div>
+                        </div>
+                        {item}
+                      </motion.li>
                     ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-5">
-              <h3 className="font-semibold mb-3">Things to Note</h3>
-              <ul className="space-y-2 list-disc pl-5 text-sm text-muted-foreground">
-                <li>The calculated results are for illustrative purposes only.</li>
-                <li>The actual returns will depend on the performance of the chosen fund.</li>
-                <li>Past performance is not a guarantee of future returns.</li>
-                <li>The power of compounding works better over longer investment periods.</li>
-                <li>Increasing your SIP amount periodically can significantly boost your wealth creation.</li>
-                <li>SIP investments in equity mutual funds are subject to market risks.</li>
-              </ul>
-            </CardContent>
-          </Card>
+                  </ul>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
         </div>
       </div>
     </div>
