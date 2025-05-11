@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, jsonb, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, jsonb, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -54,6 +54,24 @@ export const documents = pgTable("documents", {
   uploadedAt: timestamp("uploaded_at").defaultNow(),
 });
 
+// Blog posts for the learning resources section
+export const blogPosts = pgTable("blog_posts", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  summary: text("summary").notNull(),
+  content: text("content").notNull(),
+  authorId: integer("author_id").references(() => users.id),
+  featuredImage: text("featured_image"),
+  category: text("category").notNull().default("Tax"),
+  tags: text("tags").array(),
+  readTime: integer("read_time").notNull(), // in minutes
+  published: boolean("published").notNull().default(false),
+  publishedAt: timestamp("published_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Schema for inserting users
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -92,6 +110,20 @@ export const insertDocumentSchema = createInsertSchema(documents).pick({
   url: true,
 });
 
+// Schema for inserting blog posts
+export const insertBlogPostSchema = createInsertSchema(blogPosts).pick({
+  title: true,
+  slug: true,
+  summary: true,
+  content: true,
+  authorId: true,
+  featuredImage: true,
+  category: true,
+  tags: true,
+  readTime: true,
+  published: true,
+});
+
 // Types for the schema
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -104,3 +136,6 @@ export type Document = typeof documents.$inferSelect;
 
 export type InsertOtpVerification = z.infer<typeof insertOtpVerificationSchema>;
 export type OtpVerification = typeof otpVerifications.$inferSelect;
+
+export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
+export type BlogPost = typeof blogPosts.$inferSelect;

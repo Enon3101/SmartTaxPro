@@ -2,7 +2,8 @@ import {
   User, InsertUser, users, 
   TaxForm, InsertTaxForm, taxForms,
   Document, InsertDocument, documents,
-  OtpVerification, InsertOtpVerification, otpVerifications
+  OtpVerification, InsertOtpVerification, otpVerifications,
+  BlogPost, InsertBlogPost, blogPosts
 } from "@shared/schema";
 
 // Interface for storage operations
@@ -37,7 +38,18 @@ export interface IStorage {
   getDocumentById(id: string): Promise<Document | undefined>;
   getDocumentsByTaxFormId(taxFormId: string): Promise<Document[]>;
   deleteDocument(id: string): Promise<void>;
+  
+  // Blog post operations
+  createBlogPost(blogPost: InsertBlogPost): Promise<BlogPost>;
+  getBlogPostById(id: number): Promise<BlogPost | undefined>;
+  getBlogPostBySlug(slug: string): Promise<BlogPost | undefined>;
+  getAllBlogPosts(options?: { limit?: number, offset?: number, published?: boolean, category?: string, searchTerm?: string }): Promise<{ posts: BlogPost[], total: number }>;
+  updateBlogPost(id: number, blogPost: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
+  deleteBlogPost(id: number): Promise<void>;
 }
+
+import { desc, eq, and, like, or, sql, asc, SQL } from "drizzle-orm";
+import { db } from "./db";
 
 export class DatabaseStorage implements IStorage {
   // User operations
