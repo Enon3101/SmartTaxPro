@@ -123,119 +123,121 @@ const Pricing = () => {
       {/* Main pricing section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-6">
-            Income Tax Return Filing Pricing Plans
-          </h2>
-          <p className="text-center text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Select The Product That's Right For You
-          </p>
-          
-          {/* Pricing plan cards - horizontal layout */}
-          <div className="mb-8 flex justify-center">
-            <div className="flex flex-wrap justify-center gap-4 max-w-5xl">
-              {plans.map((plan, index) => (
-                <motion.div
-                  key={plan.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  whileHover={{ 
-                    y: -5,
-                    transition: { duration: 0.2 }
-                  }}
-                  className={`relative cursor-pointer ${selectedPlan === plan.id ? 'ring-2 ring-green-500 scale-105 z-10' : ''}`}
-                  onClick={() => setSelectedPlan(plan.id)}
-                >
-                  <Card className={`w-[170px] overflow-hidden transition-all duration-300 ${activePlanIndex === index ? 'shadow-lg' : 'shadow-md'}`}>
-                    {plan.popular && (
-                      <div className="absolute top-0 right-0 bg-green-500 text-white text-[10px] py-0.5 px-2 rounded-bl-md font-medium z-10">
-                        RECOMMENDED
-                      </div>
-                    )}
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/70 to-primary transform scale-x-0 origin-left transition-transform duration-300 ease-in-out group-hover:scale-x-100"></div>
-                    
-                    <CardContent className="p-4 text-center">
-                      <div className="rounded-full bg-primary/10 dark:bg-primary/20 p-3 w-14 h-14 mx-auto mb-3 flex items-center justify-center">
-                        {plan.icon}
-                      </div>
-                      
-                      <h3 className="font-semibold mb-1">{plan.name}</h3>
-                      <p className="text-xs text-muted-foreground mb-3">{plan.description}</p>
-                      
-                      <div className="mb-3">
-                        <p className="text-xs text-muted-foreground">From Price</p>
-                        <div className="flex items-center justify-center">
-                          <span className="text-muted-foreground text-sm mr-1">₹</span>
-                          <span className="text-2xl font-bold">{plan.price}</span>
-                        </div>
-                        <p className="text-[10px] text-muted-foreground">+ Taxes</p>
-                      </div>
-                      
-                      <Button
-                        size="sm" 
-                        className={`w-full text-xs ${plan.popular ? 'bg-primary' : 'bg-primary/90'} hover:bg-primary/80 transition-all group`}
-                      >
-                        Buy Now
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-          
-          {/* Features comparison table */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="bg-card rounded-lg border border-border overflow-hidden"
-          >
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-muted/50">
-                  <th className="py-3 px-4 text-left text-sm font-semibold border-r border-border">Features</th>
-                  {plans.map((plan) => (
-                    <th 
-                      key={`header-${plan.id}`}
-                      className={`py-3 px-4 text-center text-sm font-semibold ${selectedPlan === plan.id ? 'bg-green-50 dark:bg-green-900/10' : plan.popular ? 'bg-primary/5' : ''}`}
-                    >
-                      {plan.name}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {Object.keys(plans[0].features).map((feature, index) => (
-                  <tr 
-                    key={feature}
-                    className={`${index % 2 === 0 ? 'bg-muted/40' : 'bg-transparent'} hover:bg-muted/60 transition-colors`}
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-6">
+              Income Tax Return Filing Pricing Plans
+            </h2>
+            <p className="text-center text-muted-foreground mb-8 max-w-3xl mx-auto">
+              Select The Product That's Right For You
+            </p>
+            
+            {/* Pricing plan cards - horizontal layout */}
+            <div className="mb-10">
+              <div className="flex justify-center flex-wrap md:flex-nowrap gap-4">
+                {plans.map((plan, index) => (
+                  <motion.div
+                    key={plan.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    whileHover={{ 
+                      y: -5,
+                      transition: { duration: 0.2 }
+                    }}
+                    className={`relative cursor-pointer flex-1 ${selectedPlan === plan.id ? 'ring-2 ring-green-500 scale-105 z-10' : ''}`}
+                    onClick={() => setSelectedPlan(plan.id)}
                   >
-                    <td className="py-3 px-4 border-r border-border text-sm font-medium">{feature}</td>
+                    <Card className={`h-full overflow-hidden transition-all duration-300 ${activePlanIndex === index ? 'shadow-lg' : 'shadow-md'}`}>
+                      {plan.popular && (
+                        <div className="absolute top-0 right-0 bg-green-500 text-white text-[10px] py-0.5 px-2 rounded-bl-md font-medium z-10">
+                          RECOMMENDED
+                        </div>
+                      )}
+                      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/70 to-primary transform scale-x-0 origin-left transition-transform duration-300 ease-in-out group-hover:scale-x-100"></div>
+                      
+                      <CardContent className="p-4 text-center">
+                        <div className="rounded-full bg-primary/10 dark:bg-primary/20 p-3 w-14 h-14 mx-auto mb-3 flex items-center justify-center">
+                          {plan.icon}
+                        </div>
+                        
+                        <h3 className="font-semibold mb-1">{plan.name}</h3>
+                        <p className="text-xs text-muted-foreground mb-3">{plan.description}</p>
+                        
+                        <div className="mb-3">
+                          <p className="text-xs text-muted-foreground">From Price</p>
+                          <div className="flex items-center justify-center">
+                            <span className="text-muted-foreground text-sm mr-1">₹</span>
+                            <span className="text-2xl font-bold">{plan.price}</span>
+                          </div>
+                          <p className="text-[10px] text-muted-foreground">+ Taxes</p>
+                        </div>
+                        
+                        <Button
+                          size="sm" 
+                          className={`w-full text-xs ${plan.popular ? 'bg-primary' : 'bg-primary/90'} hover:bg-primary/80 transition-all group`}
+                        >
+                          Buy Now
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Features comparison table */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="bg-card rounded-lg border border-border overflow-hidden"
+            >
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-muted/50">
+                    <th className="py-3 px-4 text-left text-sm font-semibold border-r border-border">Features</th>
                     {plans.map((plan) => (
-                      <td 
-                        key={`${plan.id}-${feature}`} 
-                        className={`py-3 px-4 text-center ${selectedPlan === plan.id ? 'bg-green-50 dark:bg-green-900/10' : plan.popular ? 'bg-primary/5' : ''}`}
+                      <th 
+                        key={`header-${plan.id}`}
+                        className={`py-3 px-4 text-center text-sm font-semibold ${selectedPlan === plan.id ? 'bg-green-50 dark:bg-green-900/10' : plan.popular ? 'bg-primary/5' : ''}`}
                       >
-                        {plan.features[feature as keyof typeof plan.features] ? (
-                          <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mx-auto" />
-                        ) : (
-                          <XCircle className="h-5 w-5 text-muted-foreground/50 mx-auto" />
-                        )}
-                      </td>
+                        {plan.name}
+                      </th>
                     ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </motion.div>
+                </thead>
+                <tbody>
+                  {Object.keys(plans[0].features).map((feature, index) => (
+                    <tr 
+                      key={feature}
+                      className={`${index % 2 === 0 ? 'bg-muted/40' : 'bg-transparent'} hover:bg-muted/60 transition-colors`}
+                    >
+                      <td className="py-3 px-4 border-r border-border text-sm font-medium">{feature}</td>
+                      {plans.map((plan) => (
+                        <td 
+                          key={`${plan.id}-${feature}`} 
+                          className={`py-3 px-4 text-center ${selectedPlan === plan.id ? 'bg-green-50 dark:bg-green-900/10' : plan.popular ? 'bg-primary/5' : ''}`}
+                        >
+                          {plan.features[feature as keyof typeof plan.features] ? (
+                            <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mx-auto" />
+                          ) : (
+                            <XCircle className="h-5 w-5 text-muted-foreground/50 mx-auto" />
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </motion.div>
+          </div>
           
           {/* Additional services */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="bg-primary/5 dark:bg-primary/10 rounded-lg p-8 mt-12"
+            className="bg-primary/5 dark:bg-primary/10 rounded-lg p-8 mt-12 max-w-5xl mx-auto"
           >
             <h2 className="text-2xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
               Additional Premium Services
