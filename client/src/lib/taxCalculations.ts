@@ -1,4 +1,4 @@
-import { formatIndianCurrency } from "./utils";
+import { formatIndianCurrency } from "./formatters";
 
 interface TaxSummary {
   totalIncome: number;

@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, Calculator, IndianRupee, Clock, BarChart3, PieChart } from "lucide-react";
 import { formatCurrency } from "@/lib/taxCalculations";
+import { formatIndianCurrency } from "@/lib/formatters";
 import { motion } from "framer-motion";
 import { 
   AreaChart, 
@@ -182,12 +183,19 @@ const SipCalculator = () => {
                   onValueChange={(value) => handleSliderChange("investment", value)}
                   className="w-full"
                 />
-                <Input
-                  type="number"
-                  value={monthlyInvestment}
-                  onChange={(e) => setMonthlyInvestment(Number(e.target.value) || 0)}
-                  className="mt-2"
-                />
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">₹</span>
+                  <Input
+                    type="text"
+                    value={formatIndianCurrency(monthlyInvestment, false, 0)}
+                    onChange={(e) => {
+                      // Remove all non-numeric characters and convert to number
+                      const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                      setMonthlyInvestment(Number(rawValue) || 0);
+                    }}
+                    className="pl-8 mt-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors"
+                  />
+                </div>
               </div>
               
               <div className="space-y-2">
@@ -204,12 +212,19 @@ const SipCalculator = () => {
                   onValueChange={(value) => handleSliderChange("years", value)}
                   className="w-full"
                 />
-                <Input
-                  type="number"
-                  value={years}
-                  onChange={(e) => setYears(Number(e.target.value) || 0)}
-                  className="mt-2"
-                />
+                <div className="relative">
+                  <Input
+                    type="text"
+                    value={years.toString()}
+                    onChange={(e) => {
+                      // Remove all non-numeric characters and convert to number
+                      const rawValue = e.target.value.replace(/[^0-9]/g, '');
+                      setYears(Number(rawValue) || 0);
+                    }}
+                    className="mt-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors"
+                  />
+                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">years</span>
+                </div>
               </div>
               
               <div className="space-y-2">
@@ -229,12 +244,19 @@ const SipCalculator = () => {
                   onValueChange={(value) => handleSliderChange("return", value)}
                   className="w-full"
                 />
-                <Input
-                  type="number"
-                  value={expectedReturn}
-                  onChange={(e) => setExpectedReturn(Number(e.target.value) || 0)}
-                  className="mt-2"
-                />
+                <div className="relative">
+                  <Input
+                    type="text"
+                    value={expectedReturn.toString()}
+                    onChange={(e) => {
+                      // Remove all non-numeric characters (except decimal point) and convert to number
+                      const rawValue = e.target.value.replace(/[^0-9.]/g, '');
+                      setExpectedReturn(Number(rawValue) || 0);
+                    }}
+                    className="mt-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors"
+                  />
+                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">%</span>
+                </div>
               </div>
             </CardContent>
           </Card>

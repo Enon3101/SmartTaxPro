@@ -322,31 +322,43 @@ const Calculators = () => {
             <CardDescription>Stay on top of important Indian tax dates</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-6">
               {[
                 {
                   date: "July 31, 2024",
-                  description: "ITR filing deadline for non-audit cases (AY 2024-25)"
+                  description: "ITR filing deadline for non-audit cases (AY 2024-25)",
+                  daysLeft: 81,
+                  priority: "high"
                 },
                 {
                   date: "June 15, 2024",
-                  description: "First installment of advance tax (15%)"
+                  description: "First installment of advance tax (15%)",
+                  daysLeft: 35,
+                  priority: "medium"
                 },
                 {
                   date: "Sept 15, 2024",
-                  description: "Second installment of advance tax (45%)"
+                  description: "Second installment of advance tax (45%)",
+                  daysLeft: 127,
+                  priority: "low"
                 },
                 {
                   date: "Oct 31, 2024",
-                  description: "ITR deadline for audit cases"
+                  description: "ITR deadline for audit cases",
+                  daysLeft: 173,
+                  priority: "low"
                 },
                 {
                   date: "Dec 15, 2024",
-                  description: "Third installment of advance tax (75%)"
+                  description: "Third installment of advance tax (75%)",
+                  daysLeft: 218,
+                  priority: "low"
                 },
                 {
                   date: "Mar 15, 2025",
-                  description: "Final installment of advance tax (100%)"
+                  description: "Final installment of advance tax (100%)",
+                  daysLeft: 308,
+                  priority: "low"
                 }
               ].map((deadline, index) => (
                 <motion.div 
@@ -354,10 +366,34 @@ const Calculators = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: 0.5 + (index * 0.1) }}
-                  className="flex items-start"
+                  className="flex items-start border-b border-border pb-4 last:border-0 last:pb-0"
                 >
-                  <div className="min-w-[100px] font-medium">{deadline.date}</div>
-                  <div className="text-sm text-muted-foreground">{deadline.description}</div>
+                  <div className="mr-4 relative">
+                    <div className={`w-3 h-3 rounded-full absolute -left-1 top-1.5 ${
+                      deadline.priority === 'high' 
+                        ? 'bg-red-500' 
+                        : deadline.priority === 'medium' 
+                          ? 'bg-orange-500' 
+                          : 'bg-blue-500'
+                    }`}></div>
+                    <div className="pl-3 space-y-1">
+                      <div className={`font-semibold ${
+                        deadline.priority === 'high' 
+                          ? 'text-red-600 dark:text-red-400' 
+                          : deadline.priority === 'medium' 
+                            ? 'text-orange-600 dark:text-orange-400' 
+                            : ''
+                      }`}>{deadline.date}</div>
+                      <div className="text-xs text-muted-foreground flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                          <circle cx="12" cy="12" r="10" />
+                          <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        {deadline.daysLeft} days left
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-sm flex-1">{deadline.description}</div>
                 </motion.div>
               ))}
             </div>
