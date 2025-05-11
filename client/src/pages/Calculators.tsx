@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,8 +18,31 @@ import {
   Building,
   Landmark
 } from "lucide-react";
+import { usePreloadCalculator } from "@/hooks/usePreloadCalculator";
 
 const Calculators = () => {
+  const { 
+    preloadTaxRegimeCalculator,
+    preloadHraCalculator,
+    preloadTdsCalculator,
+    preloadCapitalGainsCalculator,
+    preloadSipCalculator,
+    preloadFdCalculator,
+    preloadLoanEmiCalculator
+  } = usePreloadCalculator();
+  
+  // Preload the most commonly used calculators when the page loads
+  useEffect(() => {
+    // Delay preloading to prioritize rendering the current page first
+    const timer = setTimeout(() => {
+      // Preload the most popular calculators
+      preloadTaxRegimeCalculator();
+      preloadSipCalculator();
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, [preloadTaxRegimeCalculator, preloadSipCalculator]);
+  
   return (
     <div className="container mx-auto px-4 sm:px-6 py-8">
       <div className="mb-8">
@@ -47,7 +71,12 @@ const Calculators = () => {
                   Compare your tax liability under both tax regimes to make an informed decision.
                 </p>
                 <Link href="/calculators/tax-regime">
-                  <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
+                  <div 
+                    className="text-primary font-medium hover:underline text-sm"
+                    onMouseEnter={preloadTaxRegimeCalculator}
+                  >
+                    Use Calculator →
+                  </div>
                 </Link>
               </div>
             </div>
@@ -63,7 +92,12 @@ const Calculators = () => {
                   Calculate Tax Deducted at Source (TDS) for various income types under Indian tax laws.
                 </p>
                 <Link href="/calculators/tds">
-                  <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
+                  <div 
+                    className="text-primary font-medium hover:underline text-sm"
+                    onMouseEnter={preloadTdsCalculator}
+                  >
+                    Use Calculator →
+                  </div>
                 </Link>
               </div>
             </div>

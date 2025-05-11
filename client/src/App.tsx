@@ -20,22 +20,69 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
-// Lazy load calculator pages
+// Lazy load calculator pages with improved loading
 const CalculatorsIndex = lazy(() => import("@/pages/calculators"));
-const TaxRegimeCalculator = lazy(() => import("@/pages/calculators/tax-regime"));
-const HraCalculator = lazy(() => import("@/pages/calculators/hra"));
-const TdsCalculator = lazy(() => import("@/pages/calculators/tds"));
-const CapitalGainsCalculator = lazy(() => import("@/pages/calculators/capital-gains"));
+
+// Tax calculators with better prefetching
+const TaxRegimeCalculator = lazy(() => {
+  // Add a small delay to give browser time to prioritize current page rendering
+  return Promise.all([
+    import("@/pages/calculators/tax-regime"),
+    new Promise(resolve => setTimeout(resolve, 300))
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const HraCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/hra"),
+    new Promise(resolve => setTimeout(resolve, 300))
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const TdsCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/tds"),
+    new Promise(resolve => setTimeout(resolve, 300))
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const CapitalGainsCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/capital-gains"),
+    new Promise(resolve => setTimeout(resolve, 300))
+  ]).then(([moduleExports]) => moduleExports);
+});
 
 // Financial calculators
-const SipCalculator = lazy(() => import("@/pages/calculators/sip"));
-const FdCalculator = lazy(() => import("@/pages/calculators/fd"));
-const LoanEmiCalculator = lazy(() => import("@/pages/calculators/loan-emi"));
+const SipCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/sip"),
+    new Promise(resolve => setTimeout(resolve, 300))
+  ]).then(([moduleExports]) => moduleExports);
+});
 
-// Loading component for lazy-loaded routes
+const FdCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/fd"),
+    new Promise(resolve => setTimeout(resolve, 300))
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const LoanEmiCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/loan-emi"),
+    new Promise(resolve => setTimeout(resolve, 300))
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+// Enhanced loading component for lazy-loaded routes
 const PageLoading = () => (
-  <div className="flex items-center justify-center min-h-[60vh] bg-background text-foreground">
-    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+  <div className="flex flex-col items-center justify-center min-h-[60vh] bg-background text-foreground">
+    <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent mb-4"></div>
+    <div className="text-center">
+      <p className="font-medium">Loading Calculator</p>
+      <p className="text-sm text-muted-foreground mt-1">Please wait a moment...</p>
+    </div>
   </div>
 );
 
