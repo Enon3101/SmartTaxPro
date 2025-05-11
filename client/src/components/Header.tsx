@@ -20,6 +20,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LoginDialog } from "@/components/LoginDialog";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Header = () => {
   const [location] = useLocation();
@@ -36,7 +37,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
+    <header className="bg-background border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center">
           <Link href="/">
@@ -51,34 +52,36 @@ const Header = () => {
         
         <div className="hidden md:flex items-center space-x-3 text-sm">
           <Link href="/file-taxes">
-            <Button variant="ghost" size="sm" className="font-medium text-gray-600">
+            <Button variant="ghost" size="sm" className="font-medium">
               File ITR
             </Button>
           </Link>
           
           <Link href="/import-cg">
-            <Button variant="ghost" size="sm" className="font-medium text-gray-600">
+            <Button variant="ghost" size="sm" className="font-medium">
               Import CG / Shares
             </Button>
           </Link>
           
           <Link href="/pricing">
-            <Button variant="ghost" size="sm" className="font-medium text-gray-600">
+            <Button variant="ghost" size="sm" className="font-medium">
               Pricing
             </Button>
           </Link>
           
           <Link href="/tax-resources">
-            <Button variant="ghost" size="sm" className="font-medium text-gray-600">
+            <Button variant="ghost" size="sm" className="font-medium">
               Resources
             </Button>
           </Link>
           
           <Link href="/support">
-            <Button variant="ghost" size="sm" className="font-medium text-gray-600">
+            <Button variant="ghost" size="sm" className="font-medium">
               Support
             </Button>
           </Link>
+          
+          <ThemeToggle />
           
           {isAuthenticated ? (
             <DropdownMenu>
@@ -172,6 +175,11 @@ const Header = () => {
               </Link>
               
               <div className="border-t border-gray-100 my-2 pt-2"></div>
+              
+              <div className="flex items-center mb-2">
+                <span className="mr-2 font-medium">Theme</span>
+                <ThemeToggle />
+              </div>
               
               {isAuthenticated ? (
                 <>

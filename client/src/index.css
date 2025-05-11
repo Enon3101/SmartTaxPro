@@ -62,7 +62,15 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased bg-background text-foreground transition-colors duration-300;
+  }
+  
+  /* Apply transition to common UI elements */
+  button, a, input, select, textarea, 
+  .card, .dropdown-menu, .dialog, 
+  header, footer, aside, 
+  .bg-background, .bg-card, .bg-popover, .bg-primary, .bg-secondary, .bg-muted, .bg-accent {
+    @apply transition-colors duration-300;
   }
 }
 
