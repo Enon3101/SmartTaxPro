@@ -323,41 +323,63 @@ const Calculators = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="mb-4 p-3 bg-amber-50 dark:bg-amber-950/30 rounded-md border border-amber-200 dark:border-amber-800"
+              >
+                <h4 className="text-sm font-medium mb-2 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-amber-500">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                  Filing Requirements for AY 2025-26
+                </h4>
+                <ul className="text-xs space-y-1 text-muted-foreground">
+                  <li>• Individual with income exceeding ₹2,50,000 (₹3,00,000 for senior citizens)</li>
+                  <li>• Company or firm (mandatory regardless of income)</li>
+                  <li>• Individual claiming tax refund</li>
+                  <li>• Foreign company with income from Indian sources</li>
+                </ul>
+              </motion.div>
+              
               {[
                 {
-                  date: "July 31, 2024",
-                  description: "ITR filing deadline for non-audit cases (AY 2024-25)",
-                  daysLeft: 81,
-                  priority: "high"
+                  date: "July 31, 2025",
+                  description: "ITR filing deadline for non-audit cases (AY 2025-26)",
+                  daysLeft: 446,
+                  priority: "low"
                 },
                 {
-                  date: "June 15, 2024",
+                  date: "June 15, 2025",
                   description: "First installment of advance tax (15%)",
-                  daysLeft: 35,
-                  priority: "medium"
+                  daysLeft: 400,
+                  priority: "low"
                 },
                 {
-                  date: "Sept 15, 2024",
+                  date: "September 15, 2025",
                   description: "Second installment of advance tax (45%)",
-                  daysLeft: 127,
+                  daysLeft: 492,
                   priority: "low"
                 },
                 {
-                  date: "Oct 31, 2024",
+                  date: "October 31, 2025",
                   description: "ITR deadline for audit cases",
-                  daysLeft: 173,
+                  daysLeft: 538,
                   priority: "low"
                 },
                 {
-                  date: "Dec 15, 2024",
+                  date: "December 15, 2025",
                   description: "Third installment of advance tax (75%)",
-                  daysLeft: 218,
+                  daysLeft: 583,
                   priority: "low"
                 },
                 {
-                  date: "Mar 15, 2025",
+                  date: "March 15, 2026",
                   description: "Final installment of advance tax (100%)",
-                  daysLeft: 308,
+                  daysLeft: 673,
                   priority: "low"
                 }
               ].map((deadline, index) => (
@@ -396,6 +418,29 @@ const Calculators = () => {
                   <div className="text-sm flex-1">{deadline.description}</div>
                 </motion.div>
               ))}
+              
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.7 }}
+                className="mt-4 p-3 bg-red-50 dark:bg-red-950/30 rounded-md border border-red-200 dark:border-red-800"
+              >
+                <h4 className="text-sm font-medium mb-2 flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 text-red-500">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                  </svg>
+                  Penalties for Late Filing
+                </h4>
+                <ul className="text-xs space-y-1 text-muted-foreground">
+                  <li>• ₹5,000 if filed after due date but before December 31</li>
+                  <li>• ₹10,000 if filed after December 31</li>
+                  <li>• ₹1,000 fee for income below ₹5 lakh</li>
+                  <li>• Additional 1% per month interest on due tax under Section 234A</li>
+                  <li>• Potential prosecution in case of significant tax evasion</li>
+                </ul>
+              </motion.div>
             </div>
           </CardContent>
         </Card>
