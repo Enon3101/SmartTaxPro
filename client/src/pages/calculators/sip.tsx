@@ -321,7 +321,7 @@ const SipCalculator = () => {
                       {formatIndianCurrency(totalInvestment, false)}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {formatCurrency(monthlyInvestment)} per month for {years} years
+                      ₹{monthlyInvestment.toLocaleString('en-IN')} per month for {years} years
                     </p>
                   </motion.div>
                   
@@ -350,7 +350,7 @@ const SipCalculator = () => {
                     <p className="text-sm">Future Value</p>
                     <p className="text-2xl font-semibold relative">
                       <span className="absolute -left-4 top-1 text-green-500/30 text-sm">₹</span>
-                      {formatCurrency(futureValue).substring(1)}
+                      {formatIndianCurrency(futureValue, false)}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       Total corpus after {years} years
