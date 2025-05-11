@@ -25,6 +25,11 @@ const HraCalculator = lazy(() => import("@/pages/calculators/hra"));
 const TdsCalculator = lazy(() => import("@/pages/calculators/tds"));
 const CapitalGainsCalculator = lazy(() => import("@/pages/calculators/capital-gains"));
 
+// Financial calculators
+const SipCalculator = lazy(() => import("@/pages/calculators/sip"));
+const FdCalculator = lazy(() => import("@/pages/calculators/fd"));
+const LoanEmiCalculator = lazy(() => import("@/pages/calculators/loan-emi"));
+
 // Loading component for lazy-loaded routes
 const PageLoading = () => (
   <div className="flex items-center justify-center min-h-[60vh]">
@@ -75,6 +80,23 @@ function Router() {
       <Route path="/calculators/capital-gains">
         <Suspense fallback={<PageLoading />}>
           <CapitalGainsCalculator />
+        </Suspense>
+      </Route>
+      
+      {/* Financial calculator routes */}
+      <Route path="/calculators/sip">
+        <Suspense fallback={<PageLoading />}>
+          <SipCalculator />
+        </Suspense>
+      </Route>
+      <Route path="/calculators/fd">
+        <Suspense fallback={<PageLoading />}>
+          <FdCalculator />
+        </Suspense>
+      </Route>
+      <Route path="/calculators/loan-emi">
+        <Suspense fallback={<PageLoading />}>
+          <LoanEmiCalculator />
         </Suspense>
       </Route>
       
