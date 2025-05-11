@@ -20,7 +20,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LoginDialog } from "@/components/LoginDialog";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ThemeToggle } from "@/components/ThemeToggle";
+// Theme toggle removed as requested
 
 const Header = () => {
   const [location] = useLocation();
@@ -81,8 +81,6 @@ const Header = () => {
             </Button>
           </Link>
           
-          <ThemeToggle />
-          
           {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -135,7 +133,11 @@ const Header = () => {
               <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent>
+          <SheetContent side="left" className="w-[250px]" 
+            // To fix sheet not closing automatically, we'll use useState to control it
+            onEscapeKeyDown={() => document.body.click()}
+            onPointerDownOutside={() => document.body.click()}>
+          
             <div className="flex flex-col py-4 space-y-4">
               {isAuthenticated && (
                 <div className="flex items-center gap-2 mb-4 pb-4 border-b border-gray-100">
@@ -149,61 +151,85 @@ const Header = () => {
               )}
               
               <Link href="/file-taxes">
-                <div className="font-medium hover:text-primary transition-colors">
+                <div 
+                  className="font-medium hover:text-primary transition-colors"
+                  onClick={() => document.body.click()}  
+                >
                   File ITR
                 </div>
               </Link>
               <Link href="/calculators">
-                <div className="font-medium hover:text-primary transition-colors">
+                <div 
+                  className="font-medium hover:text-primary transition-colors"
+                  onClick={() => document.body.click()}  
+                >
                   Calculators
                 </div>
               </Link>
               <Link href="/learning">
-                <div className="font-medium hover:text-primary transition-colors">
+                <div 
+                  className="font-medium hover:text-primary transition-colors"
+                  onClick={() => document.body.click()}  
+                >
                   Learning
                 </div>
               </Link>
               <Link href="/pricing">
-                <div className="font-medium hover:text-primary transition-colors">
+                <div 
+                  className="font-medium hover:text-primary transition-colors"
+                  onClick={() => document.body.click()}  
+                >
                   Pricing
                 </div>
               </Link>
               <Link href="/support">
-                <div className="font-medium hover:text-primary transition-colors">
+                <div 
+                  className="font-medium hover:text-primary transition-colors"
+                  onClick={() => document.body.click()}  
+                >
                   Support
                 </div>
               </Link>
               
               <div className="border-t border-gray-100 my-2 pt-2"></div>
               
-              <div className="flex items-center mb-2">
-                <span className="mr-2 font-medium">Theme</span>
-                <ThemeToggle />
-              </div>
+              {/* Theme toggle removed */}
               
               {isAuthenticated ? (
                 <>
                   <Link href="/profile">
-                    <div className="font-medium hover:text-primary transition-colors flex items-center">
+                    <div 
+                      className="font-medium hover:text-primary transition-colors flex items-center"
+                      onClick={() => document.body.click()}
+                    >
                       <User className="mr-2 h-4 w-4" />
                       <span>My Profile</span>
                     </div>
                   </Link>
                   <Link href="/my-forms">
-                    <div className="font-medium hover:text-primary transition-colors flex items-center">
+                    <div 
+                      className="font-medium hover:text-primary transition-colors flex items-center"
+                      onClick={() => document.body.click()}
+                    >
                       <FileCheck className="mr-2 h-4 w-4" />
                       <span>My Tax Forms</span>
                     </div>
                   </Link>
                   <Link href="/settings">
-                    <div className="font-medium hover:text-primary transition-colors flex items-center">
+                    <div 
+                      className="font-medium hover:text-primary transition-colors flex items-center"
+                      onClick={() => document.body.click()}
+                    >
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Settings</span>
                     </div>
                   </Link>
                   <div 
                     className="font-medium text-red-600 hover:text-red-700 transition-colors flex items-center cursor-pointer"
-                    onClick={logout}
+                    onClick={(e) => {
+                      logout();
+                      document.body.click();
+                    }}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
@@ -212,10 +238,19 @@ const Header = () => {
               ) : (
                 <>
                   <div className="flex flex-col gap-2">
-                    <LoginDialog buttonText="Log in" className="w-full" />
+                    <LoginDialog 
+                      buttonText="Log in" 
+                      className="w-full" 
+                      onOpenChange={(open) => {
+                        if (open) document.body.click();
+                      }}
+                    />
                     
                     <Link href="/start-filing">
-                      <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white">
+                      <Button 
+                        className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                        onClick={() => document.body.click()}
+                      >
                         New User
                       </Button>
                     </Link>
