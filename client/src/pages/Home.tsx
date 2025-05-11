@@ -30,10 +30,10 @@ const Home = () => {
                     strokeWidth={index === 4 ? 1 : 2}
                   />
                 ))}
-                <span className="ml-2 text-gray-600">4.7 | 22,500+ Reviews</span>
+                <span className="ml-2 text-muted-foreground">4.7 | 22,500+ Reviews</span>
               </div>
               
-              <p className="text-gray-600 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Complete your Income Tax Return in as little as 10 minutes. Get maximum refund with our intelligent tax engine.
               </p>
               
@@ -65,7 +65,7 @@ const Home = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold">Enter Your Details</h3>
-                      <p className="text-sm text-gray-600">Simple step-by-step wizard to collect your information</p>
+                      <p className="text-sm text-muted-foreground">Simple step-by-step wizard to collect your information</p>
                     </div>
                   </div>
                   
@@ -75,7 +75,7 @@ const Home = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold">Review Your Information</h3>
-                      <p className="text-sm text-gray-600">Verify your details and calculate your refund</p>
+                      <p className="text-sm text-muted-foreground">Verify your details and calculate your refund</p>
                     </div>
                   </div>
                   
@@ -85,7 +85,7 @@ const Home = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold">Pay & Submit</h3>
-                      <p className="text-sm text-gray-600">Make payment and file your return securely</p>
+                      <p className="text-sm text-muted-foreground">Make payment and file your return securely</p>
                     </div>
                   </div>
                   
@@ -95,7 +95,7 @@ const Home = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold">e-Verify Your Return</h3>
-                      <p className="text-sm text-gray-600">Complete the process with digital verification</p>
+                      <p className="text-sm text-muted-foreground">Complete the process with digital verification</p>
                     </div>
                   </div>
                 </div>
@@ -106,24 +106,24 @@ const Home = () => {
       </section>
 
       {/* Navigation cards */}
-      <section className="py-8 bg-gray-50">
+      <section className="py-8 bg-muted">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Link href="/start-filing">
-              <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 h-full flex flex-col justify-between cursor-pointer">
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+              <div className="bg-card p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-border h-full flex flex-col justify-between cursor-pointer">
+                <div className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/30 flex items-center justify-center mb-4">
                   <FileText className="h-6 w-6 text-blue-500" />
                 </div>
                 <div>
                   <h3 className="font-bold text-lg mb-2">File Your ITR</h3>
-                  <p className="text-sm text-gray-600">Start filing your tax return for AY 2024-25</p>
+                  <p className="text-sm text-muted-foreground">Start filing your tax return for AY 2024-25</p>
                 </div>
               </div>
             </Link>
             
             <Link href="/pricing">
-              <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 h-full flex flex-col justify-between cursor-pointer">
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+              <div className="bg-card p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-border h-full flex flex-col justify-between cursor-pointer">
+                <div className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/30 flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-500">
                     <line x1="12" y1="1" x2="12" y2="23"></line>
                     <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
@@ -131,14 +131,14 @@ const Home = () => {
                 </div>
                 <div>
                   <h3 className="font-bold text-lg mb-2">Pricing Plans</h3>
-                  <p className="text-sm text-gray-600">View our affordable plans and services</p>
+                  <p className="text-sm text-muted-foreground">View our affordable plans and services</p>
                 </div>
               </div>
             </Link>
             
             <Link href="/tax-resources">
-              <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 h-full flex flex-col justify-between cursor-pointer">
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+              <div className="bg-card p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-border h-full flex flex-col justify-between cursor-pointer">
+                <div className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/30 flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-500">
                     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                     <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
@@ -146,14 +146,14 @@ const Home = () => {
                 </div>
                 <div>
                   <h3 className="font-bold text-lg mb-2">Tax Resources</h3>
-                  <p className="text-sm text-gray-600">Access guides and ITR forms</p>
+                  <p className="text-sm text-muted-foreground">Access guides and ITR forms</p>
                 </div>
               </div>
             </Link>
             
             <Link href="/support">
-              <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-100 h-full flex flex-col justify-between cursor-pointer">
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+              <div className="bg-card p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-border h-full flex flex-col justify-between cursor-pointer">
+                <div className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/30 flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-500">
                     <circle cx="12" cy="12" r="10"></circle>
                     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
@@ -162,7 +162,7 @@ const Home = () => {
                 </div>
                 <div>
                   <h3 className="font-bold text-lg mb-2">Get Support</h3>
-                  <p className="text-sm text-gray-600">Contact our tax experts for help</p>
+                  <p className="text-sm text-muted-foreground">Contact our tax experts for help</p>
                 </div>
               </div>
             </Link>
@@ -171,18 +171,18 @@ const Home = () => {
       </section>
 
       {/* Easy ways to file section */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-12 bg-muted">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-10 text-center">4 easy ways to file your tax return</h2>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-white border-0 shadow-sm">
+            <Card className="bg-card border-0 shadow-sm">
               <CardContent className="p-6">
                 <div className="bg-blue-50 p-4 rounded-lg w-14 h-14 flex items-center justify-center mb-4">
                   <FileText className="h-6 w-6 text-blue-500" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Quick Import from ITD</h3>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-muted-foreground text-sm mb-4">
                   Fetch your tax data directly from Government records and get a pre-filled form. Just review and file.
                 </p>
                 <Link href="/start-filing">
@@ -193,13 +193,13 @@ const Home = () => {
               </CardContent>
             </Card>
             
-            <Card className="bg-white border-0 shadow-sm">
+            <Card className="bg-card border-0 shadow-sm">
               <CardContent className="p-6">
                 <div className="bg-blue-50 p-4 rounded-lg w-14 h-14 flex items-center justify-center mb-4">
                   <Upload className="h-6 w-6 text-blue-500" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Form-16 Upload</h3>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-muted-foreground text-sm mb-4">
                   Upload Form-16 for automatic data extraction and swift processing.
                 </p>
                 <Link href="/form-16-upload">
@@ -210,13 +210,13 @@ const Home = () => {
               </CardContent>
             </Card>
             
-            <Card className="bg-white border-0 shadow-sm">
+            <Card className="bg-card border-0 shadow-sm">
               <CardContent className="p-6">
                 <div className="bg-blue-50 p-4 rounded-lg w-14 h-14 flex items-center justify-center mb-4">
                   <Calculator className="h-6 w-6 text-blue-500" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Easy Q&A Filing</h3>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-muted-foreground text-sm mb-4">
                   Simple, guided Q&A format that breaks down complex forms into easy, answerable questions.
                 </p>
                 <Link href="/start-filing">
@@ -227,13 +227,13 @@ const Home = () => {
               </CardContent>
             </Card>
             
-            <Card className="bg-white border-0 shadow-sm">
+            <Card className="bg-card border-0 shadow-sm">
               <CardContent className="p-6">
                 <div className="bg-blue-50 p-4 rounded-lg w-14 h-14 flex items-center justify-center mb-4">
                   <CalendarDays className="h-6 w-6 text-blue-500" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Expert Assistance</h3>
-                <p className="text-gray-600 text-sm mb-4">
+                <p className="text-muted-foreground text-sm mb-4">
                   Get expert help from our CA professionals who will take care of your entire tax filing process.
                 </p>
                 <Link href="/assisted-filing">
@@ -252,18 +252,18 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
             <h2 className="text-2xl md:text-3xl font-bold mb-4">Benefits of Filing with Us</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               Experience the most comprehensive and user-friendly tax filing service in India. Our platform is designed to simplify your tax filing experience.
             </p>
           </div>
           
           {/* Mobile OTP Login Banner */}
           {!isAuthenticated && (
-            <div className="mb-12 bg-white rounded-xl shadow-sm overflow-hidden">
+            <div className="mb-12 bg-card rounded-xl shadow-sm overflow-hidden">
               <div className="flex flex-col md:flex-row">
                 <div className="md:w-2/3 p-6 md:p-8">
                   <h3 className="text-xl font-bold text-blue-600 mb-2">Quick Login with Mobile OTP</h3>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-muted-foreground mb-4">
                     Use your mobile number to quickly login or register. No need to remember complex passwords!
                   </p>
                   <div className="flex items-center space-x-4 mb-4">
@@ -284,7 +284,7 @@ const Home = () => {
                 </div>
                 <div className="md:w-1/3 bg-blue-500 p-6 md:p-8 flex items-center justify-center">
                   <div className="text-center">
-                    <div className="bg-white w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <div className="bg-card w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center">
                       <Phone className="h-8 w-8 text-blue-500" />
                     </div>
                     <p className="text-white font-medium">Mobile OTP Authentication</p>
@@ -298,19 +298,19 @@ const Home = () => {
           )}
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="bg-white border-0 shadow-sm">
+            <Card className="bg-card border-0 shadow-sm">
               <CardContent className="p-6">
                 <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
                   <CheckCircle className="h-6 w-6 text-green-500" />
                 </div>
                 <h3 className="text-lg font-bold mb-3">Maximum Tax Refund</h3>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Our intelligent tax engine identifies all eligible deductions and exemptions to maximize your tax refund and minimize your tax liability.
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="bg-white border-0 shadow-sm">
+            <Card className="bg-card border-0 shadow-sm">
               <CardContent className="p-6">
                 <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-500">
@@ -318,25 +318,25 @@ const Home = () => {
                   </svg>
                 </div>
                 <h3 className="text-lg font-bold mb-3">Secure & Confidential</h3>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Bank-level security with 256-bit encryption protects your personal and financial information. Your data is never shared with third parties.
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="bg-white border-0 shadow-sm">
+            <Card className="bg-card border-0 shadow-sm">
               <CardContent className="p-6">
                 <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
                   <CalendarDays className="h-6 w-6 text-blue-500" />
                 </div>
                 <h3 className="text-lg font-bold mb-3">Quick & Easy</h3>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Complete your tax return in as little as 10 minutes with our step-by-step guidance. No tax expertise required.
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="bg-white border-0 shadow-sm">
+            <Card className="bg-card border-0 shadow-sm">
               <CardContent className="p-6">
                 <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-500">
@@ -346,25 +346,25 @@ const Home = () => {
                   </svg>
                 </div>
                 <h3 className="text-lg font-bold mb-3">Expert Support</h3>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Get access to our tax experts who can answer your questions and guide you through any complex tax situations.
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="bg-white border-0 shadow-sm">
+            <Card className="bg-card border-0 shadow-sm">
               <CardContent className="p-6">
                 <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
                   <Upload className="h-6 w-6 text-blue-500" />
                 </div>
                 <h3 className="text-lg font-bold mb-3">Automatic Data Import</h3>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Import your Form 16, capital gains data, and other tax information automatically to save time and reduce errors.
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="bg-white border-0 shadow-sm">
+            <Card className="bg-card border-0 shadow-sm">
               <CardContent className="p-6">
                 <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-500">
@@ -374,7 +374,7 @@ const Home = () => {
                   </svg>
                 </div>
                 <h3 className="text-lg font-bold mb-3">Accuracy Guarantee</h3>
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Our platform performs over 100 error checks to ensure your return is accurate and compliant with the latest tax laws.
                 </p>
               </CardContent>
@@ -384,21 +384,21 @@ const Home = () => {
       </section>
       
       {/* Trust badges */}
-      <section className="py-12 bg-white">
+      <section className="py-12 bg-card">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div className="flex flex-col items-center">
               <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mb-4">
                 <FileText className="h-8 w-8 text-blue-500" />
               </div>
-              <p className="text-sm text-gray-600">Government Authorised Tax Return Preparer</p>
+              <p className="text-sm text-muted-foreground">Government Authorised Tax Return Preparer</p>
             </div>
             
             <div className="flex flex-col items-center">
               <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mb-4">
                 <Star className="h-8 w-8 text-blue-500" />
               </div>
-              <p className="text-sm text-gray-600">Winner of Aatmanirbhar App Challenge</p>
+              <p className="text-sm text-muted-foreground">Winner of Aatmanirbhar App Challenge</p>
             </div>
             
             <div className="flex flex-col items-center">
@@ -409,14 +409,14 @@ const Home = () => {
                   ))}
                 </div>
               </div>
-              <p className="text-sm text-gray-600">4.70 out of 5 starts from our reviews</p>
+              <p className="text-sm text-muted-foreground">4.70 out of 5 starts from our reviews</p>
             </div>
             
             <div className="flex flex-col items-center">
               <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-blue-500"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
               </div>
-              <p className="text-sm text-gray-600">Over 30 lakh users and counting</p>
+              <p className="text-sm text-muted-foreground">Over 30 lakh users and counting</p>
             </div>
           </div>
         </div>
@@ -425,9 +425,9 @@ const Home = () => {
       {/* CTA section */}
       <section className="py-16 bg-blue-50">
         <div className="container mx-auto px-4">
-          <div className="bg-white rounded-lg shadow-sm p-8 md:p-10 text-center">
+          <div className="bg-card rounded-lg shadow-sm p-8 md:p-10 text-center">
             <h2 className="text-2xl font-bold mb-4">Ready to Start Your ITR for AY 2024-25?</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-8">
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
               It takes just 10 minutes to file your tax return with our simple step-by-step process.
               FREE filing available for income below ₹2.5 lakhs.
             </p>
