@@ -33,7 +33,7 @@ const LoanEmiCalculator = lazy(() => import("@/pages/calculators/loan-emi"));
 
 // Loading component for lazy-loaded routes
 const PageLoading = () => (
-  <div className="flex items-center justify-center min-h-[60vh]">
+  <div className="flex items-center justify-center min-h-[60vh] bg-background text-foreground">
     <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
   </div>
 );
@@ -114,7 +114,7 @@ function App() {
         <AuthProvider>
           <TaxDataProvider>
             <TooltipProvider>
-              <div className="flex flex-col min-h-screen">
+              <div className="flex flex-col min-h-screen bg-background text-foreground">
                 <Header />
                 <main className="flex-grow">
                   <Router />

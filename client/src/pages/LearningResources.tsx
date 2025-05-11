@@ -167,10 +167,10 @@ const LearningResources = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {capitalGainsGuides.map((guide, index) => (
-                <Card key={index} className="flex flex-col h-full">
+                <Card key={index} className="flex flex-col h-full transition-all">
                   <CardContent className="p-6 flex flex-col h-full">
                     <div className="mb-3">
-                      <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded-md">
+                      <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
                         {guide.category}
                       </span>
                     </div>
@@ -199,8 +199,8 @@ const LearningResources = () => {
       <div className="mb-12">
         <h2 className="text-2xl font-bold mb-6">Featured Learning Resources</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="overflow-hidden hover:shadow-md transition-shadow">
-            <div className="bg-muted p-6 flex justify-center">
+          <Card className="overflow-hidden hover:shadow-md transition-all">
+            <div className="bg-muted dark:bg-muted/40 p-6 flex justify-center">
               <BookMarked className="h-16 w-16 text-primary/70" />
             </div>
             <CardContent className="p-6">
@@ -214,8 +214,8 @@ const LearningResources = () => {
             </CardContent>
           </Card>
           
-          <Card className="overflow-hidden hover:shadow-md transition-shadow">
-            <div className="bg-muted p-6 flex justify-center">
+          <Card className="overflow-hidden hover:shadow-md transition-all">
+            <div className="bg-muted dark:bg-muted/40 p-6 flex justify-center">
               <Youtube className="h-16 w-16 text-primary/70" />
             </div>
             <CardContent className="p-6">
@@ -229,8 +229,8 @@ const LearningResources = () => {
             </CardContent>
           </Card>
           
-          <Card className="overflow-hidden hover:shadow-md transition-shadow">
-            <div className="bg-muted p-6 flex justify-center">
+          <Card className="overflow-hidden hover:shadow-md transition-all">
+            <div className="bg-muted dark:bg-muted/40 p-6 flex justify-center">
               <GraduationCap className="h-16 w-16 text-primary/70" />
             </div>
             <CardContent className="p-6">
@@ -247,7 +247,7 @@ const LearningResources = () => {
       </div>
 
       {/* Help Box */}
-      <Card className="bg-primary/5 border-0 mb-8">
+      <Card className="bg-primary/5 dark:bg-primary/10 border-0 mb-8">
         <CardContent className="p-8">
           <div className="flex flex-col md:flex-row md:items-center">
             <div className="mb-6 md:mb-0 md:mr-8">

@@ -3,12 +3,12 @@ import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-white border-t border-[#E9ECEF] mt-8">
+    <footer className="bg-background border-t border-border mt-8">
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="font-semibold mb-4">EasyTax</h3>
-            <p className="text-sm text-[#ADB5BD] mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               Simple, secure tax filing for everyone.
             </p>
             <div className="flex space-x-4">
