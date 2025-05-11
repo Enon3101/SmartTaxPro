@@ -2,6 +2,7 @@ import { useState } from "react";
 import ProgressTracker from "./ProgressTracker";
 import TaxSummaryCard from "./TaxSummaryCard";
 import HelpResourcesCard from "./HelpResourcesCard";
+import { TaxTipSidebar } from "./TaxTipSidebar";
 import { useTaxFiling } from "@/hooks/useTaxFiling";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -1078,8 +1079,9 @@ const TaxFilingWizard = () => {
         </div>
 
         {/* Right Sidebar */}
-        <div className="md:col-span-1">
+        <div className="md:col-span-1 space-y-6">
           <TaxSummaryCard />
+          <TaxTipSidebar />
           <HelpResourcesCard />
         </div>
       </div>
