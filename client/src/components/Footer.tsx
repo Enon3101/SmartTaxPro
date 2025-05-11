@@ -14,28 +14,28 @@ const Footer = () => {
             <div className="flex space-x-4">
               <a
                 href="#"
-                className="text-[#ADB5BD] hover:text-primary"
+                className="text-muted-foreground hover:text-primary"
                 aria-label="Facebook"
               >
                 <Facebook className="h-5 w-5" />
               </a>
               <a
                 href="#"
-                className="text-[#ADB5BD] hover:text-primary"
+                className="text-muted-foreground hover:text-primary"
                 aria-label="Twitter"
               >
                 <Twitter className="h-5 w-5" />
               </a>
               <a
                 href="#"
-                className="text-[#ADB5BD] hover:text-primary"
+                className="text-muted-foreground hover:text-primary"
                 aria-label="Instagram"
               >
                 <Instagram className="h-5 w-5" />
               </a>
               <a
                 href="#"
-                className="text-[#ADB5BD] hover:text-primary"
+                className="text-muted-foreground hover:text-primary"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="h-5 w-5" />
@@ -48,35 +48,35 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     Free Filing
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     Deluxe Filing
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     Premier Filing
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     Self-Employed
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     Live Tax Expert
                   </a>
                 </Link>
@@ -89,35 +89,35 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     Tax Calculator
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     Tax Guides
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     IRS Forms
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     Tax Deadlines
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     Help Center
                   </a>
                 </Link>
@@ -130,35 +130,35 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     About Us
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     Careers
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     Privacy Policy
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     Terms of Service
                   </a>
                 </Link>
               </li>
               <li>
                 <Link href="#">
-                  <a className="text-[#ADB5BD] hover:text-primary">
+                  <a className="text-muted-foreground hover:text-primary">
                     Contact Us
                   </a>
                 </Link>
@@ -167,7 +167,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-[#E9ECEF] mt-8 pt-6 text-sm text-[#ADB5BD]">
+        <div className="border-t border-border mt-8 pt-6 text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} EasyTax Inc. All rights reserved.</p>
           <p className="mt-2">
             EasyTax is not affiliated with the IRS. EasyTax is a tax preparation
