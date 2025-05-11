@@ -172,7 +172,7 @@ const SipCalculator = () => {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <Label htmlFor="monthly-investment">Monthly Investment (₹)</Label>
-                  <span className="text-sm font-medium">{formatCurrency(monthlyInvestment)}</span>
+                  <span className="text-sm font-medium">{formatIndianCurrency(monthlyInvestment)}</span>
                 </div>
                 <Slider
                   id="monthly-investment"
@@ -187,7 +187,7 @@ const SipCalculator = () => {
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">₹</span>
                   <Input
                     type="text"
-                    value={formatIndianCurrency(monthlyInvestment, false, 0)}
+                    value={monthlyInvestment.toLocaleString('en-IN')}
                     onChange={(e) => {
                       // Remove all non-numeric characters and convert to number
                       const rawValue = e.target.value.replace(/[^0-9]/g, '');
@@ -318,7 +318,7 @@ const SipCalculator = () => {
                     <p className="text-sm">Total Investment</p>
                     <p className="text-2xl font-semibold relative">
                       <span className="absolute -left-4 top-1 text-blue-500/30 text-sm">₹</span>
-                      {formatCurrency(totalInvestment).substring(1)}
+                      {formatIndianCurrency(totalInvestment, false)}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {formatCurrency(monthlyInvestment)} per month for {years} years
@@ -334,7 +334,7 @@ const SipCalculator = () => {
                     <p className="text-sm">Estimated Returns</p>
                     <p className="text-2xl font-semibold text-primary relative">
                       <span className="absolute -left-4 top-1 text-primary/30 text-sm">₹</span>
-                      {formatCurrency(estimatedReturns).substring(1)}
+                      {formatIndianCurrency(estimatedReturns, false)}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       At {expectedReturn}% annual returns
