@@ -26,13 +26,78 @@ import { motion } from "framer-motion";
 
 const Pricing = () => {
   const [activePlanIndex, setActivePlanIndex] = useState(1); // Default to middle plan
+  const [selectedPlan, setSelectedPlan] = useState<string>("deluxe"); // Default to the popular plan
   
   // Pricing data
-  const prices = {
-    basic: 799,
-    deluxe: 999,
-    premier: 1399
-  };
+  const plans = [
+    {
+      id: "basic",
+      name: "Basic Filer",
+      price: 799,
+      description: "For simple tax situations",
+      icon: <Building className="h-6 w-6" />,
+      features: {
+        "Salary Income": true,
+        "TDS from Salary": true,
+        "House Property Income": true,
+        "Multiple House Properties": false,
+        "Interest & Other Sources Income": true,
+        "Capital Gains": false,
+        "Foreign Income": false,
+        "Section 80C Deductions": true,
+        "All other Deductions": false,
+        "Easy ITR preparation & Filing": true,
+        "TDS Schedule": false,
+        "Foreign Tax Credit": false,
+        "Form 67": false
+      }
+    },
+    {
+      id: "deluxe",
+      name: "Deluxe Filer",
+      price: 999,
+      description: "For investors and homeowners",
+      icon: <LineChart className="h-6 w-6" />,
+      popular: true,
+      features: {
+        "Salary Income": true,
+        "TDS from Salary": true,
+        "House Property Income": true,
+        "Multiple House Properties": true,
+        "Interest & Other Sources Income": true,
+        "Capital Gains": true,
+        "Foreign Income": false,
+        "Section 80C Deductions": true,
+        "All other Deductions": true,
+        "Easy ITR preparation & Filing": true,
+        "TDS Schedule": true,
+        "Foreign Tax Credit": false,
+        "Form 67": false
+      }
+    },
+    {
+      id: "premier",
+      name: "Premier Filer",
+      price: 1399,
+      description: "For complex tax situations",
+      icon: <Globe className="h-6 w-6" />,
+      features: {
+        "Salary Income": true,
+        "TDS from Salary": true,
+        "House Property Income": true,
+        "Multiple House Properties": true,
+        "Interest & Other Sources Income": true,
+        "Capital Gains": true,
+        "Foreign Income": true,
+        "Section 80C Deductions": true,
+        "All other Deductions": true,
+        "Easy ITR preparation & Filing": true,
+        "TDS Schedule": true,
+        "Foreign Tax Credit": true,
+        "Form 67": true
+      }
+    }
+  ];
   
   return (
     <div className="bg-background">
@@ -58,310 +123,111 @@ const Pricing = () => {
       {/* Main pricing section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            {/* Basic Plan */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              whileHover={{ y: -5 }}
-              onMouseEnter={() => setActivePlanIndex(0)}
-              className="h-full"
-            >
-              <Card className={`border-border h-full overflow-hidden transition-all duration-300 ${activePlanIndex === 0 ? 'shadow-lg dark:shadow-primary/20 border-primary/30' : 'shadow-md'}`}>
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-600 transform scale-x-0 origin-left transition-transform duration-300 ease-in-out group-hover:scale-x-100"></div>
-                <CardContent className="p-8 pt-12">
-                  <div className="rounded-full bg-blue-100 dark:bg-blue-900/30 p-3 w-12 h-12 mb-6 mx-auto flex items-center justify-center">
-                    <Building className="h-6 w-6 text-primary" />
-                  </div>
-                  <div className="text-center mb-6">
-                    <h2 className="text-xl font-bold">Basic Filer</h2>
-                    <div className="mt-4 mb-4 flex items-center justify-center">
-                      <span className="text-muted-foreground text-xl mr-1">₹</span>
-                      <span className="text-4xl font-bold">{prices.basic}</span>
-                    </div>
-                    <Badge variant="outline" className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
-                      For simple tax situations
-                    </Badge>
-                  </div>
-                  
-                  <div className="space-y-4 mb-8">
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Salary/Pension upto ₹ 10,00,000</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>House Property (Single)</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Standard Deductions</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>TDS from Salary</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Other Source (Bank Interest)</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>TDS from Bank (upto ₹ 10,000)</span>
-                    </div>
-                    <div className="flex items-start">
-                      <XCircle className="h-5 w-5 text-muted-foreground/50 mr-3 shrink-0 mt-0.5" />
-                      <span className="text-muted-foreground">Multiple House Properties</span>
-                    </div>
-                    <div className="flex items-start">
-                      <XCircle className="h-5 w-5 text-muted-foreground/50 mr-3 shrink-0 mt-0.5" />
-                      <span className="text-muted-foreground">Capital Gains</span>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter className="p-8 pt-0">
-                  <Button className="w-full bg-primary hover:bg-primary/90 transition-all group">
-                    <span>Start Now</span>
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform transform group-hover:translate-x-1" />
-                  </Button>
-                </CardFooter>
-              </Card>
-            </motion.div>
-            
-            {/* Deluxe Plan */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              whileHover={{ y: -5 }}
-              onMouseEnter={() => setActivePlanIndex(1)}
-              className="h-full"
-            >
-              <Card className={`border-primary/30 h-full relative overflow-hidden transition-all duration-500 ${activePlanIndex === 1 ? 'shadow-xl dark:shadow-primary/30 scale-105 z-10' : 'shadow-md'}`}>
-                <div className="absolute top-0 right-0 bg-primary text-white text-xs py-1 px-3 rounded-bl-lg font-semibold">
-                  MOST POPULAR
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] to-transparent transform transition-opacity duration-500 opacity-0 group-hover:opacity-100"></div>
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/70 via-primary to-primary/70"></div>
-                <CardContent className="p-8 pt-12">
-                  <div className="rounded-full bg-primary/20 dark:bg-primary/30 p-3 w-12 h-12 mb-6 mx-auto flex items-center justify-center">
-                    <LineChart className="h-6 w-6 text-primary" />
-                  </div>
-                  <div className="text-center mb-6">
-                    <h2 className="text-xl font-bold">Deluxe Filer</h2>
-                    <div className="mt-4 mb-4 flex items-center justify-center">
-                      <span className="text-muted-foreground text-xl mr-1">₹</span>
-                      <span className="text-4xl font-bold">{prices.deluxe}</span>
-                    </div>
-                    <Badge variant="outline" className="bg-primary/10 dark:bg-primary/20 text-primary border-primary/20 dark:border-primary/30">
-                      For investors and homeowners
-                    </Badge>
-                  </div>
-                  
-                  <div className="space-y-4 mb-8">
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Salary/Pension upto ₹ 20,00,000</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>House Property (more than 1 property)</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Capital Gain (upto 50 transactions)</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Agriculture Income</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Relief u/s 89</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Special Rate Income</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Losses & Advance Tax</span>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter className="p-8 pt-0">
-                  <Button className="w-full transition-all group bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-md">
-                    <span>Start Now</span>
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform transform group-hover:translate-x-1" />
-                  </Button>
-                </CardFooter>
-              </Card>
-            </motion.div>
-            
-            {/* Premier Plan */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              whileHover={{ y: -5 }}
-              onMouseEnter={() => setActivePlanIndex(2)}
-              className="h-full"
-            >
-              <Card className={`border-border h-full overflow-hidden transition-all duration-300 ${activePlanIndex === 2 ? 'shadow-lg dark:shadow-primary/20 border-primary/30' : 'shadow-md'}`}>
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-600 transform scale-x-0 origin-left transition-transform duration-300 ease-in-out group-hover:scale-x-100"></div>
-                <CardContent className="p-8 pt-12">
-                  <div className="rounded-full bg-blue-100 dark:bg-blue-900/30 p-3 w-12 h-12 mb-6 mx-auto flex items-center justify-center">
-                    <Globe className="h-6 w-6 text-primary" />
-                  </div>
-                  <div className="text-center mb-6">
-                    <h2 className="text-xl font-bold">Premier Filer</h2>
-                    <div className="mt-4 mb-4 flex items-center justify-center">
-                      <span className="text-muted-foreground text-xl mr-1">₹</span>
-                      <span className="text-4xl font-bold">{prices.premier}</span>
-                    </div>
-                    <Badge variant="outline" className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
-                      For complex tax situations
-                    </Badge>
-                  </div>
-                  
-                  <div className="space-y-4 mb-8">
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Salary/Pension more than ₹ 20,00,000</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Foreign Income</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>House Property (more than 1 property)</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Income from Firms</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Capital Gain (unlimited transactions)</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Foreign Assets</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mr-3 shrink-0 mt-0.5" />
-                      <span>Priority Expert Support 24/7</span>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter className="p-8 pt-0">
-                  <Button className="w-full bg-primary hover:bg-primary/90 transition-all group">
-                    <span>Start Now</span>
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform transform group-hover:translate-x-1" />
-                  </Button>
-                </CardFooter>
-              </Card>
-            </motion.div>
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-6">
+            Income Tax Return Filing Pricing Plans
+          </h2>
+          <p className="text-center text-muted-foreground mb-8 max-w-3xl mx-auto">
+            Select The Product That's Right For You
+          </p>
+          
+          {/* Pricing plan cards - horizontal layout */}
+          <div className="mb-8 flex justify-center">
+            <div className="flex flex-wrap justify-center gap-4 max-w-5xl">
+              {plans.map((plan, index) => (
+                <motion.div
+                  key={plan.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                  whileHover={{ 
+                    y: -5,
+                    transition: { duration: 0.2 }
+                  }}
+                  className={`relative cursor-pointer ${selectedPlan === plan.id ? 'ring-2 ring-green-500 scale-105 z-10' : ''}`}
+                  onClick={() => setSelectedPlan(plan.id)}
+                >
+                  <Card className={`w-[170px] overflow-hidden transition-all duration-300 ${activePlanIndex === index ? 'shadow-lg' : 'shadow-md'}`}>
+                    {plan.popular && (
+                      <div className="absolute top-0 right-0 bg-green-500 text-white text-[10px] py-0.5 px-2 rounded-bl-md font-medium z-10">
+                        RECOMMENDED
+                      </div>
+                    )}
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/70 to-primary transform scale-x-0 origin-left transition-transform duration-300 ease-in-out group-hover:scale-x-100"></div>
+                    
+                    <CardContent className="p-4 text-center">
+                      <div className="rounded-full bg-primary/10 dark:bg-primary/20 p-3 w-14 h-14 mx-auto mb-3 flex items-center justify-center">
+                        {plan.icon}
+                      </div>
+                      
+                      <h3 className="font-semibold mb-1">{plan.name}</h3>
+                      <p className="text-xs text-muted-foreground mb-3">{plan.description}</p>
+                      
+                      <div className="mb-3">
+                        <p className="text-xs text-muted-foreground">From Price</p>
+                        <div className="flex items-center justify-center">
+                          <span className="text-muted-foreground text-sm mr-1">₹</span>
+                          <span className="text-2xl font-bold">{plan.price}</span>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground">+ Taxes</p>
+                      </div>
+                      
+                      <Button
+                        size="sm" 
+                        className={`w-full text-xs ${plan.popular ? 'bg-primary' : 'bg-primary/90'} hover:bg-primary/80 transition-all group`}
+                      >
+                        Buy Now
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
           </div>
           
-          {/* Feature Comparison Table */}
-          <motion.div 
+          {/* Features comparison table */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-16 overflow-hidden rounded-lg border border-border shadow-sm"
+            className="bg-card rounded-lg border border-border overflow-hidden"
           >
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-left">
-                <thead>
-                  <tr className="bg-muted/50">
-                    <th className="px-6 py-4 text-base font-semibold">Feature Comparison</th>
-                    <th className="px-6 py-4 text-center text-base font-semibold">Basic Filer</th>
-                    <th className="px-6 py-4 text-center text-base font-semibold bg-primary/5">
-                      <div className="relative">
-                        Deluxe Filer
-                        <span className="absolute -top-2 -right-2 bg-primary text-white text-xs py-0.5 px-1.5 rounded-sm">POPULAR</span>
-                      </div>
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-muted/50">
+                  <th className="py-3 px-4 text-left text-sm font-semibold border-r border-border">Features</th>
+                  {plans.map((plan) => (
+                    <th 
+                      key={`header-${plan.id}`}
+                      className={`py-3 px-4 text-center text-sm font-semibold ${selectedPlan === plan.id ? 'bg-green-50 dark:bg-green-900/10' : plan.popular ? 'bg-primary/5' : ''}`}
+                    >
+                      {plan.name}
                     </th>
-                    <th className="px-6 py-4 text-center text-base font-semibold">Premier Filer</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {Object.keys(plans[0].features).map((feature, index) => (
+                  <tr 
+                    key={feature}
+                    className={`${index % 2 === 0 ? 'bg-muted/40' : 'bg-transparent'} hover:bg-muted/60 transition-colors`}
+                  >
+                    <td className="py-3 px-4 border-r border-border text-sm font-medium">{feature}</td>
+                    {plans.map((plan) => (
+                      <td 
+                        key={`${plan.id}-${feature}`} 
+                        className={`py-3 px-4 text-center ${selectedPlan === plan.id ? 'bg-green-50 dark:bg-green-900/10' : plan.popular ? 'bg-primary/5' : ''}`}
+                      >
+                        {plan.features[feature as keyof typeof plan.features] ? (
+                          <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mx-auto" />
+                        ) : (
+                          <XCircle className="h-5 w-5 text-muted-foreground/50 mx-auto" />
+                        )}
+                      </td>
+                    ))}
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  <tr className="hover:bg-muted/30 transition-colors">
-                    <td className="px-6 py-4">Salary/Pension Income</td>
-                    <td className="px-6 py-4 text-center">Up to ₹10L</td>
-                    <td className="px-6 py-4 text-center bg-primary/[0.02]">Up to ₹20L</td>
-                    <td className="px-6 py-4 text-center">Unlimited</td>
-                  </tr>
-                  <tr className="hover:bg-muted/30 transition-colors">
-                    <td className="px-6 py-4">House Property</td>
-                    <td className="px-6 py-4 text-center">Single</td>
-                    <td className="px-6 py-4 text-center bg-primary/[0.02]">Multiple</td>
-                    <td className="px-6 py-4 text-center">Multiple</td>
-                  </tr>
-                  <tr className="hover:bg-muted/30 transition-colors">
-                    <td className="px-6 py-4">Capital Gains</td>
-                    <td className="px-6 py-4 text-center">
-                      <XCircle className="h-5 w-5 text-muted-foreground/50 mx-auto" />
-                    </td>
-                    <td className="px-6 py-4 text-center bg-primary/[0.02]">Up to 50 transactions</td>
-                    <td className="px-6 py-4 text-center">Unlimited</td>
-                  </tr>
-                  <tr className="hover:bg-muted/30 transition-colors">
-                    <td className="px-6 py-4">Foreign Income/Assets</td>
-                    <td className="px-6 py-4 text-center">
-                      <XCircle className="h-5 w-5 text-muted-foreground/50 mx-auto" />
-                    </td>
-                    <td className="px-6 py-4 text-center bg-primary/[0.02]">
-                      <XCircle className="h-5 w-5 text-muted-foreground/50 mx-auto" />
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mx-auto" />
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-muted/30 transition-colors">
-                    <td className="px-6 py-4">Exempt Income</td>
-                    <td className="px-6 py-4 text-center">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mx-auto" />
-                    </td>
-                    <td className="px-6 py-4 text-center bg-primary/[0.02]">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mx-auto" />
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 mx-auto" />
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-muted/30 transition-colors">
-                    <td className="px-6 py-4">Specialized Income Types</td>
-                    <td className="px-6 py-4 text-center">Basic</td>
-                    <td className="px-6 py-4 text-center bg-primary/[0.02]">Advanced</td>
-                    <td className="px-6 py-4 text-center">All Types</td>
-                  </tr>
-                  <tr className="hover:bg-muted/30 transition-colors">
-                    <td className="px-6 py-4">Support Level</td>
-                    <td className="px-6 py-4 text-center">Standard</td>
-                    <td className="px-6 py-4 text-center bg-primary/[0.02]">Enhanced</td>
-                    <td className="px-6 py-4 text-center">
-                      <span className="inline-block px-2 py-1 text-xs font-medium bg-primary text-white rounded">Premium</span>
-                    </td>
-                  </tr>
-                  <tr className="hover:bg-muted/30 transition-colors">
-                    <td className="px-6 py-4 font-medium">Price</td>
-                    <td className="px-6 py-4 text-center font-medium">
-                      ₹{prices.basic}
-                    </td>
-                    <td className="px-6 py-4 text-center font-medium bg-primary/[0.02]">
-                      ₹{prices.deluxe}
-                    </td>
-                    <td className="px-6 py-4 text-center font-medium">
-                      ₹{prices.premier}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </motion.div>
           
           {/* Additional services */}
