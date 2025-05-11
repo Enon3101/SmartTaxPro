@@ -1,3 +1,5 @@
+import { formatIndianCurrency } from "./utils";
+
 interface TaxSummary {
   totalIncome: number;
   salaryIncome: number;
@@ -139,10 +141,5 @@ export function calculateTaxSummary(incomeData: any, deductions80C: any = {}, de
 }
 
 export function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
+  return formatIndianCurrency(amount, true, 0);
 }
