@@ -241,7 +241,7 @@ const Header = () => {
                     <LoginDialog 
                       buttonText="Log in" 
                       className="w-full" 
-                      onOpenChange={(open) => {
+                      onOpenChange={(open: boolean) => {
                         if (open) document.body.click();
                       }}
                     />

@@ -18,6 +18,7 @@ import StartFiling from "@/pages/StartFiling";
 import Admin from "@/pages/Admin";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 // Lazy load calculator pages
 const CalculatorsIndex = lazy(() => import("@/pages/calculators"));
@@ -115,6 +116,7 @@ function App() {
           <TaxDataProvider>
             <TooltipProvider>
               <div className="flex flex-col min-h-screen bg-background text-foreground">
+                <ScrollToTop />
                 <Header />
                 <main className="flex-grow">
                   <Router />

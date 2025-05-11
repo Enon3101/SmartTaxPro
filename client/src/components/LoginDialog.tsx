@@ -21,6 +21,7 @@ interface LoginDialogProps {
   buttonText?: string;
   buttonVariant?: "default" | "outline" | "ghost" | "link" | "destructive" | "secondary";
   className?: string;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function LoginDialog({
@@ -28,6 +29,7 @@ export function LoginDialog({
   buttonText = "Login",
   buttonVariant = "default",
   className,
+  onOpenChange,
 }: LoginDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [phone, setPhone] = useState("");
@@ -165,6 +167,10 @@ export function LoginDialog({
     if (!open) {
       // Reset form when dialog is closed
       resetForm();
+    }
+    // Also call the external onOpenChange callback if provided
+    if (onOpenChange) {
+      onOpenChange(open);
     }
   };
 
