@@ -205,7 +205,7 @@ const FdCalculator = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center text-xl">
-                <BankIcon className="mr-2 h-5 w-5" />
+                <Building className="mr-2 h-5 w-5" />
                 FD Details
               </CardTitle>
             </CardHeader>
