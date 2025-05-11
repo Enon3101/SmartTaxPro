@@ -389,7 +389,12 @@ const LearningResources = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
             {currentPosts.length > 0 ? (
               currentPosts.map((post) => (
-                <Card key={post.id} className="flex flex-col h-full hover:shadow-md transition-all overflow-hidden group">
+                <Card 
+                  key={post.id} 
+                  className={`flex flex-col h-full hover:shadow-md transition-all overflow-hidden group
+                    ${hasDetailedContent(post.slug) ? 'border border-primary/30' : ''}
+                  `}
+                >
                   <div className="h-40 bg-muted dark:bg-muted/40 relative overflow-hidden">
                     {post.featuredImage ? (
                       <div className="absolute inset-0 bg-muted/20 group-hover:bg-muted/0 transition-all"></div>
@@ -403,14 +408,35 @@ const LearningResources = () => {
                         {post.category}
                       </span>
                     </div>
+                    {hasDetailedContent(post.slug) && (
+                      <div className="absolute top-3 right-3">
+                        <span className="bg-green-500/90 text-white text-[10px] px-2 py-1 rounded-full flex items-center">
+                          <Clock className="h-2 w-2 mr-1" />
+                          {post.readTime} min read
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <CardContent className="p-4 flex flex-col flex-grow">
-                    <div className="mb-2 flex items-center text-xs text-muted-foreground">
-                      <Clock className="h-3 w-3 mr-1" />
-                      <span>{post.readTime} min read</span>
-                      <span className="mx-2">•</span>
-                      <Calendar className="h-3 w-3 mr-1" />
-                      <span>{formatDate(post.publishedAt)}</span>
+                    <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+                      <div className="flex items-center">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        <span>{formatDate(post.publishedAt)}</span>
+                      </div>
+                      {post.tags && post.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1 justify-end">
+                          {post.tags.slice(0, 2).map((tag, index) => (
+                            <Badge key={index} variant="outline" className="text-[9px] px-1 py-0">
+                              {tag}
+                            </Badge>
+                          ))}
+                          {post.tags.length > 2 && (
+                            <Badge variant="outline" className="text-[9px] px-1 py-0">
+                              +{post.tags.length - 2}
+                            </Badge>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <h3 className="text-base font-semibold line-clamp-2 mb-2 group-hover:text-primary transition-colors">
                       {post.title}
@@ -419,13 +445,25 @@ const LearningResources = () => {
                       {post.summary}
                     </p>
                     <div className="mt-auto">
-                      <div className="flex items-center text-xs mb-3">
-                        <User className="h-3 w-3 mr-1 text-muted-foreground" />
-                        <span className="text-muted-foreground">By {post.authorName}</span>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center text-xs">
+                          <User className="h-3 w-3 mr-1 text-muted-foreground" />
+                          <span className="text-muted-foreground">By {post.authorName}</span>
+                        </div>
+                        {hasDetailedContent(post.slug) && (
+                          <span className="text-[10px] text-green-600 dark:text-green-400 font-medium">
+                            Detailed Article
+                          </span>
+                        )}
                       </div>
                       <Link href={`/learning/blog/${post.slug}`}>
-                        <Button variant="ghost" size="sm" className="text-xs p-0 h-auto text-primary hover:text-primary/80 hover:bg-transparent">
-                          Read Article →
+                        <Button 
+                          variant={hasDetailedContent(post.slug) ? "default" : "ghost"} 
+                          size="sm" 
+                          className={`text-xs w-full justify-between ${!hasDetailedContent(post.slug) ? 'p-0 h-auto text-primary hover:text-primary/80 hover:bg-transparent' : ''}`}
+                        >
+                          Read Full Article
+                          <ArrowRight className="ml-1 h-3 w-3" />
                         </Button>
                       </Link>
                     </div>
@@ -455,42 +493,103 @@ const LearningResources = () => {
           </div>
           
           {/* Pagination controls */}
-          {filteredBlogs.length > 0 && (
-            <div className="flex items-center justify-between mt-8">
-              <div className="text-sm text-muted-foreground">
-                Showing {indexOfFirstPost + 1}-{Math.min(indexOfLastPost, filteredBlogs.length)} of {filteredBlogs.length} posts
+          {filteredBlogs.length > postsPerPage && (
+            <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={prevPage}
+                disabled={currentPage === 1}
+                className="w-full sm:w-auto"
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Previous
+              </Button>
+              
+              <div className="text-sm text-center">
+                <span className="font-medium">Page {currentPage}</span>
+                <span className="text-muted-foreground"> of {totalPages}</span>
+                <div className="text-xs text-muted-foreground mt-1">
+                  Showing {indexOfFirstPost + 1}-{Math.min(indexOfLastPost, filteredBlogs.length)} of {filteredBlogs.length} articles
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={prevPage} 
-                  disabled={currentPage === 1}
-                  className="h-8 w-8 p-0"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                {Array.from({ length: totalPages }).map((_, i) => (
-                  <Button
-                    key={i}
-                    variant={currentPage === i + 1 ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setCurrentPage(i + 1)}
-                    className="h-8 w-8 p-0"
-                  >
-                    {i + 1}
-                  </Button>
-                ))}
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={nextPage} 
-                  disabled={currentPage === totalPages}
-                  className="h-8 w-8 p-0"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
+              
+              {/* Page numbers - visible on larger screens */}
+              <div className="hidden md:flex items-center space-x-1">
+                {totalPages > 5 && currentPage > 3 && (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-8 h-8 p-0"
+                      onClick={() => setCurrentPage(1)}
+                    >
+                      1
+                    </Button>
+                    {currentPage > 4 && (
+                      <span className="mx-1 text-muted-foreground">...</span>
+                    )}
+                  </>
+                )}
+                
+                {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
+                  // Logic to show current page and nearby pages
+                  let pageNum: number;
+                  
+                  if (totalPages <= 5) {
+                    // If 5 or fewer pages, show all page numbers
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    // If near the start, show pages 1-5
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    // If near the end, show the last 5 pages
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    // Show current page and 2 pages before and after
+                    pageNum = currentPage - 2 + i;
+                  }
+                  
+                  return (
+                    <Button
+                      key={pageNum}
+                      variant={currentPage === pageNum ? "default" : "outline"}
+                      size="sm"
+                      className="w-8 h-8 p-0"
+                      onClick={() => setCurrentPage(pageNum)}
+                    >
+                      {pageNum}
+                    </Button>
+                  );
+                })}
+                
+                {totalPages > 5 && currentPage < totalPages - 2 && (
+                  <>
+                    {currentPage < totalPages - 3 && (
+                      <span className="mx-1 text-muted-foreground">...</span>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-8 h-8 p-0"
+                      onClick={() => setCurrentPage(totalPages)}
+                    >
+                      {totalPages}
+                    </Button>
+                  </>
+                )}
               </div>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={nextPage}
+                disabled={currentPage === totalPages}
+                className="w-full sm:w-auto"
+              >
+                Next
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
             </div>
           )}
           
