@@ -1,17 +1,31 @@
-import { useTheme as useNextTheme } from "next-themes";
 import { useTheme } from "@/context/ThemeProvider";
 import { Button } from "@/components/ui/button";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Laptop } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useEffect } from "react";
 
 export function ThemeToggle() {
-  const { setTheme } = useNextTheme();
-  const { mounted } = useTheme();
+  const { theme, setTheme, isDark, mounted } = useTheme();
+
+  // Handle smooth transitions and local storage
+  useEffect(() => {
+    if (!mounted) return;
+    
+    // Update localStorage when theme changes
+    localStorage.setItem('theme', theme || 'system');
+    
+    // Apply class to html element
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme, isDark, mounted]);
 
   // Don't render anything until mounted to prevent hydration mismatch
   if (!mounted) return null;
@@ -26,16 +40,16 @@ export function ThemeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
+        <DropdownMenuItem onClick={() => setTheme("light")} className={theme === 'light' ? 'bg-muted' : ''}>
           <Sun className="mr-2 h-4 w-4" />
           Light
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
+        <DropdownMenuItem onClick={() => setTheme("dark")} className={theme === 'dark' ? 'bg-muted' : ''}>
           <Moon className="mr-2 h-4 w-4" />
           Dark
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          <span className="mr-2">💻</span>
+        <DropdownMenuItem onClick={() => setTheme("system")} className={theme === 'system' ? 'bg-muted' : ''}>
+          <Laptop className="mr-2 h-4 w-4" />
           System
         </DropdownMenuItem>
       </DropdownMenuContent>

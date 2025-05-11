@@ -100,13 +100,13 @@ const LearningResources = () => {
         <TabsContent value="tax-guides">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {taxGuides.map((guide) => (
-              <Card key={guide.id} className="overflow-hidden hover:shadow-md transition-shadow">
-                <div className="aspect-video bg-muted flex items-center justify-center">
+              <Card key={guide.id} className="overflow-hidden hover:shadow-md transition-all">
+                <div className="aspect-video bg-muted dark:bg-muted/40 flex items-center justify-center">
                   <BookOpen className="h-12 w-12 text-primary/70" />
                 </div>
                 <CardContent className="p-6">
                   <div className="mb-3">
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded-md">
+                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
                       {guide.category}
                     </span>
                   </div>
@@ -131,9 +131,9 @@ const LearningResources = () => {
         
         <TabsContent value="capital-gains">
           <div className="flex flex-col space-y-6">
-            <div className="bg-muted/30 rounded-lg p-6 border border-border mb-8">
+            <div className="bg-muted/30 dark:bg-muted/10 rounded-lg p-6 border border-border mb-8">
               <div className="flex items-start space-x-4">
-                <div className="bg-primary/10 p-3 rounded-full">
+                <div className="bg-primary/10 dark:bg-primary/20 p-3 rounded-full">
                   <BarChart3 className="h-8 w-8 text-primary" />
                 </div>
                 <div>
@@ -142,22 +142,22 @@ const LearningResources = () => {
                     Understanding capital gains tax is crucial for investors. Explore our comprehensive guides to learn about taxation of different asset classes, holding periods, and strategies to optimize your tax liability.
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded-md">
+                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
                       Stocks
                     </span>
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded-md">
+                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
                       Mutual Funds
                     </span>
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded-md">
+                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
                       Real Estate
                     </span>
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded-md">
+                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
                       Gold
                     </span>
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded-md">
+                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
                       Debt
                     </span>
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 text-primary rounded-md">
+                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
                       Foreign Assets
                     </span>
                   </div>

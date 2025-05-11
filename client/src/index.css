@@ -61,16 +61,48 @@
     @apply border-border;
   }
 
+  html {
+    @apply transition-colors duration-300 ease-in-out;
+  }
+
   body {
-    @apply font-sans antialiased bg-background text-foreground transition-colors duration-300;
+    @apply font-sans antialiased bg-background text-foreground transition-colors duration-300 ease-in-out;
   }
   
   /* Apply transition to common UI elements */
   button, a, input, select, textarea, 
   .card, .dropdown-menu, .dialog, 
-  header, footer, aside, 
-  .bg-background, .bg-card, .bg-popover, .bg-primary, .bg-secondary, .bg-muted, .bg-accent {
-    @apply transition-colors duration-300;
+  header, footer, aside, nav,
+  .bg-background, .bg-card, .bg-popover, .bg-primary, .bg-secondary, .bg-muted, .bg-accent,
+  div, span, p, h1, h2, h3, h4, h5, h6, li, ul, ol, table, tr, td, th {
+    @apply transition-colors duration-300 ease-in-out;
+  }
+
+  /* Ensure form components transition properly */
+  .form-control, .input, .select, .textarea, .checkbox, .radio, .switch {
+    @apply transition-colors duration-300 ease-in-out;
+  }
+
+  /* Shadow transitions */
+  .shadow, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
+    @apply transition-shadow duration-300 ease-in-out;
+  }
+
+  /* Specific component overrides */
+  .card {
+    @apply bg-card text-card-foreground;
+  }
+
+  .dropdown-content, .popover-content, .tooltip-content {
+    @apply bg-popover text-popover-foreground;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground;
   }
 }
 
