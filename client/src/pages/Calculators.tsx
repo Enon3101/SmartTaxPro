@@ -147,14 +147,47 @@ const Calculators = () => {
                     <p className="text-sm text-muted-foreground mb-3">
                       {calculator.description}
                     </p>
-                    <Link href={calculator.href}>
-                      <div 
-                        className="text-primary font-medium hover:underline text-sm"
-                        onMouseEnter={calculator.preloadFn}
-                      >
-                        Use Calculator →
-                      </div>
-                    </Link>
+                    <motion.div 
+                      className="flex justify-center mt-2"
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ 
+                        type: "spring", 
+                        stiffness: 400, 
+                        damping: 15,
+                        delay: 0.6 
+                      }}
+                    >
+                      <Link href={calculator.href}>
+                        <div 
+                          className="text-primary font-medium hover:underline text-sm flex items-center transition-all duration-300 transform hover:translate-x-1"
+                          onMouseEnter={calculator.preloadFn}
+                        >
+                          Use Calculator 
+                          <motion.span
+                            initial={{ x: -5, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            transition={{ duration: 0.3, delay: 0.8 }}
+                          >
+                            <svg 
+                              xmlns="http://www.w3.org/2000/svg" 
+                              width="16" 
+                              height="16" 
+                              viewBox="0 0 24 24" 
+                              fill="none" 
+                              stroke="currentColor" 
+                              strokeWidth="2" 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round" 
+                              className="ml-1"
+                            >
+                              <path d="M5 12h14"></path>
+                              <path d="m12 5 7 7-7 7"></path>
+                            </svg>
+                          </motion.span>
+                        </div>
+                      </Link>
+                    </motion.div>
                   </div>
                 </motion.div>
               ))}
@@ -223,12 +256,45 @@ const Calculators = () => {
                           {calculator.description}
                         </p>
                         {!calculator.special && (
-                          <div 
-                            className="text-primary font-medium hover:underline text-sm"
-                            onMouseEnter={calculator.preloadFn}
+                          <motion.div 
+                            className="flex justify-center mt-2"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ 
+                              type: "spring", 
+                              stiffness: 400, 
+                              damping: 15,
+                              delay: 0.6 
+                            }}
                           >
-                            Use Calculator →
-                          </div>
+                            <div 
+                              className="text-primary font-medium hover:underline text-sm flex items-center transition-all duration-300 transform hover:translate-x-1"
+                              onMouseEnter={calculator.preloadFn}
+                            >
+                              Use Calculator 
+                              <motion.span
+                                initial={{ x: -5, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ duration: 0.3, delay: 0.8 }}
+                              >
+                                <svg 
+                                  xmlns="http://www.w3.org/2000/svg" 
+                                  width="16" 
+                                  height="16" 
+                                  viewBox="0 0 24 24" 
+                                  fill="none" 
+                                  stroke="currentColor" 
+                                  strokeWidth="2" 
+                                  strokeLinecap="round" 
+                                  strokeLinejoin="round" 
+                                  className="ml-1"
+                                >
+                                  <path d="M5 12h14"></path>
+                                  <path d="m12 5 7 7-7 7"></path>
+                                </svg>
+                              </motion.span>
+                            </div>
+                          </motion.div>
                         )}
                       </div>
                     </div>
