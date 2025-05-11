@@ -20,35 +20,18 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const Pricing = () => {
-  const [isAnnual, setIsAnnual] = useState(true);
   const [activePlanIndex, setActivePlanIndex] = useState(1); // Default to middle plan
-  
-  // Define pricing for different billing cycles
-  const getPriceWithDiscount = (basePrice: number) => {
-    return isAnnual ? Math.round(basePrice * 0.85) : basePrice; // 15% discount for annual
-  };
   
   // Pricing data
   const prices = {
-    basic: {
-      monthly: 799,
-      annual: getPriceWithDiscount(799)
-    },
-    deluxe: {
-      monthly: 999,
-      annual: getPriceWithDiscount(999)
-    },
-    premier: {
-      monthly: 1399,
-      annual: getPriceWithDiscount(1399)
-    }
+    basic: 799,
+    deluxe: 999,
+    premier: 1399
   };
   
   return (
@@ -68,28 +51,6 @@ const Pricing = () => {
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Choose the plan that best suits your tax filing needs. All plans include our accuracy guarantee and expert support.
             </p>
-            
-            {/* Billing toggle */}
-            <div className="flex items-center justify-center mt-8 space-x-4">
-              <Label htmlFor="billing-toggle" className={`text-sm font-medium ${!isAnnual ? 'text-foreground' : 'text-muted-foreground'}`}>
-                Monthly
-              </Label>
-              <div className="relative">
-                <Switch
-                  id="billing-toggle"
-                  checked={isAnnual}
-                  onCheckedChange={setIsAnnual}
-                />
-                {isAnnual && (
-                  <span className="absolute -top-2 -right-16 bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-400 text-xs px-2 py-0.5 rounded-full">
-                    Save 15%
-                  </span>
-                )}
-              </div>
-              <Label htmlFor="billing-toggle" className={`text-sm font-medium ${isAnnual ? 'text-foreground' : 'text-muted-foreground'}`}>
-                Annual
-              </Label>
-            </div>
           </div>
         </div>
       </motion.section>
@@ -117,10 +78,7 @@ const Pricing = () => {
                     <h2 className="text-xl font-bold">Basic Filer</h2>
                     <div className="mt-4 mb-4 flex items-center justify-center">
                       <span className="text-muted-foreground text-xl mr-1">₹</span>
-                      <span className="text-4xl font-bold">
-                        {isAnnual ? prices.basic.annual : prices.basic.monthly}
-                      </span>
-                      <span className="text-muted-foreground ml-1">{isAnnual ? '/year' : '/month'}</span>
+                      <span className="text-4xl font-bold">{prices.basic}</span>
                     </div>
                     <Badge variant="outline" className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
                       For simple tax situations
@@ -194,10 +152,7 @@ const Pricing = () => {
                     <h2 className="text-xl font-bold">Deluxe Filer</h2>
                     <div className="mt-4 mb-4 flex items-center justify-center">
                       <span className="text-muted-foreground text-xl mr-1">₹</span>
-                      <span className="text-4xl font-bold">
-                        {isAnnual ? prices.deluxe.annual : prices.deluxe.monthly}
-                      </span>
-                      <span className="text-muted-foreground ml-1">{isAnnual ? '/year' : '/month'}</span>
+                      <span className="text-4xl font-bold">{prices.deluxe}</span>
                     </div>
                     <Badge variant="outline" className="bg-primary/10 dark:bg-primary/20 text-primary border-primary/20 dark:border-primary/30">
                       For investors and homeowners
@@ -263,10 +218,7 @@ const Pricing = () => {
                     <h2 className="text-xl font-bold">Premier Filer</h2>
                     <div className="mt-4 mb-4 flex items-center justify-center">
                       <span className="text-muted-foreground text-xl mr-1">₹</span>
-                      <span className="text-4xl font-bold">
-                        {isAnnual ? prices.premier.annual : prices.premier.monthly}
-                      </span>
-                      <span className="text-muted-foreground ml-1">{isAnnual ? '/year' : '/month'}</span>
+                      <span className="text-4xl font-bold">{prices.premier}</span>
                     </div>
                     <Badge variant="outline" className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
                       For complex tax situations
@@ -398,13 +350,13 @@ const Pricing = () => {
                   <tr className="hover:bg-muted/30 transition-colors">
                     <td className="px-6 py-4 font-medium">Price</td>
                     <td className="px-6 py-4 text-center font-medium">
-                      ₹{isAnnual ? prices.basic.annual : prices.basic.monthly}
+                      ₹{prices.basic}
                     </td>
                     <td className="px-6 py-4 text-center font-medium bg-primary/[0.02]">
-                      ₹{isAnnual ? prices.deluxe.annual : prices.deluxe.monthly}
+                      ₹{prices.deluxe}
                     </td>
                     <td className="px-6 py-4 text-center font-medium">
-                      ₹{isAnnual ? prices.premier.annual : prices.premier.monthly}
+                      ₹{prices.premier}
                     </td>
                   </tr>
                 </tbody>
