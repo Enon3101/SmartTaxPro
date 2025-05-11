@@ -12,8 +12,34 @@ import { Switch } from "@/components/ui/switch";
 import { BarChart2, Calculator, CalendarDays } from "lucide-react";
 import { formatCurrency } from "@/lib/taxCalculations";
 
+// Define types for tax rate configurations
+type ShortTermConfig = {
+  rate: number | 'slab';
+  surcharge: boolean;
+  cess: boolean;
+};
+
+type LongTermEquityConfig = {
+  rate: number;
+  exemptionLimit: number;
+  surcharge: boolean;
+  cess: boolean;
+};
+
+type LongTermOtherConfig = {
+  rate: number;
+  indexation: boolean;
+  surcharge: boolean;
+  cess: boolean;
+};
+
 // Tax rates for different asset types
-const taxRates = {
+const taxRates: {
+  equity: { shortTerm: ShortTermConfig; longTerm: LongTermEquityConfig };
+  debt: { shortTerm: ShortTermConfig; longTerm: LongTermOtherConfig };
+  property: { shortTerm: ShortTermConfig; longTerm: LongTermOtherConfig };
+  gold: { shortTerm: ShortTermConfig; longTerm: LongTermOtherConfig };
+} = {
   equity: {
     shortTerm: { rate: 15, surcharge: true, cess: true },
     longTerm: { rate: 10, exemptionLimit: 100000, surcharge: true, cess: true }
@@ -152,7 +178,9 @@ const CapitalGainsCalculator = () => {
     
     // Apply LTCG exemption for equity (first 1 lakh exempt)
     if (assetType === "equity" && type === "long") {
-      taxableGain = Math.max(0, gain - (rateConfig.exemptionLimit || 0));
+      // We know this is the equity long-term config, so we can safely cast it
+      const equityLongTermConfig = rateConfig as LongTermEquityConfig;
+      taxableGain = Math.max(0, gain - (equityLongTermConfig.exemptionLimit || 0));
     }
     
     // Calculate tax based on type
