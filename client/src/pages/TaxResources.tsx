@@ -59,27 +59,27 @@ const TaxResources = () => {
           <CardContent>
             <ul className="space-y-2">
               <li>
-                <Link href="#" className="text-primary hover:underline">
+                <Link href="/calculators/tax-regime" className="text-primary hover:underline">
                   New vs Old Tax Regime Calculator
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-primary hover:underline">
+                <Link href="/calculators/tds" className="text-primary hover:underline">
                   TDS Calculator
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-primary hover:underline">
+                <Link href="/calculators/hra" className="text-primary hover:underline">
                   HRA Exemption Calculator
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-primary hover:underline">
+                <Link href="/calculators/capital-gains" className="text-primary hover:underline">
                   Capital Gains Calculator (Securities)
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-primary hover:underline">
+                <Link href="/calculators" className="text-primary hover:underline">
                   View All Calculators →
                 </Link>
               </li>
