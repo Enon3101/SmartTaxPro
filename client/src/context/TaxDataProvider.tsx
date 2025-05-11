@@ -159,21 +159,20 @@ export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
         const newTaxFormId = nanoid();
         
         // Create a new tax form on the server
-        const response = await apiRequest("POST", "/api/tax-forms", {
-          id: newTaxFormId,
-          status: "in_progress",
-          assessmentYear: assessmentYear,
-          formType: "ITR-1"
-        });
+        const data = await apiRequest(
+          "/api/tax-forms", 
+          { method: "POST" },
+          {
+            id: newTaxFormId,
+            status: "in_progress",
+            assessmentYear: assessmentYear,
+            formType: "ITR-1"
+          }
+        );
         
-        if (response.ok) {
-          const data = await response.json();
-          setTaxFormId(newTaxFormId);
-          setTaxFormData(data);
-          localStorage.setItem("taxFormId", newTaxFormId);
-        } else {
-          throw new Error("Failed to create new tax form");
-        }
+        setTaxFormId(newTaxFormId);
+        setTaxFormData(data);
+        localStorage.setItem("taxFormId", newTaxFormId);
       } catch (error) {
         console.error("Error creating new tax form:", error);
         toast({
