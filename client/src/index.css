@@ -4,6 +4,112 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Blog styling enhancements */
+.prose .lead {
+  @apply text-lg font-medium text-gray-600 dark:text-gray-300 mb-8;
+}
+
+.prose .alert {
+  @apply p-4 mb-6 rounded-lg border;
+}
+
+.prose .alert-primary {
+  @apply bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-300;
+}
+
+.prose .alert-info {
+  @apply bg-cyan-50 border-cyan-200 text-cyan-800 dark:bg-cyan-900/30 dark:border-cyan-800 dark:text-cyan-300;
+}
+
+.prose .alert-warning {
+  @apply bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-900/30 dark:border-amber-800 dark:text-amber-300;
+}
+
+.prose .alert-link {
+  @apply font-semibold underline;
+}
+
+.prose .tax-rates-table {
+  @apply w-full my-6 text-sm;
+}
+
+.prose .tax-rates-table th {
+  @apply bg-gray-100 dark:bg-gray-800 p-2 text-left font-medium border border-gray-200 dark:border-gray-700;
+}
+
+.prose .tax-rates-table td {
+  @apply p-2 border border-gray-200 dark:border-gray-700;
+}
+
+.prose .strategy-box, 
+.prose .conclusion-box,
+.prose .pros-cons,
+.prose .case-study, 
+.prose .hybrid-strategy,
+.prose .comparison-cards,
+.prose .investment-highlight,
+.prose .returns-highlight,
+.prose .liquidity-highlight,
+.prose .tax-benefit-highlight,
+.prose .investment-flexibility-highlight,
+.prose .risk-return-highlight,
+.prose .faq-section {
+  @apply p-5 my-6 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50;
+}
+
+.prose .pros-cons {
+  @apply grid md:grid-cols-2 gap-4 p-0 overflow-hidden;
+}
+
+.prose .pros, .prose .cons {
+  @apply p-5;
+}
+
+.prose .pros {
+  @apply bg-green-50 dark:bg-green-900/20;
+}
+
+.prose .cons {
+  @apply bg-blue-50 dark:bg-blue-900/20;
+}
+
+.prose .comparison-cards {
+  @apply grid md:grid-cols-2 gap-4 p-0 overflow-hidden;
+}
+
+.prose .comparison-card {
+  @apply p-5 bg-gray-50 dark:bg-gray-800/50;
+}
+
+.prose .comparison-card:first-child {
+  @apply bg-blue-50 dark:bg-blue-900/20;
+}
+
+.prose .comparison-card:last-child {
+  @apply bg-green-50 dark:bg-green-900/20;
+}
+
+.prose .author-note {
+  @apply mt-10 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400;
+}
+
+.prose .faq-item {
+  @apply mb-6 pb-6 border-b border-gray-200 dark:border-gray-700 last:border-0 last:mb-0 last:pb-0;
+}
+
+.prose .faq-item h3 {
+  @apply text-lg font-medium mb-2;
+}
+
+/* Progress Indicator Styling */
+.section-progress-indicator {
+  @apply absolute left-0 top-0 bottom-0 w-[2px] bg-muted rounded-full overflow-hidden transition-all;
+}
+
+.section-progress-fill {
+  @apply bg-primary w-full origin-top transition-all duration-200 ease-out;
+}
+
 :root {
   --background: 210 20% 98%;
   --foreground: 215 14% 20%;

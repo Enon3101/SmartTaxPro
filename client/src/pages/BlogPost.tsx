@@ -11,130 +11,21 @@ import {
   Facebook, 
   Twitter, 
   Linkedin, 
-  Mail 
+  Mail,
+  ChevronUp
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "@/hooks/use-toast";
+import blogContents from "@/data/blogContent";
 
-// Sample blog post data (to be replaced with API call)
+// Sample blog post data
 const blogPostsData = [
   {
     id: 1,
     title: "How to Choose Between Old and New Tax Regimes in 2025",
     slug: "old-vs-new-tax-regime-2025",
     summary: "Understand the key differences between old and new tax regimes to make the best choice for your financial situation.",
-    content: `<p>The choice between India's old and new tax regimes can significantly impact your tax liability. This article explores the key differences and helps you make an informed decision based on your financial situation.</p>
-    
-    <h2>The Old Tax Regime</h2>
-    <p>Under the old tax regime, taxpayers are eligible for various deductions and exemptions, such as:</p>
-    <ul>
-      <li>Section 80C deductions (up to ₹1,50,000)</li>
-      <li>Section 80D health insurance premium (up to ₹25,000 for self and family, additional ₹25,000 for parents)</li>
-      <li>House Rent Allowance (HRA) exemptions</li>
-      <li>Leave Travel Allowance (LTA) exemptions</li>
-      <li>Standard deduction of ₹50,000 for salaried employees</li>
-      <li>Interest on housing loan (up to ₹2,00,000 for self-occupied property)</li>
-    </ul>
-    
-    <h2>The New Tax Regime</h2>
-    <p>The new tax regime offers lower tax rates but requires taxpayers to forego most deductions and exemptions. Key features include:</p>
-    <ul>
-      <li>Lower tax rates across income slabs</li>
-      <li>Standard deduction of ₹50,000 for salaried employees (starting from FY 2023-24)</li>
-      <li>No deductions under Chapter VI-A (80C, 80D, etc.)</li>
-      <li>No exemptions for HRA, LTA, etc.</li>
-      <li>No deduction for interest on housing loan</li>
-    </ul>
-    
-    <h2>Tax Rates Comparison (FY 2024-25)</h2>
-    <p>Here's a comparison of tax rates under both regimes:</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Income Slab</th>
-          <th>Old Regime</th>
-          <th>New Regime</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Up to ₹3,00,000</td>
-          <td>Nil</td>
-          <td>Nil</td>
-        </tr>
-        <tr>
-          <td>₹3,00,001 to ₹5,00,000</td>
-          <td>5%</td>
-          <td>5%</td>
-        </tr>
-        <tr>
-          <td>₹5,00,001 to ₹6,00,000</td>
-          <td>20%</td>
-          <td>5%</td>
-        </tr>
-        <tr>
-          <td>₹6,00,001 to ₹7,50,000</td>
-          <td>20%</td>
-          <td>10%</td>
-        </tr>
-        <tr>
-          <td>₹7,50,001 to ₹9,00,000</td>
-          <td>20%</td>
-          <td>10%</td>
-        </tr>
-        <tr>
-          <td>₹9,00,001 to ₹10,00,000</td>
-          <td>20%</td>
-          <td>15%</td>
-        </tr>
-        <tr>
-          <td>₹10,00,001 to ₹12,00,000</td>
-          <td>30%</td>
-          <td>15%</td>
-        </tr>
-        <tr>
-          <td>₹12,00,001 to ₹15,00,000</td>
-          <td>30%</td>
-          <td>20%</td>
-        </tr>
-        <tr>
-          <td>Above ₹15,00,000</td>
-          <td>30%</td>
-          <td>30%</td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <h2>Who Should Choose the Old Tax Regime?</h2>
-    <p>The old tax regime may be beneficial for:</p>
-    <ul>
-      <li>Those who claim significant deductions through various sections</li>
-      <li>Homeowners with housing loan interest</li>
-      <li>Those who pay rent and claim HRA exemption</li>
-      <li>Individuals with significant investments in tax-saving instruments</li>
-    </ul>
-    
-    <h2>Who Should Choose the New Tax Regime?</h2>
-    <p>The new tax regime may be advantageous for:</p>
-    <ul>
-      <li>Those with limited deductions and exemptions</li>
-      <li>Young professionals who haven't made significant investments in tax-saving instruments</li>
-      <li>Those who don't pay rent or have housing loans</li>
-      <li>Individuals who prefer a simpler tax filing process</li>
-    </ul>
-    
-    <h2>How to Calculate Which Regime Is Better</h2>
-    <p>To determine which tax regime is better for you:</p>
-    <ol>
-      <li>Calculate your total income for the financial year</li>
-      <li>List all eligible deductions and exemptions under the old regime</li>
-      <li>Calculate tax liability under both regimes</li>
-      <li>Compare and choose the regime with the lower tax liability</li>
-    </ol>
-    
-    <p>Use our <a href="/calculators/income-tax">Income Tax Calculator</a> to quickly compare your tax liability under both regimes based on your specific situation.</p>
-    
-    <h2>Conclusion</h2>
-    <p>The choice between the old and new tax regimes depends on your specific financial situation. Taxpayers with significant deductions may benefit from the old regime, while those with limited deductions might find the new regime more advantageous. It's recommended to calculate your tax liability under both regimes before making a decision.</p>`,
+    // The actual content is stored in blogContents
     authorId: 1,
     authorName: "Priya Sharma",
     authorBio: "Priya Sharma is a Chartered Accountant with over 10 years of experience in tax planning and advisory.",
@@ -146,16 +37,56 @@ const blogPostsData = [
     publishedAt: "2025-04-15T10:30:00Z",
     createdAt: "2025-04-10T14:25:00Z",
     updatedAt: "2025-04-15T09:15:00Z"
+  },
+  {
+    id: 2,
+    title: "Section 80C Investments: Maximize Your Tax Savings",
+    slug: "section-80c-investments-guide",
+    summary: "Learn about the various Section 80C investment options that can help you save up to ₹1,50,000 on your taxable income.",
+    // Content in blogContents
+    authorId: 2,
+    authorName: "Rajesh Kumar",
+    authorBio: "Rajesh Kumar is a financial planner with expertise in tax optimization strategies for individuals and small businesses.",
+    featuredImage: "/blog/80c-investments.jpg",
+    category: "Deductions",
+    tags: ["80C", "tax deductions", "investments"],
+    readTime: 8,
+    published: true,
+    publishedAt: "2025-04-08T12:00:00Z",
+    createdAt: "2025-04-01T09:45:00Z",
+    updatedAt: "2025-04-08T10:30:00Z"
+  },
+  {
+    id: 3,
+    title: "NPS vs ELSS: Which is Better for Tax Saving?",
+    slug: "nps-vs-elss-comparison",
+    summary: "Compare National Pension System (NPS) and Equity-Linked Savings Scheme (ELSS) for tax-saving and long-term wealth creation.",
+    // Content in blogContents
+    authorId: 1,
+    authorName: "Priya Sharma",
+    authorBio: "Priya Sharma is a Chartered Accountant with over 10 years of experience in tax planning and advisory.",
+    featuredImage: "/blog/nps-elss-comparison.jpg",
+    category: "Investments",
+    tags: ["NPS", "ELSS", "mutual funds", "retirement"],
+    readTime: 7,
+    published: true,
+    publishedAt: "2025-03-25T14:15:00Z",
+    createdAt: "2025-03-20T11:30:00Z",
+    updatedAt: "2025-03-25T13:00:00Z"
   }
 ];
 
 const BlogPost = () => {
   const { slug } = useParams();
   const [readingProgress, setReadingProgress] = useState(0);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const articleRef = useRef<HTMLElement>(null);
   
   // Find the blog post by slug
   const post = blogPostsData.find(post => post.slug === slug);
+  
+  // Get the detailed content from our content store
+  const content = post ? blogContents[post.slug as keyof typeof blogContents] : '';
   
   // Calculate reading progress on scroll
   useEffect(() => {
@@ -164,6 +95,9 @@ const BlogPost = () => {
         const articleHeight = articleRef.current.clientHeight;
         const windowHeight = window.innerHeight;
         const scrollY = window.scrollY;
+        
+        // Show/hide scroll-to-top button
+        setShowScrollTop(scrollY > 500);
         
         // How far the user has scrolled into the article
         const scrolled = scrollY - articleRef.current.offsetTop;
@@ -184,6 +118,14 @@ const BlogPost = () => {
     return () => window.removeEventListener('scroll', calculateReadingProgress);
   }, []);
   
+  // Scroll to top handler
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+  
   // Format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -194,7 +136,17 @@ const BlogPost = () => {
     });
   };
   
-  if (!post) {
+  // Copy link to clipboard handler
+  const copyLinkToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast({
+      title: "Link copied",
+      description: "The article link has been copied to your clipboard.",
+      duration: 3000,
+    });
+  };
+  
+  if (!post || !content) {
     return (
       <div className="container mx-auto px-4 py-12">
         <div className="text-center">
@@ -213,6 +165,13 @@ const BlogPost = () => {
     );
   }
   
+  // Extract headings for table of contents
+  const headings = content.match(/<h2.*?>(.*?)<\/h2>/g)?.map(heading => {
+    const title = heading.replace(/<h2.*?>(.*?)<\/h2>/, '$1');
+    const slug = title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-');
+    return { title, slug };
+  }) || [];
+  
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Reading progress bar - fixed at the top */}
@@ -222,6 +181,17 @@ const BlogPost = () => {
           style={{ width: `${readingProgress}%` }}
         />
       </div>
+      
+      {/* Scroll to top button */}
+      {showScrollTop && (
+        <button 
+          onClick={scrollToTop}
+          className="fixed right-8 bottom-8 h-10 w-10 bg-primary text-white rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-opacity duration-300 z-50"
+          aria-label="Scroll to top"
+        >
+          <ChevronUp className="h-6 w-6" />
+        </button>
+      )}
       
       {/* Back button */}
       <div className="mb-6">
@@ -267,7 +237,7 @@ const BlogPost = () => {
           
           {/* Blog content */}
           <div className="prose prose-blue max-w-none dark:prose-invert mb-8"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: content }}
           />
           
           {/* Author info */}
@@ -309,18 +279,75 @@ const BlogPost = () => {
               <span className="text-sm font-medium">Share this article:</span>
             </div>
             <div className="flex space-x-2">
-              <Button variant="outline" size="sm" className="h-9 w-9 p-0">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-9 w-9 p-0"
+                onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank')}
+              >
                 <Facebook className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="sm" className="h-9 w-9 p-0">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-9 w-9 p-0"
+                onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(window.location.href)}`, '_blank')}
+              >
                 <Twitter className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="sm" className="h-9 w-9 p-0">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-9 w-9 p-0"
+                onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank')}
+              >
                 <Linkedin className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="sm" className="h-9 w-9 p-0">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="h-9 w-9 p-0"
+                onClick={() => window.open(`mailto:?subject=${encodeURIComponent(post.title)}&body=${encodeURIComponent(`Check out this article: ${window.location.href}`)}`, '_blank')}
+              >
                 <Mail className="h-4 w-4" />
               </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="px-3 h-9"
+                onClick={copyLinkToClipboard}
+              >
+                Copy Link
+              </Button>
+            </div>
+          </div>
+          
+          {/* Related posts */}
+          <div className="mt-12 pt-8 border-t">
+            <h3 className="text-xl font-bold mb-4">Related Articles</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {blogPostsData
+                .filter(relatedPost => 
+                  relatedPost.slug !== post.slug && 
+                  (relatedPost.category === post.category || 
+                   relatedPost.tags.some(tag => post.tags.includes(tag)))
+                )
+                .slice(0, 2)
+                .map(relatedPost => (
+                  <Link key={relatedPost.id} href={`/learning/blog/${relatedPost.slug}`}>
+                    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <span className="text-xs font-medium bg-primary/10 text-primary px-2 py-1 rounded-full">
+                        {relatedPost.category}
+                      </span>
+                      <h4 className="font-medium mt-2 line-clamp-2">{relatedPost.title}</h4>
+                      <div className="flex items-center mt-2 text-xs text-muted-foreground">
+                        <Clock className="h-3 w-3 mr-1" />
+                        <span>{relatedPost.readTime} min read</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))
+              }
             </div>
           </div>
         </article>
@@ -331,14 +358,11 @@ const BlogPost = () => {
             <h4 className="font-semibold mb-4">Table of Contents</h4>
             <nav className="text-sm">
               <ul className="space-y-3">
-                {post.content.match(/<h2>(.*?)<\/h2>/g)?.map((match, index) => {
-                  const title = match.replace(/<h2>(.*?)<\/h2>/, '$1');
-                  const slug = title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-');
-                  
+                {headings.map((heading, index) => {
                   // Calculate progress through article sections
                   const sectionProgress = Math.min(100, Math.max(0, 
-                    (readingProgress - (index * (100 / (post.content.match(/<h2>/g)?.length || 1)))) 
-                    * ((post.content.match(/<h2>/g)?.length || 1) / 100) * 3
+                    (readingProgress - (index * (100 / (headings.length || 1)))) 
+                    * ((headings.length || 1) / 100) * 3
                   ));
                   
                   return (
@@ -352,12 +376,12 @@ const BlogPost = () => {
                       </div>
                       
                       <a 
-                        href={`#${slug}`}
+                        href={`#${heading.slug}`}
                         className={`pl-4 inline-block hover:text-primary transition-colors ${
                           sectionProgress > 50 ? 'text-primary font-medium' : 'text-muted-foreground'
                         }`}
                       >
-                        {title}
+                        {heading.title}
                       </a>
                     </li>
                   );
@@ -371,11 +395,59 @@ const BlogPost = () => {
                 <span className="text-muted-foreground">Reading progress</span>
                 <span className="font-medium">{Math.round(readingProgress)}%</span>
               </div>
-              <div className="w-full h-1 bg-muted rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-primary transition-all duration-300 ease-out"
                   style={{ width: `${readingProgress}%` }}
                 />
+              </div>
+            </div>
+            
+            {/* Estimated reading time */}
+            <div className="mt-6 pt-4 border-t flex items-center justify-between">
+              <div className="text-sm text-muted-foreground flex items-center">
+                <Clock className="h-4 w-4 mr-2" />
+                <span>Reading time:</span>
+              </div>
+              <span className="text-sm font-medium">{post.readTime} minutes</span>
+            </div>
+            
+            {/* Share buttons in sidebar */}
+            <div className="mt-6 pt-4 border-t">
+              <div className="text-sm mb-3 font-medium">Share Article</div>
+              <div className="flex space-x-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-8 w-8 p-0"
+                  onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank')}
+                >
+                  <Facebook className="h-4 w-4" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-8 w-8 p-0"
+                  onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(window.location.href)}`, '_blank')}
+                >
+                  <Twitter className="h-4 w-4" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-8 w-8 p-0"
+                  onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank')}
+                >
+                  <Linkedin className="h-4 w-4" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1 text-xs"
+                  onClick={copyLinkToClipboard}
+                >
+                  Copy Link
+                </Button>
               </div>
             </div>
           </div>

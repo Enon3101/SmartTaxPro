@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,10 +20,23 @@ import {
   Calendar,
   User,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ArrowRight,
+  Filter,
+  Book,
+  Video,
+  Calculator
 } from "lucide-react";
+import { 
+  DropdownMenu,
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
+import blogContents from "@/data/blogContent";
 
 // Blog post interface
 interface BlogPost {
@@ -157,7 +170,52 @@ const LearningResources = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage] = useState(4);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [location, setLocation] = useLocation();
   const { isAuthenticated, user } = useAuth();
+  
+  // Check if blog post has detailed content
+  const hasDetailedContent = (slug: string) => {
+    return Object.keys(blogContents).includes(slug);
+  };
+  
+  // Parse URL params for category and search query
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.split('?')[1]);
+    const category = searchParams.get('category');
+    const query = searchParams.get('query');
+    
+    if (category && categories.includes(category)) {
+      setActiveCategory(category);
+    }
+    
+    if (query) {
+      setSearchTerm(query);
+    }
+  }, [location]);
+  
+  // Update URL when filters change
+  useEffect(() => {
+    const params = new URLSearchParams();
+    
+    if (activeCategory !== "all") {
+      params.set('category', activeCategory);
+    }
+    
+    if (searchTerm) {
+      params.set('query', searchTerm);
+    }
+    
+    if (currentTab !== "blogs") {
+      params.set('tab', currentTab);
+    }
+    
+    const queryString = params.toString();
+    const newPath = queryString ? `/learning?${queryString}` : '/learning';
+    
+    if (newPath !== location) {
+      setLocation(newPath);
+    }
+  }, [activeCategory, searchTerm, currentTab, setLocation]);
   
   // Filter and search blogs
   const filteredBlogs = blogPostsData.filter(post => {
