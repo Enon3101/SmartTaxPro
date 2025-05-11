@@ -156,8 +156,10 @@ const Pricing = () => {
                       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/70 to-primary transform scale-x-0 origin-left transition-transform duration-300 ease-in-out group-hover:scale-x-100"></div>
                       
                       <CardContent className="p-4 text-center">
-                        <div className="rounded-full bg-primary/10 dark:bg-primary/20 p-3 w-14 h-14 mx-auto mb-3 flex items-center justify-center">
-                          {plan.icon}
+                        <div className="rounded-full bg-primary/10 dark:bg-primary/20 p-4 w-20 h-20 mx-auto mb-3 flex items-center justify-center">
+                          <div className="text-primary w-10 h-10">
+                            {plan.icon}
+                          </div>
                         </div>
                         
                         <h3 className="font-semibold mb-1">{plan.name}</h3>
@@ -229,6 +231,68 @@ const Pricing = () => {
                   ))}
                 </tbody>
               </table>
+            </motion.div>
+            
+            {/* Data Security Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="mt-16 bg-card rounded-lg border border-border shadow-md overflow-hidden"
+            >
+              <div className="p-8">
+                <div className="flex flex-col md:flex-row gap-8 items-center">
+                  <div className="md:w-1/3 text-center md:text-left">
+                    <div className="inline-flex mb-4 p-4 rounded-full bg-green-50 dark:bg-green-900/20">
+                      <Shield className="h-12 w-12 text-green-600 dark:text-green-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold mb-2">Bank-Level Data Security</h3>
+                    <p className="text-muted-foreground">Your sensitive financial information is protected by advanced encryption technology</p>
+                  </div>
+                  
+                  <div className="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 rounded-full bg-green-50 dark:bg-green-900/20 p-2 mr-3">
+                        <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium mb-1">256-bit Encryption</h4>
+                        <p className="text-sm text-muted-foreground">All data is secured with bank-grade encryption standards</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 rounded-full bg-green-50 dark:bg-green-900/20 p-2 mr-3">
+                        <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium mb-1">Secure Data Storage</h4>
+                        <p className="text-sm text-muted-foreground">Your information is stored in secure servers with multiple safeguards</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 rounded-full bg-green-50 dark:bg-green-900/20 p-2 mr-3">
+                        <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium mb-1">Regular Security Audits</h4>
+                        <p className="text-sm text-muted-foreground">We conduct rigorous testing to ensure your data remains protected</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 rounded-full bg-green-50 dark:bg-green-900/20 p-2 mr-3">
+                        <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-medium mb-1">Strict Privacy Policy</h4>
+                        <p className="text-sm text-muted-foreground">Your data is never shared with third parties without your consent</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </div>
           
@@ -452,17 +516,23 @@ const Pricing = () => {
               </Link>
             </motion.div>
             
-            <div className="mt-8 flex items-center justify-center space-x-4">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-6">
               <div className="flex items-center text-sm text-muted-foreground">
-                <Shield className="h-4 w-4 mr-2 text-green-500 dark:text-green-400" />
+                <div className="flex-shrink-0 rounded-full bg-green-50 dark:bg-green-900/20 p-1.5 mr-2">
+                  <Shield className="h-5 w-5 text-green-600 dark:text-green-400" />
+                </div>
                 <span>Secure & Encrypted</span>
               </div>
               <div className="flex items-center text-sm text-muted-foreground">
-                <Clock className="h-4 w-4 mr-2 text-green-500 dark:text-green-400" />
+                <div className="flex-shrink-0 rounded-full bg-green-50 dark:bg-green-900/20 p-1.5 mr-2">
+                  <Clock className="h-5 w-5 text-green-600 dark:text-green-400" />
+                </div>
                 <span>File in 15 Minutes</span>
               </div>
               <div className="flex items-center text-sm text-muted-foreground">
-                <CheckCircle className="h-4 w-4 mr-2 text-green-500 dark:text-green-400" />
+                <div className="flex-shrink-0 rounded-full bg-green-50 dark:bg-green-900/20 p-1.5 mr-2">
+                  <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                </div>
                 <span>Accuracy Guarantee</span>
               </div>
             </div>
