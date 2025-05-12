@@ -625,12 +625,17 @@ const StartFiling = () => {
     };
     
     // Format currency input
-    const formatCurrency = (value: string) => {
+    const formatCurrency = (value: string | null | undefined) => {
       if (!value) return "";
       // Remove any non-digit characters
       const numericValue = value.replace(/[^\d]/g, "");
+      if (!numericValue) return "";
       // Format with Indian numbering system (lakhs, crores)
-      return numericValue.replace(/(\d)(?=(\d\d)+\d$)/g, "$1,");
+      try {
+        return numericValue.replace(/(\d)(?=(\d\d)+\d$)/g, "$1,");
+      } catch (error) {
+        return "0";
+      }
     };
     
     return (
@@ -711,10 +716,10 @@ const StartFiling = () => {
                                 const value = formatCurrency(e.target.value);
                                 updateIncomeField("salaryIncome", index, "grossSalary", value);
                                 // Calculate net salary
-                                const gross = parseFloat(value.replace(/,/g, '')) || 0;
-                                const stdDeduction = parseFloat(salary.standardDeduction.replace(/,/g, '')) || 0;
-                                const section10 = parseFloat(salary.section10Exemptions.replace(/,/g, '')) || 0;
-                                const profTax = parseFloat(salary.professionalTax.replace(/,/g, '')) || 0;
+                                const gross = parseFloat((value || "0").replace(/,/g, '')) || 0;
+                                const stdDeduction = parseFloat((salary.standardDeduction || "0").replace(/,/g, '')) || 0;
+                                const section10 = parseFloat((salary.section10Exemptions || "0").replace(/,/g, '')) || 0;
+                                const profTax = parseFloat((salary.professionalTax || "0").replace(/,/g, '')) || 0;
                                 const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
                                 updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
                               }}
@@ -734,10 +739,10 @@ const StartFiling = () => {
                                 const value = formatCurrency(e.target.value);
                                 updateIncomeField("salaryIncome", index, "standardDeduction", value);
                                 // Calculate net salary
-                                const gross = parseFloat(salary.grossSalary.replace(/,/g, '')) || 0;
-                                const stdDeduction = parseFloat(value.replace(/,/g, '')) || 0;
-                                const section10 = parseFloat(salary.section10Exemptions.replace(/,/g, '')) || 0;
-                                const profTax = parseFloat(salary.professionalTax.replace(/,/g, '')) || 0;
+                                const gross = parseFloat((salary.grossSalary || "0").replace(/,/g, '')) || 0;
+                                const stdDeduction = parseFloat((value || "0").replace(/,/g, '')) || 0;
+                                const section10 = parseFloat((salary.section10Exemptions || "0").replace(/,/g, '')) || 0;
+                                const profTax = parseFloat((salary.professionalTax || "0").replace(/,/g, '')) || 0;
                                 const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
                                 updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
                               }}
@@ -758,10 +763,10 @@ const StartFiling = () => {
                                 const value = formatCurrency(e.target.value);
                                 updateIncomeField("salaryIncome", index, "section10Exemptions", value);
                                 // Calculate net salary
-                                const gross = parseFloat(salary.grossSalary.replace(/,/g, '')) || 0;
-                                const stdDeduction = parseFloat(salary.standardDeduction.replace(/,/g, '')) || 0;
-                                const section10 = parseFloat(value.replace(/,/g, '')) || 0;
-                                const profTax = parseFloat(salary.professionalTax.replace(/,/g, '')) || 0;
+                                const gross = parseFloat((salary.grossSalary || "0").replace(/,/g, '')) || 0;
+                                const stdDeduction = parseFloat((salary.standardDeduction || "0").replace(/,/g, '')) || 0;
+                                const section10 = parseFloat((value || "0").replace(/,/g, '')) || 0;
+                                const profTax = parseFloat((salary.professionalTax || "0").replace(/,/g, '')) || 0;
                                 const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
                                 updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
                               }}
@@ -799,10 +804,10 @@ const StartFiling = () => {
                                 const value = formatCurrency(e.target.value);
                                 updateIncomeField("salaryIncome", index, "professionalTax", value);
                                 // Calculate net salary
-                                const gross = parseFloat(salary.grossSalary.replace(/,/g, '')) || 0;
-                                const stdDeduction = parseFloat(salary.standardDeduction.replace(/,/g, '')) || 0;
-                                const section10 = parseFloat(salary.section10Exemptions.replace(/,/g, '')) || 0;
-                                const profTax = parseFloat(value.replace(/,/g, '')) || 0;
+                                const gross = parseFloat((salary.grossSalary || "0").replace(/,/g, '')) || 0;
+                                const stdDeduction = parseFloat((salary.standardDeduction || "0").replace(/,/g, '')) || 0;
+                                const section10 = parseFloat((salary.section10Exemptions || "0").replace(/,/g, '')) || 0;
+                                const profTax = parseFloat((value || "0").replace(/,/g, '')) || 0;
                                 const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
                                 updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
                               }}
