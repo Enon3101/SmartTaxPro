@@ -361,6 +361,13 @@ export default function StartFiling() {
           otherIncome: formData.otherIncome,
         });
         break;
+        
+      case 4:
+        // Update all deductions data
+        updateDeductions80C(deductions80C);
+        updateDeductions80D(deductions80D);
+        updateOtherDeductions(otherDeductions);
+        break;
       default:
         break;
     }
@@ -371,6 +378,85 @@ export default function StartFiling() {
     } else {
       setLocation("/tax-filing");
     }
+  };
+  
+  // Handle deduction changes
+  const handleDeduction80CChange = (field: string, value: string) => {
+    const numericValue = value.replace(/[^0-9]/g, "");
+    
+    setDeductions80C(prev => {
+      const updatedDeductions = {
+        ...prev,
+        [field]: numericValue
+      };
+      
+      // Calculate the total amount for 80C deductions
+      const total = Object.entries(updatedDeductions)
+        .filter(([key]) => key !== "totalAmount")
+        .reduce((sum, [_, val]) => sum + (parseInt(val) || 0), 0);
+      
+      const updatedWithTotal = {
+        ...updatedDeductions,
+        totalAmount: total.toString()
+      };
+      
+      // Update context
+      updateDeductions80C(updatedWithTotal);
+      
+      return updatedWithTotal;
+    });
+  };
+  
+  const handleDeduction80DChange = (field: string, value: string) => {
+    const numericValue = value.replace(/[^0-9]/g, "");
+    
+    setDeductions80D(prev => {
+      const updatedDeductions = {
+        ...prev,
+        [field]: numericValue
+      };
+      
+      // Calculate the total amount for 80D deductions
+      const total = Object.entries(updatedDeductions)
+        .filter(([key]) => key !== "totalAmount")
+        .reduce((sum, [_, val]) => sum + (parseInt(val) || 0), 0);
+      
+      const updatedWithTotal = {
+        ...updatedDeductions,
+        totalAmount: total.toString()
+      };
+      
+      // Update context
+      updateDeductions80D(updatedWithTotal);
+      
+      return updatedWithTotal;
+    });
+  };
+  
+  const handleOtherDeductionChange = (field: string, value: string) => {
+    const numericValue = value.replace(/[^0-9]/g, "");
+    
+    setOtherDeductions(prev => {
+      const updatedDeductions = {
+        ...prev,
+        [field]: numericValue
+      };
+      
+      // Calculate the total amount for other deductions
+      const total = Object.entries(updatedDeductions)
+        .filter(([key]) => key !== "totalAmount")
+        .reduce((sum, [_, val]) => sum + (parseInt(val) || 0), 0);
+      
+      const updatedWithTotal = {
+        ...updatedDeductions,
+        totalAmount: total.toString()
+      };
+      
+      // Update context
+      updateOtherDeductions(updatedWithTotal);
+      
+      return updatedWithTotal;
+    });
   };
   
   // Helper to update income fields
@@ -1134,6 +1220,8 @@ export default function StartFiling() {
                         id="ppf"
                         className="pl-7"
                         placeholder="Enter Amount"
+                        value={deductions80C.ppf}
+                        onChange={(e) => handleDeduction80CChange("ppf", e.target.value)}
                       />
                     </div>
                   </div>
@@ -1146,6 +1234,8 @@ export default function StartFiling() {
                         id="elss"
                         className="pl-7"
                         placeholder="Enter Amount"
+                        value={deductions80C.elss}
+                        onChange={(e) => handleDeduction80CChange("elss", e.target.value)}
                       />
                     </div>
                   </div>
@@ -1158,6 +1248,8 @@ export default function StartFiling() {
                         id="lifeInsurance"
                         className="pl-7"
                         placeholder="Enter Amount"
+                        value={deductions80C.lifeInsurance}
+                        onChange={(e) => handleDeduction80CChange("lifeInsurance", e.target.value)}
                       />
                     </div>
                   </div>
@@ -1170,6 +1262,8 @@ export default function StartFiling() {
                         id="houseLoanPrincipal"
                         className="pl-7"
                         placeholder="Enter Amount"
+                        value={deductions80C.houseLoanPrincipal}
+                        onChange={(e) => handleDeduction80CChange("houseLoanPrincipal", e.target.value)}
                       />
                     </div>
                   </div>
@@ -1263,6 +1357,8 @@ export default function StartFiling() {
                         id="selfMedicalInsurance"
                         className="pl-7"
                         placeholder="Max ₹25,000"
+                        value={deductions80D.selfMedicalInsurance}
+                        onChange={(e) => handleDeduction80DChange("selfMedicalInsurance", e.target.value)}
                       />
                     </div>
                     <p className="text-xs text-gray-500">Max ₹25,000 (₹50,000 if age 60+)</p>
