@@ -388,11 +388,9 @@ export default function StartFiling() {
         break;
     }
     
-    // Move to next step or to tax filing page if completed
+    // Move to next step
     if (currentStep < steps.length) {
       nextStep();
-    } else {
-      setLocation("/tax-filing");
     }
   };
   
@@ -1791,13 +1789,21 @@ export default function StartFiling() {
                     <div className="text-center">
                       <p className="text-sm text-gray-600 mb-2">Pay using:</p>
                       <div className="space-x-2">
-                        <Button variant="outline" className="bg-white">
+                        <Button 
+                          variant="outline" 
+                          className="bg-white"
+                          onClick={() => setLocation("/payment?method=netbanking")}
+                        >
                           <img src="https://www.netmeds.com/images/cms/offers/1606302934_1605251328_netbanking.png" 
                                alt="Net Banking" 
                                className="h-6 w-auto mr-2" />
                           Net Banking
                         </Button>
-                        <Button variant="outline" className="bg-white">
+                        <Button 
+                          variant="outline" 
+                          className="bg-white"
+                          onClick={() => setLocation("/payment?method=upi")}
+                        >
                           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/2560px-Paytm_Logo_%28standalone%29.svg.png" 
                                alt="Paytm" 
                                className="h-5 w-auto mr-2" />
@@ -1812,7 +1818,10 @@ export default function StartFiling() {
                   <div className="bg-white p-4 rounded border border-gray-200">
                     <h4 className="font-medium mb-2">File after payment</h4>
                     <p className="text-sm text-gray-600 mb-4">You need to complete the payment before you can file your return.</p>
-                    <Button className="bg-blue-700 hover:bg-blue-800">
+                    <Button 
+                      className="bg-blue-700 hover:bg-blue-800" 
+                      onClick={() => setLocation("/payment")}
+                    >
                       Pay & File Now
                     </Button>
                   </div>
@@ -1820,7 +1829,10 @@ export default function StartFiling() {
                   <div className="bg-white p-4 rounded border border-gray-200">
                     <h4 className="font-medium mb-2">Ready to file</h4>
                     <p className="text-sm text-gray-600 mb-4">Your return is ready to be filed. Click the button below to proceed.</p>
-                    <Button className="bg-green-600 hover:bg-green-700">
+                    <Button 
+                      className="bg-green-600 hover:bg-green-700"
+                      onClick={() => setLocation("/filing-complete")}
+                    >
                       File My Return
                     </Button>
                   </div>

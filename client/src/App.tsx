@@ -15,6 +15,8 @@ import LearningResources from "@/pages/LearningResources";
 import Support from "@/pages/Support";
 import Pricing from "@/pages/Pricing";
 import StartFiling from "@/pages/StartFiling";
+import Payment from "@/pages/Payment";
+import FilingComplete from "@/pages/FilingComplete";
 import Admin from "@/pages/Admin";
 import BlogPost from "@/pages/BlogPost";
 import BlogAdmin from "@/pages/BlogAdmin";
@@ -110,6 +112,8 @@ function Router() {
         {(params) => <BlogAdmin mode="edit" id={params.id} />}
       </Route>
       <Route path="/admin/database-editor" component={DatabaseEditor} />
+      <Route path="/payment" component={Payment} />
+      <Route path="/filing-complete" component={FilingComplete} />
 
       {/* Calculator Routes */}
       <Route path="/calculators/index">
