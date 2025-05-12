@@ -661,74 +661,113 @@ const StartFiling = () => {
               </div>
             )}
             
-            {/* House Property Income */}
+            {/* House Property Income - Now with multiple entries */}
             {formData.incomeSource.includes("house-property") && (
               <div className="p-6 bg-white border rounded-lg">
-                <h3 className="text-lg font-medium flex items-center mb-4">
-                  <Home className="h-5 w-5 text-green-500 mr-2" />
-                  House Property Income
-                </h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="propertyType">Property Type</Label>
-                    <Select 
-                      value={formData.housePropertyIncome.propertyType} 
-                      onValueChange={(value) => updateIncomeField("housePropertyIncome", "propertyType", value)}
-                    >
-                      <SelectTrigger id="propertyType">
-                        <SelectValue placeholder="Select Property Type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="self-occupied">Self Occupied</SelectItem>
-                        <SelectItem value="let-out">Let Out</SelectItem>
-                        <SelectItem value="deemed-let-out">Deemed Let Out</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium flex items-center">
+                    <Home className="h-5 w-5 text-green-500 mr-2" />
+                    House Property Income
+                  </h3>
                   
-                  {formData.housePropertyIncome.propertyType !== "self-occupied" && (
-                    <div className="space-y-2">
-                      <Label htmlFor="rentalIncome">Annual Rental Income</Label>
-                      <div className="relative">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                        <Input
-                          id="rentalIncome"
-                          className="pl-7"
-                          value={formData.housePropertyIncome.rentalIncome}
-                          onChange={(e) => updateIncomeField("housePropertyIncome", "rentalIncome", formatCurrency(e.target.value))}
-                        />
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="interestPaid">Interest Paid on Housing Loan</Label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                      <Input
-                        id="interestPaid"
-                        className="pl-7"
-                        value={formData.housePropertyIncome.interestPaid}
-                        onChange={(e) => updateIncomeField("housePropertyIncome", "interestPaid", formatCurrency(e.target.value))}
-                      />
-                    </div>
-                  </div>
-                  
-                  {formData.housePropertyIncome.propertyType !== "self-occupied" && (
-                    <div className="space-y-2">
-                      <Label htmlFor="propertyTax">Municipal/Property Tax Paid</Label>
-                      <div className="relative">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                        <Input
-                          id="propertyTax"
-                          className="pl-7"
-                          value={formData.housePropertyIncome.propertyTax}
-                          onChange={(e) => updateIncomeField("housePropertyIncome", "propertyTax", formatCurrency(e.target.value))}
-                        />
-                      </div>
-                    </div>
-                  )}
+                  {/* Add another property button */}
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => addIncomeEntry("housePropertyIncome")}
+                    className="text-xs flex items-center"
+                  >
+                    <PlusCircle className="h-3.5 w-3.5 mr-1" />
+                    Add Another Property
+                  </Button>
                 </div>
+                
+                {/* For each property entry, show a set of fields */}
+                {formData.housePropertyIncome.map((property, index) => (
+                  <div key={property.id} className="mb-6 last:mb-0 border-t pt-4 first:border-t-0 first:pt-0">
+                    {/* Show property number and delete button if there are multiple */}
+                    {formData.housePropertyIncome.length > 1 && (
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-sm font-medium text-gray-500">
+                          Property #{index + 1}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeIncomeEntry("housePropertyIncome", index)}
+                          className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
+                          disabled={formData.housePropertyIncome.length <= 1}
+                        >
+                          <MinusCircle className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    )}
+                    
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor={`propertyType-${index}`}>Property Type</Label>
+                        <Select 
+                          value={property.propertyType} 
+                          onValueChange={(value) => updateIncomeField("housePropertyIncome", index, "propertyType", value)}
+                        >
+                          <SelectTrigger id={`propertyType-${index}`}>
+                            <SelectValue placeholder="Select Property Type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="self-occupied">Self Occupied</SelectItem>
+                            <SelectItem value="let-out">Let Out</SelectItem>
+                            <SelectItem value="deemed-let-out">Deemed Let Out</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      {property.propertyType !== "self-occupied" && (
+                        <div className="space-y-2">
+                          <Label htmlFor={`rentalIncome-${index}`}>Annual Rental Income</Label>
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                            <Input
+                              id={`rentalIncome-${index}`}
+                              className="pl-7"
+                              value={property.rentalIncome}
+                              onChange={(e) => updateIncomeField("housePropertyIncome", index, "rentalIncome", formatCurrency(e.target.value))}
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor={`interestPaid-${index}`}>Interest Paid on Housing Loan</Label>
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                          <Input
+                            id={`interestPaid-${index}`}
+                            className="pl-7"
+                            value={property.interestPaid}
+                            onChange={(e) => updateIncomeField("housePropertyIncome", index, "interestPaid", formatCurrency(e.target.value))}
+                          />
+                        </div>
+                      </div>
+                      
+                      {property.propertyType !== "self-occupied" && (
+                        <div className="space-y-2">
+                          <Label htmlFor={`propertyTax-${index}`}>Municipal/Property Tax Paid</Label>
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                            <Input
+                              id={`propertyTax-${index}`}
+                              className="pl-7"
+                              value={property.propertyTax}
+                              onChange={(e) => updateIncomeField("housePropertyIncome", index, "propertyTax", formatCurrency(e.target.value))}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
             
@@ -904,55 +943,69 @@ const StartFiling = () => {
   
   // Income Sources Selection Component for Step 2
   const IncomeSourcesStep = () => {
-    const incomeSources = [
+    // Filter out salary option for non-individual PAN types
+    const isIndividual = panValidationState.isIndividual;
+    
+    const allIncomeSources = [
       { 
         id: "salary", 
         label: "Salary/Pension", 
         icon: <Briefcase className="h-5 w-5 text-blue-500" />,
         description: "Income from employment or pension",
-        examples: "Form 16, salary slips, pension statements"
+        examples: "Form 16, salary slips, pension statements",
+        individualOnly: true // Only individuals can have salary income
       },
       { 
         id: "house-property", 
         label: "House Property", 
         icon: <Home className="h-5 w-5 text-green-500" />,
         description: "Rental income or home loan interest",
-        examples: "Rent receipts, home loan statements"
+        examples: "Rent receipts, home loan statements",
+        individualOnly: false
       },
       { 
         id: "capital-gains", 
         label: "Capital Gains", 
         icon: <PiggyBank className="h-5 w-5 text-purple-500" />,
         description: "Profit from sale of investments",
-        examples: "Shares, property, mutual funds, crypto"
+        examples: "Shares, property, mutual funds, crypto",
+        individualOnly: false
       },
       { 
         id: "business", 
         label: "Business/Profession", 
         icon: <Briefcase className="h-5 w-5 text-orange-500" />,
         description: "Income from business activities",
-        examples: "Freelance work, consultancy, small business"
+        examples: "Freelance work, consultancy, small business",
+        individualOnly: false
       },
       { 
         id: "interest", 
         label: "Interest Income", 
         icon: <CreditCard className="h-5 w-5 text-pink-500" />,
         description: "Bank deposits, bonds, etc.",
-        examples: "Savings account, FDs, RDs, bonds"
+        examples: "Savings account, FDs, RDs, bonds",
+        individualOnly: false
       },
       { 
         id: "other", 
         label: "Other Sources", 
         icon: <PlusCircle className="h-5 w-5 text-gray-500" />,
         description: "Dividends, lottery, gifts, etc.",
-        examples: "Stock dividends, lottery winnings, gifts"
+        examples: "Stock dividends, lottery winnings, gifts",
+        individualOnly: false
       },
     ];
+    
+    // Filter sources based on PAN type
+    const filteredSources = allIncomeSources.filter(source => 
+      !source.individualOnly || (source.individualOnly && isIndividual)
+    );
     
     return (
       <div className="space-y-6">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {incomeSources.map(source => (
+          {filteredSources.map(source => (
             <Card 
               key={source.id} 
               className={`cursor-pointer hover:border-blue-300 transition-all ${
