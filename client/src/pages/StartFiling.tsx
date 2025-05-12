@@ -624,17 +624,31 @@ const StartFiling = () => {
       });
     };
     
-    // Format currency input
+    // Format currency input with Indian numbering system (lakhs, crores)
     const formatCurrency = (value: string | null | undefined) => {
+      // Handle null/undefined/empty values
       if (!value) return "";
-      // Remove any non-digit characters
+      
+      // Extract just the digits
       const numericValue = value.replace(/[^\d]/g, "");
       if (!numericValue) return "";
-      // Format with Indian numbering system (lakhs, crores)
+      
       try {
-        return numericValue.replace(/(\d)(?=(\d\d)+\d$)/g, "$1,");
+        // First group: last 3 digits (thousands)
+        // Following groups: 2 digits each (lakhs, crores)
+        // Format example: 1,23,45,678
+        if (numericValue.length <= 3) {
+          return numericValue;
+        }
+        
+        const lastThree = numericValue.substring(numericValue.length - 3);
+        const remainingDigits = numericValue.substring(0, numericValue.length - 3);
+        const formatted = remainingDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + lastThree;
+        
+        return formatted;
       } catch (error) {
-        return "0";
+        console.error("Error formatting currency:", error);
+        return numericValue; // Return unformatted but valid value in case of error
       }
     };
     
@@ -713,8 +727,13 @@ const StartFiling = () => {
                               className="pl-7"
                               value={salary.grossSalary}
                               onChange={(e) => {
+                                // Store the original cursor position
+                                const cursorPosition = e.target.selectionStart;
+                                
+                                // Format the value
                                 const value = formatCurrency(e.target.value);
                                 updateIncomeField("salaryIncome", index, "grossSalary", value);
+                                
                                 // Calculate net salary
                                 const gross = parseFloat((value || "0").replace(/,/g, '')) || 0;
                                 const stdDeduction = parseFloat((salary.standardDeduction || "0").replace(/,/g, '')) || 0;
@@ -722,6 +741,13 @@ const StartFiling = () => {
                                 const profTax = parseFloat((salary.professionalTax || "0").replace(/,/g, '')) || 0;
                                 const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
                                 updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
+                                
+                                // Set cursor position in the next render cycle
+                                setTimeout(() => {
+                                  if (e.target && typeof cursorPosition === 'number') {
+                                    e.target.setSelectionRange(cursorPosition, cursorPosition);
+                                  }
+                                }, 0);
                               }}
                             />
                           </div>
@@ -736,8 +762,13 @@ const StartFiling = () => {
                               className="pl-7"
                               value={salary.standardDeduction}
                               onChange={(e) => {
+                                // Store the original cursor position
+                                const cursorPosition = e.target.selectionStart;
+                                
+                                // Format the value
                                 const value = formatCurrency(e.target.value);
                                 updateIncomeField("salaryIncome", index, "standardDeduction", value);
+                                
                                 // Calculate net salary
                                 const gross = parseFloat((salary.grossSalary || "0").replace(/,/g, '')) || 0;
                                 const stdDeduction = parseFloat((value || "0").replace(/,/g, '')) || 0;
@@ -745,6 +776,13 @@ const StartFiling = () => {
                                 const profTax = parseFloat((salary.professionalTax || "0").replace(/,/g, '')) || 0;
                                 const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
                                 updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
+                                
+                                // Set cursor position in the next render cycle
+                                setTimeout(() => {
+                                  if (e.target && typeof cursorPosition === 'number') {
+                                    e.target.setSelectionRange(cursorPosition, cursorPosition);
+                                  }
+                                }, 0);
                               }}
                             />
                           </div>
@@ -760,8 +798,13 @@ const StartFiling = () => {
                               className="pl-7"
                               value={salary.section10Exemptions}
                               onChange={(e) => {
+                                // Store the original cursor position
+                                const cursorPosition = e.target.selectionStart;
+                                
+                                // Format the value
                                 const value = formatCurrency(e.target.value);
                                 updateIncomeField("salaryIncome", index, "section10Exemptions", value);
+                                
                                 // Calculate net salary
                                 const gross = parseFloat((salary.grossSalary || "0").replace(/,/g, '')) || 0;
                                 const stdDeduction = parseFloat((salary.standardDeduction || "0").replace(/,/g, '')) || 0;
@@ -769,6 +812,13 @@ const StartFiling = () => {
                                 const profTax = parseFloat((salary.professionalTax || "0").replace(/,/g, '')) || 0;
                                 const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
                                 updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
+                                
+                                // Set cursor position in the next render cycle
+                                setTimeout(() => {
+                                  if (e.target && typeof cursorPosition === 'number') {
+                                    e.target.setSelectionRange(cursorPosition, cursorPosition);
+                                  }
+                                }, 0);
                               }}
                             />
                           </div>
@@ -801,8 +851,13 @@ const StartFiling = () => {
                               className="pl-7"
                               value={salary.professionalTax}
                               onChange={(e) => {
+                                // Store the original cursor position
+                                const cursorPosition = e.target.selectionStart;
+                                
+                                // Format the value
                                 const value = formatCurrency(e.target.value);
                                 updateIncomeField("salaryIncome", index, "professionalTax", value);
+                                
                                 // Calculate net salary
                                 const gross = parseFloat((salary.grossSalary || "0").replace(/,/g, '')) || 0;
                                 const stdDeduction = parseFloat((salary.standardDeduction || "0").replace(/,/g, '')) || 0;
@@ -810,6 +865,13 @@ const StartFiling = () => {
                                 const profTax = parseFloat((value || "0").replace(/,/g, '')) || 0;
                                 const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
                                 updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
+                                
+                                // Set cursor position in the next render cycle
+                                setTimeout(() => {
+                                  if (e.target && typeof cursorPosition === 'number') {
+                                    e.target.setSelectionRange(cursorPosition, cursorPosition);
+                                  }
+                                }, 0);
                               }}
                             />
                           </div>
