@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { Link } from "wouter";
 import {
   Tabs,
   TabsContent,
@@ -686,6 +687,7 @@ const Admin = () => {
           <TabsTrigger value="tax-forms">Tax Forms</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
+          <TabsTrigger value="blog">Blog</TabsTrigger>
         </TabsList>
         
         <TabsContent value="dashboard" className="space-y-6">
@@ -702,6 +704,28 @@ const Admin = () => {
         
         <TabsContent value="documents">
           <DocumentsManagement />
+        </TabsContent>
+        
+        <TabsContent value="blog">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl font-bold tracking-tight">Blog Management</h2>
+            <Link href="/blog-admin">
+              <Button className="ml-auto">
+                <Plus className="h-4 w-4 mr-2" />
+                Create New Blog Post
+              </Button>
+            </Link>
+          </div>
+          <Card>
+            <CardContent className="p-6">
+              <p>Manage your blog posts, create new content, and edit existing articles.</p>
+              <div className="mt-4">
+                <Link href="/blog-admin">
+                  <Button variant="outline">Go to Blog Admin Panel</Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

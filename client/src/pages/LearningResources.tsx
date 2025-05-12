@@ -637,7 +637,7 @@ const LearningResources = () => {
                     </span>
                   </div>
                   <h3 className="text-xl font-semibold mb-3">{guide.title}</h3>
-                  <p className="text-muted-foreground mb-4 text-sm">{guide.description || guide.summary}</p>
+                  <p className="text-muted-foreground mb-4 text-sm">{guide.description}</p>
                   <Link href={`/learning/guides/${guide.id}`}>
                     <div className="text-primary font-medium hover:underline">Read Latest Update →</div>
                   </Link>
