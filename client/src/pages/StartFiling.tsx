@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import { X, Plus, BarChart4, Landmark, TrendingUp } from 'lucide-react';
 
 // Indian PAN card validation utility functions
 // PAN Format: AAAPL1234C
@@ -137,6 +138,7 @@ const StartFiling = () => {
       grossSalary: "",
       standardDeduction: "50000",
       section10Exemptions: "0",
+      section10ExemptionsList: [], // Array to store multiple exemptions
       professionalTax: "0",
       tdsDeducted: "",
       netSalary: ""
