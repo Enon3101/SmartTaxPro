@@ -229,7 +229,7 @@ const StartFiling = () => {
       
       // If moving to income details, go to the Tax Filing page for detailed forms
       if (activeStep === 2) {
-        navigate("/tax-filing");
+        setLocation("/tax-filing");
         return;
       }
     }
@@ -576,7 +576,13 @@ const StartFiling = () => {
                   Select Your Income Sources
                 </CardTitle>
                 <CardDescription>
-                  Choose all sources from which you earned income during FY {formData.assessmentYear.split('-')[0]-1}-{formData.assessmentYear.split('-')[0]}
+                  Choose all sources from which you earned income during FY {
+                    (() => {
+                      const yearEnd = formData.assessmentYear.split('-')[0];
+                      const yearStart = Number(yearEnd) - 1;
+                      return `${yearStart}-${yearEnd}`;
+                    })()
+                  }
                 </CardDescription>
               </CardHeader>
               <CardContent>
