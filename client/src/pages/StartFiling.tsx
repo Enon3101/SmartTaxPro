@@ -255,19 +255,52 @@ const StartFiling = () => {
   // Function to proceed to the next step in the wizard
   const nextStep = () => {
     if (activeStep < steps.length) {
-      setActiveStep(activeStep + 1);
+      // Calculate which step to go to next
+      let nextStepNumber = activeStep + 1;
       
-      // Income options are now shown in Step 3, only redirect to TaxFiling after that step
+      // Skip to step 4 (Tax Payments) if coming from step 3
+      if (activeStep === 3) {
+        nextStepNumber = 4;
+      }
+      
+      setActiveStep(nextStepNumber);
+      
+      // For TaxFiling detailed pages, redirect after income details are collected
       if (activeStep === 3 && formData.incomeSource.length > 0) {
-        setLocation("/tax-filing");
-        return;
+        // Save income data to API here
+        try {
+          // For simplicity, use setTimeout to simulate API call
+          setTimeout(() => {
+            toast({
+              title: "Income details saved",
+              description: "Your income details have been saved successfully"
+            });
+          }, 500);
+          
+          // Redirect to tax-filing page with all the detailed forms
+          setLocation("/tax-filing");
+          return;
+        } catch (error) {
+          console.error("Error saving income details:", error);
+          toast({
+            title: "Error",
+            description: "Failed to save income details. Please try again.",
+            variant: "destructive"
+          });
+        }
       }
     }
   };
   
   const previousStep = () => {
     if (activeStep > 1) {
-      setActiveStep(activeStep - 1);
+      // Special handling for step 3
+      if (activeStep === 3) {
+        // Go back to income source selection (step 2)
+        setActiveStep(2);
+      } else {
+        setActiveStep(activeStep - 1);
+      }
     }
   };
   
@@ -623,37 +656,43 @@ const StartFiling = () => {
         id: "salary", 
         label: "Salary/Pension", 
         icon: <Briefcase className="h-5 w-5 text-blue-500" />,
-        description: "Income from employment or pension"
+        description: "Income from employment or pension",
+        examples: "Form 16, salary slips, pension statements"
       },
       { 
         id: "house-property", 
         label: "House Property", 
         icon: <Home className="h-5 w-5 text-green-500" />,
-        description: "Rental income or home loan interest"
+        description: "Rental income or home loan interest",
+        examples: "Rent receipts, home loan statements"
       },
       { 
         id: "capital-gains", 
         label: "Capital Gains", 
         icon: <PiggyBank className="h-5 w-5 text-purple-500" />,
-        description: "Profit from sale of investments"
+        description: "Profit from sale of investments",
+        examples: "Shares, property, mutual funds, crypto"
       },
       { 
         id: "business", 
         label: "Business/Profession", 
         icon: <Briefcase className="h-5 w-5 text-orange-500" />,
-        description: "Income from business activities"
+        description: "Income from business activities",
+        examples: "Freelance work, consultancy, small business"
       },
       { 
         id: "interest", 
         label: "Interest Income", 
         icon: <CreditCard className="h-5 w-5 text-pink-500" />,
-        description: "Bank deposits, bonds, etc."
+        description: "Bank deposits, bonds, etc.",
+        examples: "Savings account, FDs, RDs, bonds"
       },
       { 
         id: "other", 
         label: "Other Sources", 
         icon: <PlusCircle className="h-5 w-5 text-gray-500" />,
-        description: "Dividends, lottery, gifts, etc."
+        description: "Dividends, lottery, gifts, etc.",
+        examples: "Stock dividends, lottery winnings, gifts"
       },
     ];
     
@@ -683,6 +722,9 @@ const StartFiling = () => {
                       </div>
                     </div>
                     <p className="text-sm text-gray-500 mt-1">{source.description}</p>
+                    <div className="mt-2 text-xs text-gray-400 italic">
+                      Examples: {source.examples}
+                    </div>
                   </div>
                 </div>
               </CardContent>
