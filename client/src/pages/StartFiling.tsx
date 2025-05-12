@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -169,15 +169,66 @@ const StartFiling = () => {
   });
   
   // Fill form with existing data if available
-  useState(() => {
+  useEffect(() => {
     if (taxFormData && taxFormData.personalInfo) {
-      setFormData({
+      // Ensure all income arrays are properly initialized
+      const updatedFormData = {
         ...formData,
         ...taxFormData.personalInfo,
-        assessmentYear: taxFormData.assessmentYear || "2024-25"
-      });
+        assessmentYear: taxFormData.assessmentYear || "2024-25",
+        // Make sure all income types are properly initialized as arrays
+        salaryIncome: Array.isArray(taxFormData.personalInfo.salaryIncome) 
+          ? taxFormData.personalInfo.salaryIncome 
+          : [{
+            id: "salary-1",
+            employerName: "",
+            grossSalary: "",
+            tdsDeducted: ""
+          }],
+        housePropertyIncome: Array.isArray(taxFormData.personalInfo.housePropertyIncome) 
+          ? taxFormData.personalInfo.housePropertyIncome 
+          : [{
+            id: "property-1",
+            propertyType: "self-occupied",
+            rentalIncome: "",
+            interestPaid: "",
+            propertyTax: ""
+          }],
+        capitalGainsIncome: Array.isArray(taxFormData.personalInfo.capitalGainsIncome) 
+          ? taxFormData.personalInfo.capitalGainsIncome 
+          : [{
+            id: "capital-1",
+            shortTerm: "",
+            longTerm: ""
+          }],
+        businessIncome: Array.isArray(taxFormData.personalInfo.businessIncome) 
+          ? taxFormData.personalInfo.businessIncome 
+          : [{
+            id: "business-1",
+            grossReceipts: "",
+            expenses: "",
+            netProfit: ""
+          }],
+        interestIncome: Array.isArray(taxFormData.personalInfo.interestIncome) 
+          ? taxFormData.personalInfo.interestIncome 
+          : [{
+            id: "interest-1",
+            savingsAccount: "",
+            fixedDeposits: "",
+            other: ""
+          }],
+        otherIncome: Array.isArray(taxFormData.personalInfo.otherIncome) 
+          ? taxFormData.personalInfo.otherIncome 
+          : [{
+            id: "other-1",
+            amount: "",
+            description: ""
+          }]
+      };
+      
+      setFormData(updatedFormData);
     }
-  });
+  }, [taxFormData]);
   
   const steps: Step[] = [
     {
