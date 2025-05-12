@@ -88,6 +88,7 @@ export default function StartFiling() {
     updateDeductions80C,
     updateDeductions80D,
     updateOtherDeductions,
+    updateTaxPaid,
     taxFormData,
     assessmentYear,
     setAssessmentYear,
@@ -186,6 +187,15 @@ export default function StartFiling() {
     nps: taxFormData?.deductions80C?.nps || "",
     tuitionFees: taxFormData?.deductions80C?.tuitionFees || "",
     totalAmount: taxFormData?.deductions80C?.totalAmount || "0"
+  });
+  
+  // State for taxes paid
+  const [taxesPaid, setTaxesPaid] = useState({
+    tdsFromSalary: taxFormData?.taxPaid?.tdsFromSalary || "",
+    tdsFromOtherSources: taxFormData?.taxPaid?.tdsFromOtherSources || "",
+    advanceTaxPaid: taxFormData?.taxPaid?.advanceTaxPaid || "",
+    selfAssessmentTaxPaid: taxFormData?.taxPaid?.selfAssessmentTaxPaid || "",
+    totalTaxPaid: taxFormData?.taxPaid?.totalTaxPaid || "0"
   });
   
   const [deductions80D, setDeductions80D] = useState({
@@ -368,6 +378,11 @@ export default function StartFiling() {
         updateDeductions80D(deductions80D);
         updateOtherDeductions(otherDeductions);
         break;
+        
+      case 5:
+        // Update taxes paid data
+        updateTaxPaid(taxesPaid);
+        break;
       default:
         break;
     }
@@ -454,6 +469,33 @@ export default function StartFiling() {
       
       // Update context
       updateOtherDeductions(updatedWithTotal);
+      
+      return updatedWithTotal;
+    });
+  };
+  
+  // Handler for taxes paid section
+  const handleTaxesPaidChange = (field: string, value: string) => {
+    const numericValue = value.replace(/[^0-9]/g, "");
+    
+    setTaxesPaid(prev => {
+      const updatedTaxesPaid = {
+        ...prev,
+        [field]: numericValue
+      };
+      
+      // Calculate the total tax paid
+      const total = Object.entries(updatedTaxesPaid)
+        .filter(([key]) => key !== "totalTaxPaid")
+        .reduce((sum, [_, val]) => sum + (parseInt(val) || 0), 0);
+      
+      const updatedWithTotal = {
+        ...updatedTaxesPaid,
+        totalTaxPaid: total.toString()
+      };
+      
+      // Update context with the latest tax paid data
+      updateTaxPaid(updatedWithTotal);
       
       return updatedWithTotal;
     });
