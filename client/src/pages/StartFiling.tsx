@@ -129,6 +129,9 @@ export default function StartFiling() {
     housePropertyIncome: [{
       id: nanoid(),
       propertyType: "self-occupied",
+      propertyAddress: "",
+      tenantName: "",
+      tenantPAN: "",
       annualLetableValue: "",
       municipalTaxes: "",
       unrealizedRent: "",
@@ -598,6 +601,9 @@ export default function StartFiling() {
             {
               id: nanoid(),
               propertyType: "self-occupied",
+              propertyAddress: "",
+              tenantName: "",
+              tenantPAN: "",
               annualLetableValue: "",
               municipalTaxes: "",
               unrealizedRent: "",

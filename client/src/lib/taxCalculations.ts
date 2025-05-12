@@ -230,6 +230,14 @@ export function calculateTaxSummary(
   };
 }
 
-export function formatCurrency(amount: number): string {
-  return formatIndianCurrency(amount, true, 0);
+export function formatCurrency(amount: string | number): string {
+  // Convert string to number if needed
+  let numericAmount: number;
+  if (typeof amount === 'string') {
+    // Remove commas and convert to number
+    numericAmount = parseFloat(amount.replace(/,/g, '')) || 0;
+  } else {
+    numericAmount = amount || 0;
+  }
+  return formatIndianCurrency(numericAmount, true, 0);
 }
