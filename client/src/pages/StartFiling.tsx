@@ -1289,13 +1289,13 @@ export default function StartFiling() {
                           <span>Net Income from House Property:</span>
                           <span>
                             {property.propertyType === "self-occupied" 
-                              ? `₹${formatCurrency((-Number(property.interestOnHousingLoan || 0) < -200000 ? -200000 : -Number(property.interestOnHousingLoan || 0)).toString())}` 
-                              : `₹${formatCurrency((
+                              ? `₹${(-Math.min(Number(property.interestOnHousingLoan || 0), 200000)).toLocaleString('en-IN')}` 
+                              : `₹${(
                                   Number(property.annualLetableValue || 0) - 
                                   Number(property.municipalTaxes || 0) - 
                                   Math.round(Number(property.annualLetableValue || 0) * 0.3) - 
                                   Number(property.interestOnHousingLoan || 0)
-                                ).toString())}`
+                                ).toLocaleString('en-IN')}`
                             }
                           </span>
                         </div>
