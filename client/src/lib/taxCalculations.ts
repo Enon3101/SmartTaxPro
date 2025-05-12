@@ -61,7 +61,7 @@ export function calculateTaxSummary(
   let salaryIncome = 0;
   if (Array.isArray(incomeData?.salaryIncome)) {
     // Sum up all salary entries' net salary
-    salaryIncome = incomeData.salaryIncome.reduce((total, salary) => {
+    salaryIncome = incomeData.salaryIncome.reduce((total: number, salary: any) => {
       const netSalary = parseFloat((salary.netSalary || "0").replace(/,/g, "")) || 0;
       return total + netSalary;
     }, 0);
@@ -73,7 +73,7 @@ export function calculateTaxSummary(
   // House property income
   let housePropertyIncome = 0;
   if (Array.isArray(incomeData?.housePropertyIncome)) {
-    housePropertyIncome = incomeData.housePropertyIncome.reduce((total, property) => {
+    housePropertyIncome = incomeData.housePropertyIncome.reduce((total: number, property: any) => {
       const netIncome = parseFloat((property.netAnnualValue || "0").replace(/,/g, "")) || 0;
       return total + netIncome;
     }, 0);
@@ -84,7 +84,7 @@ export function calculateTaxSummary(
   // Capital gains
   let capitalGainsIncome = 0;
   if (Array.isArray(incomeData?.capitalGainsIncome)) {
-    capitalGainsIncome = incomeData.capitalGainsIncome.reduce((total, gain) => {
+    capitalGainsIncome = incomeData.capitalGainsIncome.reduce((total: number, gain: any) => {
       const netGain = parseFloat((gain.netCapitalGain || "0").replace(/,/g, "")) || 0;
       return total + netGain;
     }, 0);
@@ -97,7 +97,7 @@ export function calculateTaxSummary(
   // Business income
   let businessIncome = 0;
   if (Array.isArray(incomeData?.businessIncome)) {
-    businessIncome = incomeData.businessIncome.reduce((total, business) => {
+    businessIncome = incomeData.businessIncome.reduce((total: number, business: any) => {
       const netProfit = parseFloat((business.netProfit || "0").replace(/,/g, "")) || 0;
       return total + netProfit;
     }, 0);
@@ -108,7 +108,7 @@ export function calculateTaxSummary(
   // Interest income
   let interestIncome = 0;
   if (Array.isArray(incomeData?.interestIncome)) {
-    interestIncome = incomeData.interestIncome.reduce((total, interest) => {
+    interestIncome = incomeData.interestIncome.reduce((total: number, interest: any) => {
       const amount = parseFloat((interest.amount || "0").replace(/,/g, "")) || 0;
       return total + amount;
     }, 0);
@@ -119,7 +119,7 @@ export function calculateTaxSummary(
   // Other income
   let otherIncomeAmount = 0;
   if (Array.isArray(incomeData?.otherIncome)) {
-    otherIncomeAmount = incomeData.otherIncome.reduce((total, other) => {
+    otherIncomeAmount = incomeData.otherIncome.reduce((total: number, other: any) => {
       const amount = parseFloat((other.amount || "0").replace(/,/g, "")) || 0;
       return total + amount;
     }, 0);

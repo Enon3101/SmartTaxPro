@@ -4,10 +4,20 @@ import { Link } from "wouter";
 import { ArrowRight, CheckCircle, Star, FileText, Calculator, CalendarDays, Upload, Phone } from "lucide-react";
 import { LoginDialog } from "@/components/LoginDialog";
 import { useAuth } from "@/context/AuthContext";
+import { useState, useContext } from "react";
+import { TaxDataContext } from "@/context/TaxDataProvider";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue 
+} from "@/components/ui/select";
 import { motion } from "framer-motion";
 
 const Home = () => {
   const { isAuthenticated, user } = useAuth();
+  const { assessmentYear, setAssessmentYear } = useContext(TaxDataContext);
   
   return (
     <div className="bg-background">
@@ -81,6 +91,35 @@ const Home = () => {
                 Complete your Income Tax Return in as little as 10 minutes. Get maximum refund with our intelligent tax engine.
               </motion.p>
               
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+                className="mb-6"
+              >
+                <div className="flex items-center space-x-2">
+                  <CalendarDays className="h-5 w-5 text-blue-500" />
+                  <span className="font-medium">Assessment Year:</span>
+                  <Select 
+                    value={assessmentYear}
+                    onValueChange={setAssessmentYear}
+                  >
+                    <SelectTrigger className="w-36 bg-white">
+                      <SelectValue placeholder="Select Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="2023-24">2023-24</SelectItem>
+                      <SelectItem value="2024-25">2024-25</SelectItem>
+                      <SelectItem value="2025-26">2025-26</SelectItem>
+                      <SelectItem value="2026-27">2026-27</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <div className="text-sm text-muted-foreground">
+                    Standard deduction: {assessmentYear === "2025-26" || assessmentYear === "2026-27" ? "₹75,000" : "₹50,000"}
+                  </div>
+                </div>
+              </motion.div>
+
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

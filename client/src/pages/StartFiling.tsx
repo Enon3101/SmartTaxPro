@@ -1071,11 +1071,318 @@ export default function StartFiling() {
           
           {/* Step 4: Deductions */}
           {currentStep === 4 && (
-            <div className="text-center py-20">
-              <h3 className="text-lg font-medium mb-2">Deductions Coming Soon</h3>
-              <p className="text-gray-500">
-                We're still working on this section. Please check back later.
-              </p>
+            <div className="space-y-8">
+              <div className="bg-blue-50 p-4 rounded-lg mb-6">
+                <h3 className="text-lg font-semibold text-blue-700 mb-2">Tax Deductions</h3>
+                <p className="text-sm text-blue-600">
+                  Claim deductions under various sections to reduce your taxable income. The standard deduction of 
+                  {assessmentYear === "2025-26" || assessmentYear === "2026-27" ? " ₹75,000" : " ₹50,000"} 
+                  has been automatically applied to your salary income.
+                </p>
+              </div>
+              
+              {/* Section 80C Deductions */}
+              <div className="p-6 bg-white border rounded-lg">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium">Section 80C Deductions (Max ₹1,50,000)</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="ppf">PPF (Public Provident Fund)</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="ppf"
+                        className="pl-7"
+                        placeholder="Enter Amount"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="elss">ELSS (Equity Linked Saving Scheme)</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="elss"
+                        className="pl-7"
+                        placeholder="Enter Amount"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="lifeInsurance">Life Insurance Premium</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="lifeInsurance"
+                        className="pl-7"
+                        placeholder="Enter Amount"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="houseLoanPrincipal">Housing Loan Principal Repayment</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="houseLoanPrincipal"
+                        className="pl-7"
+                        placeholder="Enter Amount"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="sukanya">Sukanya Samriddhi Yojana</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="sukanya"
+                        className="pl-7"
+                        placeholder="Enter Amount"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="nsc">NSC (National Savings Certificate)</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="nsc"
+                        className="pl-7"
+                        placeholder="Enter Amount"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="fixedDeposit">Tax Saving Fixed Deposit (5 years)</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="fixedDeposit"
+                        className="pl-7"
+                        placeholder="Enter Amount"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="epf">EPF/GPF Contribution</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="epf"
+                        className="pl-7"
+                        placeholder="Enter Amount"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="nps">NPS Tier 1 Account Contribution</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="nps"
+                        className="pl-7"
+                        placeholder="Enter Amount"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="tuitionFees">Tuition Fees for Children (max 2)</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="tuitionFees"
+                        className="pl-7"
+                        placeholder="Enter Amount"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Section 80D Deductions */}
+              <div className="p-6 bg-white border rounded-lg">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium">Section 80D - Health Insurance</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="selfMedicalInsurance">Medical Insurance Premium (Self & Family)</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="selfMedicalInsurance"
+                        className="pl-7"
+                        placeholder="Max ₹25,000"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">Max ₹25,000 (₹50,000 if age 60+)</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="parentsMedicalInsurance">Medical Insurance Premium (Parents)</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="parentsMedicalInsurance"
+                        className="pl-7"
+                        placeholder="Max ₹25,000"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">Max ₹25,000 (₹50,000 if age 60+)</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="preventiveHealthCheckup">Preventive Health Check-up</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="preventiveHealthCheckup"
+                        className="pl-7"
+                        placeholder="Max ₹5,000"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">Maximum of ₹5,000 included in the limits above</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="medicalExpenditure">Medical Expenditure (Senior Citizens)</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="medicalExpenditure"
+                        className="pl-7"
+                        placeholder="For uninsured senior citizens"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">For uninsured senior citizens (part of ₹50,000 limit)</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Other Deductions */}
+              <div className="p-6 bg-white border rounded-lg">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium">Other Deductions</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="section80CCD">Section 80CCD(1B) - Additional NPS</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="section80CCD"
+                        className="pl-7"
+                        placeholder="Max ₹50,000"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">Additional deduction for NPS (max ₹50,000)</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="section80E">Section 80E - Education Loan Interest</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="section80E"
+                        className="pl-7"
+                        placeholder="No upper limit"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">Interest on education loan (no maximum limit)</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="section80G">Section 80G - Donations</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="section80G"
+                        className="pl-7"
+                        placeholder="Depending on donation type"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">50-100% deduction based on donation type</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="section80TTA">Section 80TTA - Savings Interest</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="section80TTA"
+                        className="pl-7"
+                        placeholder="Max ₹10,000"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">Interest from savings account (max ₹10,000)</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="section80TTB">Section 80TTB - Interest for Seniors</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="section80TTB"
+                        className="pl-7"
+                        placeholder="Max ₹50,000"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">Interest income for senior citizens (max ₹50,000)</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="section80EEA">Section 80EEA - Housing Loan Interest</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="section80EEA"
+                        className="pl-7"
+                        placeholder="Max ₹1,50,000"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">First-time home buyers (max ₹1,50,000)</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="section80DDB">Section 80DDB - Medical Treatment</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="section80DDB"
+                        className="pl-7"
+                        placeholder="Specified diseases"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">Treatment of specified diseases (max ₹40,000/₹1,00,000)</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="section80U">Section 80U - Disability</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="section80U"
+                        className="pl-7"
+                        placeholder="For persons with disability"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">₹75,000 (disability) or ₹1,25,000 (severe disability)</p>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
           
