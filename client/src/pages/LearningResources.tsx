@@ -57,6 +57,15 @@ interface BlogPost {
   updatedAt: string;
 }
 
+// Tax guide interface 
+interface TaxGuide {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  category: string;
+}
+
 // Sample blog data (to be replaced with API call)
 const blogPostsData: BlogPost[] = [
   {
@@ -214,6 +223,38 @@ const blogPostsData: BlogPost[] = [
   }
 ];
 
+// Tax guides data 
+const taxGuides: TaxGuide[] = [
+  {
+    id: "new-vs-old-regime",
+    title: "New vs Old Tax Regime: Which Should You Choose?",
+    description: "Understand the differences between the new and old tax regimes in India, and determine which option might save you more tax based on your income and investments.",
+    image: "/guides/tax-regime-guide.jpg",
+    category: "Tax Planning"
+  },
+  {
+    id: "section-80c-80u",
+    title: "Tax Benefits Under Section 80C to 80U",
+    description: "Explore the comprehensive list of deductions available under various subsections from 80C to 80U, including investments, insurance, and medical expenses.",
+    image: "/guides/tax-deductions.jpg",
+    category: "Deductions"
+  },
+  {
+    id: "gst-for-business",
+    title: "GST for Small Businesses & Professionals",
+    description: "Navigate the Goods and Services Tax framework for small businesses, freelancers, and professionals. Learn about registration, filing requirements, and input tax credits.",
+    image: "/guides/gst-guide.jpg",
+    category: "GST"
+  },
+  {
+    id: "nps-elss-benefits",
+    title: "Tax Benefits for NPS and ELSS Investments",
+    description: "Discover the tax advantages of investing in National Pension System (NPS) and Equity-Linked Savings Schemes (ELSS) under Indian tax laws.",
+    image: "/guides/investment-tax-benefits.jpg",
+    category: "Investments"
+  }
+];
+
 const LearningResources = () => {
   // State for search and pagination
   const [searchTerm, setSearchTerm] = useState("");
@@ -280,14 +321,34 @@ const LearningResources = () => {
     return matchesSearch && matchesCategory;
   });
   
-  // Get unique categories from blog posts
-  const categories = ["all", ...Array.from(new Set(blogPostsData.map(post => post.category)))];
+  // Filter and search updates
+  const filteredUpdates = taxGuides.filter(guide => {
+    const matchesSearch = 
+      guide.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      guide.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      guide.category.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = activeCategory === "all" || guide.category === activeCategory;
+    
+    return matchesSearch && matchesCategory;
+  });
   
-  // Pagination logic
+  // Get unique categories from blog posts and tax guides
+  const allCategories = [...blogPostsData.map(post => post.category), ...taxGuides.map(guide => guide.category)];
+  const categories = ["all", ...Array.from(new Set(allCategories))];
+  
+  // Pagination logic for blogs
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = filteredBlogs.slice(indexOfFirstPost, indexOfLastPost);
-  const totalPages = Math.ceil(filteredBlogs.length / postsPerPage);
+  const totalBlogPages = Math.ceil(filteredBlogs.length / postsPerPage);
+  
+  // Pagination logic for updates
+  const currentUpdates = filteredUpdates.slice(indexOfFirstPost, indexOfLastPost);
+  const totalUpdatePages = Math.ceil(filteredUpdates.length / postsPerPage);
+  
+  // Current total pages based on active tab
+  const totalPages = currentTab === "blogs" ? totalBlogPages : totalUpdatePages;
   
   // Page change handlers
   const nextPage = () => {
@@ -323,41 +384,6 @@ const LearningResources = () => {
       day: 'numeric' 
     });
   };
-  
-  // Tax guides data
-  const taxGuides = [
-    {
-      id: "new-vs-old-regime",
-      title: "New vs Old Tax Regime: Which Should You Choose?",
-      description: "Understand the differences between the new and old tax regimes in India, and determine which option might save you more tax based on your income and investments.",
-      image: "/guides/tax-regime-guide.jpg",
-      category: "Tax Planning"
-    },
-    {
-      id: "section-80c-80u",
-      title: "Tax Benefits Under Section 80C to 80U",
-      description: "Explore the comprehensive list of deductions available under various subsections from 80C to 80U, including investments, insurance, and medical expenses.",
-      image: "/guides/tax-deductions.jpg",
-      category: "Deductions"
-    },
-    {
-      id: "gst-for-business",
-      title: "GST for Small Businesses & Professionals",
-      description: "Navigate the Goods and Services Tax framework for small businesses, freelancers, and professionals. Learn about registration, filing requirements, and input tax credits.",
-      image: "/guides/gst-guide.jpg",
-      category: "GST"
-    },
-    {
-      id: "nps-elss-benefits",
-      title: "Tax Benefits for NPS and ELSS Investments",
-      description: "Discover the tax advantages of investing in National Pension System (NPS) and Equity-Linked Savings Schemes (ELSS) under Indian tax laws.",
-      image: "/guides/investment-tax-benefits.jpg",
-      category: "Investments"
-    }
-  ];
-
-  // We've merged Capital Gains guides into blogPosts data
-// Capital Gains content is now part of the regular blog posts
 
   return (
     <div className="container mx-auto px-4 sm:px-6 py-8">
@@ -374,34 +400,34 @@ const LearningResources = () => {
           <TabsTrigger value="latest-updates">Latest Updates</TabsTrigger>
         </TabsList>
         
-        {/* Search bar - only visible on the blogs tab */}
-        {currentTab === "blogs" && (
-          <div className="flex flex-col md:flex-row gap-4 mb-6 items-center">
-            <div className="relative w-full md:w-1/2">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search articles by title, content, or tags..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="pl-10"
-              />
-            </div>
-            
-            <div className="flex flex-wrap gap-2 w-full md:w-1/2 justify-start md:justify-end">
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  size="sm"
-                  variant={activeCategory === category ? "default" : "outline"}
-                  onClick={() => handleCategoryChange(category)}
-                  className="text-xs capitalize"
-                >
-                  {category}
-                </Button>
-              ))}
-            </div>
+        {/* Search bar - always visible */}
+        <div className="flex flex-col md:flex-row gap-4 mb-6 items-center">
+          <div className="relative w-full md:w-1/2">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder={currentTab === "blogs" 
+                ? "Search articles by title, content, or tags..." 
+                : "Search updates by title or category..."}
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="pl-10"
+            />
           </div>
-        )}
+          
+          <div className="flex flex-wrap gap-2 w-full md:w-1/2 justify-start md:justify-end">
+            {categories.map((category) => (
+              <Button
+                key={category}
+                size="sm"
+                variant={activeCategory === category ? "default" : "outline"}
+                onClick={() => handleCategoryChange(category)}
+                className="text-xs capitalize"
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
+        </div>
         
         <TabsContent value="blogs">
           {/* Blog posts with pagination */}
@@ -551,52 +577,35 @@ const LearningResources = () => {
                   </>
                 )}
                 
-                {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
-                  // Logic to show current page and nearby pages
-                  let pageNum: number;
-                  
-                  if (totalPages <= 5) {
-                    // If 5 or fewer pages, show all page numbers
-                    pageNum = i + 1;
-                  } else if (currentPage <= 3) {
-                    // If near the start, show pages 1-5
-                    pageNum = i + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    // If near the end, show the last 5 pages
-                    pageNum = totalPages - 4 + i;
-                  } else {
-                    // Show current page and 2 pages before and after
-                    pageNum = currentPage - 2 + i;
+                {[...Array(totalPages)].map((_, i) => {
+                  const pageNumber = i + 1;
+                  // Show current page, 2 before and 2 after
+                  if (
+                    pageNumber === 1 ||
+                    pageNumber === totalPages ||
+                    (pageNumber >= currentPage - 2 && pageNumber <= currentPage + 2)
+                  ) {
+                    return (
+                      <Button
+                        key={i}
+                        variant={pageNumber === currentPage ? "default" : "outline"}
+                        size="sm"
+                        className="w-8 h-8 p-0"
+                        onClick={() => setCurrentPage(pageNumber)}
+                      >
+                        {pageNumber}
+                      </Button>
+                    );
                   }
-                  
-                  return (
-                    <Button
-                      key={pageNum}
-                      variant={currentPage === pageNum ? "default" : "outline"}
-                      size="sm"
-                      className="w-8 h-8 p-0"
-                      onClick={() => setCurrentPage(pageNum)}
-                    >
-                      {pageNum}
-                    </Button>
-                  );
+                  // Show ellipsis once
+                  if (
+                    (pageNumber === currentPage - 3 && currentPage > 3) ||
+                    (pageNumber === currentPage + 3 && currentPage < totalPages - 2)
+                  ) {
+                    return <span key={i} className="mx-1 text-muted-foreground">...</span>;
+                  }
+                  return null;
                 })}
-                
-                {totalPages > 5 && currentPage < totalPages - 2 && (
-                  <>
-                    {currentPage < totalPages - 3 && (
-                      <span className="mx-1 text-muted-foreground">...</span>
-                    )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-8 h-8 p-0"
-                      onClick={() => setCurrentPage(totalPages)}
-                    >
-                      {totalPages}
-                    </Button>
-                  </>
-                )}
               </div>
               
               <Button
@@ -611,48 +620,134 @@ const LearningResources = () => {
               </Button>
             </div>
           )}
-          
-          {isAuthenticated && user?.role === "admin" && (
-            <div className="mt-8 text-center">
-              <Link href="/admin/blog/new">
-                <Button className="bg-blue-600 hover:bg-blue-700">
-                  <Pencil className="mr-2 h-4 w-4" /> Create New Blog Post
-                </Button>
-              </Link>
-            </div>
-          )}
         </TabsContent>
         
         <TabsContent value="latest-updates">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {taxGuides.map((guide) => (
-              <Card key={guide.id} className="overflow-hidden hover:shadow-md transition-all">
-                <div className="aspect-video bg-muted dark:bg-muted/40 flex items-center justify-center">
-                  <BookOpen className="h-12 w-12 text-primary/70" />
-                </div>
-                <CardContent className="p-6">
-                  <div className="mb-3">
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
-                      {guide.category}
-                    </span>
+          {/* Latest Updates with blog-like cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+            {currentUpdates.length > 0 ? (
+              currentUpdates.map((guide) => (
+                <Card 
+                  key={guide.id} 
+                  className="flex flex-col h-full hover:shadow-md transition-all overflow-hidden group border border-primary/30"
+                >
+                  <div className="h-40 bg-muted dark:bg-muted/40 relative overflow-hidden">
+                    <div className="h-full flex items-center justify-center">
+                      <BookOpen className="h-16 w-16 text-primary/30" />
+                    </div>
+                    <div className="absolute top-3 left-3">
+                      <span className="bg-primary/90 text-white text-[10px] px-2 py-1 rounded-full">
+                        {guide.category}
+                      </span>
+                    </div>
+                    <div className="absolute top-3 right-3">
+                      <span className="bg-green-500/90 text-white text-[10px] px-2 py-1 rounded-full flex items-center">
+                        <Clock className="h-2 w-2 mr-1" />
+                        5 min read
+                      </span>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">{guide.title}</h3>
-                  <p className="text-muted-foreground mb-4 text-sm">{guide.description}</p>
-                  <Link href={`/learning/guides/${guide.id}`}>
-                    <div className="text-primary font-medium hover:underline">Read Latest Update →</div>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
+                  <CardContent className="p-4 flex flex-col flex-grow">
+                    <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+                      <div className="flex items-center">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        <span>May 10, 2025</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1 justify-end">
+                        <Badge variant="outline" className="text-[9px] px-1 py-0">
+                          tax guide
+                        </Badge>
+                        <Badge variant="outline" className="text-[9px] px-1 py-0">
+                          update
+                        </Badge>
+                      </div>
+                    </div>
+                    <h3 className="text-base font-semibold line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+                      {guide.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground mb-4 line-clamp-3 flex-grow">
+                      {guide.description}
+                    </p>
+                    <div className="mt-auto">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center text-xs">
+                          <User className="h-3 w-3 mr-1 text-muted-foreground" />
+                          <span className="text-muted-foreground">By Tax Expert</span>
+                        </div>
+                        <span className="text-[10px] text-green-600 dark:text-green-400 font-medium">
+                          Latest Update
+                        </span>
+                      </div>
+                      <Link href={`/learning/guides/${guide.id}`}>
+                        <Button 
+                          variant="default" 
+                          size="sm" 
+                          className="text-xs w-full justify-between"
+                        >
+                          Read Full Update
+                          <ArrowRight className="ml-1 h-3 w-3" />
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <div className="col-span-full py-10 text-center">
+                <div className="mb-4">
+                  <Search className="h-16 w-16 mx-auto text-muted-foreground/30" />
+                </div>
+                <h3 className="text-lg font-medium mb-2">No results found</h3>
+                <p className="text-muted-foreground text-sm mb-4">
+                  No updates match your search criteria. Try adjusting your search terms or category filters.
+                </p>
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setSearchTerm("");
+                    setActiveCategory("all");
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            )}
           </div>
           
-          <div className="mt-8 text-center">
-            <Link href="/learning">
-              <Button variant="outline" size="lg" className="mt-4">
-                View All Updates
+          {/* Pagination controls for updates */}
+          {filteredUpdates.length > postsPerPage && (
+            <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={prevPage}
+                disabled={currentPage === 1}
+                className="w-full sm:w-auto"
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Previous
               </Button>
-            </Link>
-          </div>
+              
+              <div className="text-sm text-center">
+                <span className="font-medium">Page {currentPage}</span>
+                <span className="text-muted-foreground"> of {totalPages}</span>
+                <div className="text-xs text-muted-foreground mt-1">
+                  Showing {indexOfFirstPost + 1}-{Math.min(indexOfLastPost, filteredUpdates.length)} of {filteredUpdates.length} updates
+                </div>
+              </div>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={nextPage}
+                disabled={currentPage === totalPages}
+                className="w-full sm:w-auto"
+              >
+                Next
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
+          )}
         </TabsContent>
 
       </Tabs>
@@ -683,51 +778,168 @@ const LearningResources = () => {
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold mb-2">Video Tutorials</h3>
               <p className="text-muted-foreground mb-4 text-sm">
-                Visual learner? Watch our video tutorials explaining complex tax concepts in simple terms.
+                Watch step-by-step video guides on tax filing, deductions, and common tax scenarios explained.
               </p>
               <Link href="/learning/videos">
-                <div className="text-primary font-medium hover:underline">Watch Now →</div>
+                <div className="text-primary font-medium hover:underline">Watch Videos →</div>
               </Link>
             </CardContent>
           </Card>
           
           <Card className="overflow-hidden hover:shadow-md transition-all">
             <div className="bg-muted dark:bg-muted/40 p-6 flex justify-center">
-              <GraduationCap className="h-16 w-16 text-primary/70" />
+              <Calculator className="h-16 w-16 text-primary/70" />
             </div>
             <CardContent className="p-6">
-              <h3 className="text-lg font-semibold mb-2">Tax Webinars</h3>
+              <h3 className="text-lg font-semibold mb-2">Tax Calculators</h3>
               <p className="text-muted-foreground mb-4 text-sm">
-                Join our expert-led webinars on tax planning, investment strategies, and regulatory updates.
+                Use our online calculators to estimate taxes, compare tax regimes, and plan your investments.
               </p>
-              <Link href="/learning/webinars">
-                <div className="text-primary font-medium hover:underline">View Schedule →</div>
+              <Link href="/calculators">
+                <div className="text-primary font-medium hover:underline">Try Calculators →</div>
               </Link>
             </CardContent>
           </Card>
         </div>
       </div>
-
-      {/* Help Box */}
-      <Card className="bg-primary/5 dark:bg-primary/10 border-0 mb-8">
-        <CardContent className="p-8">
-          <div className="flex flex-col md:flex-row md:items-center">
-            <div className="mb-6 md:mb-0 md:mr-8">
-              <HelpCircle className="h-12 w-12 text-primary" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold mb-2">Need Personalized Tax Guidance?</h3>
-              <p className="text-muted-foreground mb-4">
-                Our tax experts are ready to help you navigate complex Indian tax situations 
-                and find the best solutions for your specific needs.
-              </p>
-              <Link href="/support" className="text-primary hover:underline font-medium">
-                Contact Our Tax Experts →
-              </Link>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      
+      {/* Tax Filing Academy Section */}
+      <div className="bg-muted dark:bg-muted/30 rounded-lg p-6 md:p-8 mb-12">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold mb-2">Tax Filing Academy</h2>
+          <p className="text-muted-foreground">
+            Learn the fundamentals of Indian taxation through our structured courses
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card className="hover:shadow-md transition-all">
+            <CardContent className="p-5">
+              <div className="rounded-full bg-blue-100 dark:bg-blue-900/20 w-12 h-12 flex items-center justify-center text-blue-600 mb-4">
+                <FileText className="h-6 w-6" />
+              </div>
+              <h3 className="font-semibold mb-1">Basics of Income Tax</h3>
+              <p className="text-xs text-muted-foreground">Understanding tax slabs, surcharge, and filing requirements</p>
+            </CardContent>
+          </Card>
+          
+          <Card className="hover:shadow-md transition-all">
+            <CardContent className="p-5">
+              <div className="rounded-full bg-green-100 dark:bg-green-900/20 w-12 h-12 flex items-center justify-center text-green-600 mb-4">
+                <GraduationCap className="h-6 w-6" />
+              </div>
+              <h3 className="font-semibold mb-1">Deductions Masterclass</h3>
+              <p className="text-xs text-muted-foreground">Maximize your tax savings through legal deductions</p>
+            </CardContent>
+          </Card>
+          
+          <Card className="hover:shadow-md transition-all">
+            <CardContent className="p-5">
+              <div className="rounded-full bg-purple-100 dark:bg-purple-900/20 w-12 h-12 flex items-center justify-center text-purple-600 mb-4">
+                <BarChart3 className="h-6 w-6" />
+              </div>
+              <h3 className="font-semibold mb-1">Investment & Taxation</h3>
+              <p className="text-xs text-muted-foreground">Tax-efficient investment strategies for wealth building</p>
+            </CardContent>
+          </Card>
+          
+          <Card className="hover:shadow-md transition-all">
+            <CardContent className="p-5">
+              <div className="rounded-full bg-yellow-100 dark:bg-yellow-900/20 w-12 h-12 flex items-center justify-center text-yellow-600 mb-4">
+                <ScrollText className="h-6 w-6" />
+              </div>
+              <h3 className="font-semibold mb-1">ITR Filing Guide</h3>
+              <p className="text-xs text-muted-foreground">Step-by-step walkthrough of the tax filing process</p>
+            </CardContent>
+          </Card>
+        </div>
+        
+        <div className="mt-8 text-center">
+          <Link href="/learning/courses">
+            <Button className="w-full md:w-auto">
+              Explore All Courses
+            </Button>
+          </Link>
+        </div>
+      </div>
+      
+      {/* FAQ Section */}
+      <div className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex gap-4">
+                <div>
+                  <HelpCircle className="h-6 w-6 text-primary/80" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-2">How do I know which ITR form to use?</h3>
+                  <p className="text-sm text-muted-foreground">
+                    The ITR form selection depends on your income sources. Our platform automatically suggests the appropriate form based on your income details.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex gap-4">
+                <div>
+                  <HelpCircle className="h-6 w-6 text-primary/80" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-2">What is the due date for filing ITR for AY 2025-26?</h3>
+                  <p className="text-sm text-muted-foreground">
+                    For individuals not subject to audit, the due date is July 31, 2025. For businesses requiring audit, it's October 31, 2025.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex gap-4">
+                <div>
+                  <HelpCircle className="h-6 w-6 text-primary/80" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-2">What documents do I need for filing ITR?</h3>
+                  <p className="text-sm text-muted-foreground">
+                    You'll need Form 16, Form 26AS, bank statements, investment proofs, property documents (if applicable), and Aadhaar or PAN details.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex gap-4">
+                <div>
+                  <HelpCircle className="h-6 w-6 text-primary/80" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-2">How long does it take to file ITR on your platform?</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Most users complete the process in 15-30 minutes if they have all documents ready. For complex returns, it may take up to an hour.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        <div className="mt-8 text-center">
+          <Link href="/support/faq">
+            <Button variant="outline" size="lg">
+              View All FAQs
+            </Button>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };
