@@ -637,7 +637,7 @@ const LearningResources = () => {
                     </span>
                   </div>
                   <h3 className="text-xl font-semibold mb-3">{guide.title}</h3>
-                  <p className="text-muted-foreground mb-4 text-sm">{guide.summary}</p>
+                  <p className="text-muted-foreground mb-4 text-sm">{guide.description || guide.summary}</p>
                   <Link href={`/learning/guides/${guide.id}`}>
                     <div className="text-primary font-medium hover:underline">Read Latest Update →</div>
                   </Link>
@@ -654,71 +654,7 @@ const LearningResources = () => {
             </Link>
           </div>
         </TabsContent>
-        
-        <TabsContent value="capital-gains">
-          <div className="flex flex-col space-y-6">
-            <div className="bg-muted/30 dark:bg-muted/10 rounded-lg p-6 border border-border mb-8">
-              <div className="flex items-start space-x-4">
-                <div className="bg-primary/10 dark:bg-primary/20 p-3 rounded-full">
-                  <BarChart3 className="h-8 w-8 text-primary" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-semibold mb-2">Capital Gains Learning Center</h2>
-                  <p className="text-muted-foreground mb-4">
-                    Understanding capital gains tax is crucial for investors. Explore our comprehensive guides to learn about taxation of different asset classes, holding periods, and strategies to optimize your tax liability.
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
-                      Stocks
-                    </span>
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
-                      Mutual Funds
-                    </span>
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
-                      Real Estate
-                    </span>
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
-                      Gold
-                    </span>
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
-                      Debt
-                    </span>
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
-                      Foreign Assets
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {capitalGainsGuides.map((guide, index) => (
-                <Card key={index} className="flex flex-col h-full transition-all">
-                  <CardContent className="p-6 flex flex-col h-full">
-                    <div className="mb-3">
-                      <span className="inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
-                        {guide.category}
-                      </span>
-                    </div>
-                    <h3 className="text-lg font-semibold mb-2">{guide.title}</h3>
-                    <p className="text-muted-foreground mb-4 text-sm flex-grow">{guide.description}</p>
-                    <Link href={`/learning/capital-gains/${guide.id}`}>
-                      <div className="text-primary font-medium hover:underline">Read More →</div>
-                    </Link>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            
-            <div className="mt-4 text-center">
-              <Link href="/import-cg">
-                <Button className="mt-4">
-                  Import Capital Gains Data
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </TabsContent>
+
       </Tabs>
       
       {/* Featured Resources */}
