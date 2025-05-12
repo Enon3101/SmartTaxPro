@@ -160,6 +160,57 @@ const blogPostsData: BlogPost[] = [
     publishedAt: "2025-02-28T10:45:00Z",
     createdAt: "2025-02-22T14:30:00Z",
     updatedAt: "2025-02-28T09:15:00Z"
+  },
+  {
+    id: 7,
+    title: "Understanding Capital Gains Tax in India",
+    slug: "understanding-capital-gains",
+    summary: "Learn the basics of capital gains tax in India, including the difference between short-term and long-term capital gains.",
+    content: "Capital gains tax is a tax on the profit when you sell an asset that has increased in value...",
+    authorId: 2,
+    authorName: "Rajesh Kumar",
+    featuredImage: "/blog/capital-gains-basics.jpg",
+    category: "Capital Gains",
+    tags: ["capital gains", "taxation basics", "STCG", "LTCG"],
+    readTime: 9,
+    published: true,
+    publishedAt: "2025-02-20T14:30:00Z",
+    createdAt: "2025-02-15T09:45:00Z",
+    updatedAt: "2025-02-20T12:30:00Z"
+  },
+  {
+    id: 8,
+    title: "Capital Gains on Stocks and Mutual Funds",
+    slug: "stocks-mutual-funds-capital-gains",
+    summary: "Understand how capital gains tax applies to your investments in stocks and mutual funds, and strategies to minimize tax liability.",
+    content: "When you sell stocks or mutual funds at a profit, you're liable to pay capital gains tax...",
+    authorId: 1,
+    authorName: "Priya Sharma",
+    featuredImage: "/blog/stock-capital-gains.jpg",
+    category: "Capital Gains",
+    tags: ["stocks", "mutual funds", "capital gains", "equity"],
+    readTime: 8,
+    published: true,
+    publishedAt: "2025-02-15T10:45:00Z",
+    createdAt: "2025-02-10T11:30:00Z",
+    updatedAt: "2025-02-15T09:15:00Z"
+  },
+  {
+    id: 9,
+    title: "Capital Gains Tax on Real Estate",
+    slug: "real-estate-capital-gains",
+    summary: "Learn about capital gains tax implications when selling property, and how to use exemptions under Section 54 and 54F.",
+    content: "Real estate transactions often involve significant amounts and understanding the capital gains implications is crucial...",
+    authorId: 3,
+    authorName: "Amit Patel",
+    featuredImage: "/blog/property-capital-gains.jpg",
+    category: "Capital Gains",
+    tags: ["real estate", "property tax", "section 54", "exemptions"],
+    readTime: 10,
+    published: true,
+    publishedAt: "2025-02-05T11:20:00Z",
+    createdAt: "2025-01-30T09:45:00Z",
+    updatedAt: "2025-02-05T10:00:00Z"
   }
 ];
 
@@ -305,39 +356,8 @@ const LearningResources = () => {
     }
   ];
 
-  // Capital Gains guides data
-  const capitalGainsGuides = [
-    {
-      id: "understanding-capital-gains",
-      title: "Understanding Capital Gains Tax in India",
-      description: "Learn the basics of capital gains tax in India, including the difference between short-term and long-term capital gains, and how they are taxed.",
-      category: "Basics"
-    },
-    {
-      id: "stocks-mutual-funds",
-      title: "Capital Gains on Stocks and Mutual Funds",
-      description: "Understand how capital gains tax applies to your investments in stocks and mutual funds, and strategies to minimize your tax liability.",
-      category: "Equity"
-    },
-    {
-      id: "real-estate-capital-gains",
-      title: "Capital Gains Tax on Real Estate",
-      description: "Learn about capital gains tax implications when selling property, and how to use exemptions under Section 54 and 54F.",
-      category: "Real Estate"
-    },
-    {
-      id: "capital-gains-indexation",
-      title: "Indexation Benefits for Long-Term Capital Gains",
-      description: "Understand how indexation can help reduce your tax liability on long-term capital gains from debt funds and property.",
-      category: "Tax Planning"
-    },
-    {
-      id: "foreign-assets",
-      title: "Capital Gains on Foreign Assets",
-      description: "Learn about tax implications for Indian residents selling assets located outside India, including foreign stocks and property.",
-      category: "International"
-    }
-  ];
+  // We've merged Capital Gains guides into blogPosts data
+// Capital Gains content is now part of the regular blog posts
 
   return (
     <div className="container mx-auto px-4 sm:px-6 py-8">
@@ -349,10 +369,9 @@ const LearningResources = () => {
       </div>
 
       <Tabs defaultValue="blogs" className="w-full mb-12" onValueChange={(value) => setCurrentTab(value)}>
-        <TabsList className="grid w-full grid-cols-3 mb-6">
+        <TabsList className="grid w-full grid-cols-2 mb-6">
           <TabsTrigger value="blogs">Tax Blogs</TabsTrigger>
-          <TabsTrigger value="tax-guides">Tax Guides</TabsTrigger>
-          <TabsTrigger value="capital-gains">Capital Gains</TabsTrigger>
+          <TabsTrigger value="latest-updates">Latest Updates</TabsTrigger>
         </TabsList>
         
         {/* Search bar - only visible on the blogs tab */}
