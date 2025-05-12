@@ -1132,6 +1132,46 @@ export default function StartFiling() {
                         )}
                       </div>
                       
+                      {/* Property Address - for all property types */}
+                      <div className="mt-4">
+                        <Label htmlFor={`propertyAddress-${index}`}>Property Address</Label>
+                        <Input
+                          id={`propertyAddress-${index}`}
+                          className="mt-1"
+                          placeholder="Complete property address"
+                          value={property.propertyAddress || ""}
+                          onChange={(e) => updateIncomeField("housePropertyIncome", index, "propertyAddress", e.target.value)}
+                        />
+                      </div>
+                      
+                      {/* Tenant Details - only for let-out properties */}
+                      {property.propertyType === "let-out" && (
+                        <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-100">
+                          <h4 className="text-sm font-medium text-blue-700 mb-2">Tenant Details</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                              <Label htmlFor={`tenantName-${index}`} className="text-xs">Tenant Name</Label>
+                              <Input
+                                id={`tenantName-${index}`}
+                                placeholder="Full name of tenant"
+                                value={property.tenantName || ""}
+                                onChange={(e) => updateIncomeField("housePropertyIncome", index, "tenantName", e.target.value)}
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <Label htmlFor={`tenantPAN-${index}`} className="text-xs">Tenant PAN (Optional)</Label>
+                              <Input
+                                id={`tenantPAN-${index}`}
+                                placeholder="PAN number of tenant"
+                                value={property.tenantPAN || ""}
+                                onChange={(e) => updateIncomeField("housePropertyIncome", index, "tenantPAN", e.target.value.toUpperCase())}
+                                maxLength={10}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                         {property.propertyType !== "self-occupied" && (
                           <>
@@ -1218,6 +1258,60 @@ export default function StartFiling() {
                           {property.propertyType === "self-occupied" && (
                             <p className="text-xs text-gray-500">Maximum deduction of ₹2,00,000 under Section 24(b)</p>
                           )}
+                        </div>
+                      </div>
+                      
+                      {/* Property Income Summary - shows calculated net income */}
+                      <div className="mt-5 p-4 bg-blue-50 rounded-md border border-blue-100">
+                        <h4 className="text-sm font-bold text-blue-700 mb-2">Income from House Property Summary</h4>
+                        
+                        <div className="flex justify-between items-center text-sm mb-2">
+                          <span>Annual Value:</span>
+                          <span className="font-medium">
+                            ₹{property.propertyType === "self-occupied" 
+                              ? "0" 
+                              : formatCurrency(property.annualLetableValue || "0")}
+                          </span>
+                        </div>
+                        
+                        {property.propertyType !== "self-occupied" && (
+                          <div className="flex justify-between items-center text-sm mb-2">
+                            <span>Less: Municipal Taxes:</span>
+                            <span className="font-medium text-red-600">
+                              -₹{formatCurrency(property.municipalTaxes || "0")}
+                            </span>
+                          </div>
+                        )}
+                        
+                        <div className="flex justify-between items-center text-sm mb-2">
+                          <span>Less: Standard Deduction (30%):</span>
+                          <span className="font-medium text-red-600">
+                            {property.propertyType === "self-occupied" 
+                              ? "₹0" 
+                              : `-₹${formatCurrency(Math.round(Number(property.annualLetableValue || 0) * 0.3).toString())}`}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center text-sm mb-2">
+                          <span>Less: Interest on Housing Loan:</span>
+                          <span className="font-medium text-red-600">
+                            -₹{formatCurrency(property.interestOnHousingLoan || "0")}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center font-bold text-blue-800 pt-2 border-t border-blue-200">
+                          <span>Net Income from House Property:</span>
+                          <span>
+                            {property.propertyType === "self-occupied" 
+                              ? `₹${formatCurrency((-Number(property.interestOnHousingLoan || 0) < -200000 ? -200000 : -Number(property.interestOnHousingLoan || 0)).toString())}` 
+                              : `₹${formatCurrency((
+                                  Number(property.annualLetableValue || 0) - 
+                                  Number(property.municipalTaxes || 0) - 
+                                  Math.round(Number(property.annualLetableValue || 0) * 0.3) - 
+                                  Number(property.interestOnHousingLoan || 0)
+                                ).toString())}`
+                            }
+                          </span>
                         </div>
                       </div>
                     </div>
