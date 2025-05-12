@@ -1118,19 +1118,14 @@ export default function StartFiling() {
                                 className="pl-7"
                                 value={property.annualLetableValue}
                                 onChange={(e) => {
-                                  // Store the original cursor position
-                                  const cursorPosition = e.target.selectionStart;
+                                  // Allow direct input of numbers
+                                  const input = e.target.value;
                                   
-                                  // Format the value
-                                  const value = formatCurrency(e.target.value);
-                                  updateIncomeField("housePropertyIncome", index, "annualLetableValue", value);
+                                  // Allow only numbers and decimal point for input
+                                  const onlyNumbers = input.replace(/[^0-9.]/g, '');
                                   
-                                  // Set cursor position in the next render cycle
-                                  setTimeout(() => {
-                                    if (e.target && typeof cursorPosition === 'number') {
-                                      e.target.setSelectionRange(cursorPosition, cursorPosition);
-                                    }
-                                  }, 0);
+                                  // Update the field with the raw input
+                                  updateIncomeField("housePropertyIncome", index, "annualLetableValue", onlyNumbers);
                                 }}
                               />
                             </div>
@@ -1190,19 +1185,14 @@ export default function StartFiling() {
                                   className="pl-7"
                                   value={property.municipalTaxes}
                                   onChange={(e) => {
-                                    // Store the original cursor position
-                                    const cursorPosition = e.target.selectionStart;
+                                    // Allow direct input of numbers
+                                    const input = e.target.value;
                                     
-                                    // Format the value
-                                    const value = formatCurrency(e.target.value);
-                                    updateIncomeField("housePropertyIncome", index, "municipalTaxes", value);
+                                    // Allow only numbers and decimal point for input
+                                    const onlyNumbers = input.replace(/[^0-9.]/g, '');
                                     
-                                    // Set cursor position in the next render cycle
-                                    setTimeout(() => {
-                                      if (e.target && typeof cursorPosition === 'number') {
-                                        e.target.setSelectionRange(cursorPosition, cursorPosition);
-                                      }
-                                    }, 0);
+                                    // Update the field with the raw input
+                                    updateIncomeField("housePropertyIncome", index, "municipalTaxes", onlyNumbers);
                                   }}
                                 />
                               </div>
@@ -1216,19 +1206,14 @@ export default function StartFiling() {
                                   className="pl-7"
                                   value={property.unrealizedRent}
                                   onChange={(e) => {
-                                    // Store the original cursor position
-                                    const cursorPosition = e.target.selectionStart;
+                                    // Allow direct input of numbers
+                                    const input = e.target.value;
                                     
-                                    // Format the value
-                                    const value = formatCurrency(e.target.value);
-                                    updateIncomeField("housePropertyIncome", index, "unrealizedRent", value);
+                                    // Allow only numbers and decimal point for input
+                                    const onlyNumbers = input.replace(/[^0-9.]/g, '');
                                     
-                                    // Set cursor position in the next render cycle
-                                    setTimeout(() => {
-                                      if (e.target && typeof cursorPosition === 'number') {
-                                        e.target.setSelectionRange(cursorPosition, cursorPosition);
-                                      }
-                                    }, 0);
+                                    // Update the field with the raw input
+                                    updateIncomeField("housePropertyIncome", index, "unrealizedRent", onlyNumbers);
                                   }}
                                 />
                               </div>
@@ -1245,19 +1230,14 @@ export default function StartFiling() {
                               className="pl-7"
                               value={property.interestOnHousingLoan}
                               onChange={(e) => {
-                                // Store the original cursor position
-                                const cursorPosition = e.target.selectionStart;
+                                // Allow direct input of numbers
+                                const input = e.target.value;
                                 
-                                // Format the value
-                                const value = formatCurrency(e.target.value);
-                                updateIncomeField("housePropertyIncome", index, "interestOnHousingLoan", value);
+                                // Allow only numbers and decimal point for input
+                                const onlyNumbers = input.replace(/[^0-9.]/g, '');
                                 
-                                // Set cursor position in the next render cycle
-                                setTimeout(() => {
-                                  if (e.target && typeof cursorPosition === 'number') {
-                                    e.target.setSelectionRange(cursorPosition, cursorPosition);
-                                  }
-                                }, 0);
+                                // Update the field with the raw input
+                                updateIncomeField("housePropertyIncome", index, "interestOnHousingLoan", onlyNumbers);
                               }}
                             />
                           </div>
@@ -1276,7 +1256,7 @@ export default function StartFiling() {
                           <span className="font-medium">
                             ₹{property.propertyType === "self-occupied" 
                               ? "0" 
-                              : formatCurrency(property.annualLetableValue || "0")}
+                              : Number(property.annualLetableValue || 0).toLocaleString('en-IN')}
                           </span>
                         </div>
                         
@@ -1284,7 +1264,7 @@ export default function StartFiling() {
                           <div className="flex justify-between items-center text-sm mb-2">
                             <span>Less: Municipal Taxes:</span>
                             <span className="font-medium text-red-600">
-                              -₹{formatCurrency(property.municipalTaxes || "0")}
+                              -₹{Number(property.municipalTaxes || 0).toLocaleString('en-IN')}
                             </span>
                           </div>
                         )}
@@ -1294,14 +1274,14 @@ export default function StartFiling() {
                           <span className="font-medium text-red-600">
                             {property.propertyType === "self-occupied" 
                               ? "₹0" 
-                              : `-₹${formatCurrency(Math.round(Number(property.annualLetableValue || 0) * 0.3).toString())}`}
+                              : `-₹${Math.round(Number(property.annualLetableValue || 0) * 0.3).toLocaleString('en-IN')}`}
                           </span>
                         </div>
                         
                         <div className="flex justify-between items-center text-sm mb-2">
                           <span>Less: Interest on Housing Loan:</span>
                           <span className="font-medium text-red-600">
-                            -₹{formatCurrency(property.interestOnHousingLoan || "0")}
+                            -₹{Number(property.interestOnHousingLoan || 0).toLocaleString('en-IN')}
                           </span>
                         </div>
                         
