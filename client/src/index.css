@@ -6,7 +6,7 @@
 
 /* Blog styling enhancements */
 .prose .lead {
-  @apply text-lg font-medium text-gray-600 dark:text-gray-300 mb-8;
+  @apply text-lg font-medium text-gray-600 mb-8;
 }
 
 .prose .alert {
@@ -14,15 +14,15 @@
 }
 
 .prose .alert-primary {
-  @apply bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-300;
+  @apply bg-blue-50 border-blue-200 text-blue-800;
 }
 
 .prose .alert-info {
-  @apply bg-cyan-50 border-cyan-200 text-cyan-800 dark:bg-cyan-900/30 dark:border-cyan-800 dark:text-cyan-300;
+  @apply bg-cyan-50 border-cyan-200 text-cyan-800;
 }
 
 .prose .alert-warning {
-  @apply bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-900/30 dark:border-amber-800 dark:text-amber-300;
+  @apply bg-amber-50 border-amber-200 text-amber-800;
 }
 
 .prose .alert-link {

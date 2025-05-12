@@ -20,39 +20,20 @@ const ThemeContext = createContext<ThemeContextType>({
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
-  // We need this effect to handle the initial theme application to avoid flashing
+  // Force light mode only
   useEffect(() => {
-    // Apply the dark class based on localStorage, if any
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Always ensure dark mode is removed
+    document.documentElement.classList.remove('dark');
     
-    if (savedTheme === 'dark' || (savedTheme === 'system' && systemPrefersDark) || (!savedTheme && systemPrefersDark)) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    // Remove any saved theme
+    localStorage.setItem('theme', 'light');
     
     // Mark component as mounted to avoid hydration mismatch
     setMounted(true);
-    
-    // Listen for changes in system preference
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e: MediaQueryListEvent) => {
-      if (localStorage.getItem('theme') === 'system') {
-        if (e.matches) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-      }
-    };
-    
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
   
   return (
-    <NextThemesProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange={false}>
+    <NextThemesProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange={false}>
       <ThemeContextWrapper mounted={mounted}>
         {children}
       </ThemeContextWrapper>
@@ -64,15 +45,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 function ThemeContextWrapper({ children, mounted }: { children: React.ReactNode, mounted: boolean }) {
   const { theme, setTheme, systemTheme } = useNextTheme();
   
-  // Determine if the current theme is dark
-  const isDark = 
-    theme === 'dark' || 
-    (theme === 'system' && systemTheme === 'dark');
+  // Always force light mode
+  const isDark = false;
+  
+  // Force theme to be light if it's not, using useEffect to avoid setState in render
+  useEffect(() => {
+    if (theme !== 'light') {
+      setTheme('light');
+    }
+  }, [theme, setTheme]);
   
   const contextValue = {
-    theme,
+    theme: 'light', // Always report 'light' as the current theme
     setTheme,
-    systemTheme,
+    systemTheme: 'light', // Always report 'light' as the system theme
     isDark,
     mounted
   };
