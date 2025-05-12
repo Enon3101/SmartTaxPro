@@ -491,12 +491,12 @@ export default function StartFiling() {
       
       // Calculate the total tax paid
       const total = Object.entries(updatedTaxesPaid)
-        .filter(([key]) => key !== "totalTaxPaid")
+        .filter(([key]) => key !== "totalTaxesPaid")
         .reduce((sum, [_, val]) => sum + (parseInt(val) || 0), 0);
       
       const updatedWithTotal = {
         ...updatedTaxesPaid,
-        totalTaxPaid: total.toString()
+        totalTaxesPaid: total.toString()
       };
       
       // Update context with the latest tax paid data
@@ -1801,15 +1801,15 @@ export default function StartFiling() {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="selfMedicalInsurance">Medical Insurance Premium (Self & Family)</Label>
+                    <Label htmlFor="selfAndFamilyMedicalInsurance">Medical Insurance Premium (Self & Family)</Label>
                     <div className="relative">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
                       <Input
-                        id="selfMedicalInsurance"
+                        id="selfAndFamilyMedicalInsurance"
                         className="pl-7"
                         placeholder="Max ₹25,000"
-                        value={deductions80D.selfMedicalInsurance}
-                        onChange={(e) => handleDeduction80DChange("selfMedicalInsurance", e.target.value)}
+                        value={deductions80D.selfAndFamilyMedicalInsurance}
+                        onChange={(e) => handleDeduction80DChange("selfAndFamilyMedicalInsurance", e.target.value)}
                       />
                     </div>
                     <p className="text-xs text-gray-500">Max ₹25,000 (₹50,000 if age 60+)</p>
@@ -2014,14 +2014,14 @@ export default function StartFiling() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="tdsFromOtherSources">TDS from Other Sources</Label>
+                    <Label htmlFor="tdsFromOtherIncome">TDS from Other Income</Label>
                     <div className="relative">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
                       <Input 
-                        id="tdsFromOtherSources" 
+                        id="tdsFromOtherIncome" 
                         className="pl-7" 
-                        value={taxesPaid.tdsFromOtherSources}
-                        onChange={(e) => handleTaxesPaidChange('tdsFromOtherSources', e.target.value)}
+                        value={taxesPaid.tdsFromOtherIncome}
+                        onChange={(e) => handleTaxesPaidChange('tdsFromOtherIncome', e.target.value)}
                       />
                     </div>
                     <p className="text-xs text-gray-500">TDS on interest, rent, etc. (As per Form 26AS)</p>
@@ -2065,7 +2065,7 @@ export default function StartFiling() {
                 <div className="mt-6 p-4 bg-blue-50 rounded-md flex justify-between items-center">
                   <span className="font-medium">Total Taxes Paid:</span>
                   <span className="font-semibold text-blue-700">
-                    ₹{Number(taxesPaid.totalTaxPaid || 0).toLocaleString('en-IN')}
+                    ₹{Number(taxesPaid.totalTaxesPaid || 0).toLocaleString('en-IN')}
                   </span>
                 </div>
               </div>
@@ -2073,7 +2073,7 @@ export default function StartFiling() {
               {/* Tax Payable or Refund Due */}
               {taxSummary && (
                 <div className={`p-6 rounded-lg shadow-lg ${
-                  (taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                  (taxSummary.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) > 0 
                     ? 'bg-red-50 border border-red-200' 
                     : 'bg-green-50 border border-green-200'
                 }`}>
