@@ -135,7 +135,11 @@ const StartFiling = () => {
       id: "salary-1",
       employerName: "",
       grossSalary: "",
-      tdsDeducted: ""
+      standardDeduction: "50000",
+      section10Exemptions: "0",
+      professionalTax: "0",
+      tdsDeducted: "",
+      netSalary: ""
     }],
     housePropertyIncome: [{
       id: "property-1",
@@ -183,7 +187,11 @@ const StartFiling = () => {
             id: "salary-1",
             employerName: "",
             grossSalary: "",
-            tdsDeducted: ""
+            standardDeduction: "50000",
+            section10Exemptions: "0",
+            professionalTax: "0",
+            tdsDeducted: "",
+            netSalary: ""
           }],
         housePropertyIncome: Array.isArray(taxFormData.personalInfo.housePropertyIncome) 
           ? taxFormData.personalInfo.housePropertyIncome 
@@ -530,7 +538,11 @@ const StartFiling = () => {
               id: `salary-${prev.salaryIncome.length + 1}`,
               employerName: "",
               grossSalary: "",
-              tdsDeducted: ""
+              standardDeduction: "50000",
+              section10Exemptions: "0",
+              professionalTax: "0",
+              tdsDeducted: "",
+              netSalary: ""
             }
           ];
         } else if (sourceType === "housePropertyIncome") {
@@ -673,7 +685,9 @@ const StartFiling = () => {
                       </div>
                     )}
                     
-                    <div className="grid md:grid-cols-2 gap-4">
+                    {/* Horizontal salary entry layout */}
+                    <div className="space-y-4">
+                      {/* Employer Name */}
                       <div className="space-y-2">
                         <Label htmlFor={`employerName-${index}`}>Employer Name</Label>
                         <Input
@@ -682,28 +696,146 @@ const StartFiling = () => {
                           onChange={(e) => updateIncomeField("salaryIncome", index, "employerName", e.target.value)}
                         />
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`grossSalary-${index}`}>Gross Salary</Label>
-                        <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                          <Input
-                            id={`grossSalary-${index}`}
-                            className="pl-7"
-                            value={salary.grossSalary}
-                            onChange={(e) => updateIncomeField("salaryIncome", index, "grossSalary", formatCurrency(e.target.value))}
-                          />
+                      
+                      {/* Gross Salary, Standard Deduction, and Section 10 Exemptions in one row */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor={`grossSalary-${index}`}>1. Gross Salary</Label>
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                            <Input
+                              id={`grossSalary-${index}`}
+                              className="pl-7"
+                              value={salary.grossSalary}
+                              onChange={(e) => {
+                                const value = formatCurrency(e.target.value);
+                                updateIncomeField("salaryIncome", index, "grossSalary", value);
+                                // Calculate net salary
+                                const gross = parseFloat(value.replace(/,/g, '')) || 0;
+                                const stdDeduction = parseFloat(salary.standardDeduction.replace(/,/g, '')) || 0;
+                                const section10 = parseFloat(salary.section10Exemptions.replace(/,/g, '')) || 0;
+                                const profTax = parseFloat(salary.professionalTax.replace(/,/g, '')) || 0;
+                                const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
+                                updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
+                              }}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor={`standardDeduction-${index}`}>2. Standard Deduction</Label>
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                            <Input
+                              id={`standardDeduction-${index}`}
+                              className="pl-7"
+                              value={salary.standardDeduction}
+                              onChange={(e) => {
+                                const value = formatCurrency(e.target.value);
+                                updateIncomeField("salaryIncome", index, "standardDeduction", value);
+                                // Calculate net salary
+                                const gross = parseFloat(salary.grossSalary.replace(/,/g, '')) || 0;
+                                const stdDeduction = parseFloat(value.replace(/,/g, '')) || 0;
+                                const section10 = parseFloat(salary.section10Exemptions.replace(/,/g, '')) || 0;
+                                const profTax = parseFloat(salary.professionalTax.replace(/,/g, '')) || 0;
+                                const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
+                                updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
+                              }}
+                            />
+                          </div>
+                          <p className="text-xs text-gray-500">Under Section 16(ia)</p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor={`section10-${index}`}>Section 10 Exemptions</Label>
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                            <Input
+                              id={`section10-${index}`}
+                              className="pl-7"
+                              value={salary.section10Exemptions}
+                              onChange={(e) => {
+                                const value = formatCurrency(e.target.value);
+                                updateIncomeField("salaryIncome", index, "section10Exemptions", value);
+                                // Calculate net salary
+                                const gross = parseFloat(salary.grossSalary.replace(/,/g, '')) || 0;
+                                const stdDeduction = parseFloat(salary.standardDeduction.replace(/,/g, '')) || 0;
+                                const section10 = parseFloat(value.replace(/,/g, '')) || 0;
+                                const profTax = parseFloat(salary.professionalTax.replace(/,/g, '')) || 0;
+                                const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
+                                updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
+                              }}
+                            />
+                          </div>
+                          <Select 
+                            onValueChange={(value) => console.log(`Selected exemption: ${value}`)}
+                          >
+                            <SelectTrigger className="w-full text-xs">
+                              <SelectValue placeholder="Select exemption type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="hra">HRA</SelectItem>
+                              <SelectItem value="lta">LTA</SelectItem>
+                              <SelectItem value="transport">Transport Allowance</SelectItem>
+                              <SelectItem value="medical">Medical Reimbursement</SelectItem>
+                              <SelectItem value="special">Special Allowance</SelectItem>
+                              <SelectItem value="other">Other Exemptions</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`tdsDeducted-${index}`}>TDS Deducted</Label>
-                        <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                          <Input
-                            id={`tdsDeducted-${index}`}
-                            className="pl-7"
-                            value={salary.tdsDeducted}
-                            onChange={(e) => updateIncomeField("salaryIncome", index, "tdsDeducted", formatCurrency(e.target.value))}
-                          />
+                      
+                      {/* Professional Tax and TDS in one row */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor={`professionalTax-${index}`}>Professional Tax</Label>
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                            <Input
+                              id={`professionalTax-${index}`}
+                              className="pl-7"
+                              value={salary.professionalTax}
+                              onChange={(e) => {
+                                const value = formatCurrency(e.target.value);
+                                updateIncomeField("salaryIncome", index, "professionalTax", value);
+                                // Calculate net salary
+                                const gross = parseFloat(salary.grossSalary.replace(/,/g, '')) || 0;
+                                const stdDeduction = parseFloat(salary.standardDeduction.replace(/,/g, '')) || 0;
+                                const section10 = parseFloat(salary.section10Exemptions.replace(/,/g, '')) || 0;
+                                const profTax = parseFloat(value.replace(/,/g, '')) || 0;
+                                const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
+                                updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
+                              }}
+                            />
+                          </div>
+                          <p className="text-xs text-gray-500">Under Section 16(iii)</p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor={`tdsDeducted-${index}`}>TDS Deducted</Label>
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                            <Input
+                              id={`tdsDeducted-${index}`}
+                              className="pl-7"
+                              value={salary.tdsDeducted}
+                              onChange={(e) => updateIncomeField("salaryIncome", index, "tdsDeducted", formatCurrency(e.target.value))}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor={`netSalary-${index}`}>Net Taxable Salary</Label>
+                          <div className="relative bg-gray-50">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                            <Input
+                              id={`netSalary-${index}`}
+                              className="pl-7 bg-gray-50 border-gray-300"
+                              value={salary.netSalary}
+                              readOnly
+                            />
+                          </div>
+                          <p className="text-xs text-gray-500">Auto-calculated</p>
                         </div>
                       </div>
                     </div>
