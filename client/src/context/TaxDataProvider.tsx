@@ -3,19 +3,20 @@ import { calculateTaxSummary } from "@/lib/taxCalculations";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { nanoid } from "nanoid";
-
-interface TaxFormData {
-  id: string;
-  personalInfo: any;
-  formType: string; // ITR-1, ITR-2, ITR-3, ITR-4
-  incomeData: any;
-  deductions80C: any;
-  deductions80D: any;
-  otherDeductions: any;
-  taxPaid: any;
-  status: string;
-  assessmentYear: string;
-}
+import { 
+  TaxFormData,
+  IncomeData,
+  CapitalGainsEntry,
+  SalaryEntry,
+  HousePropertyEntry,
+  BusinessIncomeEntry,
+  InterestIncomeEntry,
+  OtherIncomeEntry,
+  Deductions80C,
+  Deductions80D,
+  OtherDeductions,
+  TaxesPaid
+} from "@/lib/taxInterfaces";
 
 interface TaxDataContextType {
   currentStep: number;

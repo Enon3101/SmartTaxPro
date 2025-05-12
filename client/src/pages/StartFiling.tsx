@@ -198,17 +198,18 @@ export default function StartFiling() {
   // State for taxes paid
   const [taxesPaid, setTaxesPaid] = useState({
     tdsFromSalary: taxFormData?.taxPaid?.tdsFromSalary || "",
-    tdsFromOtherSources: taxFormData?.taxPaid?.tdsFromOtherSources || "",
+    tdsFromOtherIncome: taxFormData?.taxPaid?.tdsFromOtherIncome || "",
     advanceTaxPaid: taxFormData?.taxPaid?.advanceTaxPaid || "",
     selfAssessmentTaxPaid: taxFormData?.taxPaid?.selfAssessmentTaxPaid || "",
-    totalTaxPaid: taxFormData?.taxPaid?.totalTaxPaid || "0"
+    totalTaxesPaid: taxFormData?.taxPaid?.totalTaxesPaid || "0"
   });
   
   const [deductions80D, setDeductions80D] = useState({
-    selfMedicalInsurance: taxFormData?.deductions80D?.selfMedicalInsurance || "",
+    selfAndFamilyMedicalInsurance: taxFormData?.deductions80D?.selfAndFamilyMedicalInsurance || "",
     parentsMedicalInsurance: taxFormData?.deductions80D?.parentsMedicalInsurance || "",
+    selfAndFamilyMedicalExpenditure: taxFormData?.deductions80D?.selfAndFamilyMedicalExpenditure || "",
+    parentsMedicalExpenditure: taxFormData?.deductions80D?.parentsMedicalExpenditure || "",
     preventiveHealthCheckup: taxFormData?.deductions80D?.preventiveHealthCheckup || "",
-    medicalExpenditure: taxFormData?.deductions80D?.medicalExpenditure || "",
     totalAmount: taxFormData?.deductions80D?.totalAmount || "0"
   });
   
@@ -216,9 +217,9 @@ export default function StartFiling() {
     section80CCD: taxFormData?.otherDeductions?.section80CCD || "",
     section80E: taxFormData?.otherDeductions?.section80E || "",
     section80G: taxFormData?.otherDeductions?.section80G || "",
+    section80GG: taxFormData?.otherDeductions?.section80GG || "",
     section80TTA: taxFormData?.otherDeductions?.section80TTA || "",
     section80TTB: taxFormData?.otherDeductions?.section80TTB || "",
-    section80EEA: taxFormData?.otherDeductions?.section80EEA || "",
     section80DDB: taxFormData?.otherDeductions?.section80DDB || "",
     section80U: taxFormData?.otherDeductions?.section80U || "",
     totalAmount: taxFormData?.otherDeductions?.totalAmount || "0"
@@ -1347,17 +1348,27 @@ export default function StartFiling() {
                           </span>
                         </div>
                         
-                        {/* Store the calculated value in netCapitalGain field */}
-                        {updateIncomeField("capitalGainsIncome", index, "netCapitalGain", (
-                          Number(capitalGain.saleProceeds || 0) - 
-                          (capitalGain.indexationApplicable && capitalGain.indexedCost 
-                            ? Number(capitalGain.indexedCost) 
-                            : Number(capitalGain.purchaseCost || 0)) - 
-                          Number(capitalGain.improvementCost || 0) - 
-                          (capitalGain.exemptionSection && capitalGain.exemptionSection !== "none" 
-                            ? Number(capitalGain.exemptionAmount || 0) 
-                            : 0)
-                        ).toString())}
+                        {/* Store the calculated value in netCapitalGain field - silent update */}
+                        <span className="hidden">
+                          {(() => {
+                            const netGain = (
+                              Number(capitalGain.saleProceeds || 0) - 
+                              (capitalGain.indexationApplicable && capitalGain.indexedCost 
+                                ? Number(capitalGain.indexedCost) 
+                                : Number(capitalGain.purchaseCost || 0)) - 
+                              Number(capitalGain.improvementCost || 0) - 
+                              (capitalGain.exemptionSection && capitalGain.exemptionSection !== "none" 
+                                ? Number(capitalGain.exemptionAmount || 0) 
+                                : 0)
+                            ).toString();
+                            
+                            // Silent update - doesn't return JSX
+                            if (netGain !== capitalGain.netCapitalGain) {
+                              updateIncomeField("capitalGainsIncome", index, "netCapitalGain", netGain);
+                            }
+                            return null;
+                          })()}
+                        </span>
                       </div>
                     </div>
                   ))}
