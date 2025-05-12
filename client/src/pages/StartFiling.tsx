@@ -1842,13 +1842,15 @@ export default function StartFiling() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="medicalExpenditure">Medical Expenditure (Senior Citizens)</Label>
+                    <Label htmlFor="parentsMedicalExpenditure">Medical Expenditure (Senior Citizens)</Label>
                     <div className="relative">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
                       <Input
-                        id="medicalExpenditure"
+                        id="parentsMedicalExpenditure"
                         className="pl-7"
                         placeholder="For uninsured senior citizens"
+                        value={deductions80D.parentsMedicalExpenditure}
+                        onChange={(e) => handleDeduction80DChange("parentsMedicalExpenditure", e.target.value)}
                       />
                     </div>
                     <p className="text-xs text-gray-500">For uninsured senior citizens (part of ₹50,000 limit)</p>
@@ -2080,27 +2082,27 @@ export default function StartFiling() {
                   <div className="flex justify-between items-center">
                     <div>
                       <h3 className={`text-xl font-semibold ${
-                        (taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                        (taxSummary.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) > 0 
                           ? 'text-red-700' 
                           : 'text-green-700'
                       }`}>
-                        {(taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                        {(taxSummary.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) > 0 
                           ? 'Tax Payable' 
                           : 'Refund Due'}
                       </h3>
                       <p className="text-sm text-gray-600 mt-1">
-                        {(taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                        {(taxSummary.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) > 0 
                           ? 'You need to pay additional tax before filing' 
                           : 'You will receive a refund after processing'}
                       </p>
                     </div>
                     <div className="text-right">
                       <span className={`text-2xl font-bold ${
-                        (taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                        (taxSummary.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) > 0 
                           ? 'text-red-600' 
                           : 'text-green-600'
                       }`}>
-                        ₹{(Math.round(Math.abs(taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) / 10) * 10).toLocaleString('en-IN')}
+                        ₹{(Math.round(Math.abs(taxSummary.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) / 10) * 10).toLocaleString('en-IN')}
                       </span>
                     </div>
                   </div>
@@ -2179,16 +2181,16 @@ export default function StartFiling() {
               
               {/* Payment Status */}
               <div className={`p-6 rounded-lg shadow-lg ${
-                (taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                (taxSummary?.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) > 0 
                   ? 'bg-red-50 border border-red-200' 
                   : 'bg-green-50 border border-green-200'
               }`}>
                 <h3 className={`text-xl font-semibold mb-4 ${
-                  (taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                  (taxSummary?.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) > 0 
                     ? 'text-red-700' 
                     : 'text-green-700'
                 }`}>
-                  {(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                  {(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) > 0 
                     ? 'Tax Payment Required' 
                     : 'Tax Refund Due'}
                 </h3>
@@ -2196,19 +2198,19 @@ export default function StartFiling() {
                 <div className="flex justify-between items-center mb-4">
                   <div>
                     <p className="text-gray-600">
-                      {(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                      {(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) > 0 
                         ? 'You need to pay the following amount before filing:' 
                         : 'You will receive the following refund after processing:'}
                     </p>
                     <p className={`text-2xl font-bold mt-2 ${
-                      (taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                      (taxSummary?.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) > 0 
                         ? 'text-red-600' 
                         : 'text-green-600'
                     }`}>
-                      ₹{(Math.round(Math.abs(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) / 10) * 10).toLocaleString('en-IN')}
+                      ₹{(Math.round(Math.abs(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) / 10) * 10).toLocaleString('en-IN')}
                     </p>
                   </div>
-                  {(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 && (
+                  {(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) > 0 && (
                     <div className="text-center">
                       <p className="text-sm text-gray-600 mb-2">Pay using:</p>
                       <div className="space-x-2">
