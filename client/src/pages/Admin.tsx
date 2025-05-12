@@ -45,7 +45,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/taxCalculations";
-import { Search, FileText, User, Download, Trash2, Edit, Plus, RefreshCw } from "lucide-react";
+import { Search, FileText, User, Download, Trash2, Edit, Plus, RefreshCw, Database } from "lucide-react";
 
 // Define types for our admin panel data
 interface UserData {
@@ -715,6 +715,10 @@ const Admin = () => {
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="blog">Blog</TabsTrigger>
+          <TabsTrigger value="database" className="flex items-center">
+            <Database className="mr-2 h-4 w-4" />
+            Database
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="dashboard" className="space-y-6">
