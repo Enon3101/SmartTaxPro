@@ -227,6 +227,41 @@ export function LoginDialog({
                 {sendOtpMutation.isPending ? "Sending..." : "Get OTP"}
                 <FiPhone className="ml-2 h-4 w-4" />
               </Button>
+              
+              {/* TEMPORARY: Admin login for development only */}
+              <div className="w-full mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={async () => {
+                    try {
+                      const response = await apiRequest("/api/auth/dev-admin-login", {
+                        method: "POST",
+                      });
+                      
+                      if (response && response.user) {
+                        if (onLoginSuccess) {
+                          onLoginSuccess(response.user);
+                        }
+                        setIsOpen(false);
+                        toast({
+                          title: "Admin Login Successful",
+                          description: "You are now logged in as Admin",
+                        });
+                      }
+                    } catch (error) {
+                      toast({
+                        title: "Admin Login Failed",
+                        description: "Could not log in as admin",
+                        variant: "destructive",
+                      });
+                    }
+                  }}
+                >
+                  <FiLogIn className="mr-2 h-4 w-4" /> Admin Login (Dev Only)
+                </Button>
+              </div>
             </DialogFooter>
           </form>
         ) : (
@@ -278,6 +313,41 @@ export function LoginDialog({
               >
                 {verifyOtpMutation.isPending ? "Verifying..." : "Verify & Login"}
               </Button>
+              
+              {/* TEMPORARY: Admin login for development only */}
+              <div className="w-full mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={async () => {
+                    try {
+                      const response = await apiRequest("/api/auth/dev-admin-login", {
+                        method: "POST",
+                      });
+                      
+                      if (response && response.user) {
+                        if (onLoginSuccess) {
+                          onLoginSuccess(response.user);
+                        }
+                        setIsOpen(false);
+                        toast({
+                          title: "Admin Login Successful",
+                          description: "You are now logged in as Admin",
+                        });
+                      }
+                    } catch (error) {
+                      toast({
+                        title: "Admin Login Failed",
+                        description: "Could not log in as admin",
+                        variant: "destructive",
+                      });
+                    }
+                  }}
+                >
+                  <FiLogIn className="mr-2 h-4 w-4" /> Admin Login (Dev Only)
+                </Button>
+              </div>
             </DialogFooter>
           </form>
         )}

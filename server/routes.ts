@@ -477,6 +477,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
   const authRouter = express.Router();
   
+  // TEMPORARY: Direct admin login for testing purposes only
+  // REMOVE THIS IN PRODUCTION
+  authRouter.post("/dev-admin-login", async (req, res) => {
+    try {
+      // Check if user exists, if not create admin user
+      let adminUser = await storage.getUserByUsername("admin");
+      
+      if (!adminUser) {
+        // Create admin user if it doesn't exist
+        adminUser = await storage.createUser({
+          username: "admin",
+          password: "admin123", // In a real app, hash this password
+          phone: "9876543210",
+          role: "admin"
+        });
+      }
+      
+      // Return admin user for immediate login
+      res.status(200).json({ 
+        message: "Admin login successful", 
+        user: {
+          id: adminUser.id,
+          username: adminUser.username,
+          phone: adminUser.phone,
+          role: adminUser.role
+        } 
+      });
+    } catch (error) {
+      console.error("Error in dev admin login:", error);
+      res.status(500).json({ message: "Failed to login as admin" });
+    }
+  });
+  
   // Send OTP to mobile number
   authRouter.post("/send-otp", async (req, res) => {
     try {
