@@ -20,7 +20,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LoginDialog } from "@/components/LoginDialog";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-// Theme toggle removed as requested
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Header = () => {
   const [location] = useLocation();
@@ -80,6 +80,8 @@ const Header = () => {
               Support
             </Button>
           </Link>
+          
+          <ThemeToggle />
           
           {isAuthenticated ? (
             <DropdownMenu>
@@ -145,6 +147,13 @@ const Header = () => {
                   <span className="font-medium">{user?.username}</span>
                 </div>
               )}
+              
+              <div className="pb-3 mb-2 border-b border-gray-100">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">Theme</span>
+                  <ThemeToggle />
+                </div>
+              </div>
               
               <Link href="/file-taxes">
                 <div 
