@@ -623,7 +623,7 @@ const LearningResources = () => {
           )}
         </TabsContent>
         
-        <TabsContent value="tax-guides">
+        <TabsContent value="latest-updates">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {taxGuides.map((guide) => (
               <Card key={guide.id} className="overflow-hidden hover:shadow-md transition-all">
@@ -637,9 +637,9 @@ const LearningResources = () => {
                     </span>
                   </div>
                   <h3 className="text-xl font-semibold mb-3">{guide.title}</h3>
-                  <p className="text-muted-foreground mb-4 text-sm">{guide.description}</p>
-                  <Link href={`/learning/${guide.id}`}>
-                    <div className="text-primary font-medium hover:underline">Read Full Guide →</div>
+                  <p className="text-muted-foreground mb-4 text-sm">{guide.summary}</p>
+                  <Link href={`/learning/guides/${guide.id}`}>
+                    <div className="text-primary font-medium hover:underline">Read Latest Update →</div>
                   </Link>
                 </CardContent>
               </Card>
@@ -649,7 +649,7 @@ const LearningResources = () => {
           <div className="mt-8 text-center">
             <Link href="/learning">
               <Button variant="outline" size="lg" className="mt-4">
-                View All Tax Guides
+                View All Updates
               </Button>
             </Link>
           </div>
