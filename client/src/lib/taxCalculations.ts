@@ -1,6 +1,6 @@
 import { formatIndianCurrency } from "./formatters";
 
-interface TaxSummary {
+export interface TaxSummary {
   totalIncome: number;
   salaryIncome: number;
   housePropertyIncome: number;

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { X, Plus, BarChart4, Landmark, TrendingUp, ArrowDown, AlertTriangle } from 'lucide-react';
 import SalarySection from "@/components/SalarySection";
+import TaxComputationDocument from "@/components/TaxComputationDocument";
 import { nanoid } from "nanoid";
 import { formatCurrency } from "@/lib/taxCalculations";
 import { TaxDataContext } from "@/context/TaxDataProvider";
@@ -1703,6 +1704,19 @@ export default function StartFiling() {
           {currentStep === 6 && (
             <div className="space-y-8">
               <h2 className="text-2xl font-semibold text-blue-800">Review & Submit</h2>
+              
+              {/* Computation of Income Document */}
+              <div className="mb-8">
+                <TaxComputationDocument 
+                  taxSummary={taxSummary} 
+                  personalInfo={{
+                    name: formData.fullName,
+                    pan: formData.pan,
+                    filingType: filerType || "Individual"
+                  }}
+                  assessmentYear={assessmentYear}
+                />
+              </div>
               
               {/* Filing Summary */}
               <div className="bg-white shadow-lg rounded-lg p-6">
