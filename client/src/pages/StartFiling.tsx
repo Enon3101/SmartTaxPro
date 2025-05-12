@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { X, Plus, BarChart4, Landmark, TrendingUp } from 'lucide-react';
+import { X, Plus, BarChart4, Landmark, TrendingUp, ArrowDown, AlertTriangle } from 'lucide-react';
 import SalarySection from "@/components/SalarySection";
 import { nanoid } from "nanoid";
 import { formatCurrency } from "@/lib/taxCalculations";
@@ -92,6 +92,7 @@ export default function StartFiling() {
     taxFormData,
     assessmentYear,
     setAssessmentYear,
+    taxSummary,
   } = useContext(TaxDataContext);
   
   const [location, setLocation] = useLocation();
@@ -1564,11 +1565,139 @@ export default function StartFiling() {
           
           {/* Step 5: Taxes Paid */}
           {currentStep === 5 && (
-            <div className="text-center py-20">
-              <h3 className="text-lg font-medium mb-2">Taxes Paid Coming Soon</h3>
-              <p className="text-gray-500">
-                We're still working on this section. Please check back later.
-              </p>
+            <div className="space-y-8">
+              <h2 className="text-2xl font-semibold text-blue-800">Taxes Paid</h2>
+              
+              {/* Tax Liability Section */}
+              <div className="bg-blue-50 shadow-lg rounded-lg p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900">Estimated Tax Liability</h3>
+                    <p className="text-sm text-gray-600">Based on your income and deductions</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-2xl font-bold text-blue-700">
+                      ₹{taxSummary?.estimatedTax?.toLocaleString('en-IN') || "0"}
+                    </span>
+                    <div className="flex items-center text-sm text-gray-600 justify-end mt-1">
+                      <ArrowDown className="h-5 w-5 text-gray-600 mr-1" />
+                      <span>Taxes Paid Details Below</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* TDS Section */}
+              <div className="bg-white shadow-lg rounded-lg p-6">
+                <h3 className="text-xl font-medium text-gray-900 mb-4">TDS (Tax Deducted at Source)</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="tdsFromSalary">TDS Deducted from Salary</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input 
+                        id="tdsFromSalary" 
+                        className="pl-7" 
+                        value={taxesPaid.tdsFromSalary}
+                        onChange={(e) => handleTaxesPaidChange('tdsFromSalary', e.target.value)}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">As per Form 16 provided by employer</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="tdsFromOtherSources">TDS from Other Sources</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input 
+                        id="tdsFromOtherSources" 
+                        className="pl-7" 
+                        value={taxesPaid.tdsFromOtherSources}
+                        onChange={(e) => handleTaxesPaidChange('tdsFromOtherSources', e.target.value)}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">TDS on interest, rent, etc. (As per Form 26AS)</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Other Taxes Paid Section */}
+              <div className="bg-white shadow-lg rounded-lg p-6">
+                <h3 className="text-xl font-medium text-gray-900 mb-4">Other Taxes Paid</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="advanceTaxPaid">Advance Tax Paid</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input 
+                        id="advanceTaxPaid" 
+                        className="pl-7" 
+                        value={taxesPaid.advanceTaxPaid}
+                        onChange={(e) => handleTaxesPaidChange('advanceTaxPaid', e.target.value)}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">Tax paid in advance during the financial year</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="selfAssessmentTaxPaid">Self-Assessment Tax Paid</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input 
+                        id="selfAssessmentTaxPaid" 
+                        className="pl-7" 
+                        value={taxesPaid.selfAssessmentTaxPaid}
+                        onChange={(e) => handleTaxesPaidChange('selfAssessmentTaxPaid', e.target.value)}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">Tax paid after financial year end but before filing</p>
+                  </div>
+                </div>
+                
+                <div className="mt-6 p-4 bg-blue-50 rounded-md flex justify-between items-center">
+                  <span className="font-medium">Total Taxes Paid:</span>
+                  <span className="font-semibold text-blue-700">
+                    ₹{Number(taxesPaid.totalTaxPaid || 0).toLocaleString('en-IN')}
+                  </span>
+                </div>
+              </div>
+              
+              {/* Tax Payable or Refund Due */}
+              {taxSummary && (
+                <div className={`p-6 rounded-lg shadow-lg ${
+                  (taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                    ? 'bg-red-50 border border-red-200' 
+                    : 'bg-green-50 border border-green-200'
+                }`}>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className={`text-xl font-semibold ${
+                        (taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                          ? 'text-red-700' 
+                          : 'text-green-700'
+                      }`}>
+                        {(taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                          ? 'Tax Payable' 
+                          : 'Refund Due'}
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {(taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                          ? 'You need to pay additional tax before filing' 
+                          : 'You will receive a refund after processing'}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span className={`text-2xl font-bold ${
+                        (taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                          ? 'text-red-600' 
+                          : 'text-green-600'
+                      }`}>
+                        ₹{Math.abs(taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)).toLocaleString('en-IN')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
           
