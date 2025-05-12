@@ -23,14 +23,39 @@ interface TaxSummary {
   refundDue: number;
 }
 
-// Constants for Indian tax calculations
-const STANDARD_DEDUCTION = 50000; // Standard deduction for salaried individuals
+// Constants for Indian tax calculations based on assessment year
+const STANDARD_DEDUCTION: Record<string, number> = {
+  "2023-24": 50000, // FY 2022-23
+  "2024-25": 50000, // FY 2023-24
+  "2025-26": 75000, // FY 2024-25 (new budget update)
+  "2026-27": 75000  // FY 2025-26
+};
+
 const MAX_80C_DEDUCTION = 150000; // Maximum deduction under section 80C
 const MAX_80D_DEDUCTION_INDIVIDUAL = 25000; // Health insurance for self/family
 const MAX_80D_DEDUCTION_SENIOR = 50000; // Health insurance for senior citizens
+const MAX_80D_DEDUCTION_SUPER_SENIOR = 50000; // Health insurance for super senior citizens (above 80)
+const MAX_80DD_DEDUCTION = 125000; // Maintenance and medical treatment of disabled dependent
+const MAX_80DDB_DEDUCTION_GENERAL = 40000; // Medical treatment for specified diseases (general)
+const MAX_80DDB_DEDUCTION_SENIOR = 100000; // Medical treatment for specified diseases (senior citizens)
+const MAX_80E_EDUCATION_LOAN_INTEREST = Infinity; // No limit for education loan interest
+const MAX_80EE_HOME_LOAN_INTEREST = 50000; // Additional interest on housing loan
+const MAX_80G_DONATION = Infinity; // Donations to certain funds, charitable institutions
+const MAX_80GG_RENT_PAID = 60000; // Rent paid when HRA not received
+const MAX_80TTA_INTEREST = 10000; // Interest on savings account (non-senior citizens)
+const MAX_80TTB_INTEREST = 50000; // Interest on deposits for senior citizens
+const MAX_80U_DISABILITY = 125000; // Self with disability
+
 const CESS_RATE = 0.04; // 4% Health and Education Cess
 
-export function calculateTaxSummary(incomeData: any, deductions80C: any = {}, deductions80D: any = {}, otherDeductions: any = {}, taxPaid: any = {}): TaxSummary {
+export function calculateTaxSummary(
+  incomeData: any, 
+  deductions80C: any = {}, 
+  deductions80D: any = {}, 
+  otherDeductions: any = {}, 
+  taxPaid: any = {}, 
+  assessmentYear: string = "2024-25"
+): TaxSummary {
   // Calculate salary income (with standard deduction for salaried individuals)
   // Handle both single value and array of salary entries
   let salaryIncome = 0;
@@ -125,7 +150,9 @@ export function calculateTaxSummary(incomeData: any, deductions80C: any = {}, de
   const totalDeductions = section80C + section80D + additionalDeductions;
   
   // Calculate taxable income (adjusted for standard deduction if applicable)
-  let standardDeductionApplied = salaryIncome > 0 ? Math.min(STANDARD_DEDUCTION, salaryIncome) : 0;
+  // Get standard deduction based on assessment year or use default
+  const standardDeductionAmount = STANDARD_DEDUCTION[assessmentYear] || STANDARD_DEDUCTION["2024-25"];
+  let standardDeductionApplied = salaryIncome > 0 ? Math.min(standardDeductionAmount, salaryIncome) : 0;
   const taxableIncome = Math.max(0, totalIncome - standardDeductionApplied - totalDeductions);
   
   // Calculate income tax based on applicable income tax slabs

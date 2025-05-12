@@ -92,7 +92,8 @@ export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
     taxFormData?.deductions80C,
     taxFormData?.deductions80D,
     taxFormData?.otherDeductions,
-    taxFormData?.taxPaid
+    taxFormData?.taxPaid,
+    assessmentYear // Use the selected assessment year for calculation
   );
 
   useEffect(() => {
