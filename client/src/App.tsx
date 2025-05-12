@@ -18,6 +18,7 @@ import StartFiling from "@/pages/StartFiling";
 import Admin from "@/pages/Admin";
 import BlogPost from "@/pages/BlogPost";
 import BlogAdmin from "@/pages/BlogAdmin";
+import DatabaseEditor from "@/pages/DatabaseEditor";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ScrollToTop } from "@/components/ScrollToTop";
@@ -111,6 +112,7 @@ function Router() {
       <Route path="/blog-admin/edit/:id">
         {(params) => <BlogAdmin mode="edit" id={params.id} />}
       </Route>
+      <Route path="/admin/database-editor" component={DatabaseEditor} />
       
       {/* Calculator Routes */}
       <Route path="/calculators/index">

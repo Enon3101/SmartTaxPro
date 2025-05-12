@@ -7,6 +7,8 @@ import path from "path";
 import fs from "fs";
 import { nanoid } from "nanoid";
 import { insertTaxFormSchema, insertDocumentSchema } from "@shared/schema";
+import { db } from "./db";
+import { sql } from "drizzle-orm";
 
 // Configure multer for file uploads
 const uploadDir = path.resolve(process.cwd(), "uploads");
@@ -628,10 +630,119 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Database editor routes (admin only)
+  const dbEditorRouter = express.Router();
+  
+  // Get all tables in the database
+  dbEditorRouter.get("/tables", async (req, res) => {
+    try {
+      const result = await db.execute(sql`
+        SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema = 'public'
+        ORDER BY table_name
+      `);
+      
+      res.json(result.rows);
+    } catch (error) {
+      console.error("Error fetching tables:", error);
+      res.status(500).json({ message: "Failed to fetch database tables" });
+    }
+  });
+  
+  // Get table schema
+  dbEditorRouter.get("/tables/:tableName/schema", async (req, res) => {
+    try {
+      const { tableName } = req.params;
+      
+      // Get column information
+      const result = await db.execute(sql`
+        SELECT column_name, data_type, is_nullable, column_default
+        FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = ${tableName}
+        ORDER BY ordinal_position
+      `);
+      
+      res.json(result.rows);
+    } catch (error) {
+      console.error("Error fetching table schema:", error);
+      res.status(500).json({ message: "Failed to fetch table schema" });
+    }
+  });
+  
+  // Get table data with pagination
+  dbEditorRouter.get("/tables/:tableName/data", async (req, res) => {
+    try {
+      const { tableName } = req.params;
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 20;
+      const offset = (page - 1) * pageSize;
+      
+      // Get table data with pagination
+      const dataResult = await db.execute(sql`
+        SELECT * FROM ${sql.identifier(tableName)}
+        LIMIT ${pageSize} OFFSET ${offset}
+      `);
+      
+      // Get total count for pagination
+      const countResult = await db.execute(sql`
+        SELECT COUNT(*) FROM ${sql.identifier(tableName)}
+      `);
+      
+      const totalCount = parseInt(countResult.rows[0]?.count || "0");
+      const totalPages = Math.ceil(totalCount / pageSize);
+      
+      res.json({
+        data: dataResult.rows,
+        pagination: {
+          page,
+          pageSize,
+          totalCount,
+          totalPages
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching table data:", error);
+      res.status(500).json({ message: "Failed to fetch table data" });
+    }
+  });
+  
+  // Run custom SQL query
+  dbEditorRouter.post("/query", async (req, res) => {
+    try {
+      const { query } = req.body;
+      
+      if (!query) {
+        return res.status(400).json({ message: "SQL query is required" });
+      }
+      
+      // Limit to SELECT queries for safety
+      const normalizedQuery = query.trim().toLowerCase();
+      if (!normalizedQuery.startsWith('select')) {
+        return res.status(403).json({ 
+          message: "Only SELECT queries are allowed through this endpoint for safety" 
+        });
+      }
+      
+      const result = await db.execute(sql.raw(query));
+      res.json({
+        rows: result.rows,
+        rowCount: result.rowCount
+      });
+    } catch (error) {
+      console.error("Error executing SQL query:", error);
+      res.status(500).json({ 
+        message: "Failed to execute SQL query", 
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   // Mount the API routers
   app.use("/api", apiRouter);
   app.use("/api/auth", authRouter);
   app.use("/api/admin", adminRouter);
+  app.use("/api/admin/db", dbEditorRouter);
 
   const httpServer = createServer(app);
 
