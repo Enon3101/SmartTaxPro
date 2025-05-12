@@ -758,6 +758,46 @@ const Admin = () => {
             </CardContent>
           </Card>
         </TabsContent>
+        
+        <TabsContent value="database">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl font-bold tracking-tight">Database Management</h2>
+            <Link href="/admin/database-editor">
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                <Database className="h-4 w-4 mr-2" />
+                Open Database Editor
+              </Button>
+            </Link>
+          </div>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-start space-x-4">
+                <Database className="h-12 w-12 text-blue-600" />
+                <div>
+                  <h3 className="text-lg font-medium mb-2">Database Editor</h3>
+                  <p className="text-muted-foreground mb-4">
+                    The database editor allows you to explore tables, view schemas, and run SQL queries to manage and inspect your database directly.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div className="rounded-md border p-4">
+                      <h4 className="font-medium mb-2">Tables Explorer</h4>
+                      <p className="text-sm text-muted-foreground">Browse database tables, view their structure, and explore the data with pagination support.</p>
+                    </div>
+                    <div className="rounded-md border p-4">
+                      <h4 className="font-medium mb-2">SQL Query Tool</h4>
+                      <p className="text-sm text-muted-foreground">Run custom SQL SELECT queries to retrieve specific data from your database for debugging and analysis.</p>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <Link href="/admin/database-editor">
+                      <Button variant="outline">Open Database Editor</Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );
