@@ -771,87 +771,167 @@ const StartFiling = () => {
               </div>
             )}
             
-            {/* Capital Gains Income */}
+            {/* Capital Gains Income - Now with multiple entries */}
             {formData.incomeSource.includes("capital-gains") && (
               <div className="p-6 bg-white border rounded-lg">
-                <h3 className="text-lg font-medium flex items-center mb-4">
-                  <PiggyBank className="h-5 w-5 text-purple-500 mr-2" />
-                  Capital Gains
-                </h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="shortTerm">Short Term Capital Gains</Label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                      <Input
-                        id="shortTerm"
-                        className="pl-7"
-                        value={formData.capitalGainsIncome.shortTerm}
-                        onChange={(e) => updateIncomeField("capitalGainsIncome", "shortTerm", formatCurrency(e.target.value))}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="longTerm">Long Term Capital Gains</Label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                      <Input
-                        id="longTerm"
-                        className="pl-7"
-                        value={formData.capitalGainsIncome.longTerm}
-                        onChange={(e) => updateIncomeField("capitalGainsIncome", "longTerm", formatCurrency(e.target.value))}
-                      />
-                    </div>
-                  </div>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium flex items-center">
+                    <PiggyBank className="h-5 w-5 text-purple-500 mr-2" />
+                    Capital Gains
+                  </h3>
+                  
+                  {/* Add another capital gain source button */}
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => addIncomeEntry("capitalGainsIncome")}
+                    className="text-xs flex items-center"
+                  >
+                    <PlusCircle className="h-3.5 w-3.5 mr-1" />
+                    Add Another Asset
+                  </Button>
                 </div>
+                
+                {/* For each capital gain entry, show a set of fields */}
+                {formData.capitalGainsIncome.map((capitalGain, index) => (
+                  <div key={capitalGain.id} className="mb-6 last:mb-0 border-t pt-4 first:border-t-0 first:pt-0">
+                    {/* Show capital gain number and delete button if there are multiple */}
+                    {formData.capitalGainsIncome.length > 1 && (
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-sm font-medium text-gray-500">
+                          Asset #{index + 1}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeIncomeEntry("capitalGainsIncome", index)}
+                          className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
+                          disabled={formData.capitalGainsIncome.length <= 1}
+                        >
+                          <MinusCircle className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    )}
+                    
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor={`shortTerm-${index}`}>Short Term Capital Gains</Label>
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                          <Input
+                            id={`shortTerm-${index}`}
+                            className="pl-7"
+                            value={capitalGain.shortTerm}
+                            onChange={(e) => updateIncomeField("capitalGainsIncome", index, "shortTerm", formatCurrency(e.target.value))}
+                          />
+                        </div>
+                        <p className="text-xs text-gray-500">Held for less than 12 months (24 months for property)</p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`longTerm-${index}`}>Long Term Capital Gains</Label>
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                          <Input
+                            id={`longTerm-${index}`}
+                            className="pl-7"
+                            value={capitalGain.longTerm}
+                            onChange={(e) => updateIncomeField("capitalGainsIncome", index, "longTerm", formatCurrency(e.target.value))}
+                          />
+                        </div>
+                        <p className="text-xs text-gray-500">Held for more than 12 months (24 months for property)</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
             
-            {/* Business Income */}
+            {/* Business Income - Now with multiple entries */}
             {formData.incomeSource.includes("business") && (
               <div className="p-6 bg-white border rounded-lg">
-                <h3 className="text-lg font-medium flex items-center mb-4">
-                  <Briefcase className="h-5 w-5 text-orange-500 mr-2" />
-                  Business/Profession Income
-                </h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="grossReceipts">Gross Receipts/Turnover</Label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                      <Input
-                        id="grossReceipts"
-                        className="pl-7"
-                        value={formData.businessIncome.grossReceipts}
-                        onChange={(e) => updateIncomeField("businessIncome", "grossReceipts", formatCurrency(e.target.value))}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="expenses">Total Expenses</Label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                      <Input
-                        id="expenses"
-                        className="pl-7"
-                        value={formData.businessIncome.expenses}
-                        onChange={(e) => updateIncomeField("businessIncome", "expenses", formatCurrency(e.target.value))}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="netProfit">Net Profit</Label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                      <Input
-                        id="netProfit"
-                        className="pl-7"
-                        value={formData.businessIncome.netProfit}
-                        onChange={(e) => updateIncomeField("businessIncome", "netProfit", formatCurrency(e.target.value))}
-                      />
-                    </div>
-                  </div>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium flex items-center">
+                    <Briefcase className="h-5 w-5 text-orange-500 mr-2" />
+                    Business/Profession Income
+                  </h3>
+                  
+                  {/* Add another business source button */}
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => addIncomeEntry("businessIncome")}
+                    className="text-xs flex items-center"
+                  >
+                    <PlusCircle className="h-3.5 w-3.5 mr-1" />
+                    Add Another Business
+                  </Button>
                 </div>
+                
+                {/* For each business entry, show a set of fields */}
+                {formData.businessIncome.map((business, index) => (
+                  <div key={business.id} className="mb-6 last:mb-0 border-t pt-4 first:border-t-0 first:pt-0">
+                    {/* Show business number and delete button if there are multiple */}
+                    {formData.businessIncome.length > 1 && (
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-sm font-medium text-gray-500">
+                          Business #{index + 1}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeIncomeEntry("businessIncome", index)}
+                          className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
+                          disabled={formData.businessIncome.length <= 1}
+                        >
+                          <MinusCircle className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    )}
+                    
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor={`grossReceipts-${index}`}>Gross Receipts/Turnover</Label>
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                          <Input
+                            id={`grossReceipts-${index}`}
+                            className="pl-7"
+                            value={business.grossReceipts}
+                            onChange={(e) => updateIncomeField("businessIncome", index, "grossReceipts", formatCurrency(e.target.value))}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`expenses-${index}`}>Total Expenses</Label>
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                          <Input
+                            id={`expenses-${index}`}
+                            className="pl-7"
+                            value={business.expenses}
+                            onChange={(e) => updateIncomeField("businessIncome", index, "expenses", formatCurrency(e.target.value))}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`netProfit-${index}`}>Net Profit</Label>
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                          <Input
+                            id={`netProfit-${index}`}
+                            className="pl-7"
+                            value={business.netProfit}
+                            onChange={(e) => updateIncomeField("businessIncome", index, "netProfit", formatCurrency(e.target.value))}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
             
