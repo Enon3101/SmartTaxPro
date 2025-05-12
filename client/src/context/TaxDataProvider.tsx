@@ -188,7 +188,7 @@ export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const nextStep = () => {
-    if (currentStep < 5) {
+    if (currentStep < 6) {
       setCurrentStep(currentStep + 1);
     }
   };
