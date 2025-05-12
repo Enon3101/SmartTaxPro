@@ -935,84 +935,162 @@ const StartFiling = () => {
               </div>
             )}
             
-            {/* Interest Income */}
+            {/* Interest Income - Now with multiple entries */}
             {formData.incomeSource.includes("interest") && (
               <div className="p-6 bg-white border rounded-lg">
-                <h3 className="text-lg font-medium flex items-center mb-4">
-                  <CreditCard className="h-5 w-5 text-pink-500 mr-2" />
-                  Interest Income
-                </h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="savingsAccount">Savings Account Interest</Label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                      <Input
-                        id="savingsAccount"
-                        className="pl-7"
-                        value={formData.interestIncome.savingsAccount}
-                        onChange={(e) => updateIncomeField("interestIncome", "savingsAccount", formatCurrency(e.target.value))}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="fixedDeposits">Fixed Deposits Interest</Label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                      <Input
-                        id="fixedDeposits"
-                        className="pl-7"
-                        value={formData.interestIncome.fixedDeposits}
-                        onChange={(e) => updateIncomeField("interestIncome", "fixedDeposits", formatCurrency(e.target.value))}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="otherInterest">Other Interest Income</Label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                      <Input
-                        id="otherInterest"
-                        className="pl-7"
-                        value={formData.interestIncome.other}
-                        onChange={(e) => updateIncomeField("interestIncome", "other", formatCurrency(e.target.value))}
-                      />
-                    </div>
-                  </div>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium flex items-center">
+                    <CreditCard className="h-5 w-5 text-pink-500 mr-2" />
+                    Interest Income
+                  </h3>
+                  
+                  {/* Add another interest source button */}
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => addIncomeEntry("interestIncome")}
+                    className="text-xs flex items-center"
+                  >
+                    <PlusCircle className="h-3.5 w-3.5 mr-1" />
+                    Add Another Source
+                  </Button>
                 </div>
+                
+                {/* For each interest income entry, show a set of fields */}
+                {formData.interestIncome.map((interest, index) => (
+                  <div key={interest.id} className="mb-6 last:mb-0 border-t pt-4 first:border-t-0 first:pt-0">
+                    {/* Show source number and delete button if there are multiple */}
+                    {formData.interestIncome.length > 1 && (
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-sm font-medium text-gray-500">
+                          Interest Source #{index + 1}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeIncomeEntry("interestIncome", index)}
+                          className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
+                          disabled={formData.interestIncome.length <= 1}
+                        >
+                          <MinusCircle className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    )}
+                    
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor={`savingsAccount-${index}`}>Savings Account Interest</Label>
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                          <Input
+                            id={`savingsAccount-${index}`}
+                            className="pl-7"
+                            value={interest.savingsAccount}
+                            onChange={(e) => updateIncomeField("interestIncome", index, "savingsAccount", formatCurrency(e.target.value))}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`fixedDeposits-${index}`}>Fixed Deposits Interest</Label>
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                          <Input
+                            id={`fixedDeposits-${index}`}
+                            className="pl-7"
+                            value={interest.fixedDeposits}
+                            onChange={(e) => updateIncomeField("interestIncome", index, "fixedDeposits", formatCurrency(e.target.value))}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`otherInterest-${index}`}>Other Interest Income</Label>
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                          <Input
+                            id={`otherInterest-${index}`}
+                            className="pl-7"
+                            value={interest.other}
+                            onChange={(e) => updateIncomeField("interestIncome", index, "other", formatCurrency(e.target.value))}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
             
-            {/* Other Income */}
+            {/* Other Income - Now with multiple entries */}
             {formData.incomeSource.includes("other") && (
               <div className="p-6 bg-white border rounded-lg">
-                <h3 className="text-lg font-medium flex items-center mb-4">
-                  <PlusCircle className="h-5 w-5 text-gray-500 mr-2" />
-                  Other Income
-                </h3>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="otherAmount">Amount</Label>
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                      <Input
-                        id="otherAmount"
-                        className="pl-7"
-                        value={formData.otherIncome.amount}
-                        onChange={(e) => updateIncomeField("otherIncome", "amount", formatCurrency(e.target.value))}
-                      />
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-medium flex items-center">
+                    <PlusCircle className="h-5 w-5 text-gray-500 mr-2" />
+                    Other Income
+                  </h3>
+                  
+                  {/* Add another other income source button */}
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => addIncomeEntry("otherIncome")}
+                    className="text-xs flex items-center"
+                  >
+                    <PlusCircle className="h-3.5 w-3.5 mr-1" />
+                    Add Another Income
+                  </Button>
+                </div>
+                
+                {/* For each other income entry, show a set of fields */}
+                {formData.otherIncome.map((other, index) => (
+                  <div key={other.id} className="mb-6 last:mb-0 border-t pt-4 first:border-t-0 first:pt-0">
+                    {/* Show source number and delete button if there are multiple */}
+                    {formData.otherIncome.length > 1 && (
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-sm font-medium text-gray-500">
+                          Other Income #{index + 1}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeIncomeEntry("otherIncome", index)}
+                          className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
+                          disabled={formData.otherIncome.length <= 1}
+                        >
+                          <MinusCircle className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    )}
+                    
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor={`otherAmount-${index}`}>Amount</Label>
+                        <div className="relative">
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                          <Input
+                            id={`otherAmount-${index}`}
+                            className="pl-7"
+                            value={other.amount}
+                            onChange={(e) => updateIncomeField("otherIncome", index, "amount", formatCurrency(e.target.value))}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor={`otherDescription-${index}`}>Description</Label>
+                        <Input
+                          id={`otherDescription-${index}`}
+                          value={other.description}
+                          onChange={(e) => updateIncomeField("otherIncome", index, "description", e.target.value)}
+                          placeholder="e.g., Dividends, Lottery, Gifts, Royalties"
+                        />
+                      </div>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="otherDescription">Description</Label>
-                    <Input
-                      id="otherDescription"
-                      value={formData.otherIncome.description}
-                      onChange={(e) => updateIncomeField("otherIncome", "description", e.target.value)}
-                      placeholder="e.g., Dividends, Lottery, Gifts"
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
             )}
           </>
