@@ -12,6 +12,68 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+
+// Indian PAN card validation utility functions
+// PAN Format: AAAPL1234C
+// First 3 characters: Alphabetic series running from AAA to ZZZ
+// 4th character: Entity type
+// 5th character: First character of surname/last name
+// 6-9th character: Sequence number
+// 10th character: Alphabetic check digit
+
+// Entity codes for PAN card (4th character)
+const PAN_ENTITY_TYPES: Record<string, string> = {
+  'P': 'Individual',
+  'F': 'Firm (Partnership)',
+  'C': 'Company',
+  'H': 'HUF (Hindu Undivided Family)',
+  'A': 'Association of Persons (AOP)',
+  'T': 'Trust',
+  'B': 'Body of Individuals (BOI)',
+  'L': 'Local Authority',
+  'J': 'Artificial Juridical Person',
+  'G': 'Government',
+};
+
+// Function to validate PAN number
+function validatePAN(pan: string): boolean {
+  if (!pan) return false;
+  
+  // Remove spaces and convert to uppercase
+  pan = pan.replace(/\s/g, '').toUpperCase();
+  
+  // PAN should be 10 characters
+  if (pan.length !== 10) return false;
+  
+  // First 5 characters should be alphabets
+  if (!/^[A-Z]{5}/.test(pan)) return false;
+  
+  // Next 4 characters should be numbers
+  if (!/^[A-Z]{5}[0-9]{4}/.test(pan)) return false;
+  
+  // Last character should be an alphabet
+  if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(pan)) return false;
+  
+  return true;
+}
+
+// Function to get entity type from PAN
+function getPANEntityType(pan: string): string | null {
+  if (!validatePAN(pan)) return null;
+  
+  // Entity type is 4th character
+  const entityCode = pan.charAt(3);
+  return PAN_ENTITY_TYPES[entityCode] || null;
+}
+
+// Function to check if PAN belongs to an individual
+function isIndividualPAN(pan: string): boolean {
+  if (!validatePAN(pan)) return false;
+  
+  // 'P' entity code represents an individual
+  return pan.charAt(3) === 'P';
+}
+
 import { 
   ArrowRight, 
   ArrowLeft, 
@@ -156,7 +218,47 @@ const StartFiling = () => {
     },
   ];
   
+  // Add state for PAN validation
+  const [panValidationState, setPanValidationState] = useState({
+    isValid: true,
+    message: "",
+    entityType: "",
+    isIndividual: true
+  });
+
   const handleInputChange = (name: string, value: string) => {
+    // Special handling for PAN
+    if (name === "pan") {
+      // Convert to uppercase and remove spaces
+      value = value.replace(/\s/g, '').toUpperCase();
+      
+      // Validate PAN
+      const isPanValid = validatePAN(value);
+      const entityType = getPANEntityType(value);
+      const isIndividual = isIndividualPAN(value);
+      
+      // Update validation state
+      setPanValidationState({
+        isValid: isPanValid,
+        message: isPanValid 
+          ? (entityType ? `Valid PAN (${entityType})` : "")
+          : (value.length === 10 ? "Invalid PAN format" : value.length > 0 ? "PAN must be 10 characters" : ""),
+        entityType: entityType || "",
+        isIndividual
+      });
+      
+      // If PAN is changed and not an individual, remove salary from income sources
+      if (!isIndividual && value.length === 10) {
+        setFormData(prev => ({
+          ...prev,
+          [name]: value,
+          incomeSource: prev.incomeSource.filter(source => source !== "salary")
+        }));
+        return;
+      }
+    }
+    
+    // Default handling for all fields
     setFormData(prev => ({
       ...prev,
       [name]: value
