@@ -70,6 +70,16 @@ const SalarySection: React.FC<SalarySectionProps> = ({
   addIncomeEntry, 
   removeIncomeEntry 
 }) => {
+  // Calculate total salary income
+  const calculateTotalNetSalary = () => {
+    return salaryIncome.reduce((total, salary) => {
+      const netSalary = parseFloat((salary.netSalary || "0").replace(/,/g, "")) || 0;
+      return total + netSalary;
+    }, 0);
+  };
+
+  const totalNetSalary = formatCurrency(calculateTotalNetSalary().toString());
+
   return (
     <div className="p-6 bg-white border rounded-lg">
       <div className="flex justify-between items-center mb-4">
@@ -78,16 +88,21 @@ const SalarySection: React.FC<SalarySectionProps> = ({
         </h3>
         
         {/* Add another salary source button */}
-        <Button 
-          type="button" 
-          variant="outline" 
-          size="sm"
-          onClick={() => addIncomeEntry("salaryIncome")}
-          className="text-xs flex items-center"
-        >
-          <Plus className="h-3.5 w-3.5 mr-1" />
-          Add Another Employer
-        </Button>
+        <div className="flex items-center gap-4">
+          <div className="text-sm font-medium">
+            Total Net Salary: <span className="text-primary">₹ {totalNetSalary}</span>
+          </div>
+          <Button 
+            type="button" 
+            variant="outline" 
+            size="sm"
+            onClick={() => addIncomeEntry("salaryIncome")}
+            className="text-xs flex items-center"
+          >
+            <Plus className="h-3.5 w-3.5 mr-1" />
+            Add Another Employer
+          </Button>
+        </div>
       </div>
       
       {/* For each salary entry, show a set of fields */}

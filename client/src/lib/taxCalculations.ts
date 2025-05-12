@@ -32,21 +32,79 @@ const CESS_RATE = 0.04; // 4% Health and Education Cess
 
 export function calculateTaxSummary(incomeData: any, deductions80C: any = {}, deductions80D: any = {}, otherDeductions: any = {}, taxPaid: any = {}): TaxSummary {
   // Calculate salary income (with standard deduction for salaried individuals)
-  const salaryIncome = parseFloat(incomeData?.salaryIncome?.replace(/,/g, "") || "0");
+  // Handle both single value and array of salary entries
+  let salaryIncome = 0;
+  if (Array.isArray(incomeData?.salaryIncome)) {
+    // Sum up all salary entries' net salary
+    salaryIncome = incomeData.salaryIncome.reduce((total, salary) => {
+      const netSalary = parseFloat((salary.netSalary || "0").replace(/,/g, "")) || 0;
+      return total + netSalary;
+    }, 0);
+  } else {
+    // Fallback for old format
+    salaryIncome = parseFloat(incomeData?.salaryIncome?.replace(/,/g, "") || "0");
+  }
   
   // House property income
-  const housePropertyIncome = parseFloat(incomeData?.housePropertyIncome?.replace(/,/g, "") || "0");
+  let housePropertyIncome = 0;
+  if (Array.isArray(incomeData?.housePropertyIncome)) {
+    housePropertyIncome = incomeData.housePropertyIncome.reduce((total, property) => {
+      const netIncome = parseFloat((property.netAnnualValue || "0").replace(/,/g, "")) || 0;
+      return total + netIncome;
+    }, 0);
+  } else {
+    housePropertyIncome = parseFloat(incomeData?.housePropertyIncome?.replace(/,/g, "") || "0");
+  }
   
-  // Capital gains 
-  const shortTermCG = parseFloat(incomeData?.shortTermCapitalGains?.replace(/,/g, "") || "0");
-  const longTermCG = parseFloat(incomeData?.longTermCapitalGains?.replace(/,/g, "") || "0");
-  const capitalGainsIncome = shortTermCG + longTermCG;
+  // Capital gains
+  let capitalGainsIncome = 0;
+  if (Array.isArray(incomeData?.capitalGainsIncome)) {
+    capitalGainsIncome = incomeData.capitalGainsIncome.reduce((total, gain) => {
+      const netGain = parseFloat((gain.netCapitalGain || "0").replace(/,/g, "")) || 0;
+      return total + netGain;
+    }, 0);
+  } else {
+    const shortTermCG = parseFloat(incomeData?.shortTermCapitalGains?.replace(/,/g, "") || "0");
+    const longTermCG = parseFloat(incomeData?.longTermCapitalGains?.replace(/,/g, "") || "0");
+    capitalGainsIncome = shortTermCG + longTermCG;
+  }
   
-  // Other income (interest, dividends, etc.)
-  const interestIncome = parseFloat(incomeData?.interestIncome?.replace(/,/g, "") || "0");
-  const dividendIncome = parseFloat(incomeData?.dividendIncome?.replace(/,/g, "") || "0");
-  const otherSources = parseFloat(incomeData?.otherSources?.replace(/,/g, "") || "0");
-  const otherIncome = interestIncome + dividendIncome + otherSources;
+  // Business income
+  let businessIncome = 0;
+  if (Array.isArray(incomeData?.businessIncome)) {
+    businessIncome = incomeData.businessIncome.reduce((total, business) => {
+      const netProfit = parseFloat((business.netProfit || "0").replace(/,/g, "")) || 0;
+      return total + netProfit;
+    }, 0);
+  } else {
+    businessIncome = parseFloat(incomeData?.businessIncome?.replace(/,/g, "") || "0");
+  }
+  
+  // Interest income
+  let interestIncome = 0;
+  if (Array.isArray(incomeData?.interestIncome)) {
+    interestIncome = incomeData.interestIncome.reduce((total, interest) => {
+      const amount = parseFloat((interest.amount || "0").replace(/,/g, "")) || 0;
+      return total + amount;
+    }, 0);
+  } else {
+    interestIncome = parseFloat(incomeData?.interestIncome?.replace(/,/g, "") || "0");
+  }
+  
+  // Other income
+  let otherIncomeAmount = 0;
+  if (Array.isArray(incomeData?.otherIncome)) {
+    otherIncomeAmount = incomeData.otherIncome.reduce((total, other) => {
+      const amount = parseFloat((other.amount || "0").replace(/,/g, "")) || 0;
+      return total + amount;
+    }, 0);
+  } else {
+    const dividendIncome = parseFloat(incomeData?.dividendIncome?.replace(/,/g, "") || "0");
+    const otherSources = parseFloat(incomeData?.otherSources?.replace(/,/g, "") || "0");
+    otherIncomeAmount = dividendIncome + otherSources;
+  }
+  
+  const otherIncome = interestIncome + otherIncomeAmount + businessIncome;
   
   // Calculate total income
   const totalIncome = salaryIncome + housePropertyIncome + capitalGainsIncome + otherIncome;
