@@ -709,7 +709,7 @@ const Admin = () => {
         <TabsContent value="blog">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold tracking-tight">Blog Management</h2>
-            <Link href="/blog-admin">
+            <Link href="/blog-admin/new">
               <Button className="ml-auto">
                 <Plus className="h-4 w-4 mr-2" />
                 Create New Blog Post
@@ -721,7 +721,7 @@ const Admin = () => {
               <p>Manage your blog posts, create new content, and edit existing articles.</p>
               <div className="mt-4">
                 <Link href="/blog-admin">
-                  <Button variant="outline">Go to Blog Admin Panel</Button>
+                  <Button variant="outline">Manage Blog Posts</Button>
                 </Link>
               </div>
             </CardContent>
