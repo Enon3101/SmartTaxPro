@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useAuth } from "@/context/AuthContext";
 import {
   Tabs,
   TabsContent,
@@ -672,6 +673,32 @@ const DashboardOverview = () => {
 };
 
 const Admin = () => {
+  const { user, isAuthenticated } = useAuth();
+  const [location, navigate] = useLocation();
+  
+  // Check if the user is an admin, if not redirect to home page
+  useEffect(() => {
+    console.log("User in Admin:", user);
+    if (!isAuthenticated || user?.role !== "admin") {
+      navigate("/");
+    }
+  }, [isAuthenticated, user, navigate]);
+  
+  // If not authenticated or not an admin, show loading or nothing
+  if (!isAuthenticated || user?.role !== "admin") {
+    return (
+      <div className="container max-w-7xl mx-auto py-20 px-4 text-center">
+        <h1 className="text-3xl font-bold tracking-tight mb-4">Access Denied</h1>
+        <p className="text-gray-500 mb-8">
+          You need administrator privileges to access this page.
+        </p>
+        <Button onClick={() => navigate("/")}>
+          Return to Home
+        </Button>
+      </div>
+    );
+  }
+  
   return (
     <div className="container max-w-7xl mx-auto py-10 px-4">
       <div className="mb-8">
