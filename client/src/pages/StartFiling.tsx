@@ -1046,6 +1046,137 @@ export default function StartFiling() {
                 />
               )}
               
+              {/* Capital Gains Income */}
+              {formData.incomeSource.includes("capital-gains") && (
+                <div className="p-6 bg-white border rounded-lg">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-medium flex items-center">
+                      <TrendingUp className="h-5 w-5 text-purple-500 mr-2" />
+                      Capital Gains
+                    </h3>
+                    
+                    {/* Add another capital gain source button */}
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => addIncomeEntry("capitalGainsIncome")}
+                      className="text-xs flex items-center"
+                    >
+                      <Plus className="h-3.5 w-3.5 mr-1" />
+                      Add Another Asset
+                    </Button>
+                  </div>
+                  
+                  {/* For each capital gain entry, show a set of fields */}
+                  {formData.capitalGainsIncome.map((capitalGain, index) => (
+                    <div key={capitalGain.id} className="mb-6 last:mb-0 border-t pt-4 first:border-t-0 first:pt-0">
+                      {/* Show capital gain number and delete button if there are multiple */}
+                      {formData.capitalGainsIncome.length > 1 && (
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="text-sm font-medium text-gray-500">
+                            Asset #{index + 1}
+                          </span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeIncomeEntry("capitalGainsIncome", index)}
+                            className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
+                            disabled={formData.capitalGainsIncome.length <= 1}
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      )}
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor={`assetType-${index}`}>Asset Type</Label>
+                          <Select 
+                            value={capitalGain.assetType}
+                            onValueChange={(value) => updateIncomeField("capitalGainsIncome", index, "assetType", value)}
+                          >
+                            <SelectTrigger id={`assetType-${index}`}>
+                              <SelectValue placeholder="Select asset type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="equity">Stocks & Equity</SelectItem>
+                              <SelectItem value="property">Real Estate Property</SelectItem>
+                              <SelectItem value="gold">Gold & Precious Metals</SelectItem>
+                              <SelectItem value="crypto">Cryptocurrency</SelectItem>
+                              <SelectItem value="other">Other Assets</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor={`saleProceeds-${index}`}>Sale Proceeds</Label>
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                            <Input
+                              id={`saleProceeds-${index}`}
+                              className="pl-7"
+                              value={capitalGain.saleProceeds}
+                              onChange={(e) => {
+                                // Allow direct input of numbers
+                                const input = e.target.value;
+                                // Allow only numbers and decimal point for input
+                                const onlyNumbers = input.replace(/[^0-9.]/g, '');
+                                // Update the field with the raw input
+                                updateIncomeField("capitalGainsIncome", index, "saleProceeds", onlyNumbers);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        <div className="space-y-2">
+                          <Label htmlFor={`purchaseCost-${index}`}>Purchase Cost</Label>
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                            <Input
+                              id={`purchaseCost-${index}`}
+                              className="pl-7"
+                              value={capitalGain.purchaseCost}
+                              onChange={(e) => {
+                                // Allow direct input of numbers
+                                const input = e.target.value;
+                                // Allow only numbers and decimal point for input
+                                const onlyNumbers = input.replace(/[^0-9.]/g, '');
+                                // Update the field with the raw input
+                                updateIncomeField("capitalGainsIncome", index, "purchaseCost", onlyNumbers);
+                              }}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor={`improvementCost-${index}`}>Improvement Cost</Label>
+                          <div className="relative">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                            <Input
+                              id={`improvementCost-${index}`}
+                              className="pl-7"
+                              value={capitalGain.improvementCost}
+                              onChange={(e) => {
+                                // Allow direct input of numbers
+                                const input = e.target.value;
+                                // Allow only numbers and decimal point for input
+                                const onlyNumbers = input.replace(/[^0-9.]/g, '');
+                                // Update the field with the raw input
+                                updateIncomeField("capitalGainsIncome", index, "improvementCost", onlyNumbers);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            
               {/* House Property Income */}
               {formData.incomeSource.includes("house-property") && (
                 <div className="p-6 bg-white border rounded-lg">
