@@ -152,7 +152,12 @@ export function calculateTaxSummary(
   // Calculate taxable income (adjusted for standard deduction if applicable)
   // Get standard deduction based on assessment year or use default
   const standardDeductionAmount = STANDARD_DEDUCTION[assessmentYear] || STANDARD_DEDUCTION["2024-25"];
+  
+  // Standard deduction is fixed at 50,000 (or the appropriate amount for the assessment year)
+  // or salary income, whichever is lower
   let standardDeductionApplied = salaryIncome > 0 ? Math.min(standardDeductionAmount, salaryIncome) : 0;
+  
+  // Standard deduction is applied only once regardless of number of employers
   const taxableIncome = Math.max(0, totalIncome - standardDeductionApplied - totalDeductions);
   
   // Calculate income tax based on applicable income tax slabs

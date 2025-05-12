@@ -25,7 +25,6 @@ interface SalaryEntry {
   section10Exemptions: string;
   section10ExemptionsList: SectionExemption[];
   professionalTax: string;
-  tdsDeducted: string;
   netSalary: string;
 }
 
@@ -386,37 +385,9 @@ const SalarySection: React.FC<SalarySectionProps> = ({
                 </div>
               </div>
               
-              {/* Row 5: TDS */}
-              <div className="grid grid-cols-12 gap-4 items-center">
-                <div className="col-span-4 font-medium">5. TDS Deducted</div>
-                <div className="col-span-8 relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                  <Input
-                    id={`tdsDeducted-${index}`}
-                    className="pl-7"
-                    value={salary.tdsDeducted}
-                    onChange={(e) => {
-                      // Store the original cursor position
-                      const cursorPosition = e.target.selectionStart;
-                      
-                      // Format the value
-                      const value = formatCurrency(e.target.value);
-                      updateIncomeField("salaryIncome", index, "tdsDeducted", value);
-                      
-                      // Set cursor position in the next render cycle
-                      setTimeout(() => {
-                        if (e.target && typeof cursorPosition === 'number') {
-                          e.target.setSelectionRange(cursorPosition, cursorPosition);
-                        }
-                      }, 0);
-                    }}
-                  />
-                </div>
-              </div>
-              
-              {/* Row 6: Net Salary (highlighted) */}
+              {/* Row 5: Net Salary (highlighted) */}
               <div className="grid grid-cols-12 gap-4 items-center bg-gray-50 p-2 rounded">
-                <div className="col-span-4 font-medium">6. Net Taxable Salary</div>
+                <div className="col-span-4 font-medium">5. Net Taxable Salary</div>
                 <div className="col-span-8 relative">
                   <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
                   <Input
