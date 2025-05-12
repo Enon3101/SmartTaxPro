@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -1171,6 +1172,192 @@ export default function StartFiling() {
                             />
                           </div>
                         </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                        <div className="space-y-2">
+                          <Label htmlFor={`acquisitionDate-${index}`}>Acquisition Date</Label>
+                          <Input
+                            id={`acquisitionDate-${index}`}
+                            type="date"
+                            value={capitalGain.acquisitionDate}
+                            onChange={(e) => updateIncomeField("capitalGainsIncome", index, "acquisitionDate", e.target.value)}
+                          />
+                          <p className="text-xs text-gray-500">Date when asset was purchased</p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor={`disposalDate-${index}`}>Disposal Date</Label>
+                          <Input
+                            id={`disposalDate-${index}`}
+                            type="date"
+                            value={capitalGain.disposalDate}
+                            onChange={(e) => updateIncomeField("capitalGainsIncome", index, "disposalDate", e.target.value)}
+                          />
+                          <p className="text-xs text-gray-500">Date when asset was sold</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 mt-4">
+                        <Checkbox 
+                          id={`indexationApplicable-${index}`}
+                          checked={capitalGain.indexationApplicable}
+                          onCheckedChange={(checked: boolean) => 
+                            updateIncomeField("capitalGainsIncome", index, "indexationApplicable", checked)
+                          }
+                        />
+                        <label
+                          htmlFor={`indexationApplicable-${index}`}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          Apply Indexation Benefit
+                        </label>
+                      </div>
+                      
+                      {capitalGain.indexationApplicable && (
+                        <div className="mt-4 p-3 bg-blue-50 rounded-md">
+                          <p className="text-xs text-blue-800 mb-2">
+                            Indexation adjusts the purchase cost for inflation, reducing your capital gains tax liability for long-term assets.
+                          </p>
+                          
+                          <div className="space-y-2">
+                            <Label htmlFor={`indexedCost-${index}`}>Indexed Cost of Acquisition</Label>
+                            <div className="relative">
+                              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                              <Input
+                                id={`indexedCost-${index}`}
+                                className="pl-7"
+                                value={capitalGain.indexedCost}
+                                onChange={(e) => {
+                                  // Allow direct input of numbers
+                                  const input = e.target.value;
+                                  // Allow only numbers and decimal point for input
+                                  const onlyNumbers = input.replace(/[^0-9.]/g, '');
+                                  // Update the field with the raw input
+                                  updateIncomeField("capitalGainsIncome", index, "indexedCost", onlyNumbers);
+                                }}
+                              />
+                            </div>
+                            <p className="text-xs text-gray-500">
+                              Cost of acquisition × (CII of year of sale ÷ CII of year of purchase)
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Exemption Section */}
+                      <div className="mt-4 p-4 bg-green-50 rounded-md border border-green-100">
+                        <h4 className="text-sm font-bold text-green-700 mb-2">Capital Gains Exemption</h4>
+                        
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor={`exemptionSection-${index}`}>Exemption Under Section</Label>
+                            <Select 
+                              value={capitalGain.exemptionSection}
+                              onValueChange={(value) => updateIncomeField("capitalGainsIncome", index, "exemptionSection", value)}
+                            >
+                              <SelectTrigger id={`exemptionSection-${index}`}>
+                                <SelectValue placeholder="Select applicable section" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">No Exemption</SelectItem>
+                                <SelectItem value="54">Section 54 - Residential Property</SelectItem>
+                                <SelectItem value="54B">Section 54B - Agricultural Land</SelectItem>
+                                <SelectItem value="54EC">Section 54EC - Specified Bonds</SelectItem>
+                                <SelectItem value="54EE">Section 54EE - Startup Investment</SelectItem>
+                                <SelectItem value="54F">Section 54F - Sale of Any Asset</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          {capitalGain.exemptionSection && capitalGain.exemptionSection !== "none" && (
+                            <div className="space-y-2">
+                              <Label htmlFor={`exemptionAmount-${index}`}>Exemption Amount</Label>
+                              <div className="relative">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                <Input
+                                  id={`exemptionAmount-${index}`}
+                                  className="pl-7"
+                                  value={capitalGain.exemptionAmount}
+                                  onChange={(e) => {
+                                    // Allow direct input of numbers
+                                    const input = e.target.value;
+                                    // Allow only numbers and decimal point for input
+                                    const onlyNumbers = input.replace(/[^0-9.]/g, '');
+                                    // Update the field with the raw input
+                                    updateIncomeField("capitalGainsIncome", index, "exemptionAmount", onlyNumbers);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Income Summary Section */}
+                      <div className="mt-5 p-4 bg-purple-50 rounded-md border border-purple-100">
+                        <h4 className="text-sm font-bold text-purple-700 mb-2">Capital Gains Summary</h4>
+                        
+                        <div className="flex justify-between items-center text-sm mb-2">
+                          <span>Sale Value:</span>
+                          <span className="font-medium">
+                            ₹{Number(capitalGain.saleProceeds || 0).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center text-sm mb-2">
+                          <span>Less: {capitalGain.indexationApplicable ? 'Indexed Cost' : 'Purchase Cost'}:</span>
+                          <span className="font-medium text-red-600">
+                            -₹{(capitalGain.indexationApplicable && capitalGain.indexedCost 
+                              ? Number(capitalGain.indexedCost) 
+                              : Number(capitalGain.purchaseCost || 0)
+                            ).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center text-sm mb-2">
+                          <span>Less: Improvement Cost:</span>
+                          <span className="font-medium text-red-600">
+                            -₹{Number(capitalGain.improvementCost || 0).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                        
+                        {capitalGain.exemptionSection && capitalGain.exemptionSection !== "none" && capitalGain.exemptionAmount && (
+                          <div className="flex justify-between items-center text-sm mb-2">
+                            <span>Less: Exemption (Section {capitalGain.exemptionSection}):</span>
+                            <span className="font-medium text-red-600">
+                              -₹{Number(capitalGain.exemptionAmount || 0).toLocaleString('en-IN')}
+                            </span>
+                          </div>
+                        )}
+                        
+                        <div className="flex justify-between items-center font-bold text-purple-800 pt-2 border-t border-purple-200">
+                          <span>Net Capital Gain:</span>
+                          <span>
+                            ₹{(
+                              Number(capitalGain.saleProceeds || 0) - 
+                              (capitalGain.indexationApplicable && capitalGain.indexedCost 
+                                ? Number(capitalGain.indexedCost) 
+                                : Number(capitalGain.purchaseCost || 0)) - 
+                              Number(capitalGain.improvementCost || 0) - 
+                              (capitalGain.exemptionSection && capitalGain.exemptionSection !== "none" 
+                                ? Number(capitalGain.exemptionAmount || 0) 
+                                : 0)
+                            ).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                        
+                        {/* Store the calculated value in netCapitalGain field */}
+                        {updateIncomeField("capitalGainsIncome", index, "netCapitalGain", (
+                          Number(capitalGain.saleProceeds || 0) - 
+                          (capitalGain.indexationApplicable && capitalGain.indexedCost 
+                            ? Number(capitalGain.indexedCost) 
+                            : Number(capitalGain.purchaseCost || 0)) - 
+                          Number(capitalGain.improvementCost || 0) - 
+                          (capitalGain.exemptionSection && capitalGain.exemptionSection !== "none" 
+                            ? Number(capitalGain.exemptionAmount || 0) 
+                            : 0)
+                        ).toString())}
                       </div>
                     </div>
                   ))}
