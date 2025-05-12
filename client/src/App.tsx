@@ -103,10 +103,10 @@ function Router() {
       <Route path="/start-filing" component={StartFiling} />
       <Route path="/admin" component={Admin} />
       <Route path="/blog-admin">
-        {(params) => <BlogAdmin />}
+        {() => <BlogAdmin />}
       </Route>
       <Route path="/blog-admin/new">
-        {(params) => <BlogAdmin mode="create" />}
+        {() => <BlogAdmin mode="create" />}
       </Route>
       <Route path="/blog-admin/edit/:id">
         {(params) => <BlogAdmin mode="edit" id={params.id} />}

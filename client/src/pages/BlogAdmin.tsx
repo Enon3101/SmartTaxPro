@@ -20,7 +20,8 @@ import {
   Upload, 
   Eye, 
   Save, 
-  Calendar 
+  Calendar,
+  Clock 
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -106,15 +107,26 @@ const categoryOptions = [
   "Income Tax"
 ];
 
+// Define component props interface
+interface BlogAdminProps {
+  mode?: "create" | "edit" | "list";
+  id?: string;
+}
+
 // Component to manage blog posts
-const BlogAdmin = () => {
+const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
   const [location, setLocation] = useLocation();
   const { isAuthenticated, user } = useAuth();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState(blogPostsData);
-  const [tabValue, setTabValue] = useState("published");
+  const [tabValue, setTabValue] = useState(mode === "create" ? "new" : mode === "edit" ? "edit" : "published");
   const [deletePostId, setDeletePostId] = useState<number | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  
+  // If in edit mode, find the post by id
+  const editingPost = mode === "edit" && id ? 
+    posts.find(post => post.id === Number(id)) : null;
   
   // Filter posts based on search and tab
   const filteredPosts = posts.filter(post => {
@@ -228,7 +240,7 @@ const BlogAdmin = () => {
                           {post.published ? (
                             <><Check className="h-3 w-3 mr-1" /> Published</>
                           ) : (
-                            <><Clock className="h-3 w-3 mr-1" /> Draft</>
+                            <><Calendar className="h-3 w-3 mr-1" /> Draft</>
                           )}
                         </span>
                         <span className="ml-2 inline-block px-2 py-1 text-xs font-medium bg-primary/10 dark:bg-primary/20 text-primary rounded-md">
