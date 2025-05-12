@@ -4,6 +4,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Force light mode */
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: light;
+}
+
 /* Blog styling enhancements */
 .prose .lead {
   @apply text-lg font-medium text-gray-600 mb-8;
@@ -34,11 +43,11 @@
 }
 
 .prose .tax-rates-table th {
-  @apply bg-gray-100 dark:bg-gray-800 p-2 text-left font-medium border border-gray-200 dark:border-gray-700;
+  @apply bg-gray-100 bg-gray-800 p-2 text-left font-medium border border-gray-200 border-gray-700;
 }
 
 .prose .tax-rates-table td {
-  @apply p-2 border border-gray-200 dark:border-gray-700;
+  @apply p-2 border border-gray-200 border-gray-700;
 }
 
 .prose .strategy-box, 
@@ -54,7 +63,7 @@
 .prose .investment-flexibility-highlight,
 .prose .risk-return-highlight,
 .prose .faq-section {
-  @apply p-5 my-6 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50;
+  @apply p-5 my-6 rounded-lg border border-gray-200 border-gray-700 bg-gray-50 bg-gray-800/50;
 }
 
 .prose .pros-cons {
@@ -66,11 +75,11 @@
 }
 
 .prose .pros {
-  @apply bg-green-50 dark:bg-green-900/20;
+  @apply bg-green-50 bg-green-900/20;
 }
 
 .prose .cons {
-  @apply bg-blue-50 dark:bg-blue-900/20;
+  @apply bg-blue-50 bg-blue-900/20;
 }
 
 .prose .comparison-cards {
@@ -78,23 +87,23 @@
 }
 
 .prose .comparison-card {
-  @apply p-5 bg-gray-50 dark:bg-gray-800/50;
+  @apply p-5 bg-gray-50 bg-gray-800/50;
 }
 
 .prose .comparison-card:first-child {
-  @apply bg-blue-50 dark:bg-blue-900/20;
+  @apply bg-blue-50 bg-blue-900/20;
 }
 
 .prose .comparison-card:last-child {
-  @apply bg-green-50 dark:bg-green-900/20;
+  @apply bg-green-50 bg-green-900/20;
 }
 
 .prose .author-note {
-  @apply mt-10 pt-4 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400;
+  @apply mt-10 pt-4 border-t border-gray-200 border-gray-700 text-sm text-gray-500 text-gray-400;
 }
 
 .prose .faq-item {
-  @apply mb-6 pb-6 border-b border-gray-200 dark:border-gray-700 last:border-0 last:mb-0 last:pb-0;
+  @apply mb-6 pb-6 border-b border-gray-200 border-gray-700 last:border-0 last:mb-0 last:pb-0;
 }
 
 .prose .faq-item h3 {

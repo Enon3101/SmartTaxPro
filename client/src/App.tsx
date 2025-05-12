@@ -31,28 +31,28 @@ const TaxRegimeCalculator = lazy(() => {
   // Add a small delay to give browser time to prioritize current page rendering
   return Promise.all([
     import("@/pages/calculators/tax-regime"),
-    new Promise(resolve => setTimeout(resolve, 300))
+    new Promise((resolve) => setTimeout(resolve, 300)),
   ]).then(([moduleExports]) => moduleExports);
 });
 
 const HraCalculator = lazy(() => {
   return Promise.all([
     import("@/pages/calculators/hra"),
-    new Promise(resolve => setTimeout(resolve, 300))
+    new Promise((resolve) => setTimeout(resolve, 300)),
   ]).then(([moduleExports]) => moduleExports);
 });
 
 const TdsCalculator = lazy(() => {
   return Promise.all([
     import("@/pages/calculators/tds"),
-    new Promise(resolve => setTimeout(resolve, 300))
+    new Promise((resolve) => setTimeout(resolve, 300)),
   ]).then(([moduleExports]) => moduleExports);
 });
 
 const CapitalGainsCalculator = lazy(() => {
   return Promise.all([
     import("@/pages/calculators/capital-gains"),
-    new Promise(resolve => setTimeout(resolve, 300))
+    new Promise((resolve) => setTimeout(resolve, 300)),
   ]).then(([moduleExports]) => moduleExports);
 });
 
@@ -60,21 +60,21 @@ const CapitalGainsCalculator = lazy(() => {
 const SipCalculator = lazy(() => {
   return Promise.all([
     import("@/pages/calculators/sip"),
-    new Promise(resolve => setTimeout(resolve, 300))
+    new Promise((resolve) => setTimeout(resolve, 300)),
   ]).then(([moduleExports]) => moduleExports);
 });
 
 const FdCalculator = lazy(() => {
   return Promise.all([
     import("@/pages/calculators/fd"),
-    new Promise(resolve => setTimeout(resolve, 300))
+    new Promise((resolve) => setTimeout(resolve, 300)),
   ]).then(([moduleExports]) => moduleExports);
 });
 
 const LoanEmiCalculator = lazy(() => {
   return Promise.all([
     import("@/pages/calculators/loan-emi"),
-    new Promise(resolve => setTimeout(resolve, 300))
+    new Promise((resolve) => setTimeout(resolve, 300)),
   ]).then(([moduleExports]) => moduleExports);
 });
 
@@ -84,7 +84,9 @@ const PageLoading = () => (
     <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent mb-4"></div>
     <div className="text-center">
       <p className="font-medium">Loading Calculator</p>
-      <p className="text-sm text-muted-foreground mt-1">Please wait a moment...</p>
+      <p className="text-sm text-muted-foreground mt-1">
+        Please wait a moment...
+      </p>
     </div>
   </div>
 );
@@ -96,24 +98,18 @@ function Router() {
       <Route path="/file-taxes" component={TaxFiling} />
       <Route path="/calculators" component={Calculators} />
       <Route path="/learning" component={LearningResources} />
-      <Route path="/learning/blog/:slug">
-        {(params) => <BlogPost />}
-      </Route>
+      <Route path="/learning/blog/:slug">{(params) => <BlogPost />}</Route>
       <Route path="/support" component={Support} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/start-filing" component={StartFiling} />
       <Route path="/admin" component={Admin} />
-      <Route path="/blog-admin">
-        {() => <BlogAdmin />}
-      </Route>
-      <Route path="/blog-admin/new">
-        {() => <BlogAdmin mode="create" />}
-      </Route>
+      <Route path="/blog-admin">{() => <BlogAdmin />}</Route>
+      <Route path="/blog-admin/new">{() => <BlogAdmin mode="create" />}</Route>
       <Route path="/blog-admin/edit/:id">
         {(params) => <BlogAdmin mode="edit" id={params.id} />}
       </Route>
       <Route path="/admin/database-editor" component={DatabaseEditor} />
-      
+
       {/* Calculator Routes */}
       <Route path="/calculators/index">
         {(params) => {
@@ -148,7 +144,7 @@ function Router() {
           <CapitalGainsCalculator />
         </Suspense>
       </Route>
-      
+
       {/* Financial calculator routes */}
       <Route path="/calculators/sip">
         <Suspense fallback={<PageLoading />}>
@@ -165,7 +161,7 @@ function Router() {
           <LoanEmiCalculator />
         </Suspense>
       </Route>
-      
+
       <Route component={NotFound} />
     </Switch>
   );
