@@ -1,23 +1,65 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select";
-import { ArrowRight, Upload, FileText, CheckCircle } from "lucide-react";
+import { 
+  ArrowRight, 
+  ArrowLeft, 
+  Upload, 
+  FileText, 
+  CheckCircle, 
+  PlusCircle, 
+  MinusCircle,
+  Home, 
+  Briefcase,
+  PiggyBank,
+  CreditCard,
+  Calculator,
+  FileCheck
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { TaxDataContext } from "@/context/TaxDataProvider";
+import ProgressTracker from "@/components/ProgressTracker";
+import { apiRequest } from "@/lib/queryClient";
+import { formatIndianCurrency } from "@/lib/formatters";
+
+// Define step types
+interface Step {
+  number: number;
+  title: string;
+  description: string;
+  completed: boolean;
+  active: boolean;
+}
 
 const StartFiling = () => {
   const { toast } = useToast();
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [, setLocation] = useLocation();
+  const {
+    currentStep,
+    setCurrentStep,
+    nextStep: goToNextStep,
+    previousStep: goToPreviousStep,
+    updatePersonalInfo,
+    taxFormId,
+    taxFormData,
+    assessmentYear,
+    setAssessmentYear,
+  } = useContext(TaxDataContext);
+  
   const [selectedTab, setSelectedTab] = useState("quick-start");
+  const [activeStep, setActiveStep] = useState(1);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     pan: "",
     name: "",
@@ -27,6 +69,62 @@ const StartFiling = () => {
     assessmentYear: "2024-25",
     incomeSource: [] as string[],
   });
+  
+  // Fill form with existing data if available
+  useState(() => {
+    if (taxFormData && taxFormData.personalInfo) {
+      setFormData({
+        ...formData,
+        ...taxFormData.personalInfo,
+        assessmentYear: taxFormData.assessmentYear || "2024-25"
+      });
+    }
+  });
+  
+  const steps: Step[] = [
+    {
+      number: 1,
+      title: "Basic Details",
+      description: "Personal information",
+      completed: activeStep > 1,
+      active: activeStep === 1,
+    },
+    {
+      number: 2,
+      title: "Income Sources",
+      description: "Select income types",
+      completed: activeStep > 2,
+      active: activeStep === 2,
+    },
+    {
+      number: 3,
+      title: "Income Details",
+      description: "Based on selections",
+      completed: activeStep > 3,
+      active: activeStep === 3,
+    },
+    {
+      number: 4,
+      title: "Tax Payments",
+      description: "TDS & advance tax",
+      completed: activeStep > 4,
+      active: activeStep === 4,
+    },
+    {
+      number: 5,
+      title: "Tax Calculation",
+      description: "Refund or tax due",
+      completed: activeStep > 5,
+      active: activeStep === 5,
+    },
+    {
+      number: 6,
+      title: "File Return",
+      description: "Submit your ITR",
+      completed: activeStep > 6,
+      active: activeStep === 6,
+    },
+  ];
   
   const handleInputChange = (name: string, value: string) => {
     setFormData(prev => ({
@@ -87,279 +185,424 @@ const StartFiling = () => {
     }, 300);
   };
   
-  const proceedToNextStep = () => {
-    if (!formData.pan || !formData.name || !formData.assessmentYear) {
+  const savePersonalInfo = async () => {
+    if (!formData.pan || !formData.name) {
       toast({
         title: "Required fields missing",
-        description: "Please fill in all required fields",
+        description: "Please fill in all required fields marked with *",
         variant: "destructive",
       });
       return;
     }
     
-    toast({
-      title: "Information saved",
-      description: "Proceeding to the next step",
-    });
+    try {
+      updatePersonalInfo(formData);
+      
+      // Save to API
+      await apiRequest(
+        `/api/tax-forms/${taxFormId}/personal-info`,
+        { method: "POST" },
+        formData
+      );
+      
+      toast({
+        title: "Information saved",
+        description: "Your personal information has been saved",
+      });
+      
+      // Move to next step in wizard
+      nextStep();
+    } catch (error) {
+      console.error("Error saving personal info:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save your information. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Function to proceed to the next step in the wizard
+  const nextStep = () => {
+    if (activeStep < steps.length) {
+      setActiveStep(activeStep + 1);
+      
+      // If moving to income details, go to the Tax Filing page for detailed forms
+      if (activeStep === 2) {
+        navigate("/tax-filing");
+        return;
+      }
+    }
+  };
+  
+  const previousStep = () => {
+    if (activeStep > 1) {
+      setActiveStep(activeStep - 1);
+    }
+  };
+  
+  // Income Sources Selection Component for Step 2
+  const IncomeSourcesStep = () => {
+    const incomeSources = [
+      { 
+        id: "salary", 
+        label: "Salary/Pension", 
+        icon: <Briefcase className="h-5 w-5 text-blue-500" />,
+        description: "Income from employment or pension"
+      },
+      { 
+        id: "house-property", 
+        label: "House Property", 
+        icon: <Home className="h-5 w-5 text-green-500" />,
+        description: "Rental income or home loan interest"
+      },
+      { 
+        id: "capital-gains", 
+        label: "Capital Gains", 
+        icon: <PiggyBank className="h-5 w-5 text-purple-500" />,
+        description: "Profit from sale of investments"
+      },
+      { 
+        id: "business", 
+        label: "Business/Profession", 
+        icon: <Briefcase className="h-5 w-5 text-orange-500" />,
+        description: "Income from business activities"
+      },
+      { 
+        id: "interest", 
+        label: "Interest Income", 
+        icon: <CreditCard className="h-5 w-5 text-pink-500" />,
+        description: "Bank deposits, bonds, etc."
+      },
+      { 
+        id: "other", 
+        label: "Other Sources", 
+        icon: <PlusCircle className="h-5 w-5 text-gray-500" />,
+        description: "Dividends, lottery, gifts, etc."
+      },
+    ];
     
-    // Would normally redirect to the next step in the tax filing process
-    console.log(formData);
+    return (
+      <div className="space-y-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {incomeSources.map(source => (
+            <Card 
+              key={source.id} 
+              className={`cursor-pointer hover:border-blue-300 transition-all ${
+                formData.incomeSource.includes(source.id) ? 'border-blue-500 bg-blue-50' : ''
+              }`}
+              onClick={() => handleCheckboxChange(source.id)}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-start space-x-4">
+                  <div className="shrink-0 mt-1">
+                    {source.icon}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-medium">{source.label}</h3>
+                      <div className="h-5 w-5 rounded-full border border-gray-300 flex items-center justify-center bg-white">
+                        {formData.incomeSource.includes(source.id) && (
+                          <CheckCircle className="h-4 w-4 text-blue-500" />
+                        )}
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-1">{source.description}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+          <h3 className="text-sm font-medium text-blue-800 mb-2">Selection Guidance</h3>
+          <p className="text-sm text-blue-700">
+            Select all the sources from which you earned income during the financial year.
+            This helps us determine which ITR form is appropriate for your filing.
+          </p>
+        </div>
+      </div>
+    );
   };
   
   return (
     <div className="container mx-auto py-10 px-4">
-      <h1 className="text-3xl font-bold mb-2 text-center">Start Your ITR Filing</h1>
-      <p className="text-gray-600 text-center mb-10">Choose how you'd like to begin your tax return</p>
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-bold mb-2">Start Your ITR Filing</h1>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          Complete the step-by-step process to file your income tax return for Assessment Year {formData.assessmentYear}
+        </p>
+      </div>
       
-      <Tabs value={selectedTab} onValueChange={setSelectedTab} className="max-w-4xl mx-auto">
-        <TabsList className="grid grid-cols-3 mb-8">
-          <TabsTrigger value="quick-start">Quick Start</TabsTrigger>
-          <TabsTrigger value="upload-form16">Upload Form 16</TabsTrigger>
-          <TabsTrigger value="import-data">Import Data</TabsTrigger>
-        </TabsList>
+      <div className="max-w-5xl mx-auto">
+        <ProgressTracker steps={steps} />
         
-        <TabsContent value="quick-start">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl">Basic Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-6">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="pan">PAN Number <span className="text-red-500">*</span></Label>
-                    <Input 
-                      id="pan" 
-                      type="text" 
-                      placeholder="e.g., ABCDE1234F"
-                      value={formData.pan} 
-                      onChange={(e) => handleInputChange("pan", e.target.value)} 
-                    />
-                  </div>
+        <div className="mt-8">
+          {activeStep === 1 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center">
+                  <span className="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm">1</span>
+                  Basic Information
+                </CardTitle>
+                <CardDescription>
+                  Enter your personal details to begin your tax filing process
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Tabs value={selectedTab} onValueChange={setSelectedTab} className="mt-2">
+                  <TabsList className="grid grid-cols-3 mb-8">
+                    <TabsTrigger value="quick-start">Quick Start</TabsTrigger>
+                    <TabsTrigger value="upload-form16">Upload Form 16</TabsTrigger>
+                    <TabsTrigger value="import-data">Import Data</TabsTrigger>
+                  </TabsList>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Full Name <span className="text-red-500">*</span></Label>
-                    <Input 
-                      id="name" 
-                      type="text" 
-                      placeholder="As per PAN card"
-                      value={formData.name} 
-                      onChange={(e) => handleInputChange("name", e.target.value)} 
-                    />
-                  </div>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="dob">Date of Birth</Label>
-                    <Input 
-                      id="dob" 
-                      type="date" 
-                      value={formData.dob} 
-                      onChange={(e) => handleInputChange("dob", e.target.value)} 
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="assessmentYear">Assessment Year <span className="text-red-500">*</span></Label>
-                    <Select 
-                      value={formData.assessmentYear} 
-                      onValueChange={(value) => handleInputChange("assessmentYear", value)}
-                    >
-                      <SelectTrigger id="assessmentYear">
-                        <SelectValue placeholder="Select Assessment Year" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="2024-25">2024-25</SelectItem>
-                        <SelectItem value="2023-24">2023-24</SelectItem>
-                        <SelectItem value="2022-23">2022-23</SelectItem>
-                        <SelectItem value="2021-22">2021-22</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      placeholder="your@email.com" 
-                      value={formData.email} 
-                      onChange={(e) => handleInputChange("email", e.target.value)} 
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="mobile">Mobile Number</Label>
-                    <Input 
-                      id="mobile" 
-                      type="tel" 
-                      placeholder="10-digit mobile number" 
-                      value={formData.mobile} 
-                      onChange={(e) => handleInputChange("mobile", e.target.value)} 
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label>Sources of Income</Label>
-                  <div className="grid md:grid-cols-2 gap-3">
-                    {[
-                      { id: "salary", label: "Salary" },
-                      { id: "interest", label: "Interest Income" },
-                      { id: "house-property", label: "House Property" },
-                      { id: "capital-gains", label: "Capital Gains" },
-                      { id: "business", label: "Business/Profession" },
-                      { id: "other", label: "Other Sources" }
-                    ].map(source => (
-                      <div key={source.id} className="flex items-center space-x-2">
-                        <input 
-                          type="checkbox" 
-                          id={source.id} 
-                          className="rounded border-gray-300"
-                          checked={formData.incomeSource.includes(source.id)}
-                          onChange={() => handleCheckboxChange(source.id)}
-                        />
-                        <Label htmlFor={source.id} className="cursor-pointer">{source.label}</Label>
+                  <TabsContent value="quick-start">
+                    <div className="grid gap-6">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="pan">PAN Number <span className="text-red-500">*</span></Label>
+                          <Input 
+                            id="pan" 
+                            type="text" 
+                            placeholder="e.g., ABCDE1234F"
+                            value={formData.pan} 
+                            onChange={(e) => handleInputChange("pan", e.target.value)} 
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="name">Full Name <span className="text-red-500">*</span></Label>
+                          <Input 
+                            id="name" 
+                            type="text" 
+                            placeholder="As per PAN card"
+                            value={formData.name} 
+                            onChange={(e) => handleInputChange("name", e.target.value)} 
+                          />
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
+                      
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="dob">Date of Birth</Label>
+                          <Input 
+                            id="dob" 
+                            type="date" 
+                            value={formData.dob} 
+                            onChange={(e) => handleInputChange("dob", e.target.value)} 
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="assessmentYear">Assessment Year <span className="text-red-500">*</span></Label>
+                          <Select 
+                            value={formData.assessmentYear} 
+                            onValueChange={(value) => {
+                              handleInputChange("assessmentYear", value);
+                              setAssessmentYear(value);
+                            }}
+                          >
+                            <SelectTrigger id="assessmentYear">
+                              <SelectValue placeholder="Select Assessment Year" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="2024-25">2024-25</SelectItem>
+                              <SelectItem value="2023-24">2023-24</SelectItem>
+                              <SelectItem value="2022-23">2022-23</SelectItem>
+                              <SelectItem value="2021-22">2021-22</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email Address</Label>
+                          <Input 
+                            id="email" 
+                            type="email" 
+                            placeholder="your@email.com" 
+                            value={formData.email} 
+                            onChange={(e) => handleInputChange("email", e.target.value)} 
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="mobile">Mobile Number</Label>
+                          <Input 
+                            id="mobile" 
+                            type="tel" 
+                            placeholder="10-digit mobile number" 
+                            value={formData.mobile} 
+                            onChange={(e) => handleInputChange("mobile", e.target.value)} 
+                          />
+                        </div>
+                      </div>
+                      
+                      <Button 
+                        className="w-full md:w-auto md:ml-auto bg-blue-500 hover:bg-blue-600"
+                        onClick={savePersonalInfo}
+                      >
+                        Continue to Income Sources <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="upload-form16">
+                    <div className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50 mb-6">
+                      <FileText className="h-10 w-10 text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium mb-1">Upload Form 16</h3>
+                      <p className="text-sm text-gray-500 text-center mb-4 max-w-xs">
+                        Drag and drop your Form 16 PDF here, or click to browse files
+                      </p>
+                      
+                      <div className="relative">
+                        <input
+                          type="file"
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          accept=".pdf"
+                          onChange={handleFileUpload}
+                        />
+                        <Button variant="outline" className="relative">
+                          <Upload className="mr-2 h-4 w-4" />
+                          Browse Files
+                        </Button>
+                      </div>
+                      
+                      {uploadProgress !== null && (
+                        <div className="w-full max-w-xs mt-4">
+                          <div className="text-sm text-gray-500 flex justify-between mb-1">
+                            <span>Uploading...</span>
+                            <span>{uploadProgress}%</span>
+                          </div>
+                          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-blue-500 rounded-full"
+                              style={{ width: `${uploadProgress}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-500 mr-3 shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-medium">Automatic Data Extraction</h4>
+                          <p className="text-sm text-gray-500">We'll automatically extract data from your Form 16</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-500 mr-3 shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-medium">Pre-Fill Your Return</h4>
+                          <p className="text-sm text-gray-500">Your income and TDS details will be pre-filled</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-500 mr-3 shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-medium">Fast Processing</h4>
+                          <p className="text-sm text-gray-500">Complete your tax filing in minutes</p>
+                        </div>
+                      </div>
+                      
+                      <Button 
+                        className="w-full md:w-auto md:ml-auto mt-6 bg-blue-500 hover:bg-blue-600"
+                        onClick={nextStep}
+                        disabled={uploadProgress !== null && uploadProgress < 100}
+                      >
+                        Continue <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="import-data">
+                    <div className="space-y-6">
+                      <div className="bg-blue-50 border border-blue-100 p-4 rounded-lg">
+                        <h3 className="font-medium text-blue-700 mb-2">Why import data from the Tax Department?</h3>
+                        <p className="text-sm text-blue-600">
+                          Importing your tax data directly from the Income Tax Department ensures accuracy and saves time.
+                          The data includes your income details, TDS, and tax payments already available with the tax department.
+                        </p>
+                      </div>
+                      
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="import-pan">PAN Number <span className="text-red-500">*</span></Label>
+                          <Input id="import-pan" type="text" placeholder="e.g., ABCDE1234F" />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="import-assessment-year">Assessment Year <span className="text-red-500">*</span></Label>
+                          <Select defaultValue="2024-25">
+                            <SelectTrigger id="import-assessment-year">
+                              <SelectValue placeholder="Select Assessment Year" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="2024-25">2024-25</SelectItem>
+                              <SelectItem value="2023-24">2023-24</SelectItem>
+                              <SelectItem value="2022-23">2022-23</SelectItem>
+                              <SelectItem value="2021-22">2021-22</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                      
+                      <p className="text-sm text-gray-500">
+                        You'll need to authenticate with the Income Tax Department using your PAN and password.
+                        We'll securely redirect you to complete this process.
+                      </p>
+                      
+                      <Button className="w-full md:w-auto bg-blue-500 hover:bg-blue-600">
+                        Connect to Tax Department <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          )}
+          
+          {activeStep === 2 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center">
+                  <span className="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm">2</span>
+                  Select Your Income Sources
+                </CardTitle>
+                <CardDescription>
+                  Choose all sources from which you earned income during FY {formData.assessmentYear.split('-')[0]-1}-{formData.assessmentYear.split('-')[0]}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <IncomeSourcesStep />
                 
-                <Button 
-                  className="w-full md:w-auto md:ml-auto bg-blue-500 hover:bg-blue-600"
-                  onClick={proceedToNextStep}
-                >
-                  Proceed to Next Step <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="upload-form16">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl">Upload Your Form 16</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50 mb-6">
-                <FileText className="h-10 w-10 text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium mb-1">Upload Form 16</h3>
-                <p className="text-sm text-gray-500 text-center mb-4 max-w-xs">
-                  Drag and drop your Form 16 PDF here, or click to browse files
-                </p>
-                
-                <div className="relative">
-                  <input
-                    type="file"
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    accept=".pdf"
-                    onChange={handleFileUpload}
-                  />
-                  <Button variant="outline" className="relative">
-                    <Upload className="mr-2 h-4 w-4" />
-                    Browse Files
+                <div className="flex justify-between mt-8">
+                  <Button
+                    variant="outline"
+                    onClick={previousStep}
+                  >
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                  </Button>
+                  
+                  <Button
+                    className="bg-blue-500 hover:bg-blue-600"
+                    onClick={nextStep}
+                    disabled={formData.incomeSource.length === 0}
+                  >
+                    Continue to Income Details <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
-                
-                {uploadProgress !== null && (
-                  <div className="w-full max-w-xs mt-4">
-                    <div className="text-sm text-gray-500 flex justify-between mb-1">
-                      <span>Uploading...</span>
-                      <span>{uploadProgress}%</span>
-                    </div>
-                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-blue-500 rounded-full"
-                        style={{ width: `${uploadProgress}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-3 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-medium">Automatic Data Extraction</h4>
-                    <p className="text-sm text-gray-500">We'll automatically extract data from your Form 16</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-3 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-medium">Pre-Fill Your Return</h4>
-                    <p className="text-sm text-gray-500">Your income and TDS details will be pre-filled</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-3 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-medium">Fast Processing</h4>
-                    <p className="text-sm text-gray-500">Complete your tax filing in minutes</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="import-data">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl">Import Data from Tax Department</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div className="bg-blue-50 border border-blue-100 p-4 rounded-lg">
-                  <h3 className="font-medium text-blue-700 mb-2">Why import data from the Tax Department?</h3>
-                  <p className="text-sm text-blue-600">
-                    Importing your tax data directly from the Income Tax Department ensures accuracy and saves time.
-                    The data includes your income details, TDS, and tax payments already available with the tax department.
-                  </p>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="import-pan">PAN Number <span className="text-red-500">*</span></Label>
-                    <Input id="import-pan" type="text" placeholder="e.g., ABCDE1234F" />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="import-assessment-year">Assessment Year <span className="text-red-500">*</span></Label>
-                    <Select defaultValue="2024-25">
-                      <SelectTrigger id="import-assessment-year">
-                        <SelectValue placeholder="Select Assessment Year" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="2024-25">2024-25</SelectItem>
-                        <SelectItem value="2023-24">2023-24</SelectItem>
-                        <SelectItem value="2022-23">2022-23</SelectItem>
-                        <SelectItem value="2021-22">2021-22</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                
-                <p className="text-sm text-gray-500">
-                  You'll need to authenticate with the Income Tax Department using your PAN and password.
-                  We'll securely redirect you to complete this process.
-                </p>
-                
-                <Button className="w-full md:w-auto bg-blue-500 hover:bg-blue-600">
-                  Connect to Tax Department <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

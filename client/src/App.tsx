@@ -95,6 +95,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/tax-filing" component={TaxFiling} />
       <Route path="/file-taxes" component={TaxFiling} />
       <Route path="/calculators" component={Calculators} />
       <Route path="/learning" component={LearningResources} />
