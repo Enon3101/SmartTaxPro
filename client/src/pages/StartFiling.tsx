@@ -68,6 +68,36 @@ const StartFiling = () => {
     mobile: "",
     assessmentYear: "2024-25",
     incomeSource: [] as string[],
+    // Income section details 
+    salaryIncome: {
+      employerName: "",
+      grossSalary: "",
+      tdsDeducted: ""
+    },
+    housePropertyIncome: {
+      propertyType: "self-occupied",
+      rentalIncome: "",
+      interestPaid: "",
+      propertyTax: ""
+    },
+    capitalGainsIncome: {
+      shortTerm: "",
+      longTerm: ""
+    },
+    businessIncome: {
+      grossReceipts: "",
+      expenses: "",
+      netProfit: ""
+    },
+    interestIncome: {
+      savingsAccount: "",
+      fixedDeposits: "",
+      other: ""
+    },
+    otherIncome: {
+      amount: "",
+      description: ""
+    }
   });
   
   // Fill form with existing data if available
@@ -227,8 +257,8 @@ const StartFiling = () => {
     if (activeStep < steps.length) {
       setActiveStep(activeStep + 1);
       
-      // If moving to income details, go to the Tax Filing page for detailed forms
-      if (activeStep === 2) {
+      // Income options are now shown in Step 3, only redirect to TaxFiling after that step
+      if (activeStep === 3 && formData.incomeSource.length > 0) {
         setLocation("/tax-filing");
         return;
       }
@@ -239,6 +269,351 @@ const StartFiling = () => {
     if (activeStep > 1) {
       setActiveStep(activeStep - 1);
     }
+  };
+  
+  // Income Details Component for Step 3
+  const IncomeDetailsStep = () => {
+    // Helper function to update nested state
+    const updateIncomeField = (sourceType: string, field: string, value: string) => {
+      setFormData(prev => {
+        const updatedForm = { ...prev };
+        
+        if (sourceType === "salaryIncome") {
+          updatedForm.salaryIncome = {
+            ...updatedForm.salaryIncome,
+            [field]: value
+          };
+        } else if (sourceType === "housePropertyIncome") {
+          updatedForm.housePropertyIncome = {
+            ...updatedForm.housePropertyIncome,
+            [field]: value
+          };
+        } else if (sourceType === "capitalGainsIncome") {
+          updatedForm.capitalGainsIncome = {
+            ...updatedForm.capitalGainsIncome,
+            [field]: value
+          };
+        } else if (sourceType === "businessIncome") {
+          updatedForm.businessIncome = {
+            ...updatedForm.businessIncome,
+            [field]: value
+          };
+        } else if (sourceType === "interestIncome") {
+          updatedForm.interestIncome = {
+            ...updatedForm.interestIncome,
+            [field]: value
+          };
+        } else if (sourceType === "otherIncome") {
+          updatedForm.otherIncome = {
+            ...updatedForm.otherIncome,
+            [field]: value
+          };
+        }
+        
+        return updatedForm;
+      });
+    };
+    
+    // Format currency input
+    const formatCurrency = (value: string) => {
+      if (!value) return "";
+      // Remove any non-digit characters
+      const numericValue = value.replace(/[^\d]/g, "");
+      // Format with Indian numbering system (lakhs, crores)
+      return numericValue.replace(/(\d)(?=(\d\d)+\d$)/g, "$1,");
+    };
+    
+    return (
+      <div className="space-y-8">
+        {formData.incomeSource.length === 0 ? (
+          <div className="p-6 text-center bg-yellow-50 rounded-lg border border-yellow-200">
+            <p className="text-yellow-800">No income sources selected. Please go back and select at least one income source.</p>
+          </div>
+        ) : (
+          <>
+            {/* Salary Income */}
+            {formData.incomeSource.includes("salary") && (
+              <div className="p-6 bg-white border rounded-lg">
+                <h3 className="text-lg font-medium flex items-center mb-4">
+                  <Briefcase className="h-5 w-5 text-blue-500 mr-2" />
+                  Salary Income
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="employerName">Employer Name</Label>
+                    <Input
+                      id="employerName"
+                      value={formData.salaryIncome.employerName}
+                      onChange={(e) => updateIncomeField("salaryIncome", "employerName", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="grossSalary">Gross Salary</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="grossSalary"
+                        className="pl-7"
+                        value={formData.salaryIncome.grossSalary}
+                        onChange={(e) => updateIncomeField("salaryIncome", "grossSalary", formatCurrency(e.target.value))}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="tdsDeducted">TDS Deducted</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="tdsDeducted"
+                        className="pl-7"
+                        value={formData.salaryIncome.tdsDeducted}
+                        onChange={(e) => updateIncomeField("salaryIncome", "tdsDeducted", formatCurrency(e.target.value))}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* House Property Income */}
+            {formData.incomeSource.includes("house-property") && (
+              <div className="p-6 bg-white border rounded-lg">
+                <h3 className="text-lg font-medium flex items-center mb-4">
+                  <Home className="h-5 w-5 text-green-500 mr-2" />
+                  House Property Income
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="propertyType">Property Type</Label>
+                    <Select 
+                      value={formData.housePropertyIncome.propertyType} 
+                      onValueChange={(value) => updateIncomeField("housePropertyIncome", "propertyType", value)}
+                    >
+                      <SelectTrigger id="propertyType">
+                        <SelectValue placeholder="Select Property Type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="self-occupied">Self Occupied</SelectItem>
+                        <SelectItem value="let-out">Let Out</SelectItem>
+                        <SelectItem value="deemed-let-out">Deemed Let Out</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  {formData.housePropertyIncome.propertyType !== "self-occupied" && (
+                    <div className="space-y-2">
+                      <Label htmlFor="rentalIncome">Annual Rental Income</Label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <Input
+                          id="rentalIncome"
+                          className="pl-7"
+                          value={formData.housePropertyIncome.rentalIncome}
+                          onChange={(e) => updateIncomeField("housePropertyIncome", "rentalIncome", formatCurrency(e.target.value))}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="interestPaid">Interest Paid on Housing Loan</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="interestPaid"
+                        className="pl-7"
+                        value={formData.housePropertyIncome.interestPaid}
+                        onChange={(e) => updateIncomeField("housePropertyIncome", "interestPaid", formatCurrency(e.target.value))}
+                      />
+                    </div>
+                  </div>
+                  
+                  {formData.housePropertyIncome.propertyType !== "self-occupied" && (
+                    <div className="space-y-2">
+                      <Label htmlFor="propertyTax">Municipal/Property Tax Paid</Label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <Input
+                          id="propertyTax"
+                          className="pl-7"
+                          value={formData.housePropertyIncome.propertyTax}
+                          onChange={(e) => updateIncomeField("housePropertyIncome", "propertyTax", formatCurrency(e.target.value))}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Capital Gains Income */}
+            {formData.incomeSource.includes("capital-gains") && (
+              <div className="p-6 bg-white border rounded-lg">
+                <h3 className="text-lg font-medium flex items-center mb-4">
+                  <PiggyBank className="h-5 w-5 text-purple-500 mr-2" />
+                  Capital Gains
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="shortTerm">Short Term Capital Gains</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="shortTerm"
+                        className="pl-7"
+                        value={formData.capitalGainsIncome.shortTerm}
+                        onChange={(e) => updateIncomeField("capitalGainsIncome", "shortTerm", formatCurrency(e.target.value))}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="longTerm">Long Term Capital Gains</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="longTerm"
+                        className="pl-7"
+                        value={formData.capitalGainsIncome.longTerm}
+                        onChange={(e) => updateIncomeField("capitalGainsIncome", "longTerm", formatCurrency(e.target.value))}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Business Income */}
+            {formData.incomeSource.includes("business") && (
+              <div className="p-6 bg-white border rounded-lg">
+                <h3 className="text-lg font-medium flex items-center mb-4">
+                  <Briefcase className="h-5 w-5 text-orange-500 mr-2" />
+                  Business/Profession Income
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="grossReceipts">Gross Receipts/Turnover</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="grossReceipts"
+                        className="pl-7"
+                        value={formData.businessIncome.grossReceipts}
+                        onChange={(e) => updateIncomeField("businessIncome", "grossReceipts", formatCurrency(e.target.value))}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="expenses">Total Expenses</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="expenses"
+                        className="pl-7"
+                        value={formData.businessIncome.expenses}
+                        onChange={(e) => updateIncomeField("businessIncome", "expenses", formatCurrency(e.target.value))}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="netProfit">Net Profit</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="netProfit"
+                        className="pl-7"
+                        value={formData.businessIncome.netProfit}
+                        onChange={(e) => updateIncomeField("businessIncome", "netProfit", formatCurrency(e.target.value))}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Interest Income */}
+            {formData.incomeSource.includes("interest") && (
+              <div className="p-6 bg-white border rounded-lg">
+                <h3 className="text-lg font-medium flex items-center mb-4">
+                  <CreditCard className="h-5 w-5 text-pink-500 mr-2" />
+                  Interest Income
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="savingsAccount">Savings Account Interest</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="savingsAccount"
+                        className="pl-7"
+                        value={formData.interestIncome.savingsAccount}
+                        onChange={(e) => updateIncomeField("interestIncome", "savingsAccount", formatCurrency(e.target.value))}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="fixedDeposits">Fixed Deposits Interest</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="fixedDeposits"
+                        className="pl-7"
+                        value={formData.interestIncome.fixedDeposits}
+                        onChange={(e) => updateIncomeField("interestIncome", "fixedDeposits", formatCurrency(e.target.value))}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="otherInterest">Other Interest Income</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="otherInterest"
+                        className="pl-7"
+                        value={formData.interestIncome.other}
+                        onChange={(e) => updateIncomeField("interestIncome", "other", formatCurrency(e.target.value))}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Other Income */}
+            {formData.incomeSource.includes("other") && (
+              <div className="p-6 bg-white border rounded-lg">
+                <h3 className="text-lg font-medium flex items-center mb-4">
+                  <PlusCircle className="h-5 w-5 text-gray-500 mr-2" />
+                  Other Income
+                </h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="otherAmount">Amount</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input
+                        id="otherAmount"
+                        className="pl-7"
+                        value={formData.otherIncome.amount}
+                        onChange={(e) => updateIncomeField("otherIncome", "amount", formatCurrency(e.target.value))}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="otherDescription">Description</Label>
+                    <Input
+                      id="otherDescription"
+                      value={formData.otherIncome.description}
+                      onChange={(e) => updateIncomeField("otherIncome", "description", e.target.value)}
+                      placeholder="e.g., Dividends, Lottery, Gifts"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    );
   };
   
   // Income Sources Selection Component for Step 2
@@ -602,6 +977,39 @@ const StartFiling = () => {
                     disabled={formData.incomeSource.length === 0}
                   >
                     Continue to Income Details <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          
+          {activeStep === 3 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center">
+                  <span className="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm">3</span>
+                  Income Details
+                </CardTitle>
+                <CardDescription>
+                  Enter information for each of your selected income sources
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <IncomeDetailsStep />
+                
+                <div className="flex justify-between mt-8">
+                  <Button
+                    variant="outline"
+                    onClick={previousStep}
+                  >
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                  </Button>
+                  
+                  <Button
+                    className="bg-blue-500 hover:bg-blue-600"
+                    onClick={nextStep}
+                  >
+                    Continue to Tax Payments <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
               </CardContent>
