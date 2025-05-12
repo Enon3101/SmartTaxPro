@@ -1692,7 +1692,7 @@ export default function StartFiling() {
                           ? 'text-red-600' 
                           : 'text-green-600'
                       }`}>
-                        ₹{Math.abs(taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)).toLocaleString('en-IN')}
+                        ₹{(Math.round(Math.abs(taxSummary.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) / 10) * 10).toLocaleString('en-IN')}
                       </span>
                     </div>
                   </div>
@@ -1703,11 +1703,137 @@ export default function StartFiling() {
           
           {/* Step 6: Review & Submit */}
           {currentStep === 6 && (
-            <div className="text-center py-20">
-              <h3 className="text-lg font-medium mb-2">Review & Submit Coming Soon</h3>
-              <p className="text-gray-500">
-                We're still working on this section. Please check back later.
-              </p>
+            <div className="space-y-8">
+              <h2 className="text-2xl font-semibold text-blue-800">Review & Submit</h2>
+              
+              {/* Filing Summary */}
+              <div className="bg-white shadow-lg rounded-lg p-6">
+                <h3 className="text-xl font-medium text-gray-900 mb-4">Filing Summary</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-medium text-gray-700 mb-2">Personal Information</h4>
+                    <dl className="space-y-1">
+                      <div className="flex justify-between">
+                        <dt className="text-gray-600">Name:</dt>
+                        <dd className="font-medium">{formData.fullName}</dd>
+                      </div>
+                      <div className="flex justify-between">
+                        <dt className="text-gray-600">PAN:</dt>
+                        <dd className="font-medium">{formData.pan}</dd>
+                      </div>
+                      <div className="flex justify-between">
+                        <dt className="text-gray-600">Assessment Year:</dt>
+                        <dd className="font-medium">{assessmentYear}</dd>
+                      </div>
+                      <div className="flex justify-between">
+                        <dt className="text-gray-600">Filing Type:</dt>
+                        <dd className="font-medium">{filerType || "Individual"}</dd>
+                      </div>
+                    </dl>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-medium text-gray-700 mb-2">Income & Tax Details</h4>
+                    <dl className="space-y-1">
+                      <div className="flex justify-between">
+                        <dt className="text-gray-600">Total Income:</dt>
+                        <dd className="font-medium">₹{taxSummary?.totalIncome?.toLocaleString('en-IN') || "0"}</dd>
+                      </div>
+                      <div className="flex justify-between">
+                        <dt className="text-gray-600">Total Deductions:</dt>
+                        <dd className="font-medium">₹{taxSummary?.totalDeductions?.toLocaleString('en-IN') || "0"}</dd>
+                      </div>
+                      <div className="flex justify-between">
+                        <dt className="text-gray-600">Taxable Income:</dt>
+                        <dd className="font-medium">₹{taxSummary?.taxableIncome?.toLocaleString('en-IN') || "0"}</dd>
+                      </div>
+                      <div className="flex justify-between font-medium">
+                        <dt>Tax Amount:</dt>
+                        <dd>₹{taxSummary?.estimatedTax?.toLocaleString('en-IN') || "0"}</dd>
+                      </div>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Payment Status */}
+              <div className={`p-6 rounded-lg shadow-lg ${
+                (taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                  ? 'bg-red-50 border border-red-200' 
+                  : 'bg-green-50 border border-green-200'
+              }`}>
+                <h3 className={`text-xl font-semibold mb-4 ${
+                  (taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                    ? 'text-red-700' 
+                    : 'text-green-700'
+                }`}>
+                  {(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                    ? 'Tax Payment Required' 
+                    : 'Tax Refund Due'}
+                </h3>
+                
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <p className="text-gray-600">
+                      {(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                        ? 'You need to pay the following amount before filing:' 
+                        : 'You will receive the following refund after processing:'}
+                    </p>
+                    <p className={`text-2xl font-bold mt-2 ${
+                      (taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 
+                        ? 'text-red-600' 
+                        : 'text-green-600'
+                    }`}>
+                      ₹{(Math.round(Math.abs(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) / 10) * 10).toLocaleString('en-IN')}
+                    </p>
+                  </div>
+                  {(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 && (
+                    <div className="text-center">
+                      <p className="text-sm text-gray-600 mb-2">Pay using:</p>
+                      <div className="space-x-2">
+                        <Button variant="outline" className="bg-white">
+                          <img src="https://www.netmeds.com/images/cms/offers/1606302934_1605251328_netbanking.png" 
+                               alt="Net Banking" 
+                               className="h-6 w-auto mr-2" />
+                          Net Banking
+                        </Button>
+                        <Button variant="outline" className="bg-white">
+                          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/2560px-Paytm_Logo_%28standalone%29.svg.png" 
+                               alt="Paytm" 
+                               className="h-5 w-auto mr-2" />
+                          UPI
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                {(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 ? (
+                  <div className="bg-white p-4 rounded border border-gray-200">
+                    <h4 className="font-medium mb-2">File after payment</h4>
+                    <p className="text-sm text-gray-600 mb-4">You need to complete the payment before you can file your return.</p>
+                    <Button className="bg-blue-700 hover:bg-blue-800">
+                      Pay & File Now
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="bg-white p-4 rounded border border-gray-200">
+                    <h4 className="font-medium mb-2">Ready to file</h4>
+                    <p className="text-sm text-gray-600 mb-4">Your return is ready to be filed. Click the button below to proceed.</p>
+                    <Button className="bg-green-600 hover:bg-green-700">
+                      File My Return
+                    </Button>
+                  </div>
+                )}
+              </div>
+              
+              {/* Declaration */}
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                <h4 className="font-medium text-gray-800 mb-2">Declaration</h4>
+                <p className="text-sm text-gray-600">
+                  I solemnly declare that to the best of my knowledge and belief, the information given in this return and the schedules, statements, etc. accompanying it is correct and complete, and the amount of total income and other particulars shown therein are truly stated and are in accordance with the provisions of the Income-tax Act, 1961.
+                </p>
+              </div>
             </div>
           )}
           
