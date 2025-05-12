@@ -768,10 +768,9 @@ const StartFiling = () => {
               </CardHeader>
               <CardContent>
                 <Tabs value={selectedTab} onValueChange={setSelectedTab} className="mt-2">
-                  <TabsList className="grid grid-cols-3 mb-8">
+                  <TabsList className="grid grid-cols-2 mb-8">
                     <TabsTrigger value="quick-start">Quick Start</TabsTrigger>
                     <TabsTrigger value="upload-form16">Upload Form 16</TabsTrigger>
-                    <TabsTrigger value="import-data">Import Data</TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="quick-start">
@@ -934,49 +933,6 @@ const StartFiling = () => {
                         disabled={uploadProgress !== null && uploadProgress < 100}
                       >
                         Continue <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="import-data">
-                    <div className="space-y-6">
-                      <div className="bg-blue-50 border border-blue-100 p-4 rounded-lg">
-                        <h3 className="font-medium text-blue-700 mb-2">Why import data from the Tax Department?</h3>
-                        <p className="text-sm text-blue-600">
-                          Importing your tax data directly from the Income Tax Department ensures accuracy and saves time.
-                          The data includes your income details, TDS, and tax payments already available with the tax department.
-                        </p>
-                      </div>
-                      
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="import-pan">PAN Number <span className="text-red-500">*</span></Label>
-                          <Input id="import-pan" type="text" placeholder="e.g., ABCDE1234F" />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="import-assessment-year">Assessment Year <span className="text-red-500">*</span></Label>
-                          <Select defaultValue="2024-25">
-                            <SelectTrigger id="import-assessment-year">
-                              <SelectValue placeholder="Select Assessment Year" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="2024-25">2024-25</SelectItem>
-                              <SelectItem value="2023-24">2023-24</SelectItem>
-                              <SelectItem value="2022-23">2022-23</SelectItem>
-                              <SelectItem value="2021-22">2021-22</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      
-                      <p className="text-sm text-gray-500">
-                        You'll need to authenticate with the Income Tax Department using your PAN and password.
-                        We'll securely redirect you to complete this process.
-                      </p>
-                      
-                      <Button className="w-full md:w-auto bg-blue-500 hover:bg-blue-600">
-                        Connect to Tax Department <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </div>
                   </TabsContent>
