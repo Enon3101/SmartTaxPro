@@ -172,6 +172,41 @@ export default function StartFiling() {
   
   const [filerType, setFilerType] = useState<string | null>(null);
   const [showSalaryOption, setShowSalaryOption] = useState(true);
+
+  // State for deductions
+  const [deductions80C, setDeductions80C] = useState({
+    ppf: taxFormData?.deductions80C?.ppf || "",
+    elss: taxFormData?.deductions80C?.elss || "",
+    lifeInsurance: taxFormData?.deductions80C?.lifeInsurance || "",
+    houseLoanPrincipal: taxFormData?.deductions80C?.houseLoanPrincipal || "",
+    sukanya: taxFormData?.deductions80C?.sukanya || "",
+    nsc: taxFormData?.deductions80C?.nsc || "",
+    fixedDeposit: taxFormData?.deductions80C?.fixedDeposit || "",
+    epf: taxFormData?.deductions80C?.epf || "",
+    nps: taxFormData?.deductions80C?.nps || "",
+    tuitionFees: taxFormData?.deductions80C?.tuitionFees || "",
+    totalAmount: taxFormData?.deductions80C?.totalAmount || "0"
+  });
+  
+  const [deductions80D, setDeductions80D] = useState({
+    selfMedicalInsurance: taxFormData?.deductions80D?.selfMedicalInsurance || "",
+    parentsMedicalInsurance: taxFormData?.deductions80D?.parentsMedicalInsurance || "",
+    preventiveHealthCheckup: taxFormData?.deductions80D?.preventiveHealthCheckup || "",
+    medicalExpenditure: taxFormData?.deductions80D?.medicalExpenditure || "",
+    totalAmount: taxFormData?.deductions80D?.totalAmount || "0"
+  });
+  
+  const [otherDeductions, setOtherDeductions] = useState({
+    section80CCD: taxFormData?.otherDeductions?.section80CCD || "",
+    section80E: taxFormData?.otherDeductions?.section80E || "",
+    section80G: taxFormData?.otherDeductions?.section80G || "",
+    section80TTA: taxFormData?.otherDeductions?.section80TTA || "",
+    section80TTB: taxFormData?.otherDeductions?.section80TTB || "",
+    section80EEA: taxFormData?.otherDeductions?.section80EEA || "",
+    section80DDB: taxFormData?.otherDeductions?.section80DDB || "",
+    section80U: taxFormData?.otherDeductions?.section80U || "",
+    totalAmount: taxFormData?.otherDeductions?.totalAmount || "0"
+  });
   
   useEffect(() => {
     // Update assessment year when context changes
