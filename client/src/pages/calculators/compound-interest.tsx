@@ -457,8 +457,8 @@ const CompoundInterestCalculator = () => {
                     <div className="space-y-2 text-sm text-muted-foreground">
                       <p><span className="font-medium">Bank Fixed Deposits:</span> Interest is fully taxable as per your income tax slab rate. TDS is applicable if interest exceeds ₹40,000 (₹50,000 for senior citizens) in a financial year.</p>
                       <p><span className="font-medium">PPF, EPF, and Sukanya Samriddhi:</span> Interest earned is tax-exempt.</p>
-                      <p><span className="font-medium">Debt Mutual Funds:</span> For investments made on or after April 1, 2023, gains are taxed as per your income tax slab rate. For investments before this date, long-term capital gains (holding period > 3 years) are taxed at 20% with indexation benefits.</p>
-                      <p><span className="font-medium">Equity Mutual Funds:</span> Long-term capital gains (holding period > 1 year) are taxed at 10% without indexation benefits for gains exceeding ₹1 lakh in a financial year. Short-term capital gains are taxed at 15%.</p>
+                      <p><span className="font-medium">Debt Mutual Funds:</span> For investments made on or after April 1, 2023, gains are taxed as per your income tax slab rate. For investments before this date, long-term capital gains (holding period of more than 3 years) are taxed at 20% with indexation benefits.</p>
+                      <p><span className="font-medium">Equity Mutual Funds:</span> Long-term capital gains (holding period of more than 1 year) are taxed at 10% without indexation benefits for gains exceeding ₹1 lakh in a financial year. Short-term capital gains are taxed at 15%.</p>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
