@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, jsonb, timestamp, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, jsonb, timestamp, varchar, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -13,6 +13,11 @@ export const users = pgTable("users", {
   phone: text("phone"), // Added phone number field
   role: text("role").default("user"), // user or admin
   createdAt: timestamp("created_at").defaultNow(),
+}, (table) => {
+  return {
+    phoneIdx: index("users_phone_idx").on(table.phone),
+    roleIdx: index("users_role_idx").on(table.role),
+  };
 });
 
 // Tax form to store user's tax filing data for Indian ITR
@@ -30,6 +35,13 @@ export const taxForms = pgTable("tax_forms", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
   assessmentYear: text("assessment_year").default("2024-25"), // Current assessment year
+}, (table) => {
+  return {
+    userIdIdx: index("tax_forms_user_id_idx").on(table.userId),
+    statusIdx: index("tax_forms_status_idx").on(table.status),
+    formTypeIdx: index("tax_forms_form_type_idx").on(table.formType),
+    assessmentYearIdx: index("tax_forms_assessment_year_idx").on(table.assessmentYear)
+  };
 });
 
 // OTP verification codes
@@ -40,6 +52,12 @@ export const otpVerifications = pgTable("otp_verifications", {
   verified: boolean("verified").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   expiresAt: timestamp("expires_at").notNull(),
+}, (table) => {
+  return {
+    phoneIdx: index("otp_verifications_phone_idx").on(table.phone),
+    expiresAtIdx: index("otp_verifications_expires_at_idx").on(table.expiresAt),
+    createdAtIdx: index("otp_verifications_created_at_idx").on(table.createdAt),
+  };
 });
 
 // Tax documents uploaded by users
@@ -52,6 +70,12 @@ export const documents = pgTable("documents", {
   documentType: text("document_type").notNull(), // W-2, 1099, etc.
   url: text("url").notNull(),
   uploadedAt: timestamp("uploaded_at").defaultNow(),
+}, (table) => {
+  return {
+    taxFormIdIdx: index("documents_tax_form_id_idx").on(table.taxFormId),
+    documentTypeIdx: index("documents_document_type_idx").on(table.documentType),
+    uploadedAtIdx: index("documents_uploaded_at_idx").on(table.uploadedAt),
+  };
 });
 
 // Blog posts for the learning resources section
@@ -70,6 +94,14 @@ export const blogPosts = pgTable("blog_posts", {
   publishedAt: timestamp("published_at"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => {
+  return {
+    slugIdx: index("blog_posts_slug_idx").on(table.slug),
+    authorIdIdx: index("blog_posts_author_id_idx").on(table.authorId),
+    categoryIdx: index("blog_posts_category_idx").on(table.category),
+    publishedIdx: index("blog_posts_published_idx").on(table.published),
+    createdAtIdx: index("blog_posts_created_at_idx").on(table.createdAt),
+  };
 });
 
 // Schema for inserting users

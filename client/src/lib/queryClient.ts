@@ -111,8 +111,8 @@ export const getQueryFn: <T>(options: {
       });
       
       return data;
-    } catch (error) {
-      if (error.name === 'AbortError') {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'AbortError') {
         // Handle query cancellation gracefully
         console.log('Query was cancelled');
       }
@@ -127,7 +127,7 @@ export const queryClient = new QueryClient({
       refetchInterval: false,
       refetchOnWindowFocus: false,
       staleTime: 1000 * 60 * 5, // 5 minutes - data stays fresh longer
-      cacheTime: 1000 * 60 * 30, // 30 minutes - keep unused data in cache longer
+      gcTime: 1000 * 60 * 30, // 30 minutes - keep unused data in cache longer (formerly cacheTime)
       retry: 1, // Only retry once for failed queries
     },
     mutations: {
