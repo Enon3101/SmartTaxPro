@@ -423,11 +423,11 @@ const AdvanceTaxCalculator = () => {
                       <p className="leading-tight md:leading-normal">
                         <strong>Who needs to pay it?</strong> Any person whose estimated tax liability exceeds ₹10,000 after TDS deductions.
                       </p>
-                      <p>
-                        <strong>When is it due?</strong> It's paid in four installments: by June 15 (15%), September 15 (45%), December 15 (75%), and March 15 (100%).
+                      <p className="leading-tight md:leading-normal">
+                        <strong>When is it due?</strong> Four installments: June 15 (15%), Sept 15 (45%), Dec 15 (75%), and March 15 (100%).
                       </p>
-                      <p>
-                        <strong>What happens if I don't pay?</strong> Interest under sections 234B and 234C of the Income Tax Act may be charged for non-payment or short payment of advance tax.
+                      <p className="leading-tight md:leading-normal">
+                        <strong>What if I don't pay?</strong> Interest charges under sections 234B and 234C for non-payment or short payment.
                       </p>
                     </div>
                   </AccordionContent>
