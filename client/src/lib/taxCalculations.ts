@@ -249,3 +249,84 @@ export function formatCurrency(amount: string | number): string {
   
   return formatIndianCurrency(numericAmount, true, 0);
 }
+
+// Cost Inflation Index (CII) values by financial year as per Indian tax rules
+export const costInflationIndex: {[key: string]: number} = {
+  "1981-82": 100,
+  "2001-02": 100,
+  "2002-03": 105,
+  "2003-04": 109,
+  "2004-05": 113,
+  "2005-06": 117,
+  "2006-07": 122,
+  "2007-08": 129,
+  "2008-09": 137,
+  "2009-10": 148,
+  "2010-11": 167,
+  "2011-12": 184,
+  "2012-13": 200,
+  "2013-14": 220,
+  "2014-15": 240,
+  "2015-16": 254,
+  "2016-17": 264,
+  "2017-18": 272,
+  "2018-19": 280,
+  "2019-20": 289,
+  "2020-21": 301,
+  "2021-22": 317,
+  "2022-23": 331,
+  "2023-24": 348,
+  "2024-25": 365,
+  "2025-26": 382, // Projected value
+  "2026-27": 401  // Projected value
+};
+
+/**
+ * Calculate indexed cost of acquisition for long-term capital gains
+ * 
+ * @param purchaseCost - Original purchase cost of the asset
+ * @param acquisitionDate - Date when the asset was purchased
+ * @param disposalDate - Date when the asset was sold
+ * @returns The indexed cost of acquisition
+ */
+export function calculateIndexedCost(purchaseCost: string | number, acquisitionDate: string, disposalDate: string): number {
+  if (!purchaseCost || !acquisitionDate || !disposalDate) return 0;
+  
+  const purchaseCostNum = typeof purchaseCost === "string" ? parseFloat(purchaseCost) : purchaseCost;
+  
+  // Get financial years from dates
+  const acquisitionYear = getFinancialYear(new Date(acquisitionDate));
+  const disposalYear = getFinancialYear(new Date(disposalDate));
+  
+  // If acquisition year is before 2001-02, use 2001-02 as base year as per IT Act
+  const baseYear = parseInt(acquisitionYear.split("-")[0]) < 2001 ? "2001-02" : acquisitionYear;
+  
+  // Get CII values
+  const acquisitionCII = costInflationIndex[baseYear] || 100;
+  const disposalCII = costInflationIndex[disposalYear] || costInflationIndex["2023-24"]; // Use latest if not found
+  
+  // Calculate indexed cost using the formula:
+  // Indexed Cost = Purchase Cost × (CII for year of sale ÷ CII for year of purchase)
+  const indexedCost = (purchaseCostNum * disposalCII) / acquisitionCII;
+  
+  return Math.round(indexedCost);
+}
+
+/**
+ * Get the financial year (e.g., "2023-24") from a date
+ * 
+ * @param date - The date to get financial year for
+ * @returns The financial year in "YYYY-YY" format
+ */
+function getFinancialYear(date: Date): string {
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  
+  // In India, financial year runs from April 1 to March 31
+  // If month is January to March (0-2), it's part of previous financial year
+  const startYear = month <= 2 ? year - 1 : year;
+  const endYear = startYear + 1;
+  
+  // Format as "YYYY-YY"
+  return `${startYear}-${endYear.toString().substring(2)}`;
+}
