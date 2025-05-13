@@ -298,11 +298,11 @@ const RetirementCalculator = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-2 flex items-center">
-        <Brain className="mr-2 h-8 w-8" /> 
+      <h1 className="text-2xl md:text-3xl font-bold mb-2 flex items-center">
+        <Brain className="mr-2 h-6 w-6 md:h-8 md:w-8" /> 
         Retirement Calculator
       </h1>
-      <p className="text-muted-foreground mb-8">
+      <p className="text-sm md:text-base text-muted-foreground mb-6 md:mb-8">
         Plan your retirement by calculating the corpus required for your desired lifestyle
       </p>
       
@@ -528,13 +528,13 @@ const RetirementCalculator = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <Card className="bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200">
                   <CardContent className="p-4">
-                    <h3 className="text-sm font-semibold mb-2 flex items-center">
-                      <AlertCircle className="mr-2 h-4 w-4 text-yellow-600" />
+                    <h3 className="text-xs md:text-sm font-semibold mb-2 flex items-center">
+                      <AlertCircle className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4 text-yellow-600" />
                       Required Corpus at Retirement
                     </h3>
-                    <p className="text-2xl font-bold">{formatCurrency(requiredCorpus)}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Monthly pension needed: {formatCurrency(monthlyPensionAtRetirement)} at age {retirementAge}
+                    <p className="text-xl md:text-2xl font-bold">{formatCurrency(requiredCorpus)}</p>
+                    <p className="text-xs text-muted-foreground mt-1 leading-snug">
+                      Monthly pension: {formatCurrency(monthlyPensionAtRetirement)} at age {retirementAge}
                     </p>
                   </CardContent>
                 </Card>
