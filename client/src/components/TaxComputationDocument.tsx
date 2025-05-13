@@ -549,15 +549,15 @@ const TaxComputationDocument: React.FC<TaxComputationDocumentProps> = ({
       return;
     }
 
-    // Add the same content as the download function
+    // Add the modernized document content
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Income Tax Computation - ${assessmentYear}</title>
+          <title>Income Tax Computation - ${getFormattedAssessmentYear()}</title>
           <style>
             body {
-              font-family: Arial, sans-serif;
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
               color: #333;
               margin: 0;
               padding: 20px;
