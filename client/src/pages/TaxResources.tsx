@@ -103,15 +103,68 @@ const TaxResources = () => {
     return taxSlabs2024_25;
   };
 
+  // Define tax slabs for different person types
+  const companySlabs = [
+    { incomeFrom: 0, incomeTo: null, taxRate: 30, description: "Flat rate for domestic companies (turnover > ₹400 crore)" },
+    { incomeFrom: 0, incomeTo: null, taxRate: 25, description: "For domestic companies with turnover ≤ ₹400 crore" },
+    { incomeFrom: 0, incomeTo: null, taxRate: 22, description: "Optional rate under section 115BAA" },
+    { incomeFrom: 0, incomeTo: null, taxRate: 15, description: "For new manufacturing companies under section 115BAB" }
+  ];
+
+  const foreignCompanySlabs = [
+    { incomeFrom: 0, incomeTo: null, taxRate: 40, description: "Flat rate for all foreign companies" }
+  ];
+
+  const firmSlabs = [
+    { incomeFrom: 0, incomeTo: null, taxRate: 30, description: "Flat rate for firms and LLPs" }
+  ];
+
+  const aopSlabs = [
+    { incomeFrom: 0, incomeTo: null, taxRate: 30, description: "Flat rate for Association of Persons (AOP) and Body of Individuals (BOI)" }
+  ];
+
   // Get regime based on selected option
   const getTaxRegime = () => {
     const slabs = getSelectedTaxSlabs();
+    let regime;
+    
     if (selectedRegime === "new") {
-      return slabs.regimes.find(r => r.name === "New Tax Regime");
+      regime = slabs.regimes.find(r => r.name === "New Tax Regime");
     } else if (selectedRegime === "old") {
-      return slabs.regimes.find(r => r.name === "Old Tax Regime");
+      regime = slabs.regimes.find(r => r.name === "Old Tax Regime");
+    } else {
+      regime = slabs.regimes[0];
     }
-    return slabs.regimes[0];
+    
+    // Create a deep copy of the selected regime
+    const customRegime = JSON.parse(JSON.stringify(regime));
+    
+    // Override slabs based on person type
+    if (selectedPersonType !== 'individual' && selectedPersonType !== 'huf') {
+      if (selectedPersonType === 'company') {
+        customRegime.slabs = companySlabs;
+        customRegime.name = "Domestic Company Tax Rates";
+        customRegime.description = "Tax rates applicable to domestic companies based on their turnover and other criteria.";
+      } else if (selectedPersonType === 'foreign') {
+        customRegime.slabs = foreignCompanySlabs;
+        customRegime.name = "Foreign Company Tax Rates";
+        customRegime.description = "Tax rates applicable to foreign companies operating in India.";
+      } else if (selectedPersonType === 'firm') {
+        customRegime.slabs = firmSlabs;
+        customRegime.name = "Firm/LLP Tax Rates";
+        customRegime.description = "Tax rates applicable to partnership firms and Limited Liability Partnerships (LLPs).";
+      } else if (selectedPersonType === 'aop') {
+        customRegime.slabs = aopSlabs;
+        customRegime.name = "AOP/BOI Tax Rates";
+        customRegime.description = "Tax rates applicable to Association of Persons (AOP) and Body of Individuals (BOI).";
+      }
+    } else if (selectedPersonType === 'huf') {
+      // HUF follows the same tax slabs as individuals
+      customRegime.name = "HUF Tax Rates";
+      customRegime.description = "Tax rates applicable to Hindu Undivided Family (HUF), which follow the same slabs as individuals.";
+    }
+    
+    return customRegime;
   };
 
   const selectedTaxRegime = getTaxRegime();
@@ -126,7 +179,7 @@ const TaxResources = () => {
       </div>
 
       <Tabs defaultValue="govt-websites" className="mb-8">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
           <TabsTrigger value="govt-websites">Government Websites</TabsTrigger>
           <TabsTrigger value="tools-calculators">Tools & Calculators</TabsTrigger>
           <TabsTrigger value="tax-slabs">Tax Slabs</TabsTrigger>
@@ -237,7 +290,7 @@ const TaxResources = () => {
                 <Calculator className="mr-2" /> Income Tax Slabs
               </CardTitle>
               <CardDescription>
-                Current income tax slabs and rates for different regimes in India
+                Current income tax slabs and rates for different person types and regimes in India
               </CardDescription>
               <div className="flex flex-wrap gap-4 mt-4">
                 <div>
@@ -306,13 +359,25 @@ const TaxResources = () => {
                     <h3 className="text-xl font-semibold mb-2">{selectedTaxRegime.name}</h3>
                     <p className="text-muted-foreground mb-4">{selectedTaxRegime.description}</p>
                     
-                    {selectedRegime === "new" && (
+                    {selectedRegime === "new" && selectedPersonType === "individual" && (
                       <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 p-4 rounded-md mb-4 flex items-start">
                         <Lightbulb className="text-yellow-600 dark:text-yellow-400 mr-3 mt-1 flex-shrink-0" size={20} />
                         <div>
                           <p className="font-medium text-yellow-800 dark:text-yellow-300 mb-1">Default Regime</p>
                           <p className="text-sm text-yellow-700 dark:text-yellow-400">
                             The new tax regime is the default option from FY 2023-24 onwards. You need to specifically opt for the old regime if you want to claim deductions.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {selectedPersonType === "company" && (
+                      <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 p-4 rounded-md mb-4 flex items-start">
+                        <AlertCircle className="text-blue-600 dark:text-blue-400 mr-3 mt-1 flex-shrink-0" size={20} />
+                        <div>
+                          <p className="font-medium text-blue-800 dark:text-blue-300 mb-1">Company Tax Rates</p>
+                          <p className="text-sm text-blue-700 dark:text-blue-400">
+                            Companies can opt for different tax rates based on turnover, business type, and other criteria. Choose the applicable rate for your situation.
                           </p>
                         </div>
                       </div>
