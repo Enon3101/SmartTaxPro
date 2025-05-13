@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { X, Plus, BarChart4, Landmark, TrendingUp, ArrowDown, AlertTriangle } from 'lucide-react';
+import { X, Plus, BarChart4, Landmark, TrendingUp, ArrowDown, AlertTriangle, Briefcase, PiggyBank, DollarSign } from 'lucide-react';
 import SalarySection from "@/components/SalarySection";
 import TaxComputationDocument from "@/components/TaxComputationDocument";
 import { nanoid } from "nanoid";
@@ -1606,10 +1606,10 @@ export default function StartFiling() {
                                   id={`interestAmount-${index}`}
                                   className="pl-7"
                                   placeholder="Interest amount"
-                                  value={interest.interestAmount || ""}
+                                  value={interest.amount || ""}
                                   onChange={(e) => {
                                     const value = e.target.value.replace(/[^0-9.]/g, '');
-                                    updateIncomeField("interestIncome", index, "interestAmount", value);
+                                    updateIncomeField("interestIncome", index, "amount", value);
                                   }}
                                 />
                               </div>
@@ -1681,16 +1681,16 @@ export default function StartFiling() {
                               <Input
                                 id={`incomeDescription-${index}`}
                                 placeholder="Description of income"
-                                value={income.incomeDescription || ""}
-                                onChange={(e) => updateIncomeField("otherIncome", index, "incomeDescription", e.target.value)}
+                                value={income.description || ""}
+                                onChange={(e) => updateIncomeField("otherIncome", index, "description", e.target.value)}
                               />
                             </div>
                             
                             <div className="space-y-2">
                               <Label htmlFor={`incomeCategory-${index}`}>Income Category</Label>
                               <Select
-                                value={income.incomeCategory || ""}
-                                onValueChange={(value) => updateIncomeField("otherIncome", index, "incomeCategory", value)}
+                                value={income.incomeSource || ""}
+                                onValueChange={(value) => updateIncomeField("otherIncome", index, "incomeSource", value)}
                               >
                                 <SelectTrigger id={`incomeCategory-${index}`}>
                                   <SelectValue placeholder="Select category" />
@@ -1714,10 +1714,10 @@ export default function StartFiling() {
                                 id={`incomeAmount-${index}`}
                                 className="pl-7"
                                 placeholder="Amount"
-                                value={income.incomeAmount || ""}
+                                value={income.amount || ""}
                                 onChange={(e) => {
                                   const value = e.target.value.replace(/[^0-9.]/g, '');
-                                  updateIncomeField("otherIncome", index, "incomeAmount", value);
+                                  updateIncomeField("otherIncome", index, "amount", value);
                                 }}
                               />
                             </div>
@@ -2645,7 +2645,14 @@ export default function StartFiling() {
                 (currentStep === 2 && formData.incomeSource.length === 0)
               }
             >
-              {currentStep < steps.length ? "Continue" : "Complete Filing"}
+              {currentStep === 3 && getNextIncomeSource() 
+                ? `Next: ${getNextIncomeSource() === "salary" ? "Salary Income" 
+                    : getNextIncomeSource() === "house-property" ? "House Property Income"
+                    : getNextIncomeSource() === "capital-gains" ? "Capital Gains Income"
+                    : getNextIncomeSource() === "business" ? "Business Income"
+                    : getNextIncomeSource() === "interest" ? "Interest Income"
+                    : "Other Income"}`
+                : currentStep < steps.length ? "Continue" : "Complete Filing"}
             </Button>
           </div>
         </CardContent>
