@@ -48,34 +48,27 @@ export interface IStorage {
   deleteBlogPost(id: number): Promise<void>;
 }
 
-import { desc, eq, and, like, or, sql, asc, SQL } from "drizzle-orm";
+import { desc, eq, and, like, or, sql, asc, SQL, gte } from "drizzle-orm";
 import { db } from "./db";
 
 export class DatabaseStorage implements IStorage {
   // User operations
   async getUser(id: number): Promise<User | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
     const [user] = await db.select().from(users).where(eq(users.username, username));
     return user || undefined;
   }
   
   async getUserByPhone(phone: string): Promise<User | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
     const [user] = await db.select().from(users).where(eq(users.phone, phone));
     return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const { db } = await import("./db");
     const [user] = await db
       .insert(users)
       .values(insertUser)
@@ -85,7 +78,6 @@ export class DatabaseStorage implements IStorage {
   
   // OTP verification methods
   async createOtpVerification(otpVerification: InsertOtpVerification): Promise<OtpVerification> {
-    const { db } = await import("./db");
     const [verification] = await db
       .insert(otpVerifications)
       .values(otpVerification)
@@ -94,8 +86,6 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getLatestOtpForPhone(phone: string): Promise<OtpVerification | undefined> {
-    const { db } = await import("./db");
-    const { eq, desc } = await import("drizzle-orm");
     const [latestOtp] = await db
       .select()
       .from(otpVerifications)
@@ -106,9 +96,6 @@ export class DatabaseStorage implements IStorage {
   }
   
   async verifyOtp(phone: string, otp: string): Promise<boolean> {
-    const { db } = await import("./db");
-    const { eq, and, gte } = await import("drizzle-orm");
-    
     // Get latest non-expired OTP for this phone
     const [otpRecord] = await db
       .select()
@@ -137,9 +124,6 @@ export class DatabaseStorage implements IStorage {
   }
   
   async updateOtpVerificationStatus(id: number, verified: boolean): Promise<OtpVerification | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
-    
     const [updatedVerification] = await db
       .update(otpVerifications)
       .set({ verified })
@@ -151,7 +135,6 @@ export class DatabaseStorage implements IStorage {
 
   // Tax form operations
   async createTaxForm(insertTaxForm: InsertTaxForm): Promise<TaxForm> {
-    const { db } = await import("./db");
     const createdAt = new Date();
     const updatedAt = new Date();
     
@@ -178,22 +161,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getTaxFormById(id: string): Promise<TaxForm | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
     const [taxForm] = await db.select().from(taxForms).where(eq(taxForms.id, id));
     return taxForm || undefined;
   }
 
   async getTaxFormsByUserId(userId: number): Promise<TaxForm[]> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
     return db.select().from(taxForms).where(eq(taxForms.userId, userId));
   }
 
   async updateTaxFormPersonalInfo(id: string, personalInfo: any): Promise<TaxForm | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
-    
     const [updatedTaxForm] = await db
       .update(taxForms)
       .set({ 
@@ -207,9 +183,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormIncomeData(id: string, incomeData: any): Promise<TaxForm | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
-    
     const [updatedTaxForm] = await db
       .update(taxForms)
       .set({ 
@@ -223,9 +196,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormDeductions80C(id: string, deductions80C: any): Promise<TaxForm | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
-    
     const [updatedTaxForm] = await db
       .update(taxForms)
       .set({ 
@@ -239,9 +209,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormDeductions80D(id: string, deductions80D: any): Promise<TaxForm | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
-    
     const [updatedTaxForm] = await db
       .update(taxForms)
       .set({ 
@@ -255,9 +222,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormOtherDeductions(id: string, otherDeductions: any): Promise<TaxForm | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
-    
     const [updatedTaxForm] = await db
       .update(taxForms)
       .set({ 
@@ -271,9 +235,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormTaxPaid(id: string, taxPaid: any): Promise<TaxForm | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
-    
     const [updatedTaxForm] = await db
       .update(taxForms)
       .set({ 
@@ -287,9 +248,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormType(id: string, formType: string): Promise<TaxForm | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
-    
     const [updatedTaxForm] = await db
       .update(taxForms)
       .set({ 
@@ -303,9 +261,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormStatus(id: string, status: string): Promise<TaxForm | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
-    
     const [updatedTaxForm] = await db
       .update(taxForms)
       .set({ 
@@ -320,8 +275,6 @@ export class DatabaseStorage implements IStorage {
 
   // Document operations
   async createDocument(insertDocument: InsertDocument): Promise<Document> {
-    const { db } = await import("./db");
-    
     const [document] = await db
       .insert(documents)
       .values({
@@ -334,9 +287,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getDocumentById(id: string): Promise<Document | undefined> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
-    
     const [document] = await db
       .select()
       .from(documents)
@@ -346,9 +296,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getDocumentsByTaxFormId(taxFormId: string): Promise<Document[]> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
-    
     return db
       .select()
       .from(documents)
@@ -356,12 +303,115 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteDocument(id: string): Promise<void> {
-    const { db } = await import("./db");
-    const { eq } = await import("drizzle-orm");
-    
     await db
       .delete(documents)
       .where(eq(documents.id, id));
+  }
+  
+  // Blog post operations
+  async createBlogPost(blogPost: InsertBlogPost): Promise<BlogPost> {
+    const [post] = await db
+      .insert(blogPosts)
+      .values({
+        ...blogPost,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      })
+      .returning();
+    return post;
+  }
+
+  async getBlogPostById(id: number): Promise<BlogPost | undefined> {
+    const [post] = await db
+      .select()
+      .from(blogPosts)
+      .where(eq(blogPosts.id, id));
+    return post || undefined;
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    const [post] = await db
+      .select()
+      .from(blogPosts)
+      .where(eq(blogPosts.slug, slug));
+    return post || undefined;
+  }
+
+  async getAllBlogPosts(options?: { 
+    limit?: number; 
+    offset?: number; 
+    published?: boolean; 
+    category?: string;
+    searchTerm?: string;
+  }): Promise<{ posts: BlogPost[]; total: number }> {
+    let query = db.select().from(blogPosts);
+    
+    // Apply filters
+    const conditions = [];
+    
+    if (options?.published !== undefined) {
+      conditions.push(eq(blogPosts.published, options.published));
+    }
+    
+    if (options?.category) {
+      conditions.push(eq(blogPosts.category, options.category));
+    }
+    
+    if (options?.searchTerm) {
+      conditions.push(
+        or(
+          like(blogPosts.title, `%${options.searchTerm}%`),
+          like(blogPosts.content, `%${options.searchTerm}%`),
+          like(blogPosts.summary, `%${options.searchTerm}%`)
+        )
+      );
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+    
+    // Get total count
+    const totalCount = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(blogPosts)
+      .where(conditions.length > 0 ? and(...conditions) : undefined);
+    
+    // Apply pagination
+    query = query.orderBy(desc(blogPosts.createdAt));
+    
+    if (options?.limit) {
+      query = query.limit(options.limit);
+    }
+    
+    if (options?.offset) {
+      query = query.offset(options.offset);
+    }
+    
+    const posts = await query;
+    
+    return {
+      posts,
+      total: totalCount[0]?.count || 0
+    };
+  }
+
+  async updateBlogPost(id: number, blogPost: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
+    const [updatedPost] = await db
+      .update(blogPosts)
+      .set({
+        ...blogPost,
+        updatedAt: new Date()
+      })
+      .where(eq(blogPosts.id, id))
+      .returning();
+    return updatedPost || undefined;
+  }
+
+  async deleteBlogPost(id: number): Promise<void> {
+    await db
+      .delete(blogPosts)
+      .where(eq(blogPosts.id, id));
   }
 }
 
