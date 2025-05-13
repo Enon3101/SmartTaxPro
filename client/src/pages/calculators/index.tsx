@@ -90,6 +90,13 @@ const Calculators = () => {
       url: "/calculators/ppf"
     },
     {
+      id: "pf",
+      title: "PF Calculator",
+      description: "Calculate your Employee Provident Fund (EPF) contributions and returns.",
+      icon: <PiggyBank className="h-8 w-8 text-primary mb-4" />,
+      url: "/calculators/pf"
+    },
+    {
       id: "rd",
       title: "RD Calculator",
       description: "Calculate maturity value of your Recurring Deposit investments.",
