@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { X, Plus, BarChart4, Landmark, TrendingUp, ArrowDown, AlertTriangle, Briefcase, PiggyBank, DollarSign } from 'lucide-react';
+import { X, Plus, BarChart4, Landmark, TrendingUp, ArrowDown, AlertTriangle, Briefcase, PiggyBank, DollarSign, Info } from 'lucide-react';
 import SalarySection from "@/components/SalarySection";
 import TaxComputationDocument from "@/components/TaxComputationDocument";
 import { nanoid } from "nanoid";
@@ -1757,7 +1757,7 @@ export default function StartFiling() {
                                   Under presumptive taxation, income is calculated at prescribed rates without maintaining detailed books of accounts.
                                 </p>
                                 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                                <div className="grid grid-cols-1 gap-4 mt-2">
                                   <div className="space-y-2">
                                     <Label htmlFor={`presumptiveSection-${index}`}>Applicable Section</Label>
                                     <Select
@@ -1775,21 +1775,85 @@ export default function StartFiling() {
                                     </Select>
                                   </div>
                                   
+                                  {business.presumptiveSection === "44AD" && (
+                                    <div className="space-y-2">
+                                      <Label htmlFor={`paymentMethod-${index}`}>Transaction Method</Label>
+                                      <Select
+                                        value={business.paymentMethod || "cash"}
+                                        onValueChange={(value) => updateIncomeField("businessIncome", index, "paymentMethod", value)}
+                                      >
+                                        <SelectTrigger id={`paymentMethod-${index}`}>
+                                          <SelectValue placeholder="Select payment method" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                          <SelectItem value="banking">Banking Channels (Digital/Cheque)</SelectItem>
+                                          <SelectItem value="cash">Cash Transactions</SelectItem>
+                                        </SelectContent>
+                                      </Select>
+                                      <p className="text-xs text-blue-700">
+                                        {business.paymentMethod === "banking" 
+                                          ? "6% of turnover is considered as profit for banking channel transactions" 
+                                          : "8% of turnover is considered as profit for cash transactions"}
+                                      </p>
+                                    </div>
+                                  )}
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`grossTurnover-${index}`}>Gross Receipts/Turnover</Label>
+                                    <div className="relative">
+                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                      <Input
+                                        id={`grossTurnover-${index}`}
+                                        className="pl-7"
+                                        placeholder="Total turnover"
+                                        value={business.grossTurnover || business.grossReceipts || ""}
+                                        onChange={(e) => {
+                                          const value = e.target.value.replace(/[^0-9.]/g, '');
+                                          updateIncomeField("businessIncome", index, "grossTurnover", value);
+                                          
+                                          // Auto-calculate presumptive income based on percentage
+                                          if (business.presumptiveSection === "44AD") {
+                                            const percentage = business.paymentMethod === "banking" ? 0.06 : 0.08;
+                                            const presumptiveIncome = Math.round(parseFloat(value) * percentage);
+                                            if (!isNaN(presumptiveIncome)) {
+                                              updateIncomeField("businessIncome", index, "presumptiveIncome", presumptiveIncome.toString());
+                                            }
+                                          }
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                  
                                   <div className="space-y-2">
                                     <Label htmlFor={`presumptiveIncome-${index}`}>Presumptive Income</Label>
                                     <div className="relative">
                                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
                                       <Input
                                         id={`presumptiveIncome-${index}`}
-                                        className="pl-7"
-                                        placeholder="Presumptive income"
-                                        value={business.presumptiveIncome || ""}
+                                        className="pl-7 bg-gray-50"
+                                        placeholder="Calculated income"
+                                        value={
+                                          (() => {
+                                            if (business.presumptiveSection === "44AD" && business.grossTurnover) {
+                                              const percentage = business.paymentMethod === "banking" ? 0.06 : 0.08;
+                                              const calculatedIncome = Math.round(parseFloat(business.grossTurnover) * percentage);
+                                              return !isNaN(calculatedIncome) ? calculatedIncome.toString() : business.presumptiveIncome || "";
+                                            }
+                                            return business.presumptiveIncome || "";
+                                          })()
+                                        }
                                         onChange={(e) => {
                                           const value = e.target.value.replace(/[^0-9.]/g, '');
                                           updateIncomeField("businessIncome", index, "presumptiveIncome", value);
                                         }}
+                                        readOnly={business.presumptiveSection === "44AD"}
                                       />
                                     </div>
+                                    <p className="text-xs text-blue-600">
+                                      {business.presumptiveSection === "44AD" 
+                                        ? "Automatically calculated based on payment method" 
+                                        : "Enter the presumptive income as per applicable section"}
+                                    </p>
                                   </div>
                                 </div>
                               </div>
@@ -1906,22 +1970,26 @@ export default function StartFiling() {
                             </div>
                           </div>
                           
-                          <div className="space-y-2">
-                            <Label htmlFor={`tdsDeducted-${index}`}>TDS Deducted (if any)</Label>
-                            <div className="relative">
-                              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                              <Input
-                                id={`tdsDeducted-${index}`}
-                                className="pl-7"
-                                placeholder="TDS amount"
-                                value={interest.tdsDeducted || ""}
-                                onChange={(e) => {
-                                  const value = e.target.value.replace(/[^0-9.]/g, '');
-                                  updateIncomeField("interestIncome", index, "tdsDeducted", value);
-                                }}
-                              />
+                          {/* Auto-applied Deduction Section */}
+                          {interest.interestSource === "savings" && interest.amount && parseFloat(interest.amount) > 0 && (
+                            <div className="mt-4 p-3 bg-blue-50 rounded-md">
+                              <h5 className="text-sm font-semibold text-blue-800 flex items-center mb-2">
+                                <Info className="h-4 w-4 mr-2" />
+                                Eligible for Section 80TTA Deduction
+                              </h5>
+                              <p className="text-xs text-blue-700 mb-2">
+                                Savings account interest up to ₹10,000 qualifies for deduction under Section 80TTA.
+                              </p>
+                              <div className="flex justify-between text-sm">
+                                <span>Interest Amount:</span>
+                                <span>₹{parseFloat(interest.amount).toLocaleString('en-IN')}</span>
+                              </div>
+                              <div className="flex justify-between text-sm font-medium border-t border-blue-200 mt-2 pt-2">
+                                <span>80TTA Deduction:</span>
+                                <span>₹{Math.min(10000, parseFloat(interest.amount)).toLocaleString('en-IN')}</span>
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       ))
                     )}
