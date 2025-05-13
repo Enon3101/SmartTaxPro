@@ -10,6 +10,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { 
   AlertCircle,
   Building, 
   Calculator, 
@@ -52,6 +65,7 @@ const TaxResources = () => {
   const [selectedRegime, setSelectedRegime] = useState("new");
   const [selectedPersonType, setSelectedPersonType] = useState("individual");
   const [selectedAgeGroup, setSelectedAgeGroup] = useState("below60");
+  const [selectedDeadlineCategory, setSelectedDeadlineCategory] = useState("all");
   const [filterText, setFilterText] = useState("");
   const { theme } = useTheme();
 
@@ -169,6 +183,29 @@ const TaxResources = () => {
 
   const selectedTaxRegime = getTaxRegime();
 
+  // Filter tax deadlines based on selected category
+  const getFilteredDeadlines = () => {
+    const allDeadlines = [...currentTaxDeadlines, ...previousTaxDeadlines];
+    
+    if (selectedDeadlineCategory === 'all') {
+      return allDeadlines;
+    } else if (selectedDeadlineCategory === 'upcoming') {
+      // Filter for upcoming deadlines (based on current date)
+      const currentDate = new Date();
+      return currentTaxDeadlines.filter(deadline => {
+        const deadlineDate = new Date(deadline.date);
+        return deadlineDate > currentDate;
+      });
+    } else {
+      // Filter by category (filing, payment, verification)
+      return allDeadlines.filter(deadline => 
+        deadline.category === selectedDeadlineCategory
+      );
+    }
+  };
+
+  const filteredDeadlines = getFilteredDeadlines();
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -178,681 +215,596 @@ const TaxResources = () => {
         </p>
       </div>
 
-      <Tabs defaultValue="govt-websites" className="mb-8">
-        <TabsList className="flex flex-wrap w-full">
-          <TabsTrigger value="govt-websites" className="flex-1 min-w-[120px]">Government Websites</TabsTrigger>
-          <TabsTrigger value="tools-calculators" className="flex-1 min-w-[120px]">Tools & Calculators</TabsTrigger>
-          <TabsTrigger value="tax-slabs" className="flex-1 min-w-[120px]">Tax Slabs</TabsTrigger>
-          <TabsTrigger value="tax-deadlines" className="flex-1 min-w-[120px]">Tax Deadlines</TabsTrigger>
-        </TabsList>
-
-        {/* Government Websites Tab */}
-        <TabsContent value="govt-websites">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Landmark className="mr-2" /> Official Government Tax Websites
-              </CardTitle>
-              <CardDescription>
-                Authentic sources for tax information, filing, and services provided by the Government of India
-              </CardDescription>
-              <Input
-                placeholder="Search resources..."
-                className="max-w-sm mt-4"
-                value={filterText}
-                onChange={(e) => setFilterText(e.target.value)}
-              />
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredGovtWebsites.map((resource, index) => (
-                  <Card key={index} className="hover:shadow-md transition-shadow">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base flex items-center">
-                        {resource.icon ? renderIcon(resource.icon) : <ExternalLink className="mr-2" size={18} />}
-                        <span className="flex-1">{resource.name}</span>
-                      </CardTitle>
-                      <div className="flex justify-between items-center">
-                        <Badge variant={resource.isOfficial ? "default" : "outline"}>
-                          {resource.isOfficial ? "Official" : "Unofficial"}
-                        </Badge>
-                        <Badge variant="secondary">{resource.category}</Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
-                      <Button variant="outline" size="sm" className="w-full" asChild>
-                        <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                          Visit Website <ExternalLink className="ml-2" size={14} />
-                        </a>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Tools & Calculators Tab */}
-        <TabsContent value="tools-calculators">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Calculator className="mr-2" /> Tax Tools & Calculators
-              </CardTitle>
-              <CardDescription>
-                Helpful tools, calculators, and utilities for tax planning and compliance
-              </CardDescription>
-              <Input
-                placeholder="Search tools & calculators..."
-                className="max-w-sm mt-4"
-                value={filterText}
-                onChange={(e) => setFilterText(e.target.value)}
-              />
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[...filteredTaxTools, ...filteredInfoResources].map((resource, index) => (
-                  <Card key={index} className="hover:shadow-md transition-shadow">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base flex items-center">
-                        {resource.icon ? renderIcon(resource.icon) : <Calculator className="mr-2" size={18} />}
-                        <span className="flex-1">{resource.name}</span>
-                      </CardTitle>
-                      <div className="flex justify-between items-center">
-                        <Badge variant={resource.isOfficial ? "default" : "outline"}>
-                          {resource.isOfficial ? "Official" : "Unofficial"}
-                        </Badge>
-                        <Badge variant="secondary">{resource.category}</Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
-                      <Button variant="outline" size="sm" className="w-full" asChild>
-                        <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                          Access Tool <ExternalLink className="ml-2" size={14} />
-                        </a>
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Tax Slabs Tab */}
-        <TabsContent value="tax-slabs">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Calculator className="mr-2" /> Income Tax Slabs
-              </CardTitle>
-              <CardDescription>
-                Current income tax slabs and rates for different person types and regimes in India
-              </CardDescription>
-              <div className="flex flex-wrap gap-4 mt-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Assessment Year</label>
-                  <select 
-                    className="p-2 rounded border bg-background shadow-sm"
-                    value={selectedTaxYear}
-                    onChange={(e) => setSelectedTaxYear(e.target.value)}
-                  >
-                    <option value="2024-25">2024-25</option>
-                    <option value="2025-26">2025-26</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Tax Regime</label>
-                  <select 
-                    className="p-2 rounded border bg-background shadow-sm"
-                    value={selectedRegime}
-                    onChange={(e) => setSelectedRegime(e.target.value)}
-                  >
-                    <option value="new">New Tax Regime</option>
-                    <option value="old">Old Tax Regime</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Person Type</label>
-                  <select 
-                    className="p-2 rounded border bg-background shadow-sm"
-                    value={selectedPersonType}
-                    onChange={(e) => setSelectedPersonType(e.target.value)}
-                  >
-                    <option value="individual">Individual</option>
-                    <option value="huf">HUF (Hindu Undivided Family)</option>
-                    <option value="company">Domestic Company</option>
-                    <option value="foreign">Foreign Company</option>
-                    <option value="firm">Firm/LLP</option>
-                    <option value="aop">AOP/BOI</option>
-                  </select>
-                </div>
-                {selectedPersonType === 'individual' && (
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Age Group</label>
-                    <select 
-                      className="p-2 rounded border bg-background shadow-sm"
-                      value={selectedAgeGroup}
-                      onChange={(e) => setSelectedAgeGroup(e.target.value)}
-                      disabled={selectedRegime === 'new'} // Age group only matters in old regime
-                    >
-                      <option value="below60">Below 60 years</option>
-                      <option value="60to80">60 to 80 years</option>
-                      <option value="above80">Above 80 years</option>
-                    </select>
-                    {selectedRegime === 'new' && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Age doesn't affect tax rates in new regime
-                      </p>
-                    )}
+      {/* Mobile Accordion - Shown only on mobile */}
+      <div className="md:hidden mb-8">
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="govt-websites">
+            <AccordionTrigger className="text-base font-medium">
+              <Landmark className="mr-2 h-5 w-5" /> Government Websites
+            </AccordionTrigger>
+            <AccordionContent>
+              <Card>
+                <CardHeader className="py-4">
+                  <Input
+                    placeholder="Search resources..."
+                    className="w-full"
+                    value={filterText}
+                    onChange={(e) => setFilterText(e.target.value)}
+                  />
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 gap-4">
+                    {filteredGovtWebsites.map((resource, index) => (
+                      <Card key={index} className="hover:shadow-md transition-shadow">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-base flex items-center">
+                            {resource.icon ? renderIcon(resource.icon) : <ExternalLink className="mr-2" size={18} />}
+                            <span className="flex-1">{resource.name}</span>
+                          </CardTitle>
+                          <div className="flex justify-between items-center">
+                            <Badge variant={resource.isOfficial ? "default" : "outline"}>
+                              {resource.isOfficial ? "Official" : "Unofficial"}
+                            </Badge>
+                            <Badge variant="secondary">{resource.category}</Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
+                          <Button variant="outline" size="sm" className="w-full" asChild>
+                            <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                              Visit Website <ExternalLink className="ml-2" size={14} />
+                            </a>
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent>
-              {selectedTaxRegime && (
-                <>
-                  <div className="mb-6">
-                    <h3 className="text-xl font-semibold mb-2">{selectedTaxRegime.name}</h3>
-                    <p className="text-muted-foreground mb-4">{selectedTaxRegime.description}</p>
-                    
-                    {selectedRegime === "new" && selectedPersonType === "individual" && (
-                      <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 p-4 rounded-md mb-4 flex items-start">
-                        <Lightbulb className="text-yellow-600 dark:text-yellow-400 mr-3 mt-1 flex-shrink-0" size={20} />
-                        <div>
-                          <p className="font-medium text-yellow-800 dark:text-yellow-300 mb-1">Default Regime</p>
-                          <p className="text-sm text-yellow-700 dark:text-yellow-400">
-                            The new tax regime is the default option from FY 2023-24 onwards. You need to specifically opt for the old regime if you want to claim deductions.
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {selectedPersonType === "company" && (
-                      <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 p-4 rounded-md mb-4 flex items-start">
-                        <AlertCircle className="text-blue-600 dark:text-blue-400 mr-3 mt-1 flex-shrink-0" size={20} />
-                        <div>
-                          <p className="font-medium text-blue-800 dark:text-blue-300 mb-1">Company Tax Rates</p>
-                          <p className="text-sm text-blue-700 dark:text-blue-400">
-                            Companies can opt for different tax rates based on turnover, business type, and other criteria. Choose the applicable rate for your situation.
-                          </p>
-                        </div>
+                </CardContent>
+              </Card>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="tools-calculators">
+            <AccordionTrigger className="text-base font-medium">
+              <Calculator className="mr-2 h-5 w-5" /> Tools & Calculators
+            </AccordionTrigger>
+            <AccordionContent>
+              <Card>
+                <CardHeader className="py-4">
+                  <Input
+                    placeholder="Search tools & calculators..."
+                    className="w-full"
+                    value={filterText}
+                    onChange={(e) => setFilterText(e.target.value)}
+                  />
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 gap-4">
+                    {[...filteredTaxTools, ...filteredInfoResources].map((resource, index) => (
+                      <Card key={index} className="hover:shadow-md transition-shadow">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-base flex items-center">
+                            {resource.icon ? renderIcon(resource.icon) : <Calculator className="mr-2" size={18} />}
+                            <span className="flex-1">{resource.name}</span>
+                          </CardTitle>
+                          <div className="flex justify-between items-center">
+                            <Badge variant={resource.isOfficial ? "default" : "outline"}>
+                              {resource.isOfficial ? "Official" : "Unofficial"}
+                            </Badge>
+                            <Badge variant="secondary">{resource.category}</Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
+                          <Button variant="outline" size="sm" className="w-full" asChild>
+                            <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                              Access Tool <ExternalLink className="ml-2" size={14} />
+                            </a>
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="tax-slabs">
+            <AccordionTrigger className="text-base font-medium">
+              <Calculator className="mr-2 h-5 w-5" /> Tax Slabs
+            </AccordionTrigger>
+            <AccordionContent>
+              <Card>
+                <CardHeader>
+                  <div className="flex flex-wrap gap-4 mt-2">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Assessment Year</label>
+                      <select 
+                        className="p-2 rounded border bg-background shadow-sm"
+                        value={selectedTaxYear}
+                        onChange={(e) => setSelectedTaxYear(e.target.value)}
+                      >
+                        <option value="2024-25">2024-25</option>
+                        <option value="2025-26">2025-26</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Tax Regime</label>
+                      <select 
+                        className="p-2 rounded border bg-background shadow-sm"
+                        value={selectedRegime}
+                        onChange={(e) => setSelectedRegime(e.target.value)}
+                      >
+                        <option value="new">New Tax Regime</option>
+                        <option value="old">Old Tax Regime</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Person Type</label>
+                      <select 
+                        className="p-2 rounded border bg-background shadow-sm"
+                        value={selectedPersonType}
+                        onChange={(e) => setSelectedPersonType(e.target.value)}
+                      >
+                        <option value="individual">Individual</option>
+                        <option value="huf">HUF (Hindu Undivided Family)</option>
+                        <option value="company">Domestic Company</option>
+                        <option value="foreign">Foreign Company</option>
+                        <option value="firm">Firm/LLP</option>
+                        <option value="aop">AOP/BOI</option>
+                      </select>
+                    </div>
+                    {selectedPersonType === 'individual' && (
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Age Group</label>
+                        <select 
+                          className="p-2 rounded border bg-background shadow-sm"
+                          value={selectedAgeGroup}
+                          onChange={(e) => setSelectedAgeGroup(e.target.value)}
+                          disabled={selectedRegime === 'new'}
+                        >
+                          <option value="below60">Below 60 years</option>
+                          <option value="60to80">60 to 80 years</option>
+                          <option value="above80">Above 80 years</option>
+                        </select>
                       </div>
                     )}
                   </div>
-
-                  <div className="overflow-x-auto mb-6">
-                    <div className="rounded-lg border shadow-sm overflow-hidden">
-                      <div className="text-sm text-muted-foreground px-4 py-2 bg-muted/50">
-                        Income Tax Slabs for {selectedTaxRegime.name} (AY {selectedTaxYear})
-                        {selectedPersonType === 'individual' && selectedRegime === 'old' && (
-                          <span className="ml-2 text-primary">
-                            {selectedAgeGroup === 'below60' ? '(Below 60 Years)' : 
-                             selectedAgeGroup === '60to80' ? '(Senior Citizen: 60-80 Years)' : 
-                             '(Super Senior Citizen: Above 80 Years)'}
-                          </span>
-                        )}
-                      </div>
-                      <Table>
-                        <TableHeader className="bg-primary/10">
-                          <TableRow>
-                            <TableHead className="text-primary-foreground font-medium">Income Range</TableHead>
-                            <TableHead className="text-primary-foreground font-medium text-center">Tax Rate</TableHead>
-                            <TableHead className="text-primary-foreground font-medium">Description</TableHead>
-                            <TableHead className="text-primary-foreground font-medium">Example Tax</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {selectedTaxRegime.slabs.map((slab, index) => (
-                            <TableRow 
-                              key={index} 
-                              className={`${index % 2 === 0 ? 'bg-background' : 'bg-muted/30'} hover:bg-muted/50 transition-colors`}
-                            >
-                              <TableCell className="font-medium">
-                                {formatIndianCurrency(slab.incomeFrom)} 
-                                <span className="mx-1">-</span> 
-                                {slab.incomeTo ? formatIndianCurrency(slab.incomeTo) : (
-                                  <span className="text-primary font-semibold">Above</span>
-                                )}
-                              </TableCell>
-                              <TableCell className="text-center">
-                                <span className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                  slab.taxRate > 20 ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' : 
-                                  slab.taxRate > 10 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' : 
-                                  slab.taxRate > 0 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 
-                                  'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                                }`}>
-                                  {slab.taxRate}%
-                                </span>
-                              </TableCell>
-                              <TableCell className="text-muted-foreground text-sm">
-                                {slab.description || 'Standard rate for this bracket'}
-                              </TableCell>
-                              <TableCell>
-                                {slab.incomeTo && slab.taxRate > 0 ? (
-                                  <div className="text-sm">
-                                    <span className="font-medium text-primary">
-                                      {formatIndianCurrency((slab.incomeTo - slab.incomeFrom) * (slab.taxRate / 100))}
-                                    </span>
-                                    <span className="text-muted-foreground text-xs ml-1">
-                                      on {formatIndianCurrency(slab.incomeTo - slab.incomeFrom)}
-                                    </span>
-                                  </div>
-                                ) : slab.taxRate > 0 ? (
-                                  <div className="text-sm">
-                                    <span className="font-medium">
-                                      {formatIndianCurrency(500000 * (slab.taxRate / 100))}
-                                    </span>
-                                    <span className="text-muted-foreground text-xs ml-1">
-                                      on ₹5,00,000
-                                    </span>
-                                  </div>
-                                ) : (
-                                  <span className="text-green-600 dark:text-green-400 text-sm font-medium">Nil</span>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </div>
-
-                  {/* Surcharge & Cess Information */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    {/* Surcharge Information */}
-                    {selectedTaxRegime.surcharge && (
-                      <div className="rounded-lg border shadow-sm overflow-hidden">
-                        <div className="bg-primary/5 px-4 py-3 border-b">
-                          <h4 className="text-base font-semibold text-primary">Surcharge</h4>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Additional tax on individuals with higher income
-                          </p>
-                        </div>
-                        <Table>
-                          <TableHeader className="bg-muted/30">
-                            <TableRow>
-                              <TableHead className="font-medium">Income Threshold</TableHead>
-                              <TableHead className="font-medium text-center">Rate</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {Object.entries(selectedTaxRegime.surcharge).map(([threshold, rate], index) => (
-                              <TableRow key={index} className="hover:bg-muted/20">
-                                <TableCell className="font-medium">
-                                  Above {formatIndianCurrency(Number(threshold))}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                  <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
-                                    {rate}%
-                                  </span>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </div>
-                    )}
-
-                    {/* Cess Information */}
-                    <div className="rounded-lg border shadow-sm overflow-hidden">
-                      <div className="bg-primary/5 px-4 py-3 border-b">
-                        <h4 className="text-base font-semibold text-primary">Health & Education Cess</h4>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Applicable on the total tax amount including surcharge
-                        </p>
-                      </div>
-                      <div className="p-4">
-                        <div className="flex items-center justify-between bg-muted/20 p-3 rounded-lg">
-                          <span className="font-medium">Cess Rate</span>
-                          <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
-                            {selectedTaxRegime.cess}%
-                          </span>
-                        </div>
-                        <p className="text-sm text-muted-foreground mt-3">
-                          This cess is levied to fund health and education initiatives across India. It is calculated after adding any applicable surcharge to your tax liability.
-                        </p>
-                        <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 p-3 rounded-md mt-3 text-sm">
-                          <div className="font-medium text-yellow-800 dark:text-yellow-300">Example:</div>
-                          <div className="text-yellow-700 dark:text-yellow-400">
-                            If your calculated tax is ₹1,00,000, the cess would be ₹{(100000 * selectedTaxRegime.cess / 100).toLocaleString('en-IN')}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Age-based Special Slabs */}
-                  {selectedRegime === "old" && (
-                    <div className="mt-8">
-                      <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
-                        <div className="flex items-start">
-                          <AlertCircle className="text-blue-600 dark:text-blue-400 mr-3 mt-1 flex-shrink-0" size={20} />
-                          <div>
-                            <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-1">Age-Based Special Slabs</h3>
-                            <p className="text-sm text-blue-700 dark:text-blue-400">
-                              The old tax regime offers beneficial tax slabs for senior citizens (60-80 years) and super senior citizens (above 80 years).
-                              These special rates are not available in the new tax regime.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                        {/* Senior Citizens */}
-                        <div className="rounded-lg border shadow-sm overflow-hidden">
-                          <div className="bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900 px-4 py-3 border-b flex items-center">
-                            <Users2 className="h-5 w-5 text-amber-700 dark:text-amber-400 mr-2" />
-                            <div>
-                              <h4 className="text-base font-semibold text-amber-800 dark:text-amber-300">Senior Citizens</h4>
-                              <p className="text-xs text-amber-700 dark:text-amber-400">Age 60 to 80 years</p>
-                            </div>
-                          </div>
-                          <div className="overflow-x-auto">
-                            <Table>
-                              <TableHeader className="bg-muted/30">
-                                <TableRow>
-                                  <TableHead className="font-medium">Income Range</TableHead>
-                                  <TableHead className="font-medium text-center">Tax Rate</TableHead>
-                                  <TableHead className="font-medium">Benefit</TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {seniorCitizenSlabs.map((slab, index) => (
-                                  <TableRow key={index} className={`${index % 2 === 0 ? 'bg-background' : 'bg-muted/30'} hover:bg-muted/50 transition-colors`}>
-                                    <TableCell className="font-medium">
-                                      {formatIndianCurrency(slab.incomeFrom)} 
-                                      <span className="mx-1">-</span> 
-                                      {slab.incomeTo ? formatIndianCurrency(slab.incomeTo) : (
-                                        <span className="text-primary font-semibold">Above</span>
-                                      )}
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                      <span className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                        slab.taxRate > 20 ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' : 
-                                        slab.taxRate > 10 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' : 
-                                        slab.taxRate > 0 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 
-                                        'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                                      }`}>
-                                        {slab.taxRate}%
-                                      </span>
-                                    </TableCell>
-                                    <TableCell className="text-muted-foreground text-sm">
-                                      {slab.description || 'Standard rate for this bracket'}
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </div>
-                        </div>
-
-                        {/* Super Senior Citizens */}
-                        <div className="rounded-lg border shadow-sm overflow-hidden">
-                          <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 px-4 py-3 border-b flex items-center">
-                            <Crown className="h-5 w-5 text-purple-700 dark:text-purple-400 mr-2" />
-                            <div>
-                              <h4 className="text-base font-semibold text-purple-800 dark:text-purple-300">Super Senior Citizens</h4>
-                              <p className="text-xs text-purple-700 dark:text-purple-400">Age above 80 years</p>
-                            </div>
-                          </div>
-                          <div className="overflow-x-auto">
-                            <Table>
-                              <TableHeader className="bg-muted/30">
-                                <TableRow>
-                                  <TableHead className="font-medium">Income Range</TableHead>
-                                  <TableHead className="font-medium text-center">Tax Rate</TableHead>
-                                  <TableHead className="font-medium">Benefit</TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {superSeniorCitizenSlabs.map((slab, index) => (
-                                  <TableRow key={index} className={`${index % 2 === 0 ? 'bg-background' : 'bg-muted/30'} hover:bg-muted/50 transition-colors`}>
-                                    <TableCell className="font-medium">
-                                      {formatIndianCurrency(slab.incomeFrom)} 
-                                      <span className="mx-1">-</span> 
-                                      {slab.incomeTo ? formatIndianCurrency(slab.incomeTo) : (
-                                        <span className="text-primary font-semibold">Above</span>
-                                      )}
-                                    </TableCell>
-                                    <TableCell className="text-center">
-                                      <span className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                        slab.taxRate > 20 ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' : 
-                                        slab.taxRate > 10 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' : 
-                                        slab.taxRate > 0 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 
-                                        'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                                      }`}>
-                                        {slab.taxRate}%
-                                      </span>
-                                    </TableCell>
-                                    <TableCell className="text-muted-foreground text-sm">
-                                      {slab.description || 'Standard rate for this bracket'}
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Allowed Deductions */}
-                  <div className="mt-8">
-                    <h3 className="text-xl font-semibold mb-2">Allowed Deductions</h3>
-                    {selectedTaxRegime.deductions.length > 0 ? (
-                      <ul className="list-disc pl-6 space-y-1">
-                        {selectedTaxRegime.deductions.map((deduction, index) => (
-                          <li key={index}>{deduction}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-muted-foreground">No deductions available in this regime.</p>
-                    )}
-                  </div>
-                </>
-              )}
-              
-              <div className="mt-8">
-                <p className="text-sm text-muted-foreground">
-                  Note: The above tax slabs are for reference only. For specific tax calculations based on your income, please use our 
-                  <Link to="/calculators" className="text-primary font-medium ml-1">
-                    Tax Calculators
-                  </Link>.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Tax Deadlines Tab */}
-        <TabsContent value="tax-deadlines">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Calendar className="mr-2" /> Tax Deadlines & Due Dates
-              </CardTitle>
-              <CardDescription>
-                Important tax filing and payment deadlines for the current assessment year
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4">Assessment Year 2025-26 (Financial Year 2024-25)</h3>
-                
-                <div className="space-y-8">
-                  {/* Filing Deadlines */}
-                  <div>
-                    <h4 className="text-lg font-semibold mb-3 flex items-center">
-                      <FileText className="mr-2" size={20} /> Filing Deadlines
-                    </h4>
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Deadline</TableHead>
-                            <TableHead>Description</TableHead>
-                            <TableHead>Applicable To</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {currentTaxDeadlines
-                            .filter(d => d.category === 'filing')
-                            .map((deadline, index) => (
-                              <TableRow key={index}>
-                                <TableCell className="font-medium">{deadline.date}</TableCell>
-                                <TableCell>{deadline.description}</TableCell>
-                                <TableCell>
-                                  <div className="flex flex-wrap gap-1">
-                                    {deadline.applicableTo.map((item, i) => (
-                                      <Badge key={i} variant="outline" className="mr-1">
-                                        {item}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </div>
-
-                  {/* Payment Deadlines */}
-                  <div>
-                    <h4 className="text-lg font-semibold mb-3 flex items-center">
-                      <CreditCard className="mr-2" size={20} /> Payment Deadlines
-                    </h4>
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Deadline</TableHead>
-                            <TableHead>Description</TableHead>
-                            <TableHead>Applicable To</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {currentTaxDeadlines
-                            .filter(d => d.category === 'payment')
-                            .map((deadline, index) => (
-                              <TableRow key={index}>
-                                <TableCell className="font-medium">{deadline.date}</TableCell>
-                                <TableCell>{deadline.description}</TableCell>
-                                <TableCell>
-                                  <div className="flex flex-wrap gap-1">
-                                    {deadline.applicableTo.map((item, i) => (
-                                      <Badge key={i} variant="outline" className="mr-1">
-                                        {item}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </div>
-
-                  {/* Other Important Deadlines */}
-                  <div>
-                    <h4 className="text-lg font-semibold mb-3 flex items-center">
-                      <HelpCircle className="mr-2" size={20} /> Other Important Deadlines
-                    </h4>
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Deadline</TableHead>
-                            <TableHead>Description</TableHead>
-                            <TableHead>Applicable To</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {currentTaxDeadlines
-                            .filter(d => d.category === 'verification' || d.category === 'other')
-                            .map((deadline, index) => (
-                              <TableRow key={index}>
-                                <TableCell className="font-medium">{deadline.date}</TableCell>
-                                <TableCell>{deadline.description}</TableCell>
-                                <TableCell>
-                                  <div className="flex flex-wrap gap-1">
-                                    {deadline.applicableTo.map((item, i) => (
-                                      <Badge key={i} variant="outline" className="mr-1">
-                                        {item}
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-10">
-                <h3 className="text-xl font-semibold mb-4">Previous Assessment Year (2024-25)</h3>
-                <div className="overflow-x-auto">
-                  <Table>
+                </CardHeader>
+                <CardContent>
+                  <Table className="mt-4">
+                    <TableCaption>Tax slabs for Assessment Year {selectedTaxYear}</TableCaption>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Deadline</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead>Applicable To</TableHead>
+                        <TableHead className="w-1/5">Income Range</TableHead>
+                        <TableHead className="w-1/5">Tax Rate</TableHead>
+                        <TableHead className="w-3/5">Notes</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {previousTaxDeadlines.map((deadline, index) => (
+                      {selectedTaxRegime.slabs.map((slab, index) => (
                         <TableRow key={index}>
-                          <TableCell className="font-medium">{deadline.date}</TableCell>
-                          <TableCell>{deadline.description}</TableCell>
-                          <TableCell>
-                            <div className="flex flex-wrap gap-1">
-                              {deadline.applicableTo.map((item, i) => (
-                                <Badge key={i} variant="outline" className="mr-1">
-                                  {item}
-                                </Badge>
-                              ))}
-                            </div>
+                          <TableCell className="font-semibold">
+                            {slab.incomeFrom === 0 
+                              ? (slab.incomeTo === null ? 'Any income' : `Up to ${formatIndianCurrency(slab.incomeTo)}`) 
+                              : (slab.incomeTo === null 
+                                  ? `Above ${formatIndianCurrency(slab.incomeFrom)}` 
+                                  : `${formatIndianCurrency(slab.incomeFrom)} - ${formatIndianCurrency(slab.incomeTo)}`
+                                )
+                            }
                           </TableCell>
+                          <TableCell className="font-semibold">{slab.taxRate}%</TableCell>
+                          <TableCell className="text-sm text-muted-foreground">{slab.description}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
-                </div>
-              </div>
-
-              <div className="mt-8 p-4 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-md">
-                <div className="flex items-start">
-                  <HelpCircle className="text-yellow-700 dark:text-yellow-400 mr-3 mt-1 flex-shrink-0" size={20} />
-                  <div>
-                    <p className="font-medium text-yellow-800 dark:text-yellow-300 mb-1">Important Note</p>
-                    <p className="text-sm text-yellow-700 dark:text-yellow-400">
-                      Dates mentioned are subject to change by the Income Tax Department. Always verify the latest deadlines from the 
-                      <a 
-                        href="https://www.incometaxindia.gov.in/" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-blue-600 dark:text-blue-400 font-medium ml-1 hover:underline"
-                      >
-                        official Income Tax website
-                      </a>.
-                    </p>
+                  
+                  {/* Additional info for the regime */}
+                  <div className="mt-6 space-y-4">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">{selectedTaxRegime.name}</h3>
+                      <p className="text-sm text-muted-foreground">{selectedTaxRegime.description}</p>
+                    </div>
+                    
+                    {selectedTaxRegime.cess > 0 && (
+                      <div className="bg-muted p-4 rounded-md">
+                        <div className="flex items-center mb-2">
+                          <AlertCircle className="h-5 w-5 mr-2 text-primary" />
+                          <h4 className="font-semibold">Health and Education Cess</h4>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          A {selectedTaxRegime.cess}% health and education cess is applicable on the amount of income tax.
+                        </p>
+                      </div>
+                    )}
+                    
+                    {selectedTaxRegime.surcharge && Object.keys(selectedTaxRegime.surcharge).length > 0 && (
+                      <div className="bg-muted p-4 rounded-md">
+                        <div className="flex items-center mb-2">
+                          <AlertCircle className="h-5 w-5 mr-2 text-primary" />
+                          <h4 className="font-semibold">Surcharge</h4>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Surcharge is applicable at the following rates based on income:
+                        </p>
+                        <ul className="list-disc list-inside text-sm text-muted-foreground">
+                          {Object.entries(selectedTaxRegime.surcharge || {}).map(([threshold, rate], index) => (
+                            <li key={index}>
+                              {rate}% for income above ₹{parseInt(threshold).toLocaleString('en-IN')}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    {selectedTaxRegime.deductions && selectedTaxRegime.deductions.length > 0 && (
+                      <div className="bg-muted p-4 rounded-md">
+                        <div className="flex items-center mb-2">
+                          <AlertCircle className="h-5 w-5 mr-2 text-primary" />
+                          <h4 className="font-semibold">Allowed Deductions</h4>
+                        </div>
+                        <ul className="text-sm text-muted-foreground grid grid-cols-1 md:grid-cols-2 gap-1">
+                          {selectedTaxRegime.deductions.map((deduction, index) => (
+                            <li key={index} className="flex items-center">
+                              <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                              {deduction}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
+                </CardContent>
+              </Card>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="tax-deadlines">
+            <AccordionTrigger className="text-base font-medium">
+              <Calendar className="mr-2 h-5 w-5" /> Tax Deadlines
+            </AccordionTrigger>
+            <AccordionContent>
+              <Card>
+                <CardHeader>
+                  <Select
+                    value={selectedDeadlineCategory}
+                    onValueChange={setSelectedDeadlineCategory}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Deadlines</SelectItem>
+                      <SelectItem value="upcoming">Upcoming Deadlines</SelectItem>
+                      <SelectItem value="filing">Filing Deadlines</SelectItem>
+                      <SelectItem value="payment">Payment Deadlines</SelectItem>
+                      <SelectItem value="verification">Verification Deadlines</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {filteredDeadlines.map((deadline, index) => (
+                      <Card key={index} className={`border-l-4 ${deadline.isHighPriority ? 'border-l-red-500' : 'border-l-blue-500'}`}>
+                        <CardHeader className="pb-2">
+                          <div className="flex justify-between items-center">
+                            <CardTitle className="text-base">{deadline.title}</CardTitle>
+                            <Badge className={deadline.isHighPriority ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}>
+                              {deadline.isHighPriority ? 'High Priority' : deadline.category}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{deadline.date}</p>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm">{deadline.description}</p>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {deadline.applicableTo.map((entity, i) => (
+                              <Badge key={i} variant="outline">{entity}</Badge>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
+
+      {/* Desktop Tabs - Hidden on Mobile */}
+      <div className="hidden md:block">
+        <Tabs defaultValue="govt-websites" className="mb-8">
+          <TabsList className="w-full">
+            <TabsTrigger value="govt-websites">Government Websites</TabsTrigger>
+            <TabsTrigger value="tools-calculators">Tools & Calculators</TabsTrigger>
+            <TabsTrigger value="tax-slabs">Tax Slabs</TabsTrigger>
+            <TabsTrigger value="tax-deadlines">Tax Deadlines</TabsTrigger>
+          </TabsList>
+          
+          {/* Government Websites Tab */}
+          <TabsContent value="govt-websites">
+            <Card>
+              <CardHeader className="py-4">
+                <Input
+                  placeholder="Search resources..."
+                  className="w-full"
+                  value={filterText}
+                  onChange={(e) => setFilterText(e.target.value)}
+                />
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredGovtWebsites.map((resource, index) => (
+                    <Card key={index} className="hover:shadow-md transition-shadow">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base flex items-center">
+                          {resource.icon ? renderIcon(resource.icon) : <ExternalLink className="mr-2" size={18} />}
+                          <span className="flex-1">{resource.name}</span>
+                        </CardTitle>
+                        <div className="flex justify-between items-center">
+                          <Badge variant={resource.isOfficial ? "default" : "outline"}>
+                            {resource.isOfficial ? "Official" : "Unofficial"}
+                          </Badge>
+                          <Badge variant="secondary">{resource.category}</Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
+                        <Button variant="outline" size="sm" className="w-full" asChild>
+                          <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                            Visit Website <ExternalLink className="ml-2" size={14} />
+                          </a>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Tools & Calculators Tab */}
+          <TabsContent value="tools-calculators">
+            <Card>
+              <CardHeader className="py-4">
+                <Input
+                  placeholder="Search tools & calculators..."
+                  className="w-full"
+                  value={filterText}
+                  onChange={(e) => setFilterText(e.target.value)}
+                />
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {[...filteredTaxTools, ...filteredInfoResources].map((resource, index) => (
+                    <Card key={index} className="hover:shadow-md transition-shadow">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base flex items-center">
+                          {resource.icon ? renderIcon(resource.icon) : <Calculator className="mr-2" size={18} />}
+                          <span className="flex-1">{resource.name}</span>
+                        </CardTitle>
+                        <div className="flex justify-between items-center">
+                          <Badge variant={resource.isOfficial ? "default" : "outline"}>
+                            {resource.isOfficial ? "Official" : "Unofficial"}
+                          </Badge>
+                          <Badge variant="secondary">{resource.category}</Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
+                        <Button variant="outline" size="sm" className="w-full" asChild>
+                          <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                            Access Tool <ExternalLink className="ml-2" size={14} />
+                          </a>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Tax Slabs Tab */}
+          <TabsContent value="tax-slabs">
+            <Card>
+              <CardHeader>
+                <div className="flex flex-wrap gap-4 mt-2">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Assessment Year</label>
+                    <select 
+                      className="p-2 rounded border bg-background shadow-sm"
+                      value={selectedTaxYear}
+                      onChange={(e) => setSelectedTaxYear(e.target.value)}
+                    >
+                      <option value="2024-25">2024-25</option>
+                      <option value="2025-26">2025-26</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Tax Regime</label>
+                    <select 
+                      className="p-2 rounded border bg-background shadow-sm"
+                      value={selectedRegime}
+                      onChange={(e) => setSelectedRegime(e.target.value)}
+                    >
+                      <option value="new">New Tax Regime</option>
+                      <option value="old">Old Tax Regime</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Person Type</label>
+                    <select 
+                      className="p-2 rounded border bg-background shadow-sm"
+                      value={selectedPersonType}
+                      onChange={(e) => setSelectedPersonType(e.target.value)}
+                    >
+                      <option value="individual">Individual</option>
+                      <option value="huf">HUF (Hindu Undivided Family)</option>
+                      <option value="company">Domestic Company</option>
+                      <option value="foreign">Foreign Company</option>
+                      <option value="firm">Firm/LLP</option>
+                      <option value="aop">AOP/BOI</option>
+                    </select>
+                  </div>
+                  {selectedPersonType === 'individual' && (
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Age Group</label>
+                      <select 
+                        className="p-2 rounded border bg-background shadow-sm"
+                        value={selectedAgeGroup}
+                        onChange={(e) => setSelectedAgeGroup(e.target.value)}
+                        disabled={selectedRegime === 'new'}
+                      >
+                        <option value="below60">Below 60 years</option>
+                        <option value="60to80">60 to 80 years</option>
+                        <option value="above80">Above 80 years</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Table className="mt-4">
+                  <TableCaption>Tax slabs for Assessment Year {selectedTaxYear}</TableCaption>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-1/5">Income Range</TableHead>
+                      <TableHead className="w-1/5">Tax Rate</TableHead>
+                      <TableHead className="w-3/5">Notes</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {selectedTaxRegime.slabs.map((slab, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="font-semibold">
+                          {slab.incomeFrom === 0 
+                            ? (slab.incomeTo === null ? 'Any income' : `Up to ${formatIndianCurrency(slab.incomeTo)}`) 
+                            : (slab.incomeTo === null 
+                                ? `Above ${formatIndianCurrency(slab.incomeFrom)}` 
+                                : `${formatIndianCurrency(slab.incomeFrom)} - ${formatIndianCurrency(slab.incomeTo)}`
+                              )
+                          }
+                        </TableCell>
+                        <TableCell className="font-semibold">{slab.taxRate}%</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{slab.description}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                
+                {/* Additional info for the regime */}
+                <div className="mt-6 space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">{selectedTaxRegime.name}</h3>
+                    <p className="text-sm text-muted-foreground">{selectedTaxRegime.description}</p>
+                  </div>
+                  
+                  {selectedTaxRegime.cess > 0 && (
+                    <div className="bg-muted p-4 rounded-md">
+                      <div className="flex items-center mb-2">
+                        <AlertCircle className="h-5 w-5 mr-2 text-primary" />
+                        <h4 className="font-semibold">Health and Education Cess</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        A {selectedTaxRegime.cess}% health and education cess is applicable on the amount of income tax.
+                      </p>
+                    </div>
+                  )}
+                  
+                  {selectedTaxRegime.surcharge && Object.keys(selectedTaxRegime.surcharge).length > 0 && (
+                    <div className="bg-muted p-4 rounded-md">
+                      <div className="flex items-center mb-2">
+                        <AlertCircle className="h-5 w-5 mr-2 text-primary" />
+                        <h4 className="font-semibold">Surcharge</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Surcharge is applicable at the following rates based on income:
+                      </p>
+                      <ul className="list-disc list-inside text-sm text-muted-foreground">
+                        {Object.entries(selectedTaxRegime.surcharge || {}).map(([threshold, rate], index) => (
+                          <li key={index}>
+                            {rate}% for income above ₹{parseInt(threshold).toLocaleString('en-IN')}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {selectedTaxRegime.deductions && selectedTaxRegime.deductions.length > 0 && (
+                    <div className="bg-muted p-4 rounded-md">
+                      <div className="flex items-center mb-2">
+                        <AlertCircle className="h-5 w-5 mr-2 text-primary" />
+                        <h4 className="font-semibold">Allowed Deductions</h4>
+                      </div>
+                      <ul className="text-sm text-muted-foreground grid grid-cols-1 md:grid-cols-2 gap-1">
+                        {selectedTaxRegime.deductions.map((deduction, index) => (
+                          <li key={index} className="flex items-center">
+                            <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                            {deduction}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Tax Deadlines Tab */}
+          <TabsContent value="tax-deadlines">
+            <Card>
+              <CardHeader>
+                <Select
+                  value={selectedDeadlineCategory}
+                  onValueChange={setSelectedDeadlineCategory}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Deadlines</SelectItem>
+                    <SelectItem value="upcoming">Upcoming Deadlines</SelectItem>
+                    <SelectItem value="filing">Filing Deadlines</SelectItem>
+                    <SelectItem value="payment">Payment Deadlines</SelectItem>
+                    <SelectItem value="verification">Verification Deadlines</SelectItem>
+                  </SelectContent>
+                </Select>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {filteredDeadlines.map((deadline, index) => (
+                    <Card key={index} className={`border-l-4 ${deadline.isHighPriority ? 'border-l-red-500' : 'border-l-blue-500'}`}>
+                      <CardHeader className="pb-2">
+                        <div className="flex justify-between items-center">
+                          <CardTitle className="text-base">{deadline.title}</CardTitle>
+                          <Badge className={deadline.isHighPriority ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}>
+                            {deadline.isHighPriority ? 'High Priority' : deadline.category}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{deadline.date}</p>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm">{deadline.description}</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {deadline.applicableTo.map((entity, i) => (
+                            <Badge key={i} variant="outline">{entity}</Badge>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };
