@@ -264,18 +264,18 @@ const PPFCalculator = () => {
                   </div>
                 </div>
                 
-                <div className="bg-muted p-4 rounded-md mt-6">
+                <div className="bg-muted p-3 md:p-4 rounded-md mt-5 md:mt-6">
                   <div className="flex items-center mb-2">
-                    <Info className="h-5 w-5 mr-2 text-primary" />
-                    <h3 className="text-sm font-medium">About PPF</h3>
+                    <Info className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2 text-primary" />
+                    <h3 className="text-xs md:text-sm font-medium">About PPF</h3>
                   </div>
-                  <ul className="text-xs text-muted-foreground space-y-1">
+                  <ul className="text-xs text-muted-foreground space-y-1 leading-tight md:leading-normal">
                     <li>• Public Provident Fund (PPF) is a government-backed long-term savings scheme in India.</li>
-                    <li>• Minimum annual deposit is ₹500 and maximum is ₹1,50,000 per financial year.</li>
-                    <li>• Current interest rate is 7.1% per annum (compounded annually).</li>
-                    <li>• PPF has a lock-in period of 15 years, with partial withdrawal allowed from the 7th year.</li>
-                    <li>• Investments in PPF qualify for tax deduction under Section 80C of the Income Tax Act.</li>
-                    <li>• Interest earned and maturity amount are tax-free under Section 10 of the Income Tax Act.</li>
+                    <li>• Minimum deposit: ₹500, maximum: ₹1,50,000 per financial year.</li>
+                    <li>• Current interest rate is 7.1% p.a. (compounded annually).</li>
+                    <li>• 15 year lock-in period, partial withdrawal from 7th year.</li>
+                    <li>• Qualifies for tax deduction under Section 80C.</li>
+                    <li>• Interest and maturity amount are tax-free under Section 10.</li>
                   </ul>
                 </div>
               </div>
