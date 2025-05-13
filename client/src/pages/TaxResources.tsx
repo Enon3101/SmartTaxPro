@@ -47,6 +47,8 @@ import { useTheme } from "@/context/ThemeProvider";
 const TaxResources = () => {
   const [selectedTaxYear, setSelectedTaxYear] = useState("2024-25");
   const [selectedRegime, setSelectedRegime] = useState("new");
+  const [selectedPersonType, setSelectedPersonType] = useState("individual");
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState("below60");
   const [filterText, setFilterText] = useState("");
   const { theme } = useTheme();
 
@@ -238,7 +240,7 @@ const TaxResources = () => {
                 <div>
                   <label className="block text-sm font-medium mb-1">Assessment Year</label>
                   <select 
-                    className="p-2 rounded border bg-background"
+                    className="p-2 rounded border bg-background shadow-sm"
                     value={selectedTaxYear}
                     onChange={(e) => setSelectedTaxYear(e.target.value)}
                   >
@@ -249,7 +251,7 @@ const TaxResources = () => {
                 <div>
                   <label className="block text-sm font-medium mb-1">Tax Regime</label>
                   <select 
-                    className="p-2 rounded border bg-background"
+                    className="p-2 rounded border bg-background shadow-sm"
                     value={selectedRegime}
                     onChange={(e) => setSelectedRegime(e.target.value)}
                   >
@@ -257,6 +259,41 @@ const TaxResources = () => {
                     <option value="old">Old Tax Regime</option>
                   </select>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Person Type</label>
+                  <select 
+                    className="p-2 rounded border bg-background shadow-sm"
+                    value={selectedPersonType}
+                    onChange={(e) => setSelectedPersonType(e.target.value)}
+                  >
+                    <option value="individual">Individual</option>
+                    <option value="huf">HUF (Hindu Undivided Family)</option>
+                    <option value="company">Domestic Company</option>
+                    <option value="foreign">Foreign Company</option>
+                    <option value="firm">Firm/LLP</option>
+                    <option value="aop">AOP/BOI</option>
+                  </select>
+                </div>
+                {selectedPersonType === 'individual' && (
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Age Group</label>
+                    <select 
+                      className="p-2 rounded border bg-background shadow-sm"
+                      value={selectedAgeGroup}
+                      onChange={(e) => setSelectedAgeGroup(e.target.value)}
+                      disabled={selectedRegime === 'new'} // Age group only matters in old regime
+                    >
+                      <option value="below60">Below 60 years</option>
+                      <option value="60to80">60 to 80 years</option>
+                      <option value="above80">Above 80 years</option>
+                    </select>
+                    {selectedRegime === 'new' && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Age doesn't affect tax rates in new regime
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </CardHeader>
             <CardContent>
@@ -280,58 +317,144 @@ const TaxResources = () => {
                   </div>
 
                   <div className="overflow-x-auto mb-6">
-                    <Table>
-                      <TableCaption>Income Tax Slabs for {selectedTaxRegime.name} (AY {selectedTaxYear})</TableCaption>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Income Range</TableHead>
-                          <TableHead>Tax Rate</TableHead>
-                          <TableHead>Description</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {selectedTaxRegime.slabs.map((slab, index) => (
-                          <TableRow key={index}>
-                            <TableCell>
-                              {formatIndianCurrency(slab.incomeFrom)} - {slab.incomeTo ? formatIndianCurrency(slab.incomeTo) : 'Above'}
-                            </TableCell>
-                            <TableCell>{slab.taxRate}%</TableCell>
-                            <TableCell>{slab.description}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-
-                  {/* Surcharge Information */}
-                  {selectedTaxRegime.surcharge && (
-                    <div className="mb-6">
-                      <h4 className="text-lg font-semibold mb-2">Surcharge</h4>
+                    <div className="rounded-lg border shadow-sm overflow-hidden">
+                      <div className="text-sm text-muted-foreground px-4 py-2 bg-muted/50">
+                        Income Tax Slabs for {selectedTaxRegime.name} (AY {selectedTaxYear})
+                        {selectedPersonType === 'individual' && selectedRegime === 'old' && (
+                          <span className="ml-2 text-primary">
+                            {selectedAgeGroup === 'below60' ? '(Below 60 Years)' : 
+                             selectedAgeGroup === '60to80' ? '(Senior Citizen: 60-80 Years)' : 
+                             '(Super Senior Citizen: Above 80 Years)'}
+                          </span>
+                        )}
+                      </div>
                       <Table>
-                        <TableHeader>
+                        <TableHeader className="bg-primary/10">
                           <TableRow>
-                            <TableHead>Income Threshold</TableHead>
-                            <TableHead>Surcharge Rate</TableHead>
+                            <TableHead className="text-primary-foreground font-medium">Income Range</TableHead>
+                            <TableHead className="text-primary-foreground font-medium text-center">Tax Rate</TableHead>
+                            <TableHead className="text-primary-foreground font-medium">Description</TableHead>
+                            <TableHead className="text-primary-foreground font-medium">Example Tax</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {Object.entries(selectedTaxRegime.surcharge).map(([threshold, rate], index) => (
-                            <TableRow key={index}>
-                              <TableCell>
-                                Above {formatIndianCurrency(Number(threshold))}
+                          {selectedTaxRegime.slabs.map((slab, index) => (
+                            <TableRow 
+                              key={index} 
+                              className={`${index % 2 === 0 ? 'bg-background' : 'bg-muted/30'} hover:bg-muted/50 transition-colors`}
+                            >
+                              <TableCell className="font-medium">
+                                {formatIndianCurrency(slab.incomeFrom)} 
+                                <span className="mx-1">-</span> 
+                                {slab.incomeTo ? formatIndianCurrency(slab.incomeTo) : (
+                                  <span className="text-primary font-semibold">Above</span>
+                                )}
                               </TableCell>
-                              <TableCell>{rate}%</TableCell>
+                              <TableCell className="text-center">
+                                <span className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                  slab.taxRate > 20 ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' : 
+                                  slab.taxRate > 10 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' : 
+                                  slab.taxRate > 0 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 
+                                  'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                                }`}>
+                                  {slab.taxRate}%
+                                </span>
+                              </TableCell>
+                              <TableCell className="text-muted-foreground text-sm">
+                                {slab.description || 'Standard rate for this bracket'}
+                              </TableCell>
+                              <TableCell>
+                                {slab.incomeTo && slab.taxRate > 0 ? (
+                                  <div className="text-sm">
+                                    <span className="font-medium text-primary">
+                                      {formatIndianCurrency((slab.incomeTo - slab.incomeFrom) * (slab.taxRate / 100))}
+                                    </span>
+                                    <span className="text-muted-foreground text-xs ml-1">
+                                      on {formatIndianCurrency(slab.incomeTo - slab.incomeFrom)}
+                                    </span>
+                                  </div>
+                                ) : slab.taxRate > 0 ? (
+                                  <div className="text-sm">
+                                    <span className="font-medium">
+                                      {formatIndianCurrency(500000 * (slab.taxRate / 100))}
+                                    </span>
+                                    <span className="text-muted-foreground text-xs ml-1">
+                                      on ₹5,00,000
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className="text-green-600 dark:text-green-400 text-sm font-medium">Nil</span>
+                                )}
+                              </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
                       </Table>
                     </div>
-                  )}
+                  </div>
 
-                  {/* Health & Education Cess */}
-                  <div className="mb-6">
-                    <h4 className="text-lg font-semibold mb-2">Health & Education Cess</h4>
-                    <p>4% on income tax + surcharge (if applicable)</p>
+                  {/* Surcharge & Cess Information */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    {/* Surcharge Information */}
+                    {selectedTaxRegime.surcharge && (
+                      <div className="rounded-lg border shadow-sm overflow-hidden">
+                        <div className="bg-primary/5 px-4 py-3 border-b">
+                          <h4 className="text-base font-semibold text-primary">Surcharge</h4>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Additional tax on individuals with higher income
+                          </p>
+                        </div>
+                        <Table>
+                          <TableHeader className="bg-muted/30">
+                            <TableRow>
+                              <TableHead className="font-medium">Income Threshold</TableHead>
+                              <TableHead className="font-medium text-center">Rate</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {Object.entries(selectedTaxRegime.surcharge).map(([threshold, rate], index) => (
+                              <TableRow key={index} className="hover:bg-muted/20">
+                                <TableCell className="font-medium">
+                                  Above {formatIndianCurrency(Number(threshold))}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                  <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                                    {rate}%
+                                  </span>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
+
+                    {/* Cess Information */}
+                    <div className="rounded-lg border shadow-sm overflow-hidden">
+                      <div className="bg-primary/5 px-4 py-3 border-b">
+                        <h4 className="text-base font-semibold text-primary">Health & Education Cess</h4>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Applicable on the total tax amount including surcharge
+                        </p>
+                      </div>
+                      <div className="p-4">
+                        <div className="flex items-center justify-between bg-muted/20 p-3 rounded-lg">
+                          <span className="font-medium">Cess Rate</span>
+                          <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                            {selectedTaxRegime.cess}%
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-3">
+                          This cess is levied to fund health and education initiatives across India. It is calculated after adding any applicable surcharge to your tax liability.
+                        </p>
+                        <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 p-3 rounded-md mt-3 text-sm">
+                          <div className="font-medium text-yellow-800 dark:text-yellow-300">Example:</div>
+                          <div className="text-yellow-700 dark:text-yellow-400">
+                            If your calculated tax is ₹1,00,000, the cess would be ₹{(100000 * selectedTaxRegime.cess / 100).toLocaleString('en-IN')}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Age-based Special Slabs */}
