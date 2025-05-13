@@ -183,11 +183,11 @@ const AdvanceTaxCalculator = () => {
   
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-2 flex items-center">
-        <Calendar className="mr-2 h-8 w-8" /> 
+      <h1 className="text-2xl md:text-3xl font-bold mb-2 flex items-center">
+        <Calendar className="mr-2 h-6 w-6 md:h-8 md:w-8" /> 
         Advance Tax Calculator
       </h1>
-      <p className="text-muted-foreground mb-8">
+      <p className="text-sm md:text-base text-muted-foreground mb-6 md:mb-8">
         Calculate your quarterly advance tax installments for Financial Year 2023-24
       </p>
       
@@ -385,23 +385,23 @@ const AdvanceTaxCalculator = () => {
                 </div>
                 
                 {advanceTaxLiability < 10000 ? (
-                  <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900 rounded-lg">
+                  <div className="p-3 md:p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900 rounded-lg">
                     <div className="flex items-center">
-                      <CheckCircle className="h-5 w-5 mr-2 text-green-600 dark:text-green-500" />
-                      <h4 className="font-medium text-green-800 dark:text-green-400">No Advance Tax Required</h4>
+                      <CheckCircle className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2 text-green-600 dark:text-green-500" />
+                      <h4 className="text-sm md:text-base font-medium text-green-800 dark:text-green-400">No Advance Tax Required</h4>
                     </div>
-                    <p className="text-sm text-green-700 dark:text-green-400 mt-1 ml-7">
-                      Your estimated tax liability after TDS is less than ₹10,000, so you are not required to pay advance tax.
+                    <p className="text-xs md:text-sm text-green-700 dark:text-green-400 mt-1 ml-5 md:ml-7 leading-tight md:leading-normal">
+                      Your tax liability after TDS is less than ₹10,000, so no advance tax is required.
                     </p>
                   </div>
                 ) : (
-                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-900 rounded-lg">
+                  <div className="p-3 md:p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-900 rounded-lg">
                     <div className="flex items-center">
-                      <Calendar className="h-5 w-5 mr-2 text-blue-600 dark:text-blue-500" />
-                      <h4 className="font-medium text-blue-800 dark:text-blue-400">Advance Tax Required</h4>
+                      <Calendar className="h-4 w-4 md:h-5 md:w-5 mr-1 md:mr-2 text-blue-600 dark:text-blue-500" />
+                      <h4 className="text-sm md:text-base font-medium text-blue-800 dark:text-blue-400">Advance Tax Required</h4>
                     </div>
-                    <p className="text-sm text-blue-700 dark:text-blue-400 mt-1 ml-7">
-                      Your estimated tax liability is over ₹10,000. You should pay advance tax according to the schedule above.
+                    <p className="text-xs md:text-sm text-blue-700 dark:text-blue-400 mt-1 ml-5 md:ml-7 leading-tight md:leading-normal">
+                      Your tax liability is over ₹10,000. Pay advance tax according to the schedule above.
                     </p>
                   </div>
                 )}
@@ -409,19 +409,19 @@ const AdvanceTaxCalculator = () => {
               
               <Accordion type="single" collapsible className="mt-6">
                 <AccordionItem value="help">
-                  <AccordionTrigger className="text-sm">
+                  <AccordionTrigger className="text-xs md:text-sm">
                     <div className="flex items-center">
-                      <HelpCircle className="h-4 w-4 mr-2" />
+                      <HelpCircle className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
                       Need help understanding advance tax?
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="text-sm text-muted-foreground space-y-2">
-                      <p>
-                        <strong>What is Advance Tax?</strong> It's the income tax that should be paid in advance instead of as a lump sum payment at the year-end. It's paid in installments throughout the financial year.
+                    <div className="text-xs md:text-sm text-muted-foreground space-y-2">
+                      <p className="leading-tight md:leading-normal">
+                        <strong>What is Advance Tax?</strong> It's income tax paid in advance during the financial year in installments, instead of as a lump sum at year-end.
                       </p>
-                      <p>
-                        <strong>Who needs to pay it?</strong> Any person whose estimated tax liability for the financial year exceeds ₹10,000 after TDS deductions.
+                      <p className="leading-tight md:leading-normal">
+                        <strong>Who needs to pay it?</strong> Any person whose estimated tax liability exceeds ₹10,000 after TDS deductions.
                       </p>
                       <p>
                         <strong>When is it due?</strong> It's paid in four installments: by June 15 (15%), September 15 (45%), December 15 (75%), and March 15 (100%).
