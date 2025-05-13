@@ -1,521 +1,606 @@
-import { Link } from "wouter";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import React, { useState } from "react";
 import { 
-  FileText, 
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription, 
+  CardContent 
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Building, 
   Calculator, 
-  CalendarDays, 
-  HelpCircle,
-  DollarSign,
-  Home,
-  BarChart3,
-  Calendar,
-  Coins,
-  PiggyBank,
-  TrendingUp,
-  LineChart,
+  Calendar, 
+  ExternalLink, 
+  FileText, 
+  HelpCircle, 
+  Landmark,
+  Network,
+  CreditCard,
   Percent,
-  Building,
-  Landmark
+  CheckCircle,
+  Book,
+  Bell,
+  FileBarChart,
+  Receipt,
+  Folder,
+  Building2,
+  IdCard,
+  Lightbulb
 } from "lucide-react";
+import { Link } from "wouter";
+import { govtTaxWebsites, taxToolsAndCalculators, taxInformationResources } from "@/data/govtResources";
+import { 
+  taxSlabs2024_25, 
+  taxSlabs2025_26, 
+  seniorCitizenSlabs, 
+  superSeniorCitizenSlabs 
+} from "@/data/taxSlabs";
+import { currentTaxDeadlines, previousTaxDeadlines } from "@/data/taxDeadlines";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { formatIndianCurrency } from "@/lib/formatters";
+import { useTheme } from "@/context/ThemeProvider";
 
 const TaxResources = () => {
-  // Tax Calculators with icons and descriptions
-  const taxCalculators = [
-    {
-      id: "tax-regime",
-      title: "New vs Old Tax Regime Calculator",
-      icon: <Calculator className="h-10 w-10 text-primary mb-4 mx-auto" />,
-      description: "Compare your tax liability under both tax regimes to make an informed decision.",
-      url: "/calculators/tax-regime"
-    },
-    {
-      id: "tds",
-      title: "TDS Calculator",
-      icon: <DollarSign className="h-10 w-10 text-primary mb-4 mx-auto" />,
-      description: "Calculate Tax Deducted at Source (TDS) for various income types under Indian tax laws.",
-      url: "/calculators/tds"
-    },
-    {
-      id: "hra",
-      title: "HRA Exemption Calculator",
-      icon: <Home className="h-10 w-10 text-primary mb-4 mx-auto" />,
-      description: "Calculate your House Rent Allowance (HRA) exemption based on your salary and rent paid.",
-      url: "/calculators/hra"
-    },
-    {
-      id: "capital-gains",
-      title: "Capital Gains Calculator",
-      icon: <BarChart3 className="h-10 w-10 text-primary mb-4 mx-auto" />,
-      description: "Calculate tax on short-term and long-term capital gains from stocks, mutual funds, and property.",
-      url: "/calculators/capital-gains"
-    },
-    {
-      id: "income-tax",
-      title: "Income Tax Calculator",
-      icon: <Coins className="h-10 w-10 text-primary mb-4 mx-auto" />,
-      description: "Calculate your total income tax liability based on your income, deductions, and tax regime.",
-      url: "/calculators/income-tax"
-    },
-    {
-      id: "advance-tax",
-      title: "Advance Tax Calculator",
-      icon: <Calendar className="h-10 w-10 text-primary mb-4 mx-auto" />,
-      description: "Calculate your quarterly advance tax installments based on your estimated annual income.",
-      url: "/calculators/advance-tax"
-    },
-    {
-      id: "gratuity",
-      title: "Gratuity Calculator",
-      icon: <PiggyBank className="h-10 w-10 text-primary mb-4 mx-auto" />,
-      description: "Calculate your gratuity amount based on your salary and years of service.",
-      url: "/calculators/gratuity"
+  const [selectedTaxYear, setSelectedTaxYear] = useState("2024-25");
+  const [selectedRegime, setSelectedRegime] = useState("new");
+  const [filterText, setFilterText] = useState("");
+  const { theme } = useTheme();
+
+  // Function to render icon based on icon name
+  const renderIcon = (iconName: string) => {
+    const iconProps = { size: 18, className: "mr-2" };
+    switch (iconName) {
+      case "building": return <Building {...iconProps} />;
+      case "file-text": return <FileText {...iconProps} />;
+      case "landmark": return <Landmark {...iconProps} />;
+      case "calculator": return <Calculator {...iconProps} />;
+      case "network": return <Network {...iconProps} />;
+      case "credit-card": return <CreditCard {...iconProps} />;
+      case "help-circle": return <HelpCircle {...iconProps} />;
+      case "percent": return <Percent {...iconProps} />;
+      case "check-circle": return <CheckCircle {...iconProps} />;
+      case "book": return <Book {...iconProps} />;
+      case "bell": return <Bell {...iconProps} />;
+      case "file-bar-chart": return <FileBarChart {...iconProps} />;
+      case "receipt": return <Receipt {...iconProps} />;
+      case "folder": return <Folder {...iconProps} />;
+      case "building-2": return <Building2 {...iconProps} />;
+      case "id-card": return <IdCard {...iconProps} />;
+      default: return <ExternalLink {...iconProps} />;
     }
-  ];
+  };
+
+  // Filter resources based on search text
+  const filteredGovtWebsites = govtTaxWebsites.filter(resource => 
+    resource.name.toLowerCase().includes(filterText.toLowerCase()) || 
+    resource.description.toLowerCase().includes(filterText.toLowerCase())
+  );
+
+  const filteredTaxTools = taxToolsAndCalculators.filter(resource => 
+    resource.name.toLowerCase().includes(filterText.toLowerCase()) || 
+    resource.description.toLowerCase().includes(filterText.toLowerCase())
+  );
+
+  const filteredInfoResources = taxInformationResources.filter(resource => 
+    resource.name.toLowerCase().includes(filterText.toLowerCase()) || 
+    resource.description.toLowerCase().includes(filterText.toLowerCase())
+  );
   
-  // Financial Calculators with icons and descriptions
-  const financialCalculators = [
-    {
-      id: "sip",
-      title: "SIP Calculator",
-      icon: <TrendingUp className="h-10 w-10 text-primary mb-4 mx-auto" />,
-      description: "Calculate returns on your Systematic Investment Plan (SIP) investments over time.",
-      url: "/calculators/sip"
-    },
-    {
-      id: "compound-interest",
-      title: "Compound Interest Calculator",
-      icon: <LineChart className="h-10 w-10 text-primary mb-4 mx-auto" />,
-      description: "Calculate how your investments grow over time with compound interest.",
-      url: "/calculators/compound-interest"
-    },
-    {
-      id: "fd",
-      title: "FD Calculator",
-      icon: <Building className="h-10 w-10 text-primary mb-4 mx-auto" />,
-      description: "Calculate returns on your Fixed Deposit investments with different interest rates and tenures.",
-      url: "/calculators/fd"
-    },
-    {
-      id: "loan-emi",
-      title: "Loan EMI Calculator",
-      icon: <Landmark className="h-10 w-10 text-primary mb-4 mx-auto" />,
-      description: "Calculate your Equated Monthly Installment (EMI) for home, car, or personal loans.",
-      url: "/calculators/loan-emi"
-    },
-    {
-      id: "ppf",
-      title: "PPF Calculator",
-      icon: <Percent className="h-10 w-10 text-primary mb-4 mx-auto" />,
-      description: "Calculate returns on your Public Provident Fund (PPF) investments over 15 years.",
-      url: "/calculators/ppf"
+  // Get the tax slabs based on selected year
+  const getSelectedTaxSlabs = () => {
+    if (selectedTaxYear === "2025-26") {
+      return taxSlabs2025_26;
     }
-  ];
+    return taxSlabs2024_25;
+  };
+
+  // Get regime based on selected option
+  const getTaxRegime = () => {
+    const slabs = getSelectedTaxSlabs();
+    if (selectedRegime === "new") {
+      return slabs.regimes.find(r => r.name === "New Tax Regime");
+    } else if (selectedRegime === "old") {
+      return slabs.regimes.find(r => r.name === "Old Tax Regime");
+    }
+    return slabs.regimes[0];
+  };
+
+  const selectedTaxRegime = getTaxRegime();
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-8">
+    <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Tax Resources</h1>
+        <h1 className="text-3xl font-bold mb-2">Tax Resources</h1>
         <p className="text-muted-foreground">
-          Helpful tools and guides to simplify your Indian tax filing experience.
+          Comprehensive tax resources, government websites, and tax slabs information
         </p>
       </div>
 
-      {/* Calculators Section */}
-      <div className="mb-16">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-2">Financial & Tax Calculators</h2>
-          <p className="text-muted-foreground">
-            Use our comprehensive set of calculators to estimate taxes and plan your finances.
-          </p>
-        </div>
-        
-        <Tabs defaultValue="tax" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="tax">Tax Calculators</TabsTrigger>
-            <TabsTrigger value="financial">Financial Calculators</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="tax">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* New vs Old Tax Regime Calculator */}
-              <div className="border border-border rounded-md overflow-hidden hover:shadow-md transition-shadow">
-                <div className="flex justify-center p-6 border-b border-border bg-muted/30">
-                  <Calculator className="text-primary h-16 w-16" />
+      <Tabs defaultValue="govt-websites" className="mb-8">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="govt-websites">Government Websites</TabsTrigger>
+          <TabsTrigger value="tools-calculators">Tools & Calculators</TabsTrigger>
+          <TabsTrigger value="tax-slabs">Tax Slabs</TabsTrigger>
+          <TabsTrigger value="tax-deadlines">Tax Deadlines</TabsTrigger>
+        </TabsList>
+
+        {/* Government Websites Tab */}
+        <TabsContent value="govt-websites">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Landmark className="mr-2" /> Official Government Tax Websites
+              </CardTitle>
+              <CardDescription>
+                Authentic sources for tax information, filing, and services provided by the Government of India
+              </CardDescription>
+              <Input
+                placeholder="Search resources..."
+                className="max-w-sm mt-4"
+                value={filterText}
+                onChange={(e) => setFilterText(e.target.value)}
+              />
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredGovtWebsites.map((resource, index) => (
+                  <Card key={index} className="hover:shadow-md transition-shadow">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center">
+                        {resource.icon ? renderIcon(resource.icon) : <ExternalLink className="mr-2" size={18} />}
+                        <span className="flex-1">{resource.name}</span>
+                      </CardTitle>
+                      <div className="flex justify-between items-center">
+                        <Badge variant={resource.isOfficial ? "default" : "outline"}>
+                          {resource.isOfficial ? "Official" : "Unofficial"}
+                        </Badge>
+                        <Badge variant="secondary">{resource.category}</Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
+                      <Button variant="outline" size="sm" className="w-full" asChild>
+                        <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                          Visit Website <ExternalLink className="ml-2" size={14} />
+                        </a>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Tools & Calculators Tab */}
+        <TabsContent value="tools-calculators">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Calculator className="mr-2" /> Tax Tools & Calculators
+              </CardTitle>
+              <CardDescription>
+                Helpful tools, calculators, and utilities for tax planning and compliance
+              </CardDescription>
+              <Input
+                placeholder="Search tools & calculators..."
+                className="max-w-sm mt-4"
+                value={filterText}
+                onChange={(e) => setFilterText(e.target.value)}
+              />
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[...filteredTaxTools, ...filteredInfoResources].map((resource, index) => (
+                  <Card key={index} className="hover:shadow-md transition-shadow">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center">
+                        {resource.icon ? renderIcon(resource.icon) : <Calculator className="mr-2" size={18} />}
+                        <span className="flex-1">{resource.name}</span>
+                      </CardTitle>
+                      <div className="flex justify-between items-center">
+                        <Badge variant={resource.isOfficial ? "default" : "outline"}>
+                          {resource.isOfficial ? "Official" : "Unofficial"}
+                        </Badge>
+                        <Badge variant="secondary">{resource.category}</Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
+                      <Button variant="outline" size="sm" className="w-full" asChild>
+                        <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                          Access Tool <ExternalLink className="ml-2" size={14} />
+                        </a>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Tax Slabs Tab */}
+        <TabsContent value="tax-slabs">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Calculator className="mr-2" /> Income Tax Slabs
+              </CardTitle>
+              <CardDescription>
+                Current income tax slabs and rates for different regimes in India
+              </CardDescription>
+              <div className="flex flex-wrap gap-4 mt-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Assessment Year</label>
+                  <select 
+                    className="p-2 rounded border bg-background"
+                    value={selectedTaxYear}
+                    onChange={(e) => setSelectedTaxYear(e.target.value)}
+                  >
+                    <option value="2024-25">2024-25</option>
+                    <option value="2025-26">2025-26</option>
+                  </select>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-medium mb-1">New vs Old Tax Regime Calculator</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Compare your tax liability under both tax regimes to make an informed decision.
-                  </p>
-                  <Link href="/calculators/tax-regime">
-                    <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
-                  </Link>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Tax Regime</label>
+                  <select 
+                    className="p-2 rounded border bg-background"
+                    value={selectedRegime}
+                    onChange={(e) => setSelectedRegime(e.target.value)}
+                  >
+                    <option value="new">New Tax Regime</option>
+                    <option value="old">Old Tax Regime</option>
+                  </select>
                 </div>
               </div>
-              
-              {/* TDS Calculator */}
-              <div className="border border-border rounded-md overflow-hidden hover:shadow-md transition-shadow">
-                <div className="flex justify-center p-6 border-b border-border bg-muted/30">
-                  <DollarSign className="text-primary h-16 w-16" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-medium mb-1">TDS Calculator</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Calculate Tax Deducted at Source (TDS) for various income types under Indian tax laws.
-                  </p>
-                  <Link href="/calculators/tds">
-                    <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
-                  </Link>
-                </div>
-              </div>
-              
-              {/* HRA Exemption Calculator */}
-              <div className="border border-border rounded-md overflow-hidden hover:shadow-md transition-shadow">
-                <div className="flex justify-center p-6 border-b border-border bg-muted/30">
-                  <Home className="text-primary h-16 w-16" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-medium mb-1">HRA Exemption Calculator</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Calculate your House Rent Allowance (HRA) exemption based on your salary and rent paid.
-                  </p>
-                  <Link href="/calculators/hra">
-                    <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
-                  </Link>
-                </div>
-              </div>
-              
-              {/* Capital Gains Calculator */}
-              <div className="border border-border rounded-md overflow-hidden hover:shadow-md transition-shadow">
-                <div className="flex justify-center p-6 border-b border-border bg-muted/30">
-                  <BarChart3 className="text-primary h-16 w-16" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-medium mb-1">Capital Gains Calculator</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Calculate tax on short-term and long-term capital gains from stocks, mutual funds, and property.
-                  </p>
-                  <Link href="/calculators/capital-gains">
-                    <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
-                  </Link>
-                </div>
-              </div>
-              
-              {/* Income Tax Calculator */}
-              <div className="border border-border rounded-md overflow-hidden hover:shadow-md transition-shadow">
-                <div className="flex justify-center p-6 border-b border-border bg-muted/30">
-                  <Coins className="text-primary h-16 w-16" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-medium mb-1">Income Tax Calculator</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Calculate your total income tax liability based on your income, deductions, and tax regime.
-                  </p>
-                  <Link href="/calculators/income-tax">
-                    <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
-                  </Link>
-                </div>
-              </div>
-              
-              {/* Advance Tax Calculator */}
-              <div className="border border-border rounded-md overflow-hidden hover:shadow-md transition-shadow">
-                <div className="flex justify-center p-6 border-b border-border bg-muted/30">
-                  <Calendar className="text-primary h-16 w-16" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-medium mb-1">Advance Tax Calculator</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Calculate your quarterly advance tax installments based on your estimated annual income.
-                  </p>
-                  <Link href="/calculators/advance-tax">
-                    <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
-                  </Link>
-                </div>
-              </div>
-              
-              {/* Gratuity Calculator */}
-              <div className="border border-border rounded-md overflow-hidden hover:shadow-md transition-shadow">
-                <div className="flex justify-center p-6 border-b border-border bg-muted/30">
-                  <PiggyBank className="text-primary h-16 w-16" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-medium mb-1">Gratuity Calculator</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Calculate your gratuity amount based on your salary and years of service.
-                  </p>
-                  <Link href="/calculators/gratuity">
-                    <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="financial">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* SIP Calculator */}
-              <div className="border border-border rounded-md overflow-hidden hover:shadow-md transition-shadow">
-                <div className="flex justify-center p-6 border-b border-border bg-muted/30">
-                  <TrendingUp className="text-primary h-16 w-16" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-medium mb-1">SIP Calculator</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Calculate returns on your Systematic Investment Plan (SIP) investments over time.
-                  </p>
-                  <Link href="/calculators/sip">
-                    <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
-                  </Link>
-                </div>
-              </div>
-              
-              {/* Compound Interest Calculator */}
-              <div className="border border-border rounded-md overflow-hidden hover:shadow-md transition-shadow">
-                <div className="flex justify-center p-6 border-b border-border bg-muted/30">
-                  <LineChart className="text-primary h-16 w-16" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-medium mb-1">Compound Interest Calculator</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Calculate how your investments grow over time with compound interest.
-                  </p>
-                  <Link href="/calculators/compound-interest">
-                    <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
-                  </Link>
-                </div>
-              </div>
-              
-              {/* FD Calculator */}
-              <div className="border border-border rounded-md overflow-hidden hover:shadow-md transition-shadow">
-                <div className="flex justify-center p-6 border-b border-border bg-muted/30">
-                  <Building className="text-primary h-16 w-16" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-medium mb-1">FD Calculator</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Calculate returns on your Fixed Deposit investments with different interest rates and tenures.
-                  </p>
-                  <Link href="/calculators/fd">
-                    <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
-                  </Link>
-                </div>
-              </div>
-              
-              {/* Loan EMI Calculator */}
-              <div className="border border-border rounded-md overflow-hidden hover:shadow-md transition-shadow">
-                <div className="flex justify-center p-6 border-b border-border bg-muted/30">
-                  <Landmark className="text-primary h-16 w-16" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-medium mb-1">Loan EMI Calculator</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Calculate your Equated Monthly Installment (EMI) for home, car, or personal loans.
-                  </p>
-                  <Link href="/calculators/loan-emi">
-                    <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
-                  </Link>
-                </div>
-              </div>
-              
-              {/* PPF Calculator */}
-              <div className="border border-border rounded-md overflow-hidden hover:shadow-md transition-shadow">
-                <div className="flex justify-center p-6 border-b border-border bg-muted/30">
-                  <Percent className="text-primary h-16 w-16" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-lg font-medium mb-1">PPF Calculator</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Calculate returns on your Public Provident Fund (PPF) investments over 15 years.
-                  </p>
-                  <Link href="/calculators/ppf">
-                    <div className="text-primary font-medium hover:underline text-sm">Use Calculator →</div>
-                  </Link>
-                </div>
-              </div>
-              
-              {/* View All Calculators */}
-              <Link href="/calculators" className="w-full">
-                <div className="border border-dashed border-primary rounded-md overflow-hidden hover:shadow-md transition-shadow h-full flex flex-col">
-                  <div className="flex justify-center p-6 border-b border-primary/30 bg-primary/5 flex-grow">
-                    <Calculator className="text-primary h-16 w-16 opacity-60" />
+            </CardHeader>
+            <CardContent>
+              {selectedTaxRegime && (
+                <>
+                  <div className="mb-6">
+                    <h3 className="text-xl font-semibold mb-2">{selectedTaxRegime.name}</h3>
+                    <p className="text-muted-foreground mb-4">{selectedTaxRegime.description}</p>
+                    
+                    {selectedRegime === "new" && (
+                      <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 p-4 rounded-md mb-4 flex items-start">
+                        <Lightbulb className="text-yellow-600 dark:text-yellow-400 mr-3 mt-1 flex-shrink-0" size={20} />
+                        <div>
+                          <p className="font-medium text-yellow-800 dark:text-yellow-300 mb-1">Default Regime</p>
+                          <p className="text-sm text-yellow-700 dark:text-yellow-400">
+                            The new tax regime is the default option from FY 2023-24 onwards. You need to specifically opt for the old regime if you want to claim deductions.
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div className="p-6">
-                    <h3 className="text-lg font-medium mb-1">View All Calculators</h3>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      Explore our complete range of financial and tax calculators
+
+                  <div className="overflow-x-auto mb-6">
+                    <Table>
+                      <TableCaption>Income Tax Slabs for {selectedTaxRegime.name} (AY {selectedTaxYear})</TableCaption>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Income Range</TableHead>
+                          <TableHead>Tax Rate</TableHead>
+                          <TableHead>Description</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {selectedTaxRegime.slabs.map((slab, index) => (
+                          <TableRow key={index}>
+                            <TableCell>
+                              {formatIndianCurrency(slab.incomeFrom)} - {slab.incomeTo ? formatIndianCurrency(slab.incomeTo) : 'Above'}
+                            </TableCell>
+                            <TableCell>{slab.taxRate}%</TableCell>
+                            <TableCell>{slab.description}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  {/* Surcharge Information */}
+                  {selectedTaxRegime.surcharge && (
+                    <div className="mb-6">
+                      <h4 className="text-lg font-semibold mb-2">Surcharge</h4>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Income Threshold</TableHead>
+                            <TableHead>Surcharge Rate</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {Object.entries(selectedTaxRegime.surcharge).map(([threshold, rate], index) => (
+                            <TableRow key={index}>
+                              <TableCell>
+                                Above {formatIndianCurrency(Number(threshold))}
+                              </TableCell>
+                              <TableCell>{rate}%</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+
+                  {/* Health & Education Cess */}
+                  <div className="mb-6">
+                    <h4 className="text-lg font-semibold mb-2">Health & Education Cess</h4>
+                    <p>4% on income tax + surcharge (if applicable)</p>
+                  </div>
+
+                  {/* Age-based Special Slabs */}
+                  {selectedRegime === "old" && (
+                    <div className="mt-8">
+                      <h3 className="text-xl font-semibold mb-4">Age-Based Special Slabs (Old Regime Only)</h3>
+                      
+                      <div className="mb-6">
+                        <h4 className="text-lg font-semibold mb-2">Senior Citizens (60-80 years)</h4>
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Income Range</TableHead>
+                              <TableHead>Tax Rate</TableHead>
+                              <TableHead>Description</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {seniorCitizenSlabs.map((slab, index) => (
+                              <TableRow key={index}>
+                                <TableCell>
+                                  {formatIndianCurrency(slab.incomeFrom)} - {slab.incomeTo ? formatIndianCurrency(slab.incomeTo) : 'Above'}
+                                </TableCell>
+                                <TableCell>{slab.taxRate}%</TableCell>
+                                <TableCell>{slab.description}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+
+                      <div className="mb-6">
+                        <h4 className="text-lg font-semibold mb-2">Super Senior Citizens (Above 80 years)</h4>
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Income Range</TableHead>
+                              <TableHead>Tax Rate</TableHead>
+                              <TableHead>Description</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {superSeniorCitizenSlabs.map((slab, index) => (
+                              <TableRow key={index}>
+                                <TableCell>
+                                  {formatIndianCurrency(slab.incomeFrom)} - {slab.incomeTo ? formatIndianCurrency(slab.incomeTo) : 'Above'}
+                                </TableCell>
+                                <TableCell>{slab.taxRate}%</TableCell>
+                                <TableCell>{slab.description}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Allowed Deductions */}
+                  <div className="mt-8">
+                    <h3 className="text-xl font-semibold mb-2">Allowed Deductions</h3>
+                    {selectedTaxRegime.deductions.length > 0 ? (
+                      <ul className="list-disc pl-6 space-y-1">
+                        {selectedTaxRegime.deductions.map((deduction, index) => (
+                          <li key={index}>{deduction}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-muted-foreground">No deductions available in this regime.</p>
+                    )}
+                  </div>
+                </>
+              )}
+              
+              <div className="mt-8">
+                <p className="text-sm text-muted-foreground">
+                  Note: The above tax slabs are for reference only. For specific tax calculations based on your income, please use our 
+                  <Link to="/calculators" className="text-primary font-medium ml-1">
+                    Tax Calculators
+                  </Link>.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Tax Deadlines Tab */}
+        <TabsContent value="tax-deadlines">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Calendar className="mr-2" /> Tax Deadlines & Due Dates
+              </CardTitle>
+              <CardDescription>
+                Important tax filing and payment deadlines for the current assessment year
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-8">
+                <h3 className="text-xl font-semibold mb-4">Assessment Year 2025-26 (Financial Year 2024-25)</h3>
+                
+                <div className="space-y-8">
+                  {/* Filing Deadlines */}
+                  <div>
+                    <h4 className="text-lg font-semibold mb-3 flex items-center">
+                      <FileText className="mr-2" size={20} /> Filing Deadlines
+                    </h4>
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Deadline</TableHead>
+                            <TableHead>Description</TableHead>
+                            <TableHead>Applicable To</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {currentTaxDeadlines
+                            .filter(d => d.category === 'filing')
+                            .map((deadline, index) => (
+                              <TableRow key={index}>
+                                <TableCell className="font-medium">{deadline.date}</TableCell>
+                                <TableCell>{deadline.description}</TableCell>
+                                <TableCell>
+                                  <div className="flex flex-wrap gap-1">
+                                    {deadline.applicableTo.map((item, i) => (
+                                      <Badge key={i} variant="outline" className="mr-1">
+                                        {item}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+
+                  {/* Payment Deadlines */}
+                  <div>
+                    <h4 className="text-lg font-semibold mb-3 flex items-center">
+                      <CreditCard className="mr-2" size={20} /> Payment Deadlines
+                    </h4>
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Deadline</TableHead>
+                            <TableHead>Description</TableHead>
+                            <TableHead>Applicable To</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {currentTaxDeadlines
+                            .filter(d => d.category === 'payment')
+                            .map((deadline, index) => (
+                              <TableRow key={index}>
+                                <TableCell className="font-medium">{deadline.date}</TableCell>
+                                <TableCell>{deadline.description}</TableCell>
+                                <TableCell>
+                                  <div className="flex flex-wrap gap-1">
+                                    {deadline.applicableTo.map((item, i) => (
+                                      <Badge key={i} variant="outline" className="mr-1">
+                                        {item}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+
+                  {/* Other Important Deadlines */}
+                  <div>
+                    <h4 className="text-lg font-semibold mb-3 flex items-center">
+                      <HelpCircle className="mr-2" size={20} /> Other Important Deadlines
+                    </h4>
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Deadline</TableHead>
+                            <TableHead>Description</TableHead>
+                            <TableHead>Applicable To</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {currentTaxDeadlines
+                            .filter(d => d.category === 'verification' || d.category === 'other')
+                            .map((deadline, index) => (
+                              <TableRow key={index}>
+                                <TableCell className="font-medium">{deadline.date}</TableCell>
+                                <TableCell>{deadline.description}</TableCell>
+                                <TableCell>
+                                  <div className="flex flex-wrap gap-1">
+                                    {deadline.applicableTo.map((item, i) => (
+                                      <Badge key={i} variant="outline" className="mr-1">
+                                        {item}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-10">
+                <h3 className="text-xl font-semibold mb-4">Previous Assessment Year (2024-25)</h3>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Deadline</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead>Applicable To</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {previousTaxDeadlines.map((deadline, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="font-medium">{deadline.date}</TableCell>
+                          <TableCell>{deadline.description}</TableCell>
+                          <TableCell>
+                            <div className="flex flex-wrap gap-1">
+                              {deadline.applicableTo.map((item, i) => (
+                                <Badge key={i} variant="outline" className="mr-1">
+                                  {item}
+                                </Badge>
+                              ))}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+
+              <div className="mt-8 p-4 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-md">
+                <div className="flex items-start">
+                  <HelpCircle className="text-yellow-700 dark:text-yellow-400 mr-3 mt-1 flex-shrink-0" size={20} />
+                  <div>
+                    <p className="font-medium text-yellow-800 dark:text-yellow-300 mb-1">Important Note</p>
+                    <p className="text-sm text-yellow-700 dark:text-yellow-400">
+                      Dates mentioned are subject to change by the Income Tax Department. Always verify the latest deadlines from the 
+                      <a 
+                        href="https://www.incometaxindia.gov.in/" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-600 dark:text-blue-400 font-medium ml-1 hover:underline"
+                      >
+                        official Income Tax website
+                      </a>.
                     </p>
                   </div>
                 </div>
-              </Link>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      {/* ITR Forms & Deadlines */}
-      <div className="grid md:grid-cols-2 gap-6 mb-12">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center mb-2">
-              <FileText className="h-6 w-6 text-primary mr-2" />
-              <CardTitle>ITR Forms & Instructions</CardTitle>
-            </div>
-            <CardDescription>Access common Income Tax Return forms</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-3">
-              <li className="flex items-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                <Link href="#" className="text-primary hover:underline">
-                  ITR-1 (Sahaj) for Salaried Individuals
-                </Link>
-              </li>
-              <li className="flex items-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                <Link href="#" className="text-primary hover:underline">
-                  ITR-2 (Salary, Capital Gains, House Property)
-                </Link>
-              </li>
-              <li className="flex items-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                <Link href="#" className="text-primary hover:underline">
-                  ITR-3 (Business Income & Professionals)
-                </Link>
-              </li>
-              <li className="flex items-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                <Link href="#" className="text-primary hover:underline">
-                  ITR-4 (Sugam) for Presumptive Income
-                </Link>
-              </li>
-              <li className="flex items-center">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary mr-2"></div>
-                <Link href="#" className="text-primary hover:underline">
-                  View All ITR Forms →
-                </Link>
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <div className="flex items-center mb-2">
-              <CalendarDays className="h-6 w-6 text-primary mr-2" />
-              <CardTitle>Tax Deadlines</CardTitle>
-            </div>
-            <CardDescription>Stay on top of important Indian tax dates</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-start">
-                <div className="min-w-[100px] font-medium">July 31, 2024</div>
-                <div className="text-sm text-muted-foreground">ITR filing deadline for non-audit cases (AY 2024-25)</div>
               </div>
-              <div className="flex items-start">
-                <div className="min-w-[100px] font-medium">June 15, 2024</div>
-                <div className="text-sm text-muted-foreground">First installment of advance tax (15%)</div>
-              </div>
-              <div className="flex items-start">
-                <div className="min-w-[100px] font-medium">Sept 15, 2024</div>
-                <div className="text-sm text-muted-foreground">Second installment of advance tax (45%)</div>
-              </div>
-              <div className="flex items-start">
-                <div className="min-w-[100px] font-medium">Oct 31, 2024</div>
-                <div className="text-sm text-muted-foreground">ITR deadline for audit cases</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Tax Guides & Articles */}
-      <div className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">Tax Guides & Articles</h2>
-        <div className="grid md:grid-cols-2 gap-8">
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-xl font-semibold mb-3">
-                New vs Old Tax Regime: Which Should You Choose?
-              </h3>
-              <p className="text-muted-foreground mb-4">
-                Understand the differences between the new and old tax regimes in India, 
-                and determine which option might save you more tax based on your income and investments.
-              </p>
-              <Link href="#" className="text-primary hover:underline font-medium">
-                Read More →
-              </Link>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-xl font-semibold mb-3">
-                Tax Benefits Under Section 80C to 80U
-              </h3>
-              <p className="text-muted-foreground mb-4">
-                Explore the comprehensive list of deductions available under various subsections from 
-                80C to 80U, including investments, insurance, and medical expenses.
-              </p>
-              <Link href="#" className="text-primary hover:underline font-medium">
-                Read More →
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-xl font-semibold mb-3">
-                GST for Small Businesses & Professionals
-              </h3>
-              <p className="text-muted-foreground mb-4">
-                Navigate the Goods and Services Tax framework for small businesses, 
-                freelancers, and professionals. Learn about registration, filing requirements, and input tax credits.
-              </p>
-              <Link href="#" className="text-primary hover:underline font-medium">
-                Read More →
-              </Link>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-xl font-semibold mb-3">
-                Tax Benefits for NPS and ELSS Investments
-              </h3>
-              <p className="text-muted-foreground mb-4">
-                Discover the tax advantages of investing in National Pension System (NPS) and 
-                Equity-Linked Savings Schemes (ELSS) under Indian tax laws.
-              </p>
-              <Link href="#" className="text-primary hover:underline font-medium">
-                Read More →
-              </Link>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      {/* Help Box */}
-      <Card className="bg-primary/5 border-0 mb-12">
-        <CardContent className="p-8">
-          <div className="flex flex-col md:flex-row md:items-center">
-            <div className="mb-6 md:mb-0 md:mr-8">
-              <HelpCircle className="h-12 w-12 text-primary" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold mb-2">Have a Tax Question?</h3>
-              <p className="text-muted-foreground mb-4">
-                Our tax experts are ready to help you navigate complex Indian tax situations 
-                and find the best solutions for your specific needs.
-              </p>
-              <Link href="/support" className="text-primary hover:underline font-medium">
-                Contact Our Tax Experts →
-              </Link>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

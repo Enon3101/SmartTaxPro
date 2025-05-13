@@ -12,6 +12,7 @@ import Home from "@/pages/Home";
 import TaxFiling from "@/pages/TaxFiling";
 import Calculators from "@/pages/Calculators";
 import LearningResources from "@/pages/LearningResources";
+import TaxResources from "@/pages/TaxResources";
 import Support from "@/pages/Support";
 import Pricing from "@/pages/Pricing";
 import StartFiling from "@/pages/StartFiling";
@@ -102,6 +103,7 @@ function Router() {
       <Route path="/calculators" component={Calculators} />
       <Route path="/learning" component={LearningResources} />
       <Route path="/learning/blog/:slug">{(params) => <BlogPost />}</Route>
+      <Route path="/tax-resources" component={TaxResources} />
       <Route path="/support" component={Support} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/start-filing" component={StartFiling} />

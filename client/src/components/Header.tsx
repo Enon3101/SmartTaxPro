@@ -19,6 +19,8 @@ import {
   BookOpen,
   Phone,
   DollarSign,
+  FileSearch,
+  Calendar,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LoginDialog } from "@/components/LoginDialog";
@@ -67,6 +69,11 @@ const Header = () => {
       name: "Calculators", 
       path: "/calculators", 
       icon: <Calculator className="h-4 w-4" /> 
+    },
+    { 
+      name: "Tax Resources", 
+      path: "/tax-resources", 
+      icon: <FileSearch className="h-4 w-4" /> 
     },
     { 
       name: "Learning", 
