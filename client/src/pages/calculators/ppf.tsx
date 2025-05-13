@@ -180,13 +180,13 @@ const PPFCalculator = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div>
-                  <Label htmlFor="initialInvestment" className="flex items-center justify-between">
+                <div className="relative">
+                  <Label htmlFor="initialInvestment" className="flex items-center justify-between mb-2">
                     <span>Initial Investment (₹)</span>
                     <span className="text-xs text-muted-foreground">Min: ₹500, Max: ₹1,50,000</span>
                   </Label>
                   <div className="flex items-center">
-                    <Coins className="mr-2 h-4 w-4 text-muted-foreground" />
+                    <Coins className="mr-2 h-4 w-4 flex-shrink-0 text-muted-foreground" />
                     <Input
                       id="initialInvestment"
                       type="number"
@@ -195,6 +195,7 @@ const PPFCalculator = () => {
                       placeholder="500"
                       min={500}
                       max={150000}
+                      className="flex-grow"
                     />
                   </div>
                 </div>
@@ -218,13 +219,13 @@ const PPFCalculator = () => {
                   </div>
                 </div>
                 
-                <div>
-                  <Label htmlFor="interestRate" className="flex items-center justify-between">
+                <div className="relative">
+                  <Label htmlFor="interestRate" className="flex items-center justify-between mb-2">
                     <span>Interest Rate (%)</span>
                     <span className="text-xs text-muted-foreground">Current: 7.1% p.a.</span>
                   </Label>
                   <div className="flex items-center">
-                    <LineChart className="mr-2 h-4 w-4 text-muted-foreground" />
+                    <LineChart className="mr-2 h-4 w-4 flex-shrink-0 text-muted-foreground" />
                     <Input
                       id="interestRate"
                       type="number"
@@ -232,12 +233,13 @@ const PPFCalculator = () => {
                       onChange={(e) => handleNumberInput(e, setInterestRate, 0, 20)}
                       placeholder="7.1"
                       step={0.1}
+                      className="flex-grow"
                     />
                   </div>
                 </div>
                 
-                <div>
-                  <Label htmlFor="years" className="flex items-center justify-between">
+                <div className="relative">
+                  <Label htmlFor="years" className="flex items-center justify-between mb-2">
                     <span>Investment Period (Years)</span>
                     <span className="text-xs text-muted-foreground">PPF has a lock-in period of 15 years</span>
                   </Label>
@@ -250,8 +252,8 @@ const PPFCalculator = () => {
                       step={1}
                     />
                   </div>
-                  <div className="flex items-center">
-                    <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
+                  <div className="flex items-center mt-1">
+                    <Clock className="mr-2 h-4 w-4 flex-shrink-0 text-muted-foreground" />
                     <Input
                       id="years"
                       type="number"
@@ -260,6 +262,7 @@ const PPFCalculator = () => {
                       placeholder="15"
                       min={5}
                       max={50}
+                      className="flex-grow"
                     />
                   </div>
                 </div>

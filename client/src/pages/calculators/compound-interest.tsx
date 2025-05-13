@@ -256,8 +256,8 @@ const CompoundInterestCalculator = () => {
                   </Select>
                 </div>
                 
-                <div>
-                  <Label htmlFor="interestRate" className="flex items-center justify-between">
+                <div className="relative">
+                  <Label htmlFor="interestRate" className="flex items-center justify-between mb-2">
                     <span>Interest Rate (% per annum)</span>
                   </Label>
                   <div className="mb-2">
@@ -269,8 +269,8 @@ const CompoundInterestCalculator = () => {
                       step={0.1}
                     />
                   </div>
-                  <div className="flex items-center">
-                    <BarChart className="mr-2 h-4 w-4 text-muted-foreground" />
+                  <div className="flex items-center mt-1">
+                    <BarChart className="mr-2 h-4 w-4 flex-shrink-0 text-muted-foreground" />
                     <Input
                       id="interestRate"
                       type="number"
@@ -278,6 +278,7 @@ const CompoundInterestCalculator = () => {
                       onChange={(e) => handleNumberInput(e, setInterestRate, 0.1)}
                       placeholder="7.5"
                       step={0.1}
+                      className="flex-grow"
                     />
                   </div>
                 </div>
@@ -301,8 +302,10 @@ const CompoundInterestCalculator = () => {
                   </Select>
                 </div>
                 
-                <div>
-                  <Label htmlFor="years">Investment Duration (Years)</Label>
+                <div className="relative">
+                  <Label htmlFor="years" className="flex items-center justify-between mb-2">
+                    <span>Investment Duration (Years)</span>
+                  </Label>
                   <div className="mb-2">
                     <Slider
                       value={years !== "" ? [Number(years)] : [10]}
@@ -312,8 +315,8 @@ const CompoundInterestCalculator = () => {
                       step={1}
                     />
                   </div>
-                  <div className="flex items-center">
-                    <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
+                  <div className="flex items-center mt-1">
+                    <Clock className="mr-2 h-4 w-4 flex-shrink-0 text-muted-foreground" />
                     <Input
                       id="years"
                       type="number"
@@ -322,6 +325,7 @@ const CompoundInterestCalculator = () => {
                       placeholder="10"
                       min={1}
                       max={50}
+                      className="flex-grow"
                     />
                   </div>
                 </div>
