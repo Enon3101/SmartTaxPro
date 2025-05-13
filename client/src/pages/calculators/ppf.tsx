@@ -169,8 +169,8 @@ const PPFCalculator = () => {
         Calculate returns on your Public Provident Fund (PPF) investment over 15 years
       </p>
       
-      <div className="grid md:grid-cols-12 gap-6">
-        <div className="md:col-span-5">
+      <div className="grid lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-5">
           <Card>
             <CardHeader>
               <CardTitle>PPF Investment Details</CardTitle>
@@ -283,7 +283,7 @@ const PPFCalculator = () => {
           </Card>
         </div>
         
-        <div className="md:col-span-7">
+        <div className="lg:col-span-7">
           <Card>
             <CardHeader>
               <CardTitle>PPF Calculation Results</CardTitle>
@@ -292,7 +292,7 @@ const PPFCalculator = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                 <div className="bg-muted p-4 rounded-md text-center">
                   <h4 className="text-sm font-medium text-muted-foreground mb-1">Total Investment</h4>
                   <p className="text-xl font-bold">{formatCurrency(totalInvestment)}</p>
@@ -307,8 +307,8 @@ const PPFCalculator = () => {
                 </div>
               </div>
               
-              <div className="mt-6">
-                <Table>
+              <div className="mt-6 overflow-x-auto">
+                <Table className="min-w-full">
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-[80px]">Year</TableHead>
@@ -320,10 +320,10 @@ const PPFCalculator = () => {
                   <TableBody>
                     {getVisibleYears().map((result) => (
                       <TableRow key={result.year}>
-                        <TableCell className="font-medium">{result.year}</TableCell>
-                        <TableCell>{formatCurrency(result.yearlyContribution)}</TableCell>
-                        <TableCell className="text-primary">{formatCurrency(result.yearlyInterest)}</TableCell>
-                        <TableCell className="font-semibold">{formatCurrency(result.balance)}</TableCell>
+                        <TableCell className="font-medium whitespace-nowrap">{result.year}</TableCell>
+                        <TableCell className="whitespace-nowrap">{formatCurrency(result.yearlyContribution)}</TableCell>
+                        <TableCell className="text-primary whitespace-nowrap">{formatCurrency(result.yearlyInterest)}</TableCell>
+                        <TableCell className="font-semibold whitespace-nowrap">{formatCurrency(result.balance)}</TableCell>
                       </TableRow>
                     ))}
                     
