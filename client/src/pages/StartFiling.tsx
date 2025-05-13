@@ -391,6 +391,16 @@ export default function StartFiling() {
         });
         break;
       case 3:
+        // Check if there are more income sources to fill
+        const nextSource = getNextIncomeSource();
+        
+        if (nextSource) {
+          // Move to next income source without changing step
+          setCurrentIncomeSource(nextSource);
+          return; // Exit here to prevent moving to next step
+        }
+        
+        // All income sources completed, save all income data
         updatePersonalInfo({
           salaryIncome: formData.salaryIncome,
           housePropertyIncome: formData.housePropertyIncome,
@@ -1070,8 +1080,25 @@ export default function StartFiling() {
           {/* Step 3: Income Details */}
           {currentStep === 3 && (
             <div className="space-y-8">
+              {/* Income Section Title with Progress */}
+              <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                <h3 className="text-lg font-medium text-blue-800 mb-2">
+                  {currentIncomeSource === "salary" && "Salary Income"}
+                  {currentIncomeSource === "house-property" && "House Property Income"}
+                  {currentIncomeSource === "capital-gains" && "Capital Gains Income"}
+                  {currentIncomeSource === "business" && "Business Income"}
+                  {currentIncomeSource === "interest" && "Interest Income"}
+                  {currentIncomeSource === "other" && "Other Income"}
+                </h3>
+                <div className="text-sm text-blue-600">
+                  {currentIncomeSource && (
+                    <>Income Source {formData.incomeSource.indexOf(currentIncomeSource) + 1} of {formData.incomeSource.length}</>
+                  )}
+                </div>
+              </div>
+              
               {/* Salary Income - Now using the SalarySection component */}
-              {formData.incomeSource.includes("salary") && (
+              {currentIncomeSource === "salary" && (
                 <SalarySection
                   salaryIncome={formData.salaryIncome}
                   updateIncomeField={updateIncomeField}
@@ -1081,7 +1108,7 @@ export default function StartFiling() {
               )}
               
               {/* Capital Gains Income */}
-              {formData.incomeSource.includes("capital-gains") && (
+              {currentIncomeSource === "capital-gains" && (
                 <div className="p-6 bg-white border rounded-lg">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-medium flex items-center">
@@ -1408,7 +1435,7 @@ export default function StartFiling() {
               )}
             
               {/* House Property Income */}
-              {formData.incomeSource.includes("house-property") && (
+              {currentIncomeSource === "house-property" && (
                 <div className="p-6 bg-white border rounded-lg">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-medium flex items-center">
