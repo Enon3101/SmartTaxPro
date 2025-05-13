@@ -220,9 +220,7 @@ const PFCalculator = () => {
     const retirementAgeValue = typeof retirementAge === "number" ? retirementAge : 60;
     
     // Calculate years to retirement
-    const actualYears = retirementAgeValue !== "" && currentAgeValue !== "" 
-      ? Math.min(years, retirementAgeValue - currentAgeValue)
-      : years;
+    const actualYears = Math.min(years, retirementAgeValue - currentAgeValue);
     
     // Initialize variables for calculation
     let totalEmployeeContribution = 0;

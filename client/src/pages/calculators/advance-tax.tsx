@@ -31,7 +31,8 @@ import {
   Coins, 
   FileText, 
   HelpCircle, 
-  AlertCircle 
+  AlertCircle,
+  CheckCircle
 } from "lucide-react";
 import { formatIndianCurrency } from "@/lib/formatters";
 

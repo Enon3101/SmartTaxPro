@@ -81,6 +81,35 @@ const LoanEmiCalculator = lazy(() => {
   ]).then(([moduleExports]) => moduleExports);
 });
 
+// New calculators
+const IncomeTaxCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/income-tax"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const AdvanceTaxCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/advance-tax"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const GratuityCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/gratuity"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const PFCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/pf"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
 // Enhanced loading component for lazy-loaded routes
 const PageLoading = () => (
   <div className="flex flex-col items-center justify-center min-h-[60vh] bg-background text-foreground">
@@ -166,6 +195,28 @@ function Router() {
       <Route path="/calculators/loan-emi">
         <Suspense fallback={<PageLoading />}>
           <LoanEmiCalculator />
+        </Suspense>
+      </Route>
+
+      {/* New calculator routes */}
+      <Route path="/calculators/income-tax">
+        <Suspense fallback={<PageLoading />}>
+          <IncomeTaxCalculator />
+        </Suspense>
+      </Route>
+      <Route path="/calculators/advance-tax">
+        <Suspense fallback={<PageLoading />}>
+          <AdvanceTaxCalculator />
+        </Suspense>
+      </Route>
+      <Route path="/calculators/gratuity">
+        <Suspense fallback={<PageLoading />}>
+          <GratuityCalculator />
+        </Suspense>
+      </Route>
+      <Route path="/calculators/pf">
+        <Suspense fallback={<PageLoading />}>
+          <PFCalculator />
         </Suspense>
       </Route>
 
