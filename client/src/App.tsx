@@ -219,6 +219,28 @@ function Router() {
           <PFCalculator />
         </Suspense>
       </Route>
+      
+      {/* Redirect routes for calculators not yet implemented */}
+      <Route path="/calculators/ppf">
+        <Suspense fallback={<PageLoading />}>
+          <Calculators />
+        </Suspense>
+      </Route>
+      <Route path="/calculators/rd">
+        <Suspense fallback={<PageLoading />}>
+          <Calculators />
+        </Suspense>
+      </Route>
+      <Route path="/calculators/retirement">
+        <Suspense fallback={<PageLoading />}>
+          <Calculators />
+        </Suspense>
+      </Route>
+      <Route path="/calculators/compound-interest">
+        <Suspense fallback={<PageLoading />}>
+          <Calculators />
+        </Suspense>
+      </Route>
 
       <Route component={NotFound} />
     </Switch>
