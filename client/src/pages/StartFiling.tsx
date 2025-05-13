@@ -17,7 +17,7 @@ import { X, Plus, BarChart4, Landmark, TrendingUp, ArrowDown, AlertTriangle, Bri
 import SalarySection from "@/components/SalarySection";
 import TaxComputationDocument from "@/components/TaxComputationDocument";
 import { nanoid } from "nanoid";
-import { formatCurrency } from "@/lib/taxCalculations";
+import { formatCurrency, calculateIndexedCost, costInflationIndex } from "@/lib/taxCalculations";
 import { TaxDataContext } from "@/context/TaxDataProvider";
 import ProgressTracker from "@/components/ProgressTracker";
 
@@ -28,6 +28,20 @@ import ProgressTracker from "@/components/ProgressTracker";
 // 5th character: First character of surname/last name
 // 6-9th character: Sequence number
 // 10th character: Alphabetic check digit
+
+// Helper function to get financial year from date (for displaying in UI)
+function getFinancialYear(date: Date): string {
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  
+  // In India, financial year runs from April 1 to March 31
+  // If month is January to March (0-2), it's part of previous financial year
+  const startYear = month <= 2 ? year - 1 : year;
+  const endYear = startYear + 1;
+  
+  // Format as "YYYY-YY"
+  return `${startYear}-${endYear.toString().substring(2)}`;
+}
 
 // Entity codes for PAN card (4th character)
 const PAN_ENTITY_TYPES: Record<string, string> = {
@@ -1280,14 +1294,70 @@ export default function StartFiling() {
                             Indexation adjusts the purchase cost for inflation, reducing your capital gains tax liability for long-term assets.
                           </p>
                           
-                          <div className="space-y-2">
+                          {capitalGain.acquisitionDate && capitalGain.disposalDate && capitalGain.purchaseCost ? (
+                            <>
+                              <div className="mt-2 mb-3 space-y-2">
+                                <div className="flex justify-between text-xs text-blue-800">
+                                  <span>Original Purchase Cost:</span>
+                                  <span>₹{parseFloat(capitalGain.purchaseCost).toLocaleString('en-IN')}</span>
+                                </div>
+                                
+                                {capitalGain.improvementCost && parseFloat(capitalGain.improvementCost) > 0 && (
+                                  <div className="flex justify-between text-xs text-blue-800">
+                                    <span>Improvement Cost:</span>
+                                    <span>₹{parseFloat(capitalGain.improvementCost).toLocaleString('en-IN')}</span>
+                                  </div>
+                                )}
+                                
+                                <div className="flex justify-between text-xs font-medium text-blue-800 border-t border-blue-200 pt-1">
+                                  <span>Indexed Cost of Acquisition:</span>
+                                  <span>₹{calculateIndexedCost(
+                                    parseFloat(capitalGain.purchaseCost) + (parseFloat(capitalGain.improvementCost) || 0),
+                                    capitalGain.acquisitionDate,
+                                    capitalGain.disposalDate
+                                  ).toLocaleString('en-IN')}</span>
+                                </div>
+                                
+                                <div className="text-xs text-blue-600 mt-1 pt-1">
+                                  <p>Based on Cost Inflation Index (CII):</p>
+                                  <ul className="list-disc list-inside pl-2 mt-1 space-y-0.5">
+                                    <li>Purchase Year ({getFinancialYear(new Date(capitalGain.acquisitionDate))}): 
+                                      <span className="font-medium"> {costInflationIndex[getFinancialYear(new Date(capitalGain.acquisitionDate))] || "N/A"}</span>
+                                    </li>
+                                    <li>Sale Year ({getFinancialYear(new Date(capitalGain.disposalDate))}): 
+                                      <span className="font-medium"> {costInflationIndex[getFinancialYear(new Date(capitalGain.disposalDate))] || "N/A"}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                              
+                              <div className="text-xs bg-white p-2 rounded border border-blue-200">
+                                <p className="font-medium text-blue-800">Formula: Original Cost × (CII of Sale Year ÷ CII of Purchase Year)</p>
+                              </div>
+                            </>
+                          ) : (
+                            <p className="text-xs text-amber-600 mt-2">
+                              Please enter acquisition date, disposal date, and purchase cost to see indexed cost calculation.
+                            </p>
+                          )}
+                          
+                          <div className="mt-4 space-y-2">
                             <Label htmlFor={`indexedCost-${index}`}>Indexed Cost of Acquisition</Label>
                             <div className="relative">
                               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
                               <Input
                                 id={`indexedCost-${index}`}
                                 className="pl-7"
-                                value={capitalGain.indexedCost}
+                                value={
+                                  // Auto-calculate if all required fields are present
+                                  capitalGain.acquisitionDate && capitalGain.disposalDate && capitalGain.purchaseCost 
+                                    ? calculateIndexedCost(
+                                        parseFloat(capitalGain.purchaseCost) + (parseFloat(capitalGain.improvementCost) || 0),
+                                        capitalGain.acquisitionDate,
+                                        capitalGain.disposalDate
+                                      ).toString()
+                                    : capitalGain.indexedCost
+                                }
                                 onChange={(e) => {
                                   // Allow direct input of numbers
                                   const input = e.target.value;
@@ -1298,9 +1368,6 @@ export default function StartFiling() {
                                 }}
                               />
                             </div>
-                            <p className="text-xs text-gray-500">
-                              Cost of acquisition × (CII of year of sale ÷ CII of year of purchase)
-                            </p>
                           </div>
                         </div>
                       )}
