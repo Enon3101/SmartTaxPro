@@ -264,51 +264,7 @@ const TaxResources = () => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="tools-calculators">
-            <AccordionTrigger className="text-base font-medium">
-              <Calculator className="mr-2 h-5 w-5" /> Tools & Calculators
-            </AccordionTrigger>
-            <AccordionContent>
-              <Card>
-                <CardHeader className="py-4">
-                  <Input
-                    placeholder="Search tools & calculators..."
-                    className="w-full"
-                    value={filterText}
-                    onChange={(e) => setFilterText(e.target.value)}
-                  />
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 gap-4">
-                    {[...filteredTaxTools, ...filteredInfoResources].map((resource, index) => (
-                      <Card key={index} className="hover:shadow-md transition-shadow">
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-base flex items-center">
-                            {resource.icon ? renderIcon(resource.icon) : <Calculator className="mr-2" size={18} />}
-                            <span className="flex-1">{resource.name}</span>
-                          </CardTitle>
-                          <div className="flex justify-between items-center">
-                            <Badge variant={resource.isOfficial ? "default" : "outline"}>
-                              {resource.isOfficial ? "Official" : "Unofficial"}
-                            </Badge>
-                            <Badge variant="secondary">{resource.category}</Badge>
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
-                          <Button variant="outline" size="sm" className="w-full" asChild>
-                            <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                              Access Tool <ExternalLink className="ml-2" size={14} />
-                            </a>
-                          </Button>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </AccordionContent>
-          </AccordionItem>
+
 
           <AccordionItem value="tax-slabs">
             <AccordionTrigger className="text-base font-medium">
@@ -520,7 +476,6 @@ const TaxResources = () => {
         <Tabs defaultValue="govt-websites" className="mb-8">
           <TabsList className="w-full">
             <TabsTrigger value="govt-websites">Government Websites</TabsTrigger>
-            <TabsTrigger value="tools-calculators">Tools & Calculators</TabsTrigger>
             <TabsTrigger value="tax-slabs">Tax Slabs</TabsTrigger>
             <TabsTrigger value="tax-deadlines">Tax Deadlines</TabsTrigger>
           </TabsList>
@@ -567,47 +522,7 @@ const TaxResources = () => {
             </Card>
           </TabsContent>
 
-          {/* Tools & Calculators Tab */}
-          <TabsContent value="tools-calculators">
-            <Card>
-              <CardHeader className="py-4">
-                <Input
-                  placeholder="Search tools & calculators..."
-                  className="w-full"
-                  value={filterText}
-                  onChange={(e) => setFilterText(e.target.value)}
-                />
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {[...filteredTaxTools, ...filteredInfoResources].map((resource, index) => (
-                    <Card key={index} className="hover:shadow-md transition-shadow">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-base flex items-center">
-                          {resource.icon ? renderIcon(resource.icon) : <Calculator className="mr-2" size={18} />}
-                          <span className="flex-1">{resource.name}</span>
-                        </CardTitle>
-                        <div className="flex justify-between items-center">
-                          <Badge variant={resource.isOfficial ? "default" : "outline"}>
-                            {resource.isOfficial ? "Official" : "Unofficial"}
-                          </Badge>
-                          <Badge variant="secondary">{resource.category}</Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-sm text-muted-foreground mb-4">{resource.description}</p>
-                        <Button variant="outline" size="sm" className="w-full" asChild>
-                          <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                            Access Tool <ExternalLink className="ml-2" size={14} />
-                          </a>
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+
 
           {/* Tax Slabs Tab */}
           <TabsContent value="tax-slabs">
