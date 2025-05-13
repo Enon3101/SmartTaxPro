@@ -179,11 +179,11 @@ const TaxResources = () => {
       </div>
 
       <Tabs defaultValue="govt-websites" className="mb-8">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
-          <TabsTrigger value="govt-websites">Government Websites</TabsTrigger>
-          <TabsTrigger value="tools-calculators">Tools & Calculators</TabsTrigger>
-          <TabsTrigger value="tax-slabs">Tax Slabs</TabsTrigger>
-          <TabsTrigger value="tax-deadlines">Tax Deadlines</TabsTrigger>
+        <TabsList className="flex flex-wrap w-full">
+          <TabsTrigger value="govt-websites" className="flex-1 min-w-[120px]">Government Websites</TabsTrigger>
+          <TabsTrigger value="tools-calculators" className="flex-1 min-w-[120px]">Tools & Calculators</TabsTrigger>
+          <TabsTrigger value="tax-slabs" className="flex-1 min-w-[120px]">Tax Slabs</TabsTrigger>
+          <TabsTrigger value="tax-deadlines" className="flex-1 min-w-[120px]">Tax Deadlines</TabsTrigger>
         </TabsList>
 
         {/* Government Websites Tab */}
