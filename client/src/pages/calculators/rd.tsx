@@ -358,9 +358,9 @@ const RDCalculator = () => {
                 </div>
               </div>
               
-              <div className="mt-6">
+              <div className="mt-6 overflow-x-auto">
                 <h3 className="text-sm font-medium mb-3">Quarterly Progress</h3>
-                <Table>
+                <Table className="min-w-full">
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-[100px]">Quarter</TableHead>
@@ -372,10 +372,10 @@ const RDCalculator = () => {
                   <TableBody>
                     {getVisibleQuarters().map((detail) => (
                       <TableRow key={detail.quarter}>
-                        <TableCell className="font-medium">{detail.quarter} ({detail.monthRange})</TableCell>
-                        <TableCell>{formatCurrency(detail.depositAmount)}</TableCell>
-                        <TableCell>{formatCurrency(detail.accumulatedDeposit)}</TableCell>
-                        <TableCell className="font-semibold">{formatCurrency(detail.maturityValue)}</TableCell>
+                        <TableCell className="font-medium whitespace-nowrap">{detail.quarter} ({detail.monthRange})</TableCell>
+                        <TableCell className="whitespace-nowrap">{formatCurrency(detail.depositAmount)}</TableCell>
+                        <TableCell className="whitespace-nowrap">{formatCurrency(detail.accumulatedDeposit)}</TableCell>
+                        <TableCell className="font-semibold whitespace-nowrap">{formatCurrency(detail.maturityValue)}</TableCell>
                       </TableRow>
                     ))}
                     

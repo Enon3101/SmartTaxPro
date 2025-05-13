@@ -306,8 +306,8 @@ const RetirementCalculator = () => {
         Plan your retirement by calculating the corpus required for your desired lifestyle
       </p>
       
-      <div className="grid md:grid-cols-12 gap-6">
-        <div className="md:col-span-5">
+      <div className="grid lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-5">
           <Card>
             <CardHeader>
               <CardTitle>Personal Information</CardTitle>
