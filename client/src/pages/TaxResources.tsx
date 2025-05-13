@@ -10,9 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { 
+  AlertCircle,
   Building, 
   Calculator, 
   Calendar, 
+  Crown,
   ExternalLink, 
   FileText, 
   HelpCircle, 
@@ -28,7 +30,8 @@ import {
   Folder,
   Building2,
   IdCard,
-  Lightbulb
+  Lightbulb,
+  Users2
 } from "lucide-react";
 import { Link } from "wouter";
 import { govtTaxWebsites, taxToolsAndCalculators, taxInformationResources } from "@/data/govtResources";
@@ -460,54 +463,115 @@ const TaxResources = () => {
                   {/* Age-based Special Slabs */}
                   {selectedRegime === "old" && (
                     <div className="mt-8">
-                      <h3 className="text-xl font-semibold mb-4">Age-Based Special Slabs (Old Regime Only)</h3>
-                      
-                      <div className="mb-6">
-                        <h4 className="text-lg font-semibold mb-2">Senior Citizens (60-80 years)</h4>
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Income Range</TableHead>
-                              <TableHead>Tax Rate</TableHead>
-                              <TableHead>Description</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {seniorCitizenSlabs.map((slab, index) => (
-                              <TableRow key={index}>
-                                <TableCell>
-                                  {formatIndianCurrency(slab.incomeFrom)} - {slab.incomeTo ? formatIndianCurrency(slab.incomeTo) : 'Above'}
-                                </TableCell>
-                                <TableCell>{slab.taxRate}%</TableCell>
-                                <TableCell>{slab.description}</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
+                      <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
+                        <div className="flex items-start">
+                          <AlertCircle className="text-blue-600 dark:text-blue-400 mr-3 mt-1 flex-shrink-0" size={20} />
+                          <div>
+                            <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-1">Age-Based Special Slabs</h3>
+                            <p className="text-sm text-blue-700 dark:text-blue-400">
+                              The old tax regime offers beneficial tax slabs for senior citizens (60-80 years) and super senior citizens (above 80 years).
+                              These special rates are not available in the new tax regime.
+                            </p>
+                          </div>
+                        </div>
                       </div>
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        {/* Senior Citizens */}
+                        <div className="rounded-lg border shadow-sm overflow-hidden">
+                          <div className="bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-950 dark:to-amber-900 px-4 py-3 border-b flex items-center">
+                            <Users2 className="h-5 w-5 text-amber-700 dark:text-amber-400 mr-2" />
+                            <div>
+                              <h4 className="text-base font-semibold text-amber-800 dark:text-amber-300">Senior Citizens</h4>
+                              <p className="text-xs text-amber-700 dark:text-amber-400">Age 60 to 80 years</p>
+                            </div>
+                          </div>
+                          <div className="overflow-x-auto">
+                            <Table>
+                              <TableHeader className="bg-muted/30">
+                                <TableRow>
+                                  <TableHead className="font-medium">Income Range</TableHead>
+                                  <TableHead className="font-medium text-center">Tax Rate</TableHead>
+                                  <TableHead className="font-medium">Benefit</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {seniorCitizenSlabs.map((slab, index) => (
+                                  <TableRow key={index} className={`${index % 2 === 0 ? 'bg-background' : 'bg-muted/30'} hover:bg-muted/50 transition-colors`}>
+                                    <TableCell className="font-medium">
+                                      {formatIndianCurrency(slab.incomeFrom)} 
+                                      <span className="mx-1">-</span> 
+                                      {slab.incomeTo ? formatIndianCurrency(slab.incomeTo) : (
+                                        <span className="text-primary font-semibold">Above</span>
+                                      )}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                      <span className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                        slab.taxRate > 20 ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' : 
+                                        slab.taxRate > 10 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' : 
+                                        slab.taxRate > 0 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 
+                                        'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                                      }`}>
+                                        {slab.taxRate}%
+                                      </span>
+                                    </TableCell>
+                                    <TableCell className="text-muted-foreground text-sm">
+                                      {slab.description || 'Standard rate for this bracket'}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        </div>
 
-                      <div className="mb-6">
-                        <h4 className="text-lg font-semibold mb-2">Super Senior Citizens (Above 80 years)</h4>
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Income Range</TableHead>
-                              <TableHead>Tax Rate</TableHead>
-                              <TableHead>Description</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {superSeniorCitizenSlabs.map((slab, index) => (
-                              <TableRow key={index}>
-                                <TableCell>
-                                  {formatIndianCurrency(slab.incomeFrom)} - {slab.incomeTo ? formatIndianCurrency(slab.incomeTo) : 'Above'}
-                                </TableCell>
-                                <TableCell>{slab.taxRate}%</TableCell>
-                                <TableCell>{slab.description}</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
+                        {/* Super Senior Citizens */}
+                        <div className="rounded-lg border shadow-sm overflow-hidden">
+                          <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 px-4 py-3 border-b flex items-center">
+                            <Crown className="h-5 w-5 text-purple-700 dark:text-purple-400 mr-2" />
+                            <div>
+                              <h4 className="text-base font-semibold text-purple-800 dark:text-purple-300">Super Senior Citizens</h4>
+                              <p className="text-xs text-purple-700 dark:text-purple-400">Age above 80 years</p>
+                            </div>
+                          </div>
+                          <div className="overflow-x-auto">
+                            <Table>
+                              <TableHeader className="bg-muted/30">
+                                <TableRow>
+                                  <TableHead className="font-medium">Income Range</TableHead>
+                                  <TableHead className="font-medium text-center">Tax Rate</TableHead>
+                                  <TableHead className="font-medium">Benefit</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {superSeniorCitizenSlabs.map((slab, index) => (
+                                  <TableRow key={index} className={`${index % 2 === 0 ? 'bg-background' : 'bg-muted/30'} hover:bg-muted/50 transition-colors`}>
+                                    <TableCell className="font-medium">
+                                      {formatIndianCurrency(slab.incomeFrom)} 
+                                      <span className="mx-1">-</span> 
+                                      {slab.incomeTo ? formatIndianCurrency(slab.incomeTo) : (
+                                        <span className="text-primary font-semibold">Above</span>
+                                      )}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                      <span className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                        slab.taxRate > 20 ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' : 
+                                        slab.taxRate > 10 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' : 
+                                        slab.taxRate > 0 ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 
+                                        'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
+                                      }`}>
+                                        {slab.taxRate}%
+                                      </span>
+                                    </TableCell>
+                                    <TableCell className="text-muted-foreground text-sm">
+                                      {slab.description || 'Standard rate for this bracket'}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
