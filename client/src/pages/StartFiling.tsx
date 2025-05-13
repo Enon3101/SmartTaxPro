@@ -2239,7 +2239,7 @@ export default function StartFiling() {
                   )}
                 </div>
                 
-                {(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxPaid || 0)) > 0 ? (
+                {(taxSummary?.estimatedTax - Number(taxesPaid.totalTaxesPaid || 0)) > 0 ? (
                   <div className="bg-white p-4 rounded border border-gray-200">
                     <h4 className="font-medium mb-2">File after payment</h4>
                     <p className="text-sm text-gray-600 mb-4">You need to complete the payment before you can file your return.</p>
