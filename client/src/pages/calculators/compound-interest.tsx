@@ -196,8 +196,8 @@ const CompoundInterestCalculator = () => {
         Calculate how your investments grow over time with compound interest
       </p>
       
-      <div className="grid md:grid-cols-12 gap-6">
-        <div className="md:col-span-5">
+      <div className="grid md:grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-5">
           <Card>
             <CardHeader>
               <CardTitle>Investment Details</CardTitle>
@@ -343,7 +343,7 @@ const CompoundInterestCalculator = () => {
           </Card>
         </div>
         
-        <div className="md:col-span-7">
+        <div className="lg:col-span-7">
           <Card>
             <CardHeader>
               <CardTitle>Calculation Results</CardTitle>
@@ -352,7 +352,7 @@ const CompoundInterestCalculator = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                 <div className="bg-muted p-4 rounded-md text-center">
                   <h4 className="text-sm font-medium text-muted-foreground mb-1">Total Investment</h4>
                   <p className="text-xl font-bold">{formatCurrency(totalInvestment)}</p>
@@ -367,8 +367,8 @@ const CompoundInterestCalculator = () => {
                 </div>
               </div>
               
-              <div className="mt-6">
-                <Table>
+              <div className="mt-6 overflow-x-auto">
+                <Table className="min-w-full">
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-[80px]">Year</TableHead>
@@ -380,10 +380,10 @@ const CompoundInterestCalculator = () => {
                   <TableBody>
                     {getVisibleYears().map((result) => (
                       <TableRow key={result.year}>
-                        <TableCell className="font-medium">{result.year}</TableCell>
-                        <TableCell>{formatCurrency(result.totalContributions)}</TableCell>
-                        <TableCell className="text-primary">{formatCurrency(result.totalInterest)}</TableCell>
-                        <TableCell className="font-semibold">{formatCurrency(result.balance)}</TableCell>
+                        <TableCell className="font-medium whitespace-nowrap">{result.year}</TableCell>
+                        <TableCell className="whitespace-nowrap">{formatCurrency(result.totalContributions)}</TableCell>
+                        <TableCell className="text-primary whitespace-nowrap">{formatCurrency(result.totalInterest)}</TableCell>
+                        <TableCell className="font-semibold whitespace-nowrap">{formatCurrency(result.balance)}</TableCell>
                       </TableRow>
                     ))}
                     
