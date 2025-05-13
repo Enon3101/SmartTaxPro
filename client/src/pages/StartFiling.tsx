@@ -1433,6 +1433,301 @@ export default function StartFiling() {
                   ))}
                 </div>
               )}
+              
+              {/* Business Income */}
+              {currentIncomeSource === "business" && (
+                <div className="p-6 bg-white border rounded-lg">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-medium flex items-center">
+                      <Briefcase className="h-5 w-5 text-blue-500 mr-2" />
+                      Business Income
+                    </h3>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => addIncomeEntry("businessIncome")}
+                    >
+                      <Plus className="h-4 w-4 mr-1" /> Add Another
+                    </Button>
+                  </div>
+
+                  <div className="space-y-6">
+                    {formData.businessIncome.length === 0 ? (
+                      <div className="p-4 bg-gray-50 rounded-md text-gray-500 text-center">
+                        Click "Add Another" to add business income details
+                      </div>
+                    ) : (
+                      formData.businessIncome.map((business, index) => (
+                        <div key={business.id} className="border rounded-md p-4 relative">
+                          {formData.businessIncome.length > 1 && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="absolute top-2 right-2 h-6 w-6 text-gray-400 hover:text-red-500"
+                              onClick={() => removeIncomeEntry("businessIncome", index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          )}
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div className="space-y-2">
+                              <Label htmlFor={`businessName-${index}`}>Business Name</Label>
+                              <Input
+                                id={`businessName-${index}`}
+                                placeholder="Name of your business"
+                                value={business.businessName || ""}
+                                onChange={(e) => updateIncomeField("businessIncome", index, "businessName", e.target.value)}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`businessType-${index}`}>Business Type</Label>
+                              <Select
+                                value={business.businessType || ""}
+                                onValueChange={(value) => updateIncomeField("businessIncome", index, "businessType", value)}
+                              >
+                                <SelectTrigger id={`businessType-${index}`}>
+                                  <SelectValue placeholder="Select business type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="sole-proprietorship">Sole Proprietorship</SelectItem>
+                                  <SelectItem value="partnership">Partnership Firm</SelectItem>
+                                  <SelectItem value="profession">Profession</SelectItem>
+                                  <SelectItem value="other">Other</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor={`grossProfit-${index}`}>Gross Profit</Label>
+                              <div className="relative">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                <Input
+                                  id={`grossProfit-${index}`}
+                                  className="pl-7"
+                                  placeholder="Gross profit"
+                                  value={business.grossProfit || ""}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^0-9.]/g, '');
+                                    updateIncomeField("businessIncome", index, "grossProfit", value);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`netProfit-${index}`}>Net Profit (as per books)</Label>
+                              <div className="relative">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                <Input
+                                  id={`netProfit-${index}`}
+                                  className="pl-7"
+                                  placeholder="Net profit"
+                                  value={business.netProfit || ""}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^0-9.]/g, '');
+                                    updateIncomeField("businessIncome", index, "netProfit", value);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              {/* Interest Income */}
+              {currentIncomeSource === "interest" && (
+                <div className="p-6 bg-white border rounded-lg">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-medium flex items-center">
+                      <PiggyBank className="h-5 w-5 text-green-500 mr-2" />
+                      Interest Income
+                    </h3>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => addIncomeEntry("interestIncome")}
+                    >
+                      <Plus className="h-4 w-4 mr-1" /> Add Another
+                    </Button>
+                  </div>
+
+                  <div className="space-y-6">
+                    {formData.interestIncome.length === 0 ? (
+                      <div className="p-4 bg-gray-50 rounded-md text-gray-500 text-center">
+                        Click "Add Another" to add interest income details
+                      </div>
+                    ) : (
+                      formData.interestIncome.map((interest, index) => (
+                        <div key={interest.id} className="border rounded-md p-4 relative">
+                          {formData.interestIncome.length > 1 && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="absolute top-2 right-2 h-6 w-6 text-gray-400 hover:text-red-500"
+                              onClick={() => removeIncomeEntry("interestIncome", index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          )}
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div className="space-y-2">
+                              <Label htmlFor={`interestSource-${index}`}>Interest Source</Label>
+                              <Select
+                                value={interest.interestSource || ""}
+                                onValueChange={(value) => updateIncomeField("interestIncome", index, "interestSource", value)}
+                              >
+                                <SelectTrigger id={`interestSource-${index}`}>
+                                  <SelectValue placeholder="Select interest source" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="savings">Savings Account</SelectItem>
+                                  <SelectItem value="fixed-deposit">Fixed Deposits</SelectItem>
+                                  <SelectItem value="recurring-deposit">Recurring Deposits</SelectItem>
+                                  <SelectItem value="bonds">Bonds</SelectItem>
+                                  <SelectItem value="others">Other Interest</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`interestAmount-${index}`}>Interest Amount</Label>
+                              <div className="relative">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                <Input
+                                  id={`interestAmount-${index}`}
+                                  className="pl-7"
+                                  placeholder="Interest amount"
+                                  value={interest.interestAmount || ""}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^0-9.]/g, '');
+                                    updateIncomeField("interestIncome", index, "interestAmount", value);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label htmlFor={`tdsDeducted-${index}`}>TDS Deducted (if any)</Label>
+                            <div className="relative">
+                              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                              <Input
+                                id={`tdsDeducted-${index}`}
+                                className="pl-7"
+                                placeholder="TDS amount"
+                                value={interest.tdsDeducted || ""}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^0-9.]/g, '');
+                                  updateIncomeField("interestIncome", index, "tdsDeducted", value);
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              {/* Other Income */}
+              {currentIncomeSource === "other" && (
+                <div className="p-6 bg-white border rounded-lg">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-medium flex items-center">
+                      <DollarSign className="h-5 w-5 text-yellow-500 mr-2" />
+                      Other Income
+                    </h3>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => addIncomeEntry("otherIncome")}
+                    >
+                      <Plus className="h-4 w-4 mr-1" /> Add Another
+                    </Button>
+                  </div>
+
+                  <div className="space-y-6">
+                    {formData.otherIncome.length === 0 ? (
+                      <div className="p-4 bg-gray-50 rounded-md text-gray-500 text-center">
+                        Click "Add Another" to add other income details
+                      </div>
+                    ) : (
+                      formData.otherIncome.map((income, index) => (
+                        <div key={income.id} className="border rounded-md p-4 relative">
+                          {formData.otherIncome.length > 1 && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="absolute top-2 right-2 h-6 w-6 text-gray-400 hover:text-red-500"
+                              onClick={() => removeIncomeEntry("otherIncome", index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          )}
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div className="space-y-2">
+                              <Label htmlFor={`incomeDescription-${index}`}>Income Description</Label>
+                              <Input
+                                id={`incomeDescription-${index}`}
+                                placeholder="Description of income"
+                                value={income.incomeDescription || ""}
+                                onChange={(e) => updateIncomeField("otherIncome", index, "incomeDescription", e.target.value)}
+                              />
+                            </div>
+                            
+                            <div className="space-y-2">
+                              <Label htmlFor={`incomeCategory-${index}`}>Income Category</Label>
+                              <Select
+                                value={income.incomeCategory || ""}
+                                onValueChange={(value) => updateIncomeField("otherIncome", index, "incomeCategory", value)}
+                              >
+                                <SelectTrigger id={`incomeCategory-${index}`}>
+                                  <SelectValue placeholder="Select category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="lottery">Lottery/Gambling Winnings</SelectItem>
+                                  <SelectItem value="gifts">Gifts</SelectItem>
+                                  <SelectItem value="pension">Pension</SelectItem>
+                                  <SelectItem value="freelance">Freelance/Consulting</SelectItem>
+                                  <SelectItem value="other">Other Income</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label htmlFor={`incomeAmount-${index}`}>Income Amount</Label>
+                            <div className="relative">
+                              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                              <Input
+                                id={`incomeAmount-${index}`}
+                                className="pl-7"
+                                placeholder="Amount"
+                                value={income.incomeAmount || ""}
+                                onChange={(e) => {
+                                  const value = e.target.value.replace(/[^0-9.]/g, '');
+                                  updateIncomeField("otherIncome", index, "incomeAmount", value);
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
             
               {/* House Property Income */}
               {currentIncomeSource === "house-property" && (
