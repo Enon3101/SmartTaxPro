@@ -422,9 +422,9 @@ const CompoundInterestCalculator = () => {
               
               <Accordion type="single" collapsible className="w-full mt-6">
                 <AccordionItem value="formula">
-                  <AccordionTrigger className="text-sm">
+                  <AccordionTrigger className="text-xs md:text-sm">
                     <div className="flex items-center">
-                      <HelpCircle className="h-4 w-4 mr-2 text-primary" /> 
+                      <HelpCircle className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2 text-primary" /> 
                       Compound Interest Formula
                     </div>
                   </AccordionTrigger>
@@ -447,9 +447,9 @@ const CompoundInterestCalculator = () => {
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="tax-implications">
-                  <AccordionTrigger className="text-sm">
+                  <AccordionTrigger className="text-xs md:text-sm">
                     <div className="flex items-center">
-                      <Info className="h-4 w-4 mr-2 text-primary" /> 
+                      <Info className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2 text-primary" /> 
                       Tax Implications in India
                     </div>
                   </AccordionTrigger>

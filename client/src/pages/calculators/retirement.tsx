@@ -541,33 +541,33 @@ const RetirementCalculator = () => {
                 
                 <Card className={`${shortfall > 0 ? 'bg-red-50 dark:bg-red-900/20 border-red-200' : 'bg-green-50 dark:bg-green-900/20 border-green-200'}`}>
                   <CardContent className="p-4">
-                    <h3 className="text-sm font-semibold mb-2 flex items-center">
-                      <AlertCircle className={`mr-2 h-4 w-4 ${shortfall > 0 ? 'text-red-600' : 'text-green-600'}`} />
+                    <h3 className="text-xs md:text-sm font-semibold mb-2 flex items-center">
+                      <AlertCircle className={`mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4 ${shortfall > 0 ? 'text-red-600' : 'text-green-600'}`} />
                       {shortfall > 0 ? 'Projected Shortfall' : 'Projected Surplus'}
                     </h3>
-                    <p className="text-2xl font-bold">{shortfall > 0 ? '-' : '+'}{formatCurrency(Math.abs(shortfall))}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Your projected corpus: {formatCurrency(projectedCorpus)}
+                    <p className="text-xl md:text-2xl font-bold">{shortfall > 0 ? '-' : '+'}{formatCurrency(Math.abs(shortfall))}</p>
+                    <p className="text-xs text-muted-foreground mt-1 leading-snug">
+                      Projected corpus: {formatCurrency(projectedCorpus)}
                     </p>
                   </CardContent>
                 </Card>
               </div>
               
               {shortfall > 0 && (
-                <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-md mb-6 border border-amber-200 dark:border-amber-800">
-                  <h3 className="text-sm font-medium flex items-center mb-2">
-                    <Calculator className="h-4 w-4 mr-2 text-amber-600" />
-                    Additional Monthly Investment Needed
+                <div className="p-3 md:p-4 bg-amber-50 dark:bg-amber-900/20 rounded-md mb-6 border border-amber-200 dark:border-amber-800">
+                  <h3 className="text-xs md:text-sm font-medium flex items-center mb-2">
+                    <Calculator className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2 text-amber-600" />
+                    Additional Monthly Investment
                   </h3>
-                  <p className="text-xl font-semibold text-amber-700 dark:text-amber-400">+₹{Math.round(additionalMonthlyInvestment).toLocaleString('en-IN')}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    To reach your retirement goal, you need to invest this additional amount monthly until retirement.
+                  <p className="text-xl md:text-xl font-semibold text-amber-700 dark:text-amber-400">+₹{Math.round(additionalMonthlyInvestment).toLocaleString('en-IN')}</p>
+                  <p className="text-xs text-muted-foreground mt-1 leading-tight">
+                    Required additional monthly investment to reach your retirement goal
                   </p>
                 </div>
               )}
               
-              <div className="mt-6 overflow-x-auto">
-                <h3 className="text-sm font-medium mb-3">Year-by-Year Projection</h3>
+              <div className="mt-5 md:mt-6 overflow-x-auto">
+                <h3 className="text-xs md:text-sm font-medium mb-2 md:mb-3">Year-by-Year Projection</h3>
                 <Table className="min-w-full">
                   <TableHeader>
                     <TableRow>
