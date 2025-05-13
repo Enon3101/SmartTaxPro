@@ -149,11 +149,11 @@ const GratuityCalculator = () => {
   
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-2 flex items-center">
-        <PiggyBank className="mr-2 h-8 w-8" /> 
+      <h1 className="text-2xl md:text-3xl font-bold mb-2 flex items-center">
+        <PiggyBank className="mr-2 h-6 w-6 md:h-8 md:w-8" /> 
         Gratuity Calculator
       </h1>
-      <p className="text-muted-foreground mb-8">
+      <p className="text-sm md:text-base text-muted-foreground mb-6 md:mb-8">
         Calculate the gratuity amount payable based on your service period and salary
       </p>
       
@@ -169,8 +169,8 @@ const GratuityCalculator = () => {
             <CardContent>
               <div className="space-y-6">
                 <div>
-                  <Label className="text-base font-medium">Employment Type</Label>
-                  <p className="text-sm text-muted-foreground mb-3">
+                  <Label className="text-sm md:text-base font-medium">Employment Type</Label>
+                  <p className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3">
                     Select whether you are covered under the Payment of Gratuity Act
                   </p>
                   
@@ -191,8 +191,8 @@ const GratuityCalculator = () => {
                 </div>
                 
                 <div>
-                  <Label className="text-base font-medium">Service Period</Label>
-                  <p className="text-sm text-muted-foreground mb-3">
+                  <Label className="text-sm md:text-base font-medium">Service Period</Label>
+                  <p className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3">
                     Enter the total period of your employment
                   </p>
                   
