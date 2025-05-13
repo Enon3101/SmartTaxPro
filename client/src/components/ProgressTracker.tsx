@@ -1,3 +1,5 @@
+import { CheckIcon } from "lucide-react";
+
 interface Step {
   number: number;
   title: string;
@@ -18,29 +20,47 @@ const ProgressTracker = ({ steps }: ProgressTrackerProps) => {
           <div key={step.number} className="step-item flex-1 min-w-[150px]">
             <div className="flex items-center">
               <div
-                className={`w-8 h-8 ${
-                  step.completed || step.active
-                    ? "bg-primary text-white"
-                    : "bg-[#E9ECEF] text-[#ADB5BD]"
-                } rounded-full flex items-center justify-center font-medium text-sm`}
+                className={`w-9 h-9 flex items-center justify-center rounded-full transition-all duration-200 
+                  ${step.completed 
+                    ? "bg-primary shadow-md shadow-primary/20" 
+                    : step.active 
+                      ? "bg-primary/90 ring-4 ring-primary/20" 
+                      : "bg-muted"}
+                  ${index === 0 ? "ml-0" : ""}`}
               >
-                {step.number}
+                {step.completed ? (
+                  <CheckIcon className="h-5 w-5 text-white" />
+                ) : (
+                  <span className={`font-semibold text-sm ${step.active ? "text-white" : "text-muted-foreground"}`}>
+                    {step.number}
+                  </span>
+                )}
               </div>
-              <div
-                className={`h-1 flex-1 ${
-                  step.completed ? "bg-primary" : "bg-[#E9ECEF]"
-                }`}
-              ></div>
+              {index < steps.length - 1 && (
+                <div className="relative flex-1 mx-2">
+                  <div className="h-1 bg-muted">
+                    <div
+                      className={`h-1 bg-primary transition-all duration-500 ${
+                        step.completed ? "w-full" : "w-0"
+                      }`}
+                    ></div>
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="mt-2">
+            <div className="mt-3 px-1">
               <p
-                className={`font-medium ${
-                  step.completed || step.active ? "text-primary" : ""
+                className={`font-medium text-sm ${
+                  step.completed 
+                    ? "text-primary" 
+                    : step.active 
+                      ? "text-primary" 
+                      : "text-muted-foreground"
                 }`}
               >
                 {step.title}
               </p>
-              <p className="text-sm text-[#ADB5BD]">{step.description}</p>
+              <p className="text-xs text-muted-foreground mt-1">{step.description}</p>
             </div>
           </div>
         ))}
