@@ -516,7 +516,7 @@ const RetirementCalculator = () => {
           </Card>
         </div>
         
-        <div className="md:col-span-7">
+        <div className="lg:col-span-7">
           <Card>
             <CardHeader>
               <CardTitle>Retirement Projection</CardTitle>
@@ -566,9 +566,9 @@ const RetirementCalculator = () => {
                 </div>
               )}
               
-              <div className="mt-6">
+              <div className="mt-6 overflow-x-auto">
                 <h3 className="text-sm font-medium mb-3">Year-by-Year Projection</h3>
-                <Table>
+                <Table className="min-w-full">
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-[80px]">Age</TableHead>
@@ -580,8 +580,8 @@ const RetirementCalculator = () => {
                   <TableBody>
                     {getVisibleYears().map((projection) => (
                       <TableRow key={projection.year}>
-                        <TableCell className="font-medium">{projection.year}</TableCell>
-                        <TableCell>
+                        <TableCell className="font-medium whitespace-nowrap">{projection.year}</TableCell>
+                        <TableCell className="whitespace-nowrap">
                           <span className={`px-2 py-1 rounded-full text-xs ${
                             projection.phase === "Accumulation" 
                               ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" 
@@ -590,8 +590,8 @@ const RetirementCalculator = () => {
                             {projection.phase}
                           </span>
                         </TableCell>
-                        <TableCell>{formatCurrency(projection.monthlyExpense)}</TableCell>
-                        <TableCell className={`font-semibold ${
+                        <TableCell className="whitespace-nowrap">{formatCurrency(projection.monthlyExpense)}</TableCell>
+                        <TableCell className={`font-semibold whitespace-nowrap ${
                           projection.savingsBalance === 0 
                             ? "text-red-600 dark:text-red-400" 
                             : ""
