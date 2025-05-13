@@ -1567,39 +1567,262 @@ export default function StartFiling() {
                             </div>
                           </div>
                           
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label htmlFor={`grossProfit-${index}`}>Gross Profit</Label>
-                              <div className="relative">
-                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                                <Input
-                                  id={`grossProfit-${index}`}
-                                  className="pl-7"
-                                  placeholder="Gross profit"
-                                  value={business.grossProfit || ""}
-                                  onChange={(e) => {
-                                    const value = e.target.value.replace(/[^0-9.]/g, '');
-                                    updateIncomeField("businessIncome", index, "grossProfit", value);
-                                  }}
-                                />
+                          {/* Income Details */}
+                          <div className="mt-4 p-3 bg-gray-50 rounded-md mb-4">
+                            <h4 className="text-sm font-semibold mb-3">Income Details</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`grossReceipts-${index}`}>Gross Receipts/Turnover</Label>
+                                <div className="relative">
+                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                  <Input
+                                    id={`grossReceipts-${index}`}
+                                    className="pl-7"
+                                    placeholder="Total turnover"
+                                    value={business.grossReceipts || ""}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^0-9.]/g, '');
+                                      updateIncomeField("businessIncome", index, "grossReceipts", value);
+                                    }}
+                                  />
+                                </div>
+                                <p className="text-xs text-gray-500">Total receipts before any expenses</p>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`grossProfit-${index}`}>Gross Profit</Label>
+                                <div className="relative">
+                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                  <Input
+                                    id={`grossProfit-${index}`}
+                                    className="pl-7"
+                                    placeholder="Gross profit"
+                                    value={business.grossProfit || ""}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^0-9.]/g, '');
+                                      updateIncomeField("businessIncome", index, "grossProfit", value);
+                                    }}
+                                  />
+                                </div>
+                                <p className="text-xs text-gray-500">Gross receipts minus direct costs</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Expenses Section */}
+                          <div className="p-3 bg-gray-50 rounded-md mb-4">
+                            <h4 className="text-sm font-semibold mb-3">Allowable Expenses</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`depreciation-${index}`}>Depreciation</Label>
+                                <div className="relative">
+                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                  <Input
+                                    id={`depreciation-${index}`}
+                                    className="pl-7"
+                                    placeholder="Depreciation amount"
+                                    value={business.depreciation || ""}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^0-9.]/g, '');
+                                      updateIncomeField("businessIncome", index, "depreciation", value);
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`salariesWages-${index}`}>Salaries & Wages</Label>
+                                <div className="relative">
+                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                  <Input
+                                    id={`salariesWages-${index}`}
+                                    className="pl-7"
+                                    placeholder="Staff salaries and wages"
+                                    value={business.salariesWages || ""}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^0-9.]/g, '');
+                                      updateIncomeField("businessIncome", index, "salariesWages", value);
+                                    }}
+                                  />
+                                </div>
                               </div>
                             </div>
                             
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`rentRates-${index}`}>Rent & Rates</Label>
+                                <div className="relative">
+                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                  <Input
+                                    id={`rentRates-${index}`}
+                                    className="pl-7"
+                                    placeholder="Rent, rates, taxes"
+                                    value={business.rentRates || ""}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^0-9.]/g, '');
+                                      updateIncomeField("businessIncome", index, "rentRates", value);
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`interestExpenses-${index}`}>Interest & Finance Charges</Label>
+                                <div className="relative">
+                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                  <Input
+                                    id={`interestExpenses-${index}`}
+                                    className="pl-7"
+                                    placeholder="Interest paid on loans"
+                                    value={business.interestExpenses || ""}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^0-9.]/g, '');
+                                      updateIncomeField("businessIncome", index, "interestExpenses", value);
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label htmlFor={`otherExpenses-${index}`}>Other Expenses</Label>
+                                <div className="relative">
+                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                  <Input
+                                    id={`otherExpenses-${index}`}
+                                    className="pl-7"
+                                    placeholder="Other business expenses"
+                                    value={business.otherExpenses || ""}
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^0-9.]/g, '');
+                                      updateIncomeField("businessIncome", index, "otherExpenses", value);
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <Label htmlFor={`totalExpenses-${index}`}>Total Expenses</Label>
+                                <div className="relative">
+                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                  <Input
+                                    id={`totalExpenses-${index}`}
+                                    className="pl-7"
+                                    placeholder="Sum of all expenses"
+                                    value={
+                                      (() => {
+                                        const depreciation = parseFloat(business.depreciation || "0") || 0;
+                                        const salariesWages = parseFloat(business.salariesWages || "0") || 0;
+                                        const rentRates = parseFloat(business.rentRates || "0") || 0;
+                                        const interestExpenses = parseFloat(business.interestExpenses || "0") || 0;
+                                        const otherExpenses = parseFloat(business.otherExpenses || "0") || 0;
+                                        
+                                        const totalExpenses = depreciation + salariesWages + rentRates + interestExpenses + otherExpenses;
+                                        return totalExpenses > 0 ? totalExpenses.toString() : business.totalExpenses || "";
+                                      })()
+                                    }
+                                    onChange={(e) => {
+                                      const value = e.target.value.replace(/[^0-9.]/g, '');
+                                      updateIncomeField("businessIncome", index, "totalExpenses", value);
+                                    }}
+                                  />
+                                </div>
+                                <p className="text-xs text-blue-600">Automatically calculated based on entered expenses</p>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Presumptive Taxation Section */}
+                          <div className="mt-4 mb-4">
+                            <div className="flex items-center space-x-2">
+                              <Checkbox 
+                                id={`presumptiveTaxation-${index}`}
+                                checked={business.presumptiveTaxation || false}
+                                onCheckedChange={(checked) => 
+                                  updateIncomeField("businessIncome", index, "presumptiveTaxation", Boolean(checked))
+                                }
+                              />
+                              <label
+                                htmlFor={`presumptiveTaxation-${index}`}
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                              >
+                                Opt for Presumptive Taxation under Section 44AD/44ADA/44AE
+                              </label>
+                            </div>
+                            
+                            {business.presumptiveTaxation && (
+                              <div className="mt-3 p-3 bg-blue-50 rounded-md">
+                                <p className="text-xs text-blue-800 mb-2">
+                                  Under presumptive taxation, income is calculated at prescribed rates without maintaining detailed books of accounts.
+                                </p>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`presumptiveSection-${index}`}>Applicable Section</Label>
+                                    <Select
+                                      value={business.presumptiveSection || ""}
+                                      onValueChange={(value) => updateIncomeField("businessIncome", index, "presumptiveSection", value)}
+                                    >
+                                      <SelectTrigger id={`presumptiveSection-${index}`}>
+                                        <SelectValue placeholder="Select section" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="44AD">Section 44AD (Business)</SelectItem>
+                                        <SelectItem value="44ADA">Section 44ADA (Profession)</SelectItem>
+                                        <SelectItem value="44AE">Section 44AE (Goods Transport)</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  
+                                  <div className="space-y-2">
+                                    <Label htmlFor={`presumptiveIncome-${index}`}>Presumptive Income</Label>
+                                    <div className="relative">
+                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                                      <Input
+                                        id={`presumptiveIncome-${index}`}
+                                        className="pl-7"
+                                        placeholder="Presumptive income"
+                                        value={business.presumptiveIncome || ""}
+                                        onChange={(e) => {
+                                          const value = e.target.value.replace(/[^0-9.]/g, '');
+                                          updateIncomeField("businessIncome", index, "presumptiveIncome", value);
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Final Net Profit */}
+                          <div className="p-4 bg-purple-50 rounded-md border border-purple-100">
+                            <h4 className="text-sm font-bold text-purple-700 mb-3">Final Income from Business/Profession</h4>
                             <div className="space-y-2">
-                              <Label htmlFor={`netProfit-${index}`}>Net Profit (as per books)</Label>
+                              <Label htmlFor={`netProfit-${index}`}>Net Profit (Income from Business/Profession)</Label>
                               <div className="relative">
                                 <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
                                 <Input
                                   id={`netProfit-${index}`}
-                                  className="pl-7"
+                                  className="pl-7 bg-white font-medium"
                                   placeholder="Net profit"
-                                  value={business.netProfit || ""}
+                                  value={
+                                    business.presumptiveTaxation && business.presumptiveIncome 
+                                      ? business.presumptiveIncome 
+                                      : business.netProfit || ""
+                                  }
                                   onChange={(e) => {
                                     const value = e.target.value.replace(/[^0-9.]/g, '');
                                     updateIncomeField("businessIncome", index, "netProfit", value);
                                   }}
                                 />
                               </div>
+                              <p className="text-xs text-gray-500">
+                                {business.presumptiveTaxation 
+                                  ? "Based on presumptive taxation" 
+                                  : "Total income after deducting all eligible expenses"}
+                              </p>
                             </div>
                           </div>
                         </div>
