@@ -192,8 +192,8 @@ const RDCalculator = () => {
         Calculate maturity value of your Recurring Deposit investments
       </p>
       
-      <div className="grid md:grid-cols-12 gap-6">
-        <div className="md:col-span-5">
+      <div className="grid lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-5">
           <Card>
             <CardHeader>
               <CardTitle>RD Investment Details</CardTitle>
@@ -317,7 +317,7 @@ const RDCalculator = () => {
           </Card>
         </div>
         
-        <div className="md:col-span-7">
+        <div className="lg:col-span-7">
           <Card>
             <CardHeader>
               <CardTitle>RD Calculation Results</CardTitle>
@@ -326,7 +326,7 @@ const RDCalculator = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                 <div className="bg-muted p-4 rounded-md text-center">
                   <h4 className="text-sm font-medium text-muted-foreground mb-1">Total Investment</h4>
                   <p className="text-xl font-bold">{formatCurrency(totalDeposit)}</p>
@@ -346,7 +346,7 @@ const RDCalculator = () => {
                   <Calculator className="h-4 w-4 mr-2 text-primary" />
                   Key Metrics
                 </h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 xs:grid-cols-2 gap-4">
                   <div>
                     <p className="text-xs text-muted-foreground">Effective Annual Yield</p>
                     <p className="font-medium">{calculateEffectiveYield()}%</p>
