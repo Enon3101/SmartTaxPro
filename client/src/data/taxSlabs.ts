@@ -98,21 +98,21 @@ export const taxSlabs2025_26: TaxSlabsYear = {
     {
       name: "New Tax Regime",
       description: "Default tax regime with lower rates but no deductions/exemptions",
-      applicableFrom: "FY 2023-24",
+      applicableFrom: "FY 2024-25",
       isDefault: true,
       slabs: [
         { incomeFrom: 0, incomeTo: 300000, taxRate: 0, description: "Nil tax up to ₹3 lakh" },
-        { incomeFrom: 300000, incomeTo: 600000, taxRate: 5, description: "5% tax between ₹3-6 lakh" },
-        { incomeFrom: 600000, incomeTo: 900000, taxRate: 10, description: "10% tax between ₹6-9 lakh" },
-        { incomeFrom: 900000, incomeTo: 1200000, taxRate: 15, description: "15% tax between ₹9-12 lakh" },
+        { incomeFrom: 300000, incomeTo: 700000, taxRate: 5, description: "5% tax between ₹3-7 lakh" },
+        { incomeFrom: 700000, incomeTo: 1000000, taxRate: 10, description: "10% tax between ₹7-10 lakh" },
+        { incomeFrom: 1000000, incomeTo: 1200000, taxRate: 15, description: "15% tax between ₹10-12 lakh" },
         { incomeFrom: 1200000, incomeTo: 1500000, taxRate: 20, description: "20% tax between ₹12-15 lakh" },
         { incomeFrom: 1500000, incomeTo: null, taxRate: 30, description: "30% tax above ₹15 lakh" }
       ],
       surcharge: {
-        "5000000": 10,
-        "10000000": 15,
-        "20000000": 25,
-        "50000000": 37
+        "5000000": 10, // 10% surcharge for income above 50 lakhs
+        "10000000": 15, // 15% surcharge for income above 1 crore
+        "20000000": 25, // 25% surcharge for income above 2 crore
+        "50000000": 37 // 37% surcharge for income above 5 crore
       },
       cess: 4,
       deductions: ["Basic Standard Deduction on salary income"]

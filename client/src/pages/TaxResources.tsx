@@ -117,24 +117,24 @@ const TaxResources = () => {
     return taxSlabs2024_25;
   };
 
-  // Define tax slabs for different person types
+  // Define tax slabs for different person types for AY 2025-26
   const companySlabs = [
     { incomeFrom: 0, incomeTo: null, taxRate: 30, description: "Flat rate for domestic companies (turnover > ₹400 crore)" },
-    { incomeFrom: 0, incomeTo: null, taxRate: 25, description: "For domestic companies with turnover ≤ ₹400 crore" },
-    { incomeFrom: 0, incomeTo: null, taxRate: 22, description: "Optional rate under section 115BAA" },
-    { incomeFrom: 0, incomeTo: null, taxRate: 15, description: "For new manufacturing companies under section 115BAB" }
+    { incomeFrom: 0, incomeTo: null, taxRate: 25, description: "For domestic companies with turnover ≤ ₹400 crore in FY 2022-23" },
+    { incomeFrom: 0, incomeTo: null, taxRate: 22, description: "Optional rate under section 115BAA (plus 10% surcharge and 4% cess)" },
+    { incomeFrom: 0, incomeTo: null, taxRate: 15, description: "For new manufacturing companies under section 115BAB (plus 10% surcharge and 4% cess)" }
   ];
 
   const foreignCompanySlabs = [
-    { incomeFrom: 0, incomeTo: null, taxRate: 40, description: "Flat rate for all foreign companies" }
+    { incomeFrom: 0, incomeTo: null, taxRate: 40, description: "Flat rate for all foreign companies (plus surcharge up to 5% and 4% cess)" }
   ];
 
   const firmSlabs = [
-    { incomeFrom: 0, incomeTo: null, taxRate: 30, description: "Flat rate for firms and LLPs" }
+    { incomeFrom: 0, incomeTo: null, taxRate: 30, description: "Flat rate for firms and LLPs (plus 12% surcharge if income exceeds ₹1 crore and 4% cess)" }
   ];
 
   const aopSlabs = [
-    { incomeFrom: 0, incomeTo: null, taxRate: 30, description: "Flat rate for Association of Persons (AOP) and Body of Individuals (BOI)" }
+    { incomeFrom: 0, incomeTo: null, taxRate: 30, description: "Flat rate for Association of Persons (AOP) and Body of Individuals (BOI) (plus applicable surcharge and 4% cess)" }
   ];
 
   // Get regime based on selected option
