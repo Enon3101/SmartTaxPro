@@ -38,6 +38,35 @@ const TaxRegimeCalculator = lazy(() => {
   ]).then(([moduleExports]) => moduleExports);
 });
 
+// Additional calculators
+const CompoundInterestCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/compound-interest"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const PPFCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/ppf"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const RDCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/rd"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const RetirementCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/retirement"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
 const HraCalculator = lazy(() => {
   return Promise.all([
     import("@/pages/calculators/hra"),
