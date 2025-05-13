@@ -120,7 +120,7 @@ export const taxSlabs2025_26: TaxSlabsYear = {
     {
       name: "Old Tax Regime",
       description: "Higher tax rates but allows claiming various deductions and exemptions",
-      applicableFrom: "Before FY 2023-24",
+      applicableFrom: "FY 2024-25",
       isDefault: false,
       slabs: [
         { incomeFrom: 0, incomeTo: 250000, taxRate: 0, description: "Nil tax up to ₹2.5 lakh" },
@@ -129,10 +129,10 @@ export const taxSlabs2025_26: TaxSlabsYear = {
         { incomeFrom: 1000000, incomeTo: null, taxRate: 30, description: "30% tax above ₹10 lakh" }
       ],
       surcharge: {
-        "5000000": 10,
-        "10000000": 15,
-        "20000000": 25,
-        "50000000": 37
+        "5000000": 10, // 10% surcharge for income above 50 lakhs
+        "10000000": 15, // 15% surcharge for income above 1 crore
+        "20000000": 25, // 25% surcharge for income above 2 crore
+        "50000000": 37  // 37% surcharge for income above 5 crore
       },
       cess: 4,
       deductions: [
