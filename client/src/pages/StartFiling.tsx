@@ -178,6 +178,9 @@ export default function StartFiling() {
   });
   
   const [filerType, setFilerType] = useState<string | null>(null);
+  
+  // Track which income source is being shown
+  const [currentIncomeSource, setCurrentIncomeSource] = useState<string | null>(null);
   const [showSalaryOption, setShowSalaryOption] = useState(true);
 
   // State for deductions
@@ -288,6 +291,35 @@ export default function StartFiling() {
       setFilerType(getPANEntityType(formData.pan));
     }
   }, [formData.pan]);
+  
+  // Function to determine which income source to show next
+  const getNextIncomeSource = () => {
+    const incomeSources = formData.incomeSource;
+    if (incomeSources.length === 0) return null;
+    
+    if (currentIncomeSource === null) {
+      return incomeSources[0];
+    }
+    
+    const currentIndex = incomeSources.indexOf(currentIncomeSource);
+    if (currentIndex === -1 || currentIndex === incomeSources.length - 1) {
+      return null; // No more sources or invalid source
+    }
+    
+    return incomeSources[currentIndex + 1];
+  };
+  
+  // Initialize the current income source when entering income step
+  useEffect(() => {
+    if (currentStep === 3 && formData.incomeSource.length > 0) {
+      if (currentIncomeSource === null || !formData.incomeSource.includes(currentIncomeSource)) {
+        setCurrentIncomeSource(formData.incomeSource[0]);
+      }
+    } else if (currentStep !== 3) {
+      // Reset current income source when leaving income step
+      setCurrentIncomeSource(null);
+    }
+  }, [currentStep, formData.incomeSource, currentIncomeSource]);
   
   // Define filing steps
   const steps: Step[] = [
