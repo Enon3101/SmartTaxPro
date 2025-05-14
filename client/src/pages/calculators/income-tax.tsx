@@ -84,11 +84,25 @@ const IncomeTaxCalculator = () => {
   
   // Deductions state
   const [deductions, setDeductions] = useState<IncomeSource[]>([
-    { id: '80c', name: 'Section 80C', value: 0, description: 'Investments in PPF, ELSS, Life Insurance, etc.' },
-    { id: '80d', name: 'Section 80D', value: 0, description: 'Medical Insurance Premium' },
-    { id: 'standard', name: 'Standard Deduction', value: 50000, description: 'Standard deduction on salary income' },
-    { id: 'hra', name: 'HRA', value: 0, description: 'House Rent Allowance' },
-    { id: 'other', name: 'Other Deductions', value: 0, description: 'Other eligible deductions' }
+    { id: 'standard', name: 'Standard Deduction', value: 50000, description: 'Standard deduction on salary income (50,000 or salary, whichever is lower)' },
+    { id: '80c', name: 'Section 80C', value: 0, description: 'Investments in PPF, ELSS, Life Insurance Premium, etc. (Max: ₹1.5 Lakh)' },
+    { id: '80ccc', name: 'Section 80CCC', value: 0, description: 'Pension plans (Part of overall 80C limit)' },
+    { id: '80ccd1', name: 'Section 80CCD(1)', value: 0, description: 'Employee contribution to NPS (Part of overall 80C limit)' },
+    { id: '80ccd1b', name: 'Section 80CCD(1B)', value: 0, description: 'Additional NPS contribution (Max: ₹50,000)' },
+    { id: '80ccd2', name: 'Section 80CCD(2)', value: 0, description: 'Employer contribution to NPS (Max: 10% of salary)' },
+    { id: '80d', name: 'Section 80D', value: 0, description: 'Medical Insurance Premium (Self & Family: ₹25,000; Senior Citizens: ₹50,000)' },
+    { id: '80dd', name: 'Section 80DD', value: 0, description: 'Maintenance of dependent with disability (₹75,000 or ₹1,25,000 for severe disability)' },
+    { id: '80ddb', name: 'Section 80DDB', value: 0, description: 'Medical treatment for specified diseases (Max: ₹40,000; ₹1,00,000 for senior citizens)' },
+    { id: '80e', name: 'Section 80E', value: 0, description: 'Interest on education loan (No maximum limit, for 8 years)' },
+    { id: '80ee', name: 'Section 80EE', value: 0, description: 'Interest on home loan for first time home buyers (Max: ₹50,000)' },
+    { id: '80eea', name: 'Section 80EEA', value: 0, description: 'Interest on loan for electric vehicle (Max: ₹1,50,000)' },
+    { id: '80g', name: 'Section 80G', value: 0, description: 'Donations to charitable institutions (50-100% deduction, subject to qualifying limits)' },
+    { id: '80gg', name: 'Section 80GG', value: 0, description: 'Rent paid when HRA is not received (Least of: ₹5,000/month, 25% of income, or excess rent over 10% of income)' },
+    { id: '80tta', name: 'Section 80TTA', value: 0, description: 'Interest on savings account (Max: ₹10,000)' },
+    { id: '80ttb', name: 'Section 80TTB', value: 0, description: 'Interest income for senior citizens (Max: ₹50,000)' },
+    { id: '80u', name: 'Section 80U', value: 0, description: 'Self with disability (₹75,000 or ₹1,25,000 for severe disability)' },
+    { id: 'hra', name: 'HRA Exemption', value: 0, description: 'House Rent Allowance exemption' },
+    { id: 'lta', name: 'LTA Exemption', value: 0, description: 'Leave Travel Allowance exemption' }
   ]);
   
   // Tax calculation output state
@@ -112,13 +126,49 @@ const IncomeTaxCalculator = () => {
   // Calculate total income
   const totalIncome = incomeSources.reduce((acc, source) => acc + source.value, 0);
   
-  // Calculate total deductions (only for old regime)
-  const totalDeductions = regime === 'old' 
-    ? deductions.reduce((acc, ded) => acc + ded.value, 0) 
-    : (personType === 'individual' ? 50000 : 0); // Only standard deduction for new regime
+  // Calculate total deductions with proper rules
+  const calculateTotalDeductions = () => {
+    if (regime === 'new') {
+      // New tax regime only allows standard deduction for salary income
+      const standardDeduction = deductions.find(d => d.id === 'standard')?.value || 0;
+      return standardDeduction;
+    } else {
+      // Old tax regime: need to apply section-specific logic
+      
+      // First, check for overall 80C + 80CCC + 80CCD(1) combined limit of 1.5 lakh
+      const section80CValue = deductions.find(d => d.id === '80c')?.value || 0;
+      const section80CCCValue = deductions.find(d => d.id === '80ccc')?.value || 0;
+      const section80CCD1Value = deductions.find(d => d.id === '80ccd1')?.value || 0;
+      
+      // Combined limit of 1.5 lakh for 80C, 80CCC, 80CCD(1)
+      const totalSection80CDeduction = Math.min(150000, section80CValue + section80CCCValue + section80CCD1Value);
+      
+      // Now calculate total deductions excluding these three sections
+      const otherDeductions = deductions
+        .filter(d => !['80c', '80ccc', '80ccd1'].includes(d.id))
+        .reduce((acc, d) => acc + d.value, 0);
+      
+      return totalSection80CDeduction + otherDeductions;
+    }
+  };
+  
+  const totalDeductions = calculateTotalDeductions();
   
   // Calculate taxable income
-  const taxableIncome = Math.max(0, totalIncome - (regime === 'old' ? totalDeductions : 0));
+  const calculateTaxableIncome = () => {
+    let taxable = totalIncome;
+    
+    // In new regime, only standard deduction is allowed for salary
+    if (regime === 'new') {
+      const standardDeduction = deductions.find(d => d.id === 'standard')?.value || 0;
+      return Math.max(0, taxable - standardDeduction);
+    } else {
+      // In old regime, all deductions are allowed
+      return Math.max(0, taxable - totalDeductions);
+    }
+  };
+  
+  const taxableIncome = calculateTaxableIncome();
   
   // Handle income source change
   const handleIncomeChange = (id: string, value: number) => {
@@ -129,11 +179,52 @@ const IncomeTaxCalculator = () => {
   
   // Handle deduction change
   const handleDeductionChange = (id: string, value: number) => {
-    // For section 80C, cap at 1.5 lakh
-    if (id === '80c' && value > 150000) value = 150000;
-    
-    // For section 80D, cap at 1 lakh
-    if (id === '80d' && value > 100000) value = 100000;
+    // Apply caps based on specific section limits
+    switch (id) {
+      case '80c':
+      case '80ccc':
+      case '80ccd1':
+        // Combined limit for 80C, 80CCC and 80CCD(1) is 1.5 lakh
+        if (value > 150000) value = 150000;
+        break;
+      case '80ccd1b':
+        // Additional NPS contribution limit is 50,000
+        if (value > 50000) value = 50000;
+        break;
+      case '80d':
+        // Health insurance premium limit
+        const maxLimit = (personType === 'individual' && ageGroup !== 'below60') ? 100000 : 50000;
+        if (value > maxLimit) value = maxLimit;
+        break;
+      case '80ddb':
+        // Medical treatment limit based on age
+        const ddbLimit = (personType === 'individual' && ageGroup !== 'below60') ? 100000 : 40000;
+        if (value > ddbLimit) value = ddbLimit;
+        break;
+      case '80ee':
+        // First time home buyer interest limit
+        if (value > 50000) value = 50000;
+        break;
+      case '80eea':
+        // Electric vehicle loan interest limit
+        if (value > 150000) value = 150000;
+        break;
+      case '80tta':
+        // Savings account interest limit for non-seniors
+        if (value > 10000) value = 10000;
+        break;
+      case '80ttb':
+        // Interest income limit for seniors
+        if (value > 50000) value = 50000;
+        break;
+      case 'standard':
+        // Standard deduction cap and validity check
+        const salaryIncome = incomeSources.find(source => source.id === 'salary')?.value || 0;
+        // Standard deduction can't exceed salary and is capped at 50,000
+        if (value > salaryIncome) value = salaryIncome;
+        if (value > 50000) value = 50000;
+        break;
+    }
     
     setDeductions(prev => 
       prev.map(deduction => deduction.id === id ? {...deduction, value} : deduction)
@@ -148,6 +239,27 @@ const IncomeTaxCalculator = () => {
     // Calculate tax using the utility function
     const taxCalculation = calculateTax(taxableIncome, selectedRegimeData, isResident, age);
     
+    // Round tax to nearest 10 rupees as per Indian tax rules
+    const roundTaxToNearest10 = (amount: number) => {
+      return Math.round(amount / 10) * 10;
+    };
+    
+    // Apply rounding to final tax amount
+    const roundedTotalTax = roundTaxToNearest10(taxCalculation.totalTax);
+    
+    // Generate detailed breakdown of all deductions
+    const generateDeductionBreakdown = () => {
+      if (regime === 'new') {
+        return [
+          { section: 'Standard Deduction', amount: deductions.find(d => d.id === 'standard')?.value || 0 }
+        ];
+      } else {
+        return deductions
+          .filter(d => d.value > 0)
+          .map(d => ({ section: d.name, amount: d.value }));
+      }
+    };
+    
     setTaxOutput({
       totalIncome,
       totalDeductions,
@@ -155,14 +267,14 @@ const IncomeTaxCalculator = () => {
       taxAmount: taxCalculation.taxAmount,
       surchargeAmount: taxCalculation.surchargeAmount,
       cessAmount: taxCalculation.cessAmount,
-      totalTaxPayable: taxCalculation.totalTax,
-      effectiveTaxRate: taxCalculation.effectiveTaxRate,
+      totalTaxPayable: roundedTotalTax,
+      effectiveTaxRate: (roundedTotalTax / totalIncome) * 100,
       slabwiseBreakup: taxCalculation.breakup
     });
     
     toast({
       title: 'Tax Calculation Complete',
-      description: `Your total tax payable is ${formatIndianCurrency(taxCalculation.totalTax)}`,
+      description: `Your total tax payable is ${formatIndianCurrency(roundedTotalTax)}`,
     });
   };
 
@@ -415,58 +527,312 @@ const IncomeTaxCalculator = () => {
                       </div>
                     )}
                     
-                    {deductions.map((deduction) => (
-                      <div key={deduction.id} className="space-y-2">
-                        <div className="flex justify-between">
-                          <Label 
-                            htmlFor={deduction.id} 
-                            className={`flex items-center ${(regime === 'new' && deduction.id !== 'standard') ? 'text-muted-foreground' : ''}`}
-                          >
-                            {deduction.name}
-                            {deduction.description && (
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <HelpCircle className="h-4 w-4 ml-1 text-muted-foreground" />
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>{deduction.description}</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            )}
-                          </Label>
-                          <span className="text-sm font-medium">
-                            {formatIndianCurrency(deduction.value)}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Slider
-                            id={deduction.id}
-                            value={[deduction.value]}
-                            max={deduction.id === '80c' ? 150000 : (deduction.id === '80d' ? 100000 : 500000)}
-                            step={1000}
-                            onValueChange={(values) => handleDeductionChange(deduction.id, values[0])}
-                            className="flex-1"
-                            disabled={regime === 'new' && deduction.id !== 'standard'}
-                          />
-                          <Input
-                            id={`${deduction.id}-input`}
-                            type="number"
-                            value={deduction.value}
-                            onChange={(e) => handleDeductionChange(deduction.id, Number(e.target.value))}
-                            className="w-24"
-                            disabled={regime === 'new' && deduction.id !== 'standard'}
-                          />
-                        </div>
-                        {deduction.id === '80c' && deduction.value === 150000 && (
-                          <p className="text-sm text-amber-600">Maximum limit of ₹1.5 lakh reached</p>
-                        )}
-                        {deduction.id === '80d' && deduction.value === 100000 && (
-                          <p className="text-sm text-amber-600">Maximum limit of ₹1 lakh reached</p>
-                        )}
+                    {/* Categorize deductions for better organization */}
+                    <div className="space-y-6">
+                      {/* Common Deductions - Show first */}
+                      <div>
+                        <h4 className="text-sm font-semibold mb-3 text-blue-600">Common Deductions</h4>
+                        {deductions
+                          .filter(d => ['standard', '80c', '80d', '80tta'].includes(d.id))
+                          .map((deduction) => (
+                            <div key={deduction.id} className="space-y-2 mb-4">
+                              <div className="flex justify-between">
+                                <Label 
+                                  htmlFor={deduction.id} 
+                                  className={`flex items-center ${(regime === 'new' && deduction.id !== 'standard') ? 'text-muted-foreground' : ''}`}
+                                >
+                                  {deduction.name}
+                                  {deduction.description && (
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <HelpCircle className="h-4 w-4 ml-1 text-muted-foreground" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>{deduction.description}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  )}
+                                </Label>
+                                <span className="text-sm font-medium">
+                                  {formatIndianCurrency(deduction.value)}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Slider
+                                  id={deduction.id}
+                                  value={[deduction.value]}
+                                  max={
+                                    deduction.id === '80c' ? 150000 : 
+                                    deduction.id === '80d' ? (personType === 'individual' && ageGroup !== 'below60' ? 100000 : 50000) : 
+                                    deduction.id === '80tta' ? 10000 : 
+                                    deduction.id === 'standard' ? 50000 : 
+                                    500000
+                                  }
+                                  step={100}
+                                  onValueChange={(values) => handleDeductionChange(deduction.id, values[0])}
+                                  className="flex-1"
+                                  disabled={regime === 'new' && deduction.id !== 'standard'}
+                                />
+                                <Input
+                                  id={`${deduction.id}-input`}
+                                  type="number"
+                                  value={deduction.value}
+                                  onChange={(e) => handleDeductionChange(deduction.id, Number(e.target.value))}
+                                  className="w-24"
+                                  disabled={regime === 'new' && deduction.id !== 'standard'}
+                                />
+                              </div>
+                              {/* Show limits reached messages */}
+                              {deduction.id === '80c' && deduction.value === 150000 && (
+                                <p className="text-sm text-amber-600">Maximum limit of ₹1.5 lakh reached</p>
+                              )}
+                              {deduction.id === '80d' && personType === 'individual' && ageGroup !== 'below60' && deduction.value === 100000 && (
+                                <p className="text-sm text-amber-600">Maximum limit of ₹1 lakh reached</p>
+                              )}
+                              {deduction.id === '80d' && (personType !== 'individual' || ageGroup === 'below60') && deduction.value === 50000 && (
+                                <p className="text-sm text-amber-600">Maximum limit of ₹50,000 reached</p>
+                              )}
+                              {deduction.id === '80tta' && deduction.value === 10000 && (
+                                <p className="text-sm text-amber-600">Maximum limit of ₹10,000 reached</p>
+                              )}
+                            </div>
+                          ))}
                       </div>
-                    ))}
+                      
+                      {/* Retirement and Pension - Second category */}
+                      <div>
+                        <h4 className="text-sm font-semibold mb-3 text-blue-600">Retirement & Pension</h4>
+                        {deductions
+                          .filter(d => ['80ccc', '80ccd1', '80ccd1b', '80ccd2'].includes(d.id))
+                          .map((deduction) => (
+                            <div key={deduction.id} className="space-y-2 mb-4">
+                              <div className="flex justify-between">
+                                <Label 
+                                  htmlFor={deduction.id} 
+                                  className={`flex items-center ${regime === 'new' ? 'text-muted-foreground' : ''}`}
+                                >
+                                  {deduction.name}
+                                  {deduction.description && (
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <HelpCircle className="h-4 w-4 ml-1 text-muted-foreground" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>{deduction.description}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  )}
+                                </Label>
+                                <span className="text-sm font-medium">
+                                  {formatIndianCurrency(deduction.value)}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Slider
+                                  id={deduction.id}
+                                  value={[deduction.value]}
+                                  max={
+                                    deduction.id === '80ccd1b' ? 50000 : 
+                                    (deduction.id === '80ccc' || deduction.id === '80ccd1') ? 150000 :
+                                    200000
+                                  }
+                                  step={100}
+                                  onValueChange={(values) => handleDeductionChange(deduction.id, values[0])}
+                                  className="flex-1"
+                                  disabled={regime === 'new'}
+                                />
+                                <Input
+                                  id={`${deduction.id}-input`}
+                                  type="number"
+                                  value={deduction.value}
+                                  onChange={(e) => handleDeductionChange(deduction.id, Number(e.target.value))}
+                                  className="w-24"
+                                  disabled={regime === 'new'}
+                                />
+                              </div>
+                              {/* Additional info for specific deduction limits */}
+                              {deduction.id === '80ccd1b' && deduction.value === 50000 && (
+                                <p className="text-sm text-amber-600">Maximum limit of ₹50,000 reached</p>
+                              )}
+                            </div>
+                          ))}
+                      </div>
+                      
+                      {/* Medical and Health - Third category */}
+                      <div>
+                        <h4 className="text-sm font-semibold mb-3 text-blue-600">Medical & Health</h4>
+                        {deductions
+                          .filter(d => ['80dd', '80ddb', '80u'].includes(d.id))
+                          .map((deduction) => (
+                            <div key={deduction.id} className="space-y-2 mb-4">
+                              <div className="flex justify-between">
+                                <Label 
+                                  htmlFor={deduction.id} 
+                                  className={`flex items-center ${regime === 'new' ? 'text-muted-foreground' : ''}`}
+                                >
+                                  {deduction.name}
+                                  {deduction.description && (
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <HelpCircle className="h-4 w-4 ml-1 text-muted-foreground" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>{deduction.description}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  )}
+                                </Label>
+                                <span className="text-sm font-medium">
+                                  {formatIndianCurrency(deduction.value)}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Slider
+                                  id={deduction.id}
+                                  value={[deduction.value]}
+                                  max={
+                                    deduction.id === '80ddb' ? 
+                                      (personType === 'individual' && ageGroup !== 'below60' ? 100000 : 40000) : 
+                                    125000
+                                  }
+                                  step={1000}
+                                  onValueChange={(values) => handleDeductionChange(deduction.id, values[0])}
+                                  className="flex-1"
+                                  disabled={regime === 'new'}
+                                />
+                                <Input
+                                  id={`${deduction.id}-input`}
+                                  type="number"
+                                  value={deduction.value}
+                                  onChange={(e) => handleDeductionChange(deduction.id, Number(e.target.value))}
+                                  className="w-24"
+                                  disabled={regime === 'new'}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                      
+                      {/* Loans and Interest - Fourth category */}
+                      <div>
+                        <h4 className="text-sm font-semibold mb-3 text-blue-600">Loans & Interest</h4>
+                        {deductions
+                          .filter(d => ['80e', '80ee', '80eea'].includes(d.id))
+                          .map((deduction) => (
+                            <div key={deduction.id} className="space-y-2 mb-4">
+                              <div className="flex justify-between">
+                                <Label 
+                                  htmlFor={deduction.id} 
+                                  className={`flex items-center ${regime === 'new' ? 'text-muted-foreground' : ''}`}
+                                >
+                                  {deduction.name}
+                                  {deduction.description && (
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <HelpCircle className="h-4 w-4 ml-1 text-muted-foreground" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>{deduction.description}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  )}
+                                </Label>
+                                <span className="text-sm font-medium">
+                                  {formatIndianCurrency(deduction.value)}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Slider
+                                  id={deduction.id}
+                                  value={[deduction.value]}
+                                  max={
+                                    deduction.id === '80ee' ? 50000 : 
+                                    deduction.id === '80eea' ? 150000 : 
+                                    300000
+                                  }
+                                  step={1000}
+                                  onValueChange={(values) => handleDeductionChange(deduction.id, values[0])}
+                                  className="flex-1"
+                                  disabled={regime === 'new'}
+                                />
+                                <Input
+                                  id={`${deduction.id}-input`}
+                                  type="number"
+                                  value={deduction.value}
+                                  onChange={(e) => handleDeductionChange(deduction.id, Number(e.target.value))}
+                                  className="w-24"
+                                  disabled={regime === 'new'}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                      
+                      {/* Other Deductions - Fifth category */}
+                      <div>
+                        <h4 className="text-sm font-semibold mb-3 text-blue-600">Other Deductions</h4>
+                        {deductions
+                          .filter(d => ['80g', '80gg', '80ttb', 'hra', 'lta'].includes(d.id))
+                          .map((deduction) => (
+                            <div key={deduction.id} className="space-y-2 mb-4">
+                              <div className="flex justify-between">
+                                <Label 
+                                  htmlFor={deduction.id} 
+                                  className={`flex items-center ${regime === 'new' ? 'text-muted-foreground' : ''}`}
+                                >
+                                  {deduction.name}
+                                  {deduction.description && (
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <HelpCircle className="h-4 w-4 ml-1 text-muted-foreground" />
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>{deduction.description}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  )}
+                                </Label>
+                                <span className="text-sm font-medium">
+                                  {formatIndianCurrency(deduction.value)}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Slider
+                                  id={deduction.id}
+                                  value={[deduction.value]}
+                                  max={
+                                    deduction.id === '80ttb' ? 50000 : 
+                                    deduction.id === '80gg' ? 60000 : 
+                                    500000
+                                  }
+                                  step={1000}
+                                  onValueChange={(values) => handleDeductionChange(deduction.id, values[0])}
+                                  className="flex-1"
+                                  disabled={regime === 'new'}
+                                />
+                                <Input
+                                  id={`${deduction.id}-input`}
+                                  type="number"
+                                  value={deduction.value}
+                                  onChange={(e) => handleDeductionChange(deduction.id, Number(e.target.value))}
+                                  className="w-24"
+                                  disabled={regime === 'new'}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
                     
                     <div className="flex justify-between items-center p-3 bg-muted rounded-md">
                       <div>
