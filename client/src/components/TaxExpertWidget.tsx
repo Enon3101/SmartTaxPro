@@ -43,9 +43,38 @@ const TaxExpertWidget = () => {
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [apiStatus, setApiStatus] = useState<{configured: boolean, message: string} | null>(null);
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  
+  // Check API configuration status when widget is opened
+  useEffect(() => {
+    const checkApiStatus = async () => {
+      if (isOpen && !apiStatus) {
+        try {
+          const response = await apiRequest("/api/tax-expert-chat/status");
+          setApiStatus(response);
+          
+          if (!response.configured) {
+            console.log("API not configured:", response.message);
+            setMessages(prev => [
+              ...prev,
+              {
+                content: "I'm currently unavailable due to a configuration issue. Please try again later.",
+                sender: "bot",
+                timestamp: new Date()
+              }
+            ]);
+          }
+        } catch (error) {
+          console.error("Error checking API status:", error);
+        }
+      }
+    };
+    
+    checkApiStatus();
+  }, [isOpen, apiStatus]);
 
   // Scroll to bottom of messages whenever messages change
   useEffect(() => {
@@ -99,10 +128,17 @@ const TaxExpertWidget = () => {
     } catch (error) {
       console.error("Error sending message:", error);
       
+      let errorMsg = "Sorry, I'm having trouble connecting to my knowledge base right now. Please try again later.";
+      
+      if (error instanceof Error && error.message) {
+        console.log("Detailed error:", error.message);
+        errorMsg += "\n\nError details: " + error.message.substring(0, 200);
+      }
+      
       setMessages(prev => [
         ...prev, 
         {
-          content: "Sorry, I'm having trouble connecting to my knowledge base right now. Please try again later.",
+          content: errorMsg,
           sender: "bot",
           timestamp: new Date()
         }
@@ -295,17 +331,19 @@ const TaxExpertWidget = () => {
                 <div className="border-t p-2 flex items-center gap-2">
                   <Input
                     ref={inputRef}
-                    placeholder="Ask a tax question..."
+                    placeholder={apiStatus && !apiStatus.configured 
+                      ? "Service unavailable..." 
+                      : "Ask a tax question..."}
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    disabled={isLoading}
+                    disabled={isLoading || !!(apiStatus && !apiStatus.configured)}
                     className="flex-1 text-sm h-8"
                   />
                   <Button
                     size="sm"
                     onClick={handleSendMessage}
-                    disabled={isLoading || !inputValue.trim()}
+                    disabled={isLoading || !inputValue.trim() || (apiStatus && !apiStatus.configured)}
                     className="h-8 px-2 bg-blue-600 hover:bg-blue-700"
                   >
                     <Send className="h-3 w-3" />

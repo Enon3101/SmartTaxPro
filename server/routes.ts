@@ -300,6 +300,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Set up the uploads directory to serve files
   app.use("/uploads", express.static(uploadDir));
 
+  // Tax Expert Chatbot API Status Check
+  apiRouter.get("/tax-expert-chat/status", (req, res) => {
+    res.json({
+      configured: !!process.env.GOOGLE_GEMINI_API_KEY,
+      message: process.env.GOOGLE_GEMINI_API_KEY 
+        ? "Google Gemini API is configured" 
+        : "Google Gemini API key is missing"
+    });
+  });
+
   // Tax Expert Chatbot API
   apiRouter.post("/tax-expert-chat", async (req, res) => {
     try {
@@ -307,6 +317,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!message) {
         return res.status(400).json({ error: "Message is required" });
+      }
+
+      // Check if API key is provided
+      if (!process.env.GOOGLE_GEMINI_API_KEY) {
+        return res.status(500).json({ 
+          error: "Missing Gemini API key", 
+          details: "The API key for Google Gemini is not configured."
+        });
       }
 
       // Fetch from Google Gemini API
