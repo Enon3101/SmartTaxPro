@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import express from "express";
 import path from "path";
 import fs from "fs";
+import userProfileRouter from "./userProfileRoutes";
 
 // Extended Express Request with authenticated user
 interface AuthenticatedRequest extends ExpressRequest {
@@ -1203,6 +1204,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api/auth", authRouter);
   app.use("/api/admin", adminRouter);
   app.use("/api/admin/db", dbEditorRouter);
+  app.use("/api/users", userProfileRouter);
 
   // Mount API router with /api prefix
   app.use('/api', apiRouter);

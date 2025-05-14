@@ -276,7 +276,11 @@ function DashboardOverview() {
         const adminAuth = localStorage.getItem('adminAuth');
         if (!adminAuth) return;
 
-        const response = await apiRequest("GET", "/api/admin/dashboard-stats");
+        const response = await fetch("/api/admin/stats", {
+          headers: {
+            "Authorization": `Bearer ${JSON.parse(adminAuth).token}`
+          }
+        });
 
         const data = await response.json();
         
