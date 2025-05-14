@@ -301,13 +301,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/uploads", express.static(uploadDir));
 
   // Tax Expert Chatbot API Status Check
-  apiRouter.get("/tax-expert-chat/status", (req, res) => {
-    res.json({
-      configured: !!process.env.GOOGLE_GEMINI_API_KEY,
-      message: process.env.GOOGLE_GEMINI_API_KEY 
-        ? "Google Gemini API is configured" 
-        : "Google Gemini API key is missing"
-    });
+  apiRouter.get("/tax-expert-chat/status", async (req, res) => {
+    try {
+      if (!process.env.GOOGLE_GEMINI_API_KEY) {
+        return res.json({
+          configured: false,
+          message: "Google Gemini API key is missing"
+        });
+      }
+      
+      // Try to get the list of available models
+      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models", {
+        headers: {
+          "x-goog-api-key": process.env.GOOGLE_GEMINI_API_KEY
+        }
+      });
+      
+      const data = await response.json();
+      console.log("Available models:", JSON.stringify(data).substring(0, 500) + "...");
+      
+      if (data.models && data.models.length > 0) {
+        // Filter for models with generateContent capability
+        const availableModels = data.models
+          .filter((model: any) => 
+            model.supportedGenerationMethods && 
+            model.supportedGenerationMethods.includes("generateContent"))
+          .map((model: any) => model.name);
+        
+        console.log("Models with generateContent capability:", availableModels);
+        
+        res.json({
+          configured: true,
+          message: "Google Gemini API is configured",
+          availableModels
+        });
+      } else {
+        res.json({
+          configured: true,
+          message: "Google Gemini API is configured, but no models were found",
+          error: data.error || "Unknown error"
+        });
+      }
+    } catch (error) {
+      console.error("Error checking API status:", error);
+      res.json({
+        configured: !!process.env.GOOGLE_GEMINI_API_KEY,
+        message: "Error checking API status",
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
   });
 
   // Tax Expert Chatbot API
@@ -327,8 +369,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Get the available models from the API status endpoint
+      const statusResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models", {
+        headers: {
+          "x-goog-api-key": process.env.GOOGLE_GEMINI_API_KEY || ""
+        }
+      });
+      
+      const statusData = await statusResponse.json();
+      
+      // Find a suitable model to use
+      let modelName = "gemini-pro";
+      if (statusData.models && statusData.models.length > 0) {
+        // Look for models that support generateContent
+        const availableModels = statusData.models
+          .filter((model: any) => 
+            model.supportedGenerationMethods && 
+            model.supportedGenerationMethods.includes("generateContent"))
+          .map((model: any) => model.name);
+        
+        console.log("Available models:", availableModels);
+        
+        // Try to find the right model
+        if (availableModels.includes("models/gemini-pro")) {
+          modelName = "models/gemini-pro";
+        } else if (availableModels.length > 0) {
+          // Use the first available model that supports generateContent
+          modelName = availableModels[0].replace("models/", "");
+        }
+      }
+      
+      console.log("Using model:", modelName);
+      
       // Fetch from Google Gemini API
-      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent", {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
