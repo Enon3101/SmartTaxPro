@@ -283,6 +283,7 @@ const TaxResources = () => {
                       >
                         <option value="2024-25">2024-25</option>
                         <option value="2025-26">2025-26</option>
+                        <option value="2026-27">2026-27</option>
                       </select>
                     </div>
                     <div>
@@ -538,6 +539,7 @@ const TaxResources = () => {
                     >
                       <option value="2024-25">2024-25</option>
                       <option value="2025-26">2025-26</option>
+                      <option value="2026-27">2026-27</option>
                     </select>
                   </div>
                   <div>

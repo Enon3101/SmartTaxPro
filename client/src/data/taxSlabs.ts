@@ -170,9 +170,78 @@ export const superSeniorCitizenSlabs: TaxSlab[] = [
   { incomeFrom: 1000000, incomeTo: null, taxRate: 30, description: "30% tax above ₹10 lakh" }
 ];
 
+// Income Tax Slabs for Assessment Year 2026-27 (Financial Year 2025-26)
+export const taxSlabs2026_27: TaxSlabsYear = {
+  assessmentYear: "2026-27",
+  regimes: [
+    {
+      name: "New Tax Regime",
+      description: "Default tax regime with lower rates but no deductions/exemptions",
+      applicableFrom: "FY 2025-26",
+      isDefault: true,
+      slabs: [
+        { incomeFrom: 0, incomeTo: 300000, taxRate: 0, description: "Nil tax up to ₹3 lakh" },
+        { incomeFrom: 300000, incomeTo: 700000, taxRate: 5, description: "5% tax between ₹3-7 lakh" },
+        { incomeFrom: 700000, incomeTo: 1000000, taxRate: 10, description: "10% tax between ₹7-10 lakh" },
+        { incomeFrom: 1000000, incomeTo: 1200000, taxRate: 15, description: "15% tax between ₹10-12 lakh" },
+        { incomeFrom: 1200000, incomeTo: 1500000, taxRate: 20, description: "20% tax between ₹12-15 lakh" },
+        { incomeFrom: 1500000, incomeTo: null, taxRate: 30, description: "30% tax above ₹15 lakh" }
+      ],
+      surcharge: {
+        "5000000": 10, // 10% surcharge for income above 50 lakhs
+        "10000000": 15, // 15% surcharge for income above 1 crore
+        "20000000": 25, // 25% surcharge for income above 2 crore
+        "50000000": 25 // 25% surcharge for income above 5 crore (reduced from 37%)
+      },
+      cess: 4,
+      deductions: [
+        "Basic Standard Deduction on salary income",
+        "Enhanced standard deduction for salaried individuals (up to ₹75,000)"
+      ]
+    },
+    {
+      name: "Old Tax Regime",
+      description: "Higher tax rates but allows claiming various deductions and exemptions",
+      applicableFrom: "FY 2025-26",
+      isDefault: false,
+      slabs: [
+        { incomeFrom: 0, incomeTo: 250000, taxRate: 0, description: "Nil tax up to ₹2.5 lakh" },
+        { incomeFrom: 250000, incomeTo: 500000, taxRate: 5, description: "5% tax between ₹2.5-5 lakh" },
+        { incomeFrom: 500000, incomeTo: 1000000, taxRate: 20, description: "20% tax between ₹5-10 lakh" },
+        { incomeFrom: 1000000, incomeTo: null, taxRate: 30, description: "30% tax above ₹10 lakh" }
+      ],
+      surcharge: {
+        "5000000": 10, // 10% surcharge for income above 50 lakhs
+        "10000000": 15, // 15% surcharge for income above 1 crore
+        "20000000": 25, // 25% surcharge for income above 2 crore
+        "50000000": 37  // 37% surcharge for income above 5 crore
+      },
+      cess: 4,
+      deductions: [
+        "Section 80C (up to ₹1.5 lakh)",
+        "Section 80CCC (Pension plans)",
+        "Section 80CCD (NPS contribution)",
+        "Section 80D (Health Insurance)",
+        "Section 80DD (Medical treatment of dependent with disability)",
+        "Section 80DDB (Medical treatment for specified diseases)",
+        "Section 80E (Interest on education loan)",
+        "Section 80EE/EEA (Interest on home loan)",
+        "Section 80G (Donations)",
+        "Section 80GG (Rent paid)",
+        "Section 80TTA (Interest on savings account)",
+        "HRA Exemption",
+        "LTA Exemption",
+        "Standard Deduction on salary"
+      ]
+    }
+  ]
+};
+
 // Get current tax slabs based on assessment year
 export function getTaxSlabsByYear(assessmentYear: string): TaxSlabsYear {
-  if (assessmentYear === "2025-26") {
+  if (assessmentYear === "2026-27") {
+    return taxSlabs2026_27;
+  } else if (assessmentYear === "2025-26") {
     return taxSlabs2025_26;
   }
   return taxSlabs2024_25; // default

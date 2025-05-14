@@ -372,12 +372,22 @@ export default function ItrWizard() {
                   Now that we've identified the appropriate ITR form for you, you can proceed
                   with filling out your tax return with confidence.
                 </p>
-                <Button 
-                  onClick={() => navigate('/start-filing')}
-                  className="mr-2 bg-green-600 hover:bg-green-700"
-                >
-                  Continue to Deductions <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
+                <div className="flex flex-wrap gap-3">
+                  <Button 
+                    onClick={() => navigate('/start-filing')}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    Continue to Deductions <ArrowRight className="ml-1 h-4 w-4" />
+                  </Button>
+                  
+                  <Button 
+                    onClick={() => navigate('/calculators/income-tax')}
+                    variant="outline" 
+                    className="border-blue-500 text-blue-600 hover:bg-blue-50"
+                  >
+                    <Calculator className="mr-2 h-4 w-4" /> Calculate My Income Tax
+                  </Button>
+                </div>
               </div>
             </div>
           )}
