@@ -18,6 +18,7 @@ import Pricing from "@/pages/Pricing";
 import StartFiling from "@/pages/StartFiling";
 import Payment from "@/pages/Payment";
 import FilingComplete from "@/pages/FilingComplete";
+import FilingRequirements from "@/pages/FilingRequirements";
 import Admin from "@/pages/Admin";
 import BlogPost from "@/pages/BlogPost";
 import BlogAdmin from "@/pages/BlogAdmin";
@@ -166,6 +167,7 @@ function Router() {
       <Route path="/support" component={Support} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/start-filing" component={StartFiling} />
+      <Route path="/filing-requirements" component={FilingRequirements} />
       <Route path="/admin" component={Admin} />
       <Route path="/blog-admin">{() => <BlogAdmin />}</Route>
       <Route path="/blog-admin/new">{() => <BlogAdmin mode="create" />}</Route>

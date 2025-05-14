@@ -133,6 +133,13 @@ const Home = () => {
                     </Button>
                   </div>
                 </Link>
+                <Link href="/filing-requirements">
+                  <div className="inline-block">
+                    <Button variant="secondary" size="lg" className="w-full sm:w-auto transition-all duration-300 transform hover:-translate-y-1">
+                      Who Should File ITR?
+                    </Button>
+                  </div>
+                </Link>
                 <Link href="/pricing">
                   <div className="inline-block">
                     <Button variant="outline" size="lg" className="w-full sm:w-auto transition-all duration-300 transform hover:-translate-y-1">
