@@ -21,6 +21,7 @@ import {
   DollarSign,
   FileSearch,
   Calendar,
+  Bot,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LoginDialog } from "@/components/LoginDialog";
@@ -69,6 +70,11 @@ const Header = () => {
       name: "Calculators", 
       path: "/calculators", 
       icon: <Calculator className="h-4 w-4" /> 
+    },
+    { 
+      name: "Tax Expert", 
+      path: "/tax-expert", 
+      icon: <Bot className="h-4 w-4" /> 
     },
     { 
       name: "Tax Resources", 

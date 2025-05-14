@@ -83,13 +83,15 @@ const TaxExpert = () => {
     setIsLoading(true);
     
     try {
-      const response = await apiRequest("POST", "/api/tax-expert-chat", {
-        message: userMessage.content
-      } as any);
+      const response = await apiRequest("/api/tax-expert-chat", 
+        { method: "POST" },
+        { message: userMessage.content }
+      );
       
-      const data = await response.json();
+      // apiRequest already returns the parsed JSON data
+      const data = response;
       
-      if (response.ok) {
+      if (data.response) {
         setMessages(prev => [
           ...prev, 
           {
