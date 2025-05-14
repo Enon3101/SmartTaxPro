@@ -296,6 +296,84 @@ const Home = () => {
         </div>
       </motion.section>
 
+      {/* Trusted by section */}
+      <motion.section 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="py-8 bg-primary/5 border-y border-border"
+      >
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-4">
+            <h3 className="text-lg font-medium text-muted-foreground">As trusted by</h3>
+          </div>
+          <div className="relative overflow-hidden w-full">
+            <div className="flex animate-marquee">
+              {[
+                { name: "Tata Consultancy Services", logo: "M16 8a4 4 0 100-8 4 4 0 000 8zm0 2A10 10 0 110 10 10 10 0 0116 10z" },
+                { name: "Infosys", logo: "M12 2H2v10h10V2zM22 12H12v10h10V12z" },
+                { name: "Reliance Industries", logo: "M12 1v22M17 5H7M17 19H7" },
+                { name: "Wipro", logo: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3-3l2.5 2.5L13 18l3 3z" },
+                { name: "HDFC Bank", logo: "M4 10V4a2 2 0 012-2h12a2 2 0 012 2v6m-4 0v10m-8-6v6" },
+                { name: "Bharti Airtel", logo: "M22 12h-4l-3 9L9 3l-3 9H2" },
+                { name: "ITC Limited", logo: "M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" },
+                { name: "State Bank of India", logo: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
+              ].map((company, index) => (
+                <div key={index} className="flex items-center justify-center mx-8 min-w-[120px]">
+                  <div className="flex flex-col items-center">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      className="h-10 w-10 text-primary mb-2"
+                    >
+                      <path d={company.logo}></path>
+                    </svg>
+                    <span className="text-xs font-medium text-muted-foreground">{company.name}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Duplicate for continuous scroll effect */}
+            <div className="flex animate-marquee2">
+              {[
+                { name: "Tata Consultancy Services", logo: "M16 8a4 4 0 100-8 4 4 0 000 8zm0 2A10 10 0 110 10 10 10 0 0116 10z" },
+                { name: "Infosys", logo: "M12 2H2v10h10V2zM22 12H12v10h10V12z" },
+                { name: "Reliance Industries", logo: "M12 1v22M17 5H7M17 19H7" },
+                { name: "Wipro", logo: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3-3l2.5 2.5L13 18l3 3z" },
+                { name: "HDFC Bank", logo: "M4 10V4a2 2 0 012-2h12a2 2 0 012 2v6m-4 0v10m-8-6v6" },
+                { name: "Bharti Airtel", logo: "M22 12h-4l-3 9L9 3l-3 9H2" },
+                { name: "ITC Limited", logo: "M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" },
+                { name: "State Bank of India", logo: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
+              ].map((company, index) => (
+                <div key={index} className="flex items-center justify-center mx-8 min-w-[120px]">
+                  <div className="flex flex-col items-center">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      className="h-10 w-10 text-primary mb-2"
+                    >
+                      <path d={company.logo}></path>
+                    </svg>
+                    <span className="text-xs font-medium text-muted-foreground">{company.name}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </motion.section>
+      
       {/* Easy ways to file section */}
       <motion.section 
         initial={{ opacity: 0, y: 20 }}
