@@ -328,33 +328,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Fetch from Google Gemini API
-      const response = await fetch("https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent", {
+      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "x-goog-api-key": process.env.GOOGLE_GEMINI_API_KEY || ""
         },
         body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: `You are TaxGuru, an expert on Indian Income Tax laws and regulations. You provide accurate, helpful information about Indian tax regulations, forms, deductions, exemptions, and filing requirements.
+          prompt: {
+            text: `You are TaxGuru, an expert on Indian Income Tax laws and regulations. You provide accurate, helpful information about Indian tax regulations, forms, deductions, exemptions, and filing requirements.
 
 Current date: ${new Date().toLocaleDateString()}
 
 User question: ${message}`
-                }
-              ]
-            }
-          ],
-          generationConfig: {
-            temperature: 0.2,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 800,
-          }
+          },
+          temperature: 0.2,
+          top_k: 40,
+          top_p: 0.95,
+          candidate_count: 1,
+          max_output_tokens: 800
         })
       });
 
@@ -374,9 +366,14 @@ User question: ${message}`
       let responseText = "";
       try {
         // Handle different response formats
-        if (data.candidates && data.candidates[0] && data.candidates[0].content) {
-          // v1 format
-          responseText = data.candidates[0].content.parts[0].text;
+        if (data.candidates && data.candidates[0]) {
+          if (data.candidates[0].content && data.candidates[0].content.parts) {
+            // v1 format
+            responseText = data.candidates[0].content.parts[0].text;
+          } else if (data.candidates[0].text) {
+            // v1beta format
+            responseText = data.candidates[0].text;
+          }
         } else if (data.response && data.response.candidates && data.response.candidates[0]) {
           // Alternative format
           responseText = data.response.candidates[0].content.parts[0].text;

@@ -337,13 +337,13 @@ const TaxExpertWidget = () => {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    disabled={isLoading || !!(apiStatus && !apiStatus.configured)}
+                    disabled={isLoading || Boolean(apiStatus && !apiStatus.configured)}
                     className="flex-1 text-sm h-8"
                   />
                   <Button
                     size="sm"
                     onClick={handleSendMessage}
-                    disabled={isLoading || !inputValue.trim() || (apiStatus && !apiStatus.configured)}
+                    disabled={isLoading || !inputValue.trim() || Boolean(apiStatus && !apiStatus.configured)}
                     className="h-8 px-2 bg-blue-600 hover:bg-blue-700"
                   >
                     <Send className="h-3 w-3" />
