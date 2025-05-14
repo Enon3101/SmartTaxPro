@@ -15,16 +15,7 @@ import {
 } from "@/components/ui/select";
 import { motion } from "framer-motion";
 
-// Import company logos
-import tcsLogo from '../assets/company-logos/tcs.svg';
-import infosysLogo from '../assets/company-logos/infosys.svg';
-import relianceLogo from '../assets/company-logos/reliance.svg';
-import wiproLogo from '../assets/company-logos/wipro.svg';
-import hdfcLogo from '../assets/company-logos/hdfc.svg';
-import airtelLogo from '../assets/company-logos/airtel.svg';
-import itcLogo from '../assets/company-logos/itc.svg';
-import iciciLogo from '../assets/company-logos/icici.svg';
-import sbiLogo from '../assets/company-logos/sbi.svg';
+// Company logos will be loaded from the public directory
 
 const Home = () => {
   const { isAuthenticated, user } = useAuth();
@@ -318,56 +309,80 @@ const Home = () => {
           <div className="text-center mb-4">
             <h3 className="text-lg font-medium text-muted-foreground">As trusted by</h3>
           </div>
-          <div className="relative overflow-hidden w-full">
-            <div className="flex animate-marquee">
-              {[
-                { name: "Tata Consultancy Services", logoSrc: tcsLogo },
-                { name: "Infosys", logoSrc: infosysLogo },
-                { name: "Reliance Industries", logoSrc: relianceLogo },
-                { name: "Wipro", logoSrc: wiproLogo },
-                { name: "HDFC Bank", logoSrc: hdfcLogo },
-                { name: "Bharti Airtel", logoSrc: airtelLogo },
-                { name: "ITC Limited", logoSrc: itcLogo },
-                { name: "ICICI Bank", logoSrc: iciciLogo },
-                { name: "State Bank of India", logoSrc: sbiLogo },
-              ].map((company, index) => (
-                <div key={index} className="flex items-center justify-center mx-8 min-w-[120px]">
-                  <div className="flex flex-col items-center">
-                    <img 
-                      src={company.logoSrc} 
-                      alt={company.name}
-                      className="h-10 w-auto mb-2"
-                    />
-                    <span className="text-xs font-medium text-muted-foreground">{company.name}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            {/* Duplicate for continuous scroll effect */}
-            <div className="flex animate-marquee2">
-              {[
-                { name: "Tata Consultancy Services", logoSrc: tcsLogo },
-                { name: "Infosys", logoSrc: infosysLogo },
-                { name: "Reliance Industries", logoSrc: relianceLogo },
-                { name: "Wipro", logoSrc: wiproLogo },
-                { name: "HDFC Bank", logoSrc: hdfcLogo },
-                { name: "Bharti Airtel", logoSrc: airtelLogo },
-                { name: "ITC Limited", logoSrc: itcLogo },
-                { name: "ICICI Bank", logoSrc: iciciLogo },
-                { name: "State Bank of India", logoSrc: sbiLogo },
-              ].map((company, index) => (
-                <div key={index} className="flex items-center justify-center mx-8 min-w-[120px]">
-                  <div className="flex flex-col items-center">
-                    <img 
-                      src={company.logoSrc} 
-                      alt={company.name}
-                      className="h-10 w-auto mb-2"
-                    />
-                    <span className="text-xs font-medium text-muted-foreground">{company.name}</span>
-                  </div>
-                </div>
-              ))}
+          
+          <div className="logo-slider">
+            <div className="logo-slide-track">
+              {/* First set of logos */}
+              <div className="logo-slide">
+                <img src="/company-logos/tcs.png" alt="Tata Consultancy Services" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">Tata Consultancy Services</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/infosys.png" alt="Infosys" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">Infosys</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/reliance.png" alt="Reliance Industries" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">Reliance Industries</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/wipro.png" alt="Wipro" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">Wipro</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/hdfc.png" alt="HDFC Bank" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">HDFC Bank</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/airtel.png" alt="Bharti Airtel" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">Bharti Airtel</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/itc.png" alt="ITC Limited" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">ITC Limited</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/icici.png" alt="ICICI Bank" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">ICICI Bank</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/sbi.png" alt="State Bank of India" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">State Bank of India</span>
+              </div>
+              
+              {/* Duplicate logos for infinite scroll effect */}
+              <div className="logo-slide">
+                <img src="/company-logos/tcs.png" alt="Tata Consultancy Services" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">Tata Consultancy Services</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/infosys.png" alt="Infosys" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">Infosys</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/reliance.png" alt="Reliance Industries" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">Reliance Industries</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/wipro.png" alt="Wipro" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">Wipro</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/hdfc.png" alt="HDFC Bank" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">HDFC Bank</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/airtel.png" alt="Bharti Airtel" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">Bharti Airtel</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/itc.png" alt="ITC Limited" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">ITC Limited</span>
+              </div>
+              <div className="logo-slide">
+                <img src="/company-logos/icici.png" alt="ICICI Bank" className="logo-img" />
+                <span className="text-xs font-medium text-muted-foreground">ICICI Bank</span>
+              </div>
             </div>
           </div>
         </div>
