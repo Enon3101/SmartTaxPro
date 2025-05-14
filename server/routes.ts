@@ -345,49 +345,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Tax Expert Chatbot API Status Check
   apiRouter.get("/tax-expert-chat/status", async (req, res) => {
     try {
-      if (!process.env.GOOGLE_GEMINI_API_KEY) {
+      if (!process.env.OPENROUTER_API_KEY) {
         return res.json({
           configured: false,
-          message: "Google Gemini API key is missing"
+          message: "OpenRouter API key is missing"
         });
       }
       
       // Try to get the list of available models
-      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models", {
+      const response = await fetch("https://openrouter.ai/api/v1/models", {
         headers: {
-          "x-goog-api-key": process.env.GOOGLE_GEMINI_API_KEY
+          "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          "HTTP-Referer": "https://mytaxindia.com" // Replace with your domain
         }
       });
       
       const data = await response.json();
       console.log("Available models:", JSON.stringify(data).substring(0, 500) + "...");
       
-      if (data.models && data.models.length > 0) {
-        // Filter for models with generateContent capability
-        const availableModels = data.models
-          .filter((model: any) => 
-            model.supportedGenerationMethods && 
-            model.supportedGenerationMethods.includes("generateContent"))
-          .map((model: any) => model.name);
+      if (data.data && data.data.length > 0) {
+        // Get available models
+        const availableModels = data.data.map((model: any) => model.id);
         
-        console.log("Models with generateContent capability:", availableModels);
+        console.log("Available OpenRouter models:", availableModels);
         
         res.json({
           configured: true,
-          message: "Google Gemini API is configured",
+          message: "OpenRouter API is configured",
           availableModels
         });
       } else {
         res.json({
           configured: true,
-          message: "Google Gemini API is configured, but no models were found",
+          message: "OpenRouter API is configured, but no models were found",
           error: data.error || "Unknown error"
         });
       }
     } catch (error) {
       console.error("Error checking API status:", error);
       res.json({
-        configured: !!process.env.GOOGLE_GEMINI_API_KEY,
+        configured: !!process.env.OPENROUTER_API_KEY,
         message: "Error checking API status",
         error: error instanceof Error ? error.message : String(error)
       });
@@ -404,58 +401,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check if API key is provided
-      if (!process.env.GOOGLE_GEMINI_API_KEY) {
+      if (!process.env.OPENROUTER_API_KEY) {
         return res.status(500).json({ 
-          error: "Missing Gemini API key", 
-          details: "The API key for Google Gemini is not configured."
+          error: "Missing OpenRouter API key", 
+          details: "The API key for OpenRouter is not configured."
         });
       }
 
-      // Let's try with the gemini-pro model
-      // Fetch from Google Gemini API
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent`, {
+      // Fetch from OpenRouter API
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-goog-api-key": process.env.GOOGLE_GEMINI_API_KEY || ""
+          "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          "HTTP-Referer": "https://mytaxindia.com", // Replace with your domain
+          "X-Title": "Indian Tax Expert"
         },
         body: JSON.stringify({
-          prompt: {
-            text: `You are TaxGuru, an expert on Indian Income Tax laws and regulations. You provide accurate, helpful information about Indian tax regulations, forms, deductions, exemptions, and filing requirements.
-
-Current date: ${new Date().toLocaleDateString()}
-
-User question: ${message}`
-          },
+          model: "openai/gpt-3.5-turbo", // Use a free-tier model
+          messages: [
+            {
+              role: "system",
+              content: `You are TaxGuru, an expert on Indian Income Tax laws and regulations. You provide accurate, helpful information about Indian tax regulations, forms, deductions, exemptions, and filing requirements. Current date: ${new Date().toLocaleDateString()}`
+            },
+            {
+              role: "user",
+              content: message
+            }
+          ],
           temperature: 0.2,
-          candidate_count: 1,
-          max_output_tokens: 800
+          max_tokens: 800
         })
       });
 
       const data = await response.json();
       
-      // Handle response format from Gemini API
+      // Handle response format from OpenRouter API
       if (data.error) {
-        console.error("Gemini API error:", data.error);
+        console.error("OpenRouter API error:", data.error);
         return res.status(500).json({ 
           error: "Error getting response from tax expert", 
           details: JSON.stringify(data.error)
         });
       }
 
-      console.log("Gemini API response format:", JSON.stringify(data).substring(0, 200) + "...");
+      console.log("OpenRouter API response format:", JSON.stringify(data).substring(0, 200) + "...");
 
       let responseText = "";
       try {
         console.log("Full API response:", JSON.stringify(data));
         
-        // For v1beta, response should be in data.candidates[0].text
-        if (data && data.candidates && data.candidates.length > 0 && data.candidates[0].text) {
-          responseText = data.candidates[0].text;
-        } else if (data && data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts) {
-          // v1 format
-          responseText = data.candidates[0].content.parts[0].text;
+        // The OpenRouter API response follows OpenAI format
+        if (data && data.choices && data.choices.length > 0 && data.choices[0].message) {
+          responseText = data.choices[0].message.content;
         } else if (data && data.error) {
           // Error response
           throw new Error(JSON.stringify(data.error));
@@ -465,8 +463,8 @@ User question: ${message}`
                          JSON.stringify(data).substring(0, 500);
         }
       } catch (e) {
-        console.error("Error parsing Gemini response:", e);
-        console.error("Gemini response:", JSON.stringify(data));
+        console.error("Error parsing OpenRouter response:", e);
+        console.error("OpenRouter response:", JSON.stringify(data));
         return res.status(500).json({ error: "Error parsing response from tax expert" });
       }
 
