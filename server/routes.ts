@@ -300,6 +300,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Set up the uploads directory to serve files
   app.use("/uploads", express.static(uploadDir));
 
+  // Tax Expert Chatbot API
+  apiRouter.post("/tax-expert-chat", async (req, res) => {
+    try {
+      const { message } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ error: "Message is required" });
+      }
+
+      // Fetch from Google Gemini API
+      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": process.env.GOOGLE_GEMINI_API_KEY || ""
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: "user",
+              parts: [
+                {
+                  text: `You are TaxGuru, an expert on Indian Income Tax laws and regulations. You provide accurate, helpful information about Indian tax regulations, forms, deductions, exemptions, and filing requirements.
+
+Current date: ${new Date().toLocaleDateString()}
+
+User question: ${message}`
+                }
+              ]
+            }
+          ],
+          generationConfig: {
+            temperature: 0.2,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 800,
+          },
+          safetySettings: [
+            {
+              category: "HARM_CATEGORY_HARASSMENT",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+              category: "HARM_CATEGORY_HATE_SPEECH",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+              category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            }
+          ]
+        })
+      });
+
+      const data = await response.json();
+      
+      // Handle response format from Gemini API
+      if (data.error) {
+        console.error("Gemini API error:", data.error);
+        return res.status(500).json({ error: "Error getting response from tax expert" });
+      }
+
+      let responseText = "";
+      try {
+        responseText = data.candidates[0].content.parts[0].text;
+      } catch (e) {
+        console.error("Error parsing Gemini response:", e);
+        console.error("Gemini response:", JSON.stringify(data));
+        return res.status(500).json({ error: "Error parsing response from tax expert" });
+      }
+
+      res.json({ response: responseText });
+    } catch (error) {
+      console.error("Tax chatbot error:", error);
+      res.status(500).json({ error: "Failed to get response from tax expert" });
+    }
+  });
+
   // Admin API routes
   const adminRouter = express.Router();
 

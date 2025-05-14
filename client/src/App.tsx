@@ -25,9 +25,11 @@ import Admin from "@/pages/Admin";
 import BlogPost from "@/pages/BlogPost";
 import BlogAdmin from "@/pages/BlogAdmin";
 import DatabaseEditor from "@/pages/DatabaseEditor";
+import TaxExpert from "@/pages/TaxExpert";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BottomNav from "@/components/BottomNav";
+import TaxExpertWidget from "@/components/TaxExpertWidget";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
 // Lazy load calculator pages with improved loading
@@ -180,6 +182,7 @@ function Router() {
       <Route path="/admin/database-editor" component={DatabaseEditor} />
       <Route path="/payment" component={Payment} />
       <Route path="/filing-complete" component={FilingComplete} />
+      <Route path="/tax-expert" component={TaxExpert} />
 
       {/* Calculator Routes */}
       <Route path="/calculators/index">
@@ -298,6 +301,7 @@ function App() {
                   </main>
                   <Footer />
                   <BottomNav />
+                  <TaxExpertWidget />
                 </div>
                 <Toaster />
               </TooltipProvider>
