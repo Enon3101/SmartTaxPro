@@ -1,5 +1,5 @@
 {
-  "S": {
+  "salary": {
     "fields": [
       {
         "id": "employerName",
@@ -7,12 +7,21 @@
         "type": "text",
         "validation": {
           "required": true,
-          "minLength": 3
+          "minLength": 2
+        }
+      },
+      {
+        "id": "panOfEmployer",
+        "label": "PAN of Employer",
+        "type": "text",
+        "validation": {
+          "required": false,
+          "minLength": 10
         }
       },
       {
         "id": "grossSalary",
-        "label": "Gross Salary",
+        "label": "Gross Salary (₹)",
         "type": "number",
         "validation": {
           "required": true,
@@ -20,8 +29,26 @@
         }
       },
       {
+        "id": "exemptions",
+        "label": "Section 10 Exemptions (₹)",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        }
+      },
+      {
+        "id": "professionalTax",
+        "label": "Professional Tax Paid (₹)",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        }
+      },
+      {
         "id": "tdsDeducted",
-        "label": "TDS Deducted",
+        "label": "TDS Deducted (₹)",
         "type": "number",
         "validation": {
           "required": false,
@@ -29,18 +56,150 @@
         }
       }
     ],
-    "description": "Income from salary or pension requires details about your employer and salary breakup."
+    "description": "Enter details of your salary income for the financial year 2024-25. Include income from all employers if you had multiple employers during the year."
   },
-  "H": {
+  "business": {
+    "fields": [
+      {
+        "id": "businessName",
+        "label": "Business/Profession Name",
+        "type": "text",
+        "validation": {
+          "required": true,
+          "minLength": 3
+        }
+      },
+      {
+        "id": "businessType",
+        "label": "Type of Business",
+        "type": "select",
+        "options": [
+          {
+            "value": "retail",
+            "label": "Retail Trade"
+          },
+          {
+            "value": "wholesale",
+            "label": "Wholesale Trade"
+          },
+          {
+            "value": "manufacturing",
+            "label": "Manufacturing"
+          },
+          {
+            "value": "services",
+            "label": "Services"
+          },
+          {
+            "value": "profession",
+            "label": "Professional Services"
+          },
+          {
+            "value": "other",
+            "label": "Other"
+          }
+        ],
+        "validation": {
+          "required": true
+        }
+      },
+      {
+        "id": "presumptiveTaxation",
+        "label": "Do you want to opt for Presumptive Taxation?",
+        "type": "select",
+        "options": [
+          {
+            "value": "yes",
+            "label": "Yes"
+          },
+          {
+            "value": "no",
+            "label": "No"
+          }
+        ],
+        "validation": {
+          "required": true
+        }
+      },
+      {
+        "id": "presumptiveSection",
+        "label": "Applicable Presumptive Section",
+        "type": "select",
+        "options": [
+          {
+            "value": "44AD",
+            "label": "44AD - Business"
+          },
+          {
+            "value": "44ADA",
+            "label": "44ADA - Profession"
+          },
+          {
+            "value": "44AE",
+            "label": "44AE - Goods Transport"
+          }
+        ],
+        "validation": {
+          "required": true
+        },
+        "showWhen": {
+          "field": "presumptiveTaxation",
+          "equals": ["yes"]
+        }
+      },
+      {
+        "id": "grossReceipts",
+        "label": "Gross Turnover/Receipts (₹)",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        }
+      },
+      {
+        "id": "grossProfit",
+        "label": "Gross Profit (₹)",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        },
+        "showWhen": {
+          "field": "presumptiveTaxation",
+          "equals": ["no"]
+        }
+      },
+      {
+        "id": "netProfit",
+        "label": "Net Profit (₹)",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        }
+      }
+    ],
+    "description": "Enter details about your business or professional income. If you have multiple businesses, you will need to add each one separately."
+  },
+  "house_property": {
     "fields": [
       {
         "id": "propertyType",
-        "label": "Property Type",
+        "label": "Type of Property",
         "type": "select",
         "options": [
-          { "value": "self-occupied", "label": "Self-Occupied" },
-          { "value": "let-out", "label": "Let Out" },
-          { "value": "deemed-let-out", "label": "Deemed Let Out" }
+          {
+            "value": "self_occupied",
+            "label": "Self Occupied"
+          },
+          {
+            "value": "let_out",
+            "label": "Let Out"
+          },
+          {
+            "value": "deemed_let_out",
+            "label": "Deemed Let Out"
+          }
         ],
         "validation": {
           "required": true
@@ -56,8 +215,8 @@
         }
       },
       {
-        "id": "annualRentalValue",
-        "label": "Annual Value/Fair Rent",
+        "id": "annualValue",
+        "label": "Annual Value/Rent Received (₹)",
         "type": "number",
         "validation": {
           "required": true,
@@ -65,65 +224,91 @@
         },
         "showWhen": {
           "field": "propertyType",
-          "equals": ["let-out", "deemed-let-out"]
+          "equals": ["let_out", "deemed_let_out"]
         }
       },
       {
         "id": "municipalTaxes",
-        "label": "Municipal Taxes Paid",
+        "label": "Municipal Taxes Paid (₹)",
         "type": "number",
         "validation": {
           "required": false,
           "min": 0
-        },
-        "showWhen": {
-          "field": "propertyType",
-          "equals": ["let-out", "deemed-let-out"]
         }
       },
       {
         "id": "interestOnLoan",
-        "label": "Interest on Housing Loan",
+        "label": "Interest on Housing Loan (₹)",
         "type": "number",
         "validation": {
           "required": false,
           "min": 0
         }
+      },
+      {
+        "id": "loanTakenDate",
+        "label": "Date of Loan (if applicable)",
+        "type": "date",
+        "validation": {
+          "required": false
+        }
       }
     ],
-    "description": "Income from house property requires details about property type, address, and financial information."
+    "description": "Enter details about your house property income. For self-occupied properties, only loan interest is deductible (up to ₹2 lakhs). For let-out properties, municipal taxes and standard deduction of 30% are allowed."
   },
-  "G": {
+  "capital_gains": {
     "fields": [
       {
         "id": "assetType",
         "label": "Type of Asset",
         "type": "select",
         "options": [
-          { "value": "equity", "label": "Equity Shares/Mutual Funds" },
-          { "value": "real-estate", "label": "Real Estate/Property" },
-          { "value": "debt", "label": "Debt Instruments" },
-          { "value": "other", "label": "Other Capital Assets" }
+          {
+            "value": "equity_shares",
+            "label": "Equity Shares/Mutual Funds"
+          },
+          {
+            "value": "property",
+            "label": "Real Estate Property"
+          },
+          {
+            "value": "gold",
+            "label": "Gold/Jewellery"
+          },
+          {
+            "value": "bonds",
+            "label": "Bonds/Debentures"
+          },
+          {
+            "value": "other",
+            "label": "Other Capital Asset"
+          }
         ],
         "validation": {
           "required": true
         }
       },
       {
-        "id": "holdingPeriod",
-        "label": "Holding Period",
+        "id": "shortOrLong",
+        "label": "Short-term or Long-term",
         "type": "select",
         "options": [
-          { "value": "short-term", "label": "Short Term" },
-          { "value": "long-term", "label": "Long Term" }
+          {
+            "value": "short",
+            "label": "Short-term Capital Gain"
+          },
+          {
+            "value": "long",
+            "label": "Long-term Capital Gain"
+          }
         ],
         "validation": {
           "required": true
         }
       },
       {
-        "id": "saleConsideration",
-        "label": "Sale Consideration",
+        "id": "saleValue",
+        "label": "Full Value of Consideration (Sale Price) (₹)",
         "type": "number",
         "validation": {
           "required": true,
@@ -131,8 +316,8 @@
         }
       },
       {
-        "id": "costOfAcquisition",
-        "label": "Cost of Acquisition",
+        "id": "acquisitionCost",
+        "label": "Cost of Acquisition (Purchase Price) (₹)",
         "type": "number",
         "validation": {
           "required": true,
@@ -140,16 +325,7 @@
         }
       },
       {
-        "id": "improvementCost",
-        "label": "Cost of Improvement",
-        "type": "number",
-        "validation": {
-          "required": false,
-          "min": 0
-        }
-      },
-      {
-        "id": "dateOfAcquisition",
+        "id": "acquisitionDate",
         "label": "Date of Acquisition",
         "type": "date",
         "validation": {
@@ -157,63 +333,16 @@
         }
       },
       {
-        "id": "dateOfTransfer",
-        "label": "Date of Transfer",
+        "id": "saleDate",
+        "label": "Date of Sale",
         "type": "date",
         "validation": {
           "required": true
         }
-      }
-    ],
-    "description": "Capital gains require information about the asset type, acquisition/sale details, and holding period."
-  },
-  "B": {
-    "fields": [
-      {
-        "id": "businessName",
-        "label": "Business Name",
-        "type": "text",
-        "validation": {
-          "required": true,
-          "minLength": 3
-        }
       },
       {
-        "id": "businessType",
-        "label": "Business Type",
-        "type": "select",
-        "options": [
-          { "value": "manufacturing", "label": "Manufacturing" },
-          { "value": "trading", "label": "Trading" },
-          { "value": "service", "label": "Service" },
-          { "value": "profession", "label": "Profession" },
-          { "value": "other", "label": "Other" }
-        ],
-        "validation": {
-          "required": true
-        }
-      },
-      {
-        "id": "grossReceipts",
-        "label": "Gross Receipts/Turnover",
-        "type": "number",
-        "validation": {
-          "required": true,
-          "min": 0
-        }
-      },
-      {
-        "id": "grossProfit",
-        "label": "Gross Profit",
-        "type": "number",
-        "validation": {
-          "required": true,
-          "min": 0
-        }
-      },
-      {
-        "id": "salariesWages",
-        "label": "Salaries and Wages",
+        "id": "improvementCost",
+        "label": "Cost of Improvement (₹)",
         "type": "number",
         "validation": {
           "required": false,
@@ -221,134 +350,99 @@
         }
       },
       {
-        "id": "rentRates",
-        "label": "Rent, Rates, and Taxes",
+        "id": "exemptionAmount",
+        "label": "Exemption Claimed (₹)",
         "type": "number",
         "validation": {
           "required": false,
           "min": 0
-        }
-      },
-      {
-        "id": "interestExpenses",
-        "label": "Interest Expenses",
-        "type": "number",
-        "validation": {
-          "required": false,
-          "min": 0
-        }
-      },
-      {
-        "id": "depreciation",
-        "label": "Depreciation",
-        "type": "number",
-        "validation": {
-          "required": false,
-          "min": 0
-        }
-      },
-      {
-        "id": "otherExpenses",
-        "label": "Other Expenses",
-        "type": "number",
-        "validation": {
-          "required": false,
-          "min": 0
-        }
-      },
-      {
-        "id": "netProfit",
-        "label": "Net Profit",
-        "type": "number",
-        "validation": {
-          "required": true,
-          "min": 0
-        }
-      }
-    ],
-    "description": "Business income requires information about your business operations, receipts, and expenses."
-  },
-  "P": {
-    "fields": [
-      {
-        "id": "businessName",
-        "label": "Business Name",
-        "type": "text",
-        "validation": {
-          "required": true,
-          "minLength": 3
-        }
-      },
-      {
-        "id": "presumptiveSection",
-        "label": "Presumptive Income Scheme",
-        "type": "select",
-        "options": [
-          { "value": "44AD", "label": "44AD - Business" },
-          { "value": "44ADA", "label": "44ADA - Profession" },
-          { "value": "44AE", "label": "44AE - Goods Carriage" }
-        ],
-        "validation": {
-          "required": true
-        }
-      },
-      {
-        "id": "grossTurnover",
-        "label": "Gross Turnover/Receipts",
-        "type": "number",
-        "validation": {
-          "required": true,
-          "min": 0
-        }
-      },
-      {
-        "id": "presumptiveIncome",
-        "label": "Presumptive Income",
-        "type": "number",
-        "validation": {
-          "required": true,
-          "min": 0
-        }
-      },
-      {
-        "id": "paymentMethod",
-        "label": "Receipts through Digital Modes",
-        "type": "select",
-        "options": [
-          { "value": "yes", "label": "Yes" },
-          { "value": "no", "label": "No" }
-        ],
-        "validation": {
-          "required": true
         },
         "showWhen": {
-          "field": "presumptiveSection",
-          "equals": ["44AD"]
+          "field": "shortOrLong",
+          "equals": ["long"]
+        }
+      },
+      {
+        "id": "exemptionSection",
+        "label": "Exemption Under Section",
+        "type": "select",
+        "options": [
+          {
+            "value": "54",
+            "label": "54 - Purchase of House"
+          },
+          {
+            "value": "54B",
+            "label": "54B - Agricultural Land"
+          },
+          {
+            "value": "54EC",
+            "label": "54EC - Specified Bonds"
+          },
+          {
+            "value": "54F",
+            "label": "54F - House (from other assets)"
+          },
+          {
+            "value": "other",
+            "label": "Other Section"
+          }
+        ],
+        "validation": {
+          "required": false
+        },
+        "showWhen": {
+          "field": "exemptionAmount",
+          "equals": ["long"]
         }
       }
     ],
-    "description": "Presumptive business income requires details about your business turnover and the applicable presumptive scheme section."
+    "description": "Enter details about your capital gains. Assets held for more than 24 months (36 months for property) are considered long-term. Different tax rates apply to short and long-term gains."
   },
-  "I": {
+  "interest": {
     "fields": [
       {
-        "id": "incomeSource",
-        "label": "Source of Interest",
+        "id": "interestType",
+        "label": "Type of Interest Income",
         "type": "select",
         "options": [
-          { "value": "savings", "label": "Savings Account" },
-          { "value": "fd", "label": "Fixed Deposits" },
-          { "value": "rd", "label": "Recurring Deposits" },
-          { "value": "bonds", "label": "Bonds/Debentures" },
-          { "value": "other", "label": "Other Interest Income" }
+          {
+            "value": "savings",
+            "label": "Savings Bank Account"
+          },
+          {
+            "value": "fd",
+            "label": "Fixed Deposit"
+          },
+          {
+            "value": "recurring",
+            "label": "Recurring Deposit"
+          },
+          {
+            "value": "bonds",
+            "label": "Bonds/Debentures"
+          },
+          {
+            "value": "other",
+            "label": "Other Interest"
+          }
         ],
         "validation": {
           "required": true
         }
       },
       {
-        "id": "amount",
-        "label": "Interest Amount",
+        "id": "bankName",
+        "label": "Bank/Institution Name",
+        "type": "text",
+        "validation": {
+          "required": true,
+          "minLength": 3
+        }
+      },
+      {
+        "id": "interestAmount",
+        "label": "Interest Income (₹)",
         "type": "number",
         "validation": {
           "required": true,
@@ -357,7 +451,39 @@
       },
       {
         "id": "tdsDeducted",
-        "label": "TDS Deducted",
+        "label": "TDS Deducted (₹)",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        }
+      }
+    ],
+    "description": "Enter details about your interest income from various sources. Remember that interest income from savings accounts up to ₹10,000 is exempt under section 80TTA."
+  },
+  "dividends": {
+    "fields": [
+      {
+        "id": "companyName",
+        "label": "Company/Mutual Fund Name",
+        "type": "text",
+        "validation": {
+          "required": true,
+          "minLength": 3
+        }
+      },
+      {
+        "id": "dividendAmount",
+        "label": "Dividend Amount (₹)",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        }
+      },
+      {
+        "id": "tdsDeducted",
+        "label": "TDS Deducted (₹)",
         "type": "number",
         "validation": {
           "required": false,
@@ -365,14 +491,76 @@
         }
       },
       {
-        "id": "description",
-        "label": "Description",
-        "type": "text",
+        "id": "dateReceived",
+        "label": "Date Received",
+        "type": "date",
         "validation": {
           "required": false
         }
       }
     ],
-    "description": "Interest income requires information about the source of interest and the amount received."
+    "description": "Enter details about dividends received from domestic companies or mutual funds. All dividends are now taxable at your slab rate."
+  },
+  "other_sources": {
+    "fields": [
+      {
+        "id": "incomeType",
+        "label": "Type of Income",
+        "type": "select",
+        "options": [
+          {
+            "value": "commission",
+            "label": "Commission Income"
+          },
+          {
+            "value": "lottery",
+            "label": "Lottery/Gambling Winnings"
+          },
+          {
+            "value": "gifts",
+            "label": "Gifts Received"
+          },
+          {
+            "value": "pension",
+            "label": "Family Pension"
+          },
+          {
+            "value": "other",
+            "label": "Other Income"
+          }
+        ],
+        "validation": {
+          "required": true
+        }
+      },
+      {
+        "id": "description",
+        "label": "Description of Income",
+        "type": "textarea",
+        "validation": {
+          "required": true,
+          "minLength": 5
+        }
+      },
+      {
+        "id": "amount",
+        "label": "Amount (₹)",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        }
+      },
+      {
+        "id": "tdsDeducted",
+        "label": "TDS Deducted (₹)",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        }
+      }
+    ],
+    "description": "Enter details about any other income not covered in the previous sections. This could include family pension, commission, lottery winnings, gifts received, etc."
   }
 }

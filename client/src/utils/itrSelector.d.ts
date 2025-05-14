@@ -1,8 +1,7 @@
 /**
  * Type declarations for itrSelector.js
  */
-
-declare module '@/utils/itrSelector' {
+declare module '../utils/itrSelector' {
   /**
    * Determines the appropriate ITR form based on selected income sources
    * @param sources - Array of income source codes
@@ -17,10 +16,10 @@ declare module '@/utils/itrSelector' {
    */
   export function getITRDescription(itrForm: string): string;
 
-  const itrSelector: {
+  const _default: {
     determineITRForm: typeof determineITRForm;
     getITRDescription: typeof getITRDescription;
   };
-
-  export default itrSelector;
+  
+  export default _default;
 }

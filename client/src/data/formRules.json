@@ -1,72 +1,83 @@
 {
-  "S": {
-    "itr": "ITR-1",
-    "description": "Salary only (≤ ₹50 L, resident)",
-    "schedules": ["Employer TAN", "Form-16 figures", "Sec 10 exemptions"]
-  },
-  "SH": {
-    "itr": "ITR-1",
-    "description": "Salary + One self-occupied House Prop.",
-    "schedules": ["Interest on housing loan (Sec 24)", "Address of house"]
-  },
-  "SP": {
-    "itr": "ITR-4",
-    "description": "Salary + PGBP presumptive (44AD/ADA)",
-    "schedules": ["Gross turnover", "Digital % receipts", "Cash % receipts"]
-  },
-  "SG": {
-    "itr": "ITR-2",
-    "description": "Salary + Capital Gains",
-    "schedules": ["ISIN", "Sale/purchase dates", "Cost", "FMV", "Indexation"]
-  },
-  "B": {
-    "itr": "ITR-3",
-    "description": "Business/Profession (books audited)",
-    "schedules": ["Balance Sheet", "P&L heads", "44AB audit report date"]
-  },
-  "C": {
-    "itr": "ITR-6",
-    "description": "Company / LLP",
-    "schedules": ["DS-sign", "MAT calc", "CSR", "Depreciation schedule"]
-  },
-  "H": {
-    "itr": "ITR-2",
-    "description": "House Property Income only",
-    "schedules": ["Interest on housing loan (Sec 24)", "Address of house"]
-  },
-  "G": {
-    "itr": "ITR-2",
-    "description": "Capital Gains only",
-    "schedules": ["ISIN", "Sale/purchase dates", "Cost", "FMV", "Indexation"]
-  },
-  "I": {
-    "itr": "ITR-2",
-    "description": "Interest Income only",
-    "schedules": ["Bank details", "TDS certificate"]
-  },
-  "O": {
-    "itr": "ITR-2",
-    "description": "Other Income only",
-    "schedules": ["Source details", "TDS if applicable"]
-  },
-  "SHG": {
-    "itr": "ITR-2",
-    "description": "Salary + House Property + Capital Gains",
-    "schedules": ["Form-16", "Address of house", "Interest on housing loan", "Gain calculation details"]
-  },
-  "SI": {
-    "itr": "ITR-1",
-    "description": "Salary + Interest Income",
-    "schedules": ["Form-16", "Bank details", "TDS certificate"]
-  },
-  "SHI": {
-    "itr": "ITR-1",
-    "description": "Salary + House Property + Interest Income",
-    "schedules": ["Form-16", "Address of house", "Interest on housing loan", "Bank details", "TDS certificate"]
-  },
-  "SB": {
-    "itr": "ITR-3",
-    "description": "Salary + Business Income",
-    "schedules": ["Form-16", "Balance Sheet", "P&L heads", "44AB audit report date"]
-  }
+  "rules": [
+    {
+      "form": "ITR-1",
+      "description": "ITR-1 (Sahaj) is for Individuals being a Resident (other than Not Ordinarily Resident) having Total Income up to ₹50 lakhs, having Income from Salaries, One House Property, Income from Other Sources (Interest etc.), and Agricultural Income up to ₹5,000.",
+      "conditions": {
+        "allowedSources": ["salary", "house_property", "interest", "dividends", "other_sources"],
+        "disallowedSources": ["business", "capital_gains"],
+        "maxIncome": 5000000,
+        "maxAgricultural": 5000,
+        "selfOccupiedOnly": true,
+        "presumptiveIncome": false,
+        "foreignIncome": false,
+        "broughtForwardLosses": false,
+        "capitalGains": false,
+        "residentStatus": "resident"
+      }
+    },
+    {
+      "form": "ITR-2",
+      "description": "ITR-2 is for Individuals and HUFs not having income from profits and gains of business or profession. It covers income from salaries, house property, capital gains, and other sources.",
+      "conditions": {
+        "allowedSources": ["salary", "house_property", "capital_gains", "interest", "dividends", "other_sources"],
+        "disallowedSources": ["business"],
+        "presumptiveIncome": false,
+        "capitalGains": true
+      }
+    },
+    {
+      "form": "ITR-3",
+      "description": "ITR-3 is for Individuals and HUFs having income from profits and gains of business or profession. It includes all income sources including business income.",
+      "conditions": {
+        "allowedSources": ["salary", "house_property", "business", "capital_gains", "interest", "dividends", "other_sources"],
+        "disallowedSources": []
+      }
+    },
+    {
+      "form": "ITR-4",
+      "description": "ITR-4 (Sugam) is for Individuals, HUFs and Firms (other than LLP) being a Resident having Total Income up to ₹50 lakhs and having income from Business and Profession which is computed under presumptive income scheme.",
+      "conditions": {
+        "allowedSources": ["salary", "house_property", "business", "interest", "dividends", "other_sources"],
+        "disallowedSources": ["capital_gains"],
+        "maxIncome": 5000000,
+        "presumptiveIncome": true,
+        "presumptiveSections": ["44AD", "44ADA", "44AE"],
+        "capitalGains": false,
+        "foreignIncome": false,
+        "residentStatus": "resident"
+      }
+    }
+  ],
+  "incomeSources": [
+    {
+      "code": "salary",
+      "label": "Salary/Pension",
+      "individualOnly": true
+    },
+    {
+      "code": "house_property",
+      "label": "House Property"
+    },
+    {
+      "code": "business",
+      "label": "Business/Profession"
+    },
+    {
+      "code": "capital_gains",
+      "label": "Capital Gains"
+    },
+    {
+      "code": "interest",
+      "label": "Interest Income"
+    },
+    {
+      "code": "dividends",
+      "label": "Dividends"
+    },
+    {
+      "code": "other_sources",
+      "label": "Other Sources"
+    }
+  ]
 }

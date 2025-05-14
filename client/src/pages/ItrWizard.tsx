@@ -8,7 +8,7 @@ import { IncomeTile } from '@/components/ItrWizard/IncomeTile';
 import { StepIndicator } from '@/components/ItrWizard/StepIndicator';
 import { DynamicForm } from '@/components/ItrWizard/DynamicForm';
 import { useItrWizard } from '@/context/ItrWizardContext';
-import { getITRDescription } from '@/utils/itrSelector';
+import { getITRDescription } from '../utils/itrSelector';
 import { getAllCompulsoryFields, getCompulsoryFields } from '@/utils/compulsoryFieldsLoader';
 
 // Define wizard steps
@@ -300,6 +300,72 @@ export default function ItrWizard() {
                 </div>
               </div>
 
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-3">Income Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {sources.map((sourceCode) => {
+                    const source = incomeSources.find(s => s.code === sourceCode);
+                    return (
+                      <Card key={sourceCode} className="bg-white">
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center">
+                            <div className="mr-2">
+                              {source?.icon}
+                            </div>
+                            <CardTitle className="text-base">{source?.label}</CardTitle>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          {compulsory[sourceCode] && compulsory[sourceCode].length > 0 ? (
+                            <div>
+                              {compulsory[sourceCode].map((entry, index) => (
+                                <div key={index} className="text-sm">
+                                  {Object.entries(entry).map(([key, value]) => {
+                                    // Skip internal keys or empty values
+                                    if (!value) return null;
+                                    
+                                    // Find the field definition to get the label
+                                    const sourceFields = getCompulsoryFields(sourceCode);
+                                    const fieldDef = sourceFields?.fields.find(f => f.id === key);
+                                    
+                                    return (
+                                      <div key={key} className="flex justify-between py-1 border-b border-gray-100">
+                                        <span className="text-gray-600">{fieldDef?.label || key}:</span>
+                                        <span className="font-medium">
+                                          {/* Format based on field type */}
+                                          {fieldDef?.type === 'number' ? 
+                                            `₹${Number(value).toLocaleString('en-IN')}` : 
+                                            value.toString()}
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
+                                  
+                                  {/* Edit button */}
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="mt-2"
+                                    onClick={() => {
+                                      dispatch({ type: 'SET_STEP', payload: 2 });
+                                      setCurrentSource(sourceCode);
+                                    }}
+                                  >
+                                    Edit Details
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-amber-600 text-sm">No details entered</p>
+                          )}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div className="border border-gray-200 rounded-lg p-4">
                 <h3 className="font-medium mb-2">Next Steps</h3>
                 <p className="text-gray-600 mb-4">
@@ -308,9 +374,9 @@ export default function ItrWizard() {
                 </p>
                 <Button 
                   onClick={() => navigate('/start-filing')}
-                  className="mr-2"
+                  className="mr-2 bg-green-600 hover:bg-green-700"
                 >
-                  Start Filing Now <ArrowRight className="ml-1 h-4 w-4" />
+                  Continue to Deductions <ArrowRight className="ml-1 h-4 w-4" />
                 </Button>
               </div>
             </div>

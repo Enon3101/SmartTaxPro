@@ -22,7 +22,7 @@ export interface ShowWhenCondition {
 export interface FormField {
   id: string;
   label: string;
-  type: 'text' | 'number' | 'date' | 'textarea' | 'select' | 'checkbox' | 'radio';
+  type: string; // Allow any string type to match the JSON data
   options?: FieldOption[];
   validation?: FieldValidation;
   showWhen?: ShowWhenCondition;
