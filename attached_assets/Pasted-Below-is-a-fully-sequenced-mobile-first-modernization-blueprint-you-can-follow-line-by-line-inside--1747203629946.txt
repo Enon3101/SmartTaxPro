@@ -1,0 +1,184 @@
+Below is a fully sequenced, mobile-first modernization blueprint you can follow line-by-line inside Replit. It starts with an audit, walks through code changes (with explanations), layers in PWA features, and finishes with automated testing, autoscaling deployment, and analytics. If you tick every box, you’ll end up with a Reddit-style app that loads in < 2.5 s on 3G, passes Lighthouse’s mobile audits, “installs” like a native app, and feels perfectly thumb-friendly.
+
+1  Baseline & Branch
+Task	Commands / Files	Why
+Run a mobile Lighthouse audit	In Replit Shell:
+npx lhci collect --url=https://<your-repl>.repl.co --settings.preset=mobile --output=./lighthouse-baseline	Gives you an objective JSON baseline to beat. Google flags ≥ 2.5 s LCP and > 200 ms TBT as problem areas. 
+Chrome for Developers
+Create a working branch	git checkout -b mobile-redesign	Keeps risk isolated while you refactor.
+
+2  Install Mobile-First Tooling
+Add Tailwind
+
+bash
+Copy
+Edit
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+Tailwind’s mobile-first utility classes let you iterate without writing custom media queries. 
+Tailwind CSS
+
+Add Playwright & Lighthouse-CI for mobile checks
+
+bash
+Copy
+Edit
+npm i -D @playwright/test @lhci/cli
+npx playwright install
+Playwright can emulate real devices, while Lighthouse-CI fails builds that fall below performance budgets. 
+Playwright
+GitHub
+
+3  Refactor the Layout (Mobile-First)
+3.1 Viewport & Fluid Grid
+Add in index.html <head>:
+
+html
+Copy
+Edit
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+The tag tells browsers not to zoom-out desktop layouts on phones. 
+W3Schools
+
+Switch your CSS to min-width breakpoints (mobile-first) or rewrite templates with Tailwind classes like:
+
+html
+Copy
+Edit
+<div class="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto grid gap-4">
+3.2 Bottom Navigation
+Create components/BottomNav.jsx:
+
+jsx
+Copy
+Edit
+export default function BottomNav() {
+  return (
+    <nav className="fixed bottom-0 inset-x-0 bg-white dark:bg-slate-800 shadow-xl flex justify-around py-2">
+       {/* icons truncated for brevity */}
+    </nav>
+  );
+}
+Bottom navs keep your five primary actions within thumb reach on 6-inch screens. 
+Smashing Magazine
+
+3.3 Tap-Target Sizing
+Ensure every button has at least class="min-w-11 min-h-11" (≈44 × 44 px). That’s Apple’s minimum for fingertips. 
+Apple Developer
+
+4  Progressive Web App (PWA) Layer
+4.1 manifest.json
+json
+Copy
+Edit
+{
+  "name": "My Reddit Clone",
+  "short_name": "R-Lite",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6200ee",
+  "icons": [
+    { "src": "/icons/192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
+Icons at 192 px and 512 px satisfy install prompts across Android, iOS, and desktop PWAs. 
+MDN Web Docs
+
+4.2 Service Worker (Stale-While-Revalidate)
+js
+Copy
+Edit
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.open('runtime').then(async cache => {
+      const cached = await cache.match(event.request);
+      const network = fetch(event.request).then(resp => {
+        cache.put(event.request, resp.clone());
+        return resp;
+      });
+      return cached || network;
+    })
+  );
+});
+The pattern shows users cached pages instantly while silently refreshing in the background. 
+jcs.wtf
+
+Shortcut Fork Replit’s ready-made PWA template and copy over the service-worker.js & manifest wiring. 
+Replit
+
+5  Performance & Media
+Action	Code / Tool	Rationale
+Lazy-load below-fold images	<img loading="lazy" …>	Native lazy loading in Chrome & Firefox defers bytes until scroll. 
+MDN Web Docs
+Convert assets to WebP / AVIF	npx @squoosh/cli *.png --avif	AVIF often saves ~20–30 % over WebP, 50 % over JPEG. 
+shortpixel.com
+Adopt Material 3 tokens	import @material/material-color-utilities and map to Tailwind CSS vars	You get automatic light/dark schemes and dynamic hues for a 2025 aesthetic. 
+Material Design
+
+6  Accessibility Sweep
+Use semantic tags (<header>, <main>, <nav>, <button>).
+
+Ensure color contrast ≥ 4.5:1 (Tailwind’s prose-invert helps in dark mode).
+
+Add ARIA live regions to update vote scores without page refresh.
+
+These steps widen your audience and are now a ranking signal for Google. 
+Chrome for Developers
+
+7  Automated Mobile Testing
+7.1 Playwright Device Emulation
+playwright.config.ts
+
+ts
+Copy
+Edit
+import { devices } from '@playwright/test';
+export default {
+  projects: [
+    { name: 'Mobile Chrome', use: devices['Pixel 7'] }
+  ]
+};
+Playwright simulates touch, viewport, and DPR in CI. 
+Playwright
+
+7.2 Lighthouse-CI Budget Gate
+.github/workflows/perf.yml
+
+yaml
+Copy
+Edit
+- uses: treosh/lighthouse-ci-action@v10
+  with:
+    urls: 'https://<preview-url>'
+    budgetPath: './budget.json'
+If a commit makes LCP worse than 2.5 s, the build fails. 
+GitHub
+
+8  Deploy & Autoscale on Replit
+bash
+Copy
+Edit
+replit deployments create autoscale \
+  --run "npm start" \
+  --plan standard
+Autoscale adds instances when traffic spikes and drops them to zero when idle, saving cost. 
+Replit Docs
+
+Attach your custom domain from the Replit UI; HTTPS is automatic and is required for PWA installability. 
+MDN Web Docs
+
+9  Lightweight Analytics & Core Web Vitals
+Insert Plausible’s 1 kB script in index.html:
+
+html
+Copy
+Edit
+<script defer data-domain="r-lite.app" src="https://plausible.io/js/plausible.js"></script>
+Collect device, orientation, and the “Vitals” trio (LCP, FID, CLS) without the 45 kB Google Analytics payload. 
+Plausible Analytics
+
+10  Beta Toggle & Feedback Loop
+Deploy the new UI behind a query-param flag (?v=next) or feature toggle. Announce the beta in-app, solicit feedback, and watch metrics for one week. Mobile users notoriously dislike surprise redesigns; Reddit itself learned this during its 2018 overhaul. 
+Smashing Magazine

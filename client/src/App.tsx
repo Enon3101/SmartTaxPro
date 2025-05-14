@@ -24,6 +24,7 @@ import BlogAdmin from "@/pages/BlogAdmin";
 import DatabaseEditor from "@/pages/DatabaseEditor";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BottomNav from "@/components/BottomNav";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
 // Lazy load calculator pages with improved loading
@@ -286,10 +287,11 @@ function App() {
               <div className="flex flex-col min-h-screen bg-background text-foreground">
                 <ScrollToTop />
                 <Header />
-                <main className="flex-grow">
+                <main className="flex-grow pb-16 sm:pb-0">
                   <Router />
                 </main>
                 <Footer />
+                <BottomNav />
               </div>
               <Toaster />
             </TooltipProvider>

@@ -103,7 +103,7 @@ const Header = () => {
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center">
           <Link href="/">
-            <div className="flex items-center cursor-pointer">
+            <div className="flex items-center cursor-pointer min-h-11 min-w-11">
               <div className="bg-primary/10 p-2 rounded-lg mr-2">
                 <FileText className="h-5 w-5 text-primary" />
               </div>
@@ -140,7 +140,7 @@ const Header = () => {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="flex items-center gap-2 ml-2 hover:bg-primary/10 hover:text-primary"
+                  className="flex items-center gap-2 ml-2 hover:bg-primary/10 hover:text-primary min-h-11"
                 >
                   <Avatar className="h-7 w-7">
                     <AvatarFallback className="bg-primary/90 text-white text-xs">
@@ -152,21 +152,21 @@ const Header = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 mt-1 p-1.5">
-                <DropdownMenuItem className="cursor-pointer rounded hover:bg-primary/10 focus:bg-primary/10 py-2">
+                <DropdownMenuItem className="cursor-pointer rounded hover:bg-primary/10 focus:bg-primary/10 py-2 min-h-11">
                   <User className="mr-2 h-4 w-4 text-primary" />
                   <span>My Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer rounded hover:bg-primary/10 focus:bg-primary/10 py-2">
+                <DropdownMenuItem className="cursor-pointer rounded hover:bg-primary/10 focus:bg-primary/10 py-2 min-h-11">
                   <FileCheck className="mr-2 h-4 w-4 text-primary" />
                   <span>My Tax Forms</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer rounded hover:bg-primary/10 focus:bg-primary/10 py-2">
+                <DropdownMenuItem className="cursor-pointer rounded hover:bg-primary/10 focus:bg-primary/10 py-2 min-h-11">
                   <Settings className="mr-2 h-4 w-4 text-primary" />
                   <span>Settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="my-1" />
                 <DropdownMenuItem 
-                  className="cursor-pointer rounded text-red-600 hover:bg-red-50 hover:text-red-700 focus:bg-red-50 focus:text-red-700 py-2" 
+                  className="cursor-pointer rounded text-red-600 hover:bg-red-50 hover:text-red-700 focus:bg-red-50 focus:text-red-700 py-2 min-h-11" 
                   onClick={logout}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
@@ -178,25 +178,25 @@ const Header = () => {
             <LoginDialog 
               buttonText="Login / Sign Up" 
               buttonVariant="default" 
-              className="bg-blue-500 hover:bg-blue-600 text-white ml-2" 
+              className="bg-blue-500 hover:bg-blue-600 text-white ml-2 min-h-11" 
             />
           )}
         </div>
         
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden">
+            <Button variant="ghost" size="icon" className="md:hidden min-h-11 min-w-11">
               <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[250px] p-0" 
+          <SheetContent side="left" className="w-[280px] p-0" 
             onEscapeKeyDown={() => document.body.click()}
             onPointerDownOutside={() => document.body.click()}>
           
             <div className="flex flex-col h-full">
               <div className="p-4 border-b border-border">
                 <Link href="/">
-                  <div className="flex items-center cursor-pointer mb-4" onClick={() => document.body.click()}>
+                  <div className="flex items-center cursor-pointer mb-4 min-h-11" onClick={() => document.body.click()}>
                     <div className="bg-primary/10 p-2 rounded-lg mr-2">
                       <FileText className="h-5 w-5 text-primary" />
                     </div>
@@ -221,11 +221,11 @@ const Header = () => {
                 )}
               </div>
               
-              <div className="p-4 flex flex-col gap-1 flex-1">
+              <div className="p-3 flex flex-col gap-1 flex-1">
                 {navItems.map((item, index) => (
                   <Link key={index} href={item.path}>
                     <div 
-                      className={`flex items-center gap-2 p-2 rounded-md text-sm font-medium transition-colors
+                      className={`flex items-center gap-2 p-3 rounded-md text-sm font-medium transition-colors min-h-12
                         ${isActive(item.path) 
                           ? "bg-primary/10 text-primary" 
                           : "hover:bg-muted hover:text-primary text-foreground"
@@ -244,7 +244,7 @@ const Header = () => {
                   <div className="flex flex-col gap-1">
                     <Link href="/profile">
                       <div 
-                        className="flex items-center gap-2 p-2 rounded-md text-sm font-medium hover:bg-muted hover:text-primary transition-colors"
+                        className="flex items-center gap-2 p-3 rounded-md text-sm font-medium hover:bg-muted hover:text-primary transition-colors min-h-12"
                         onClick={() => document.body.click()}
                       >
                         <User className="h-4 w-4" />
@@ -253,7 +253,7 @@ const Header = () => {
                     </Link>
                     <Link href="/my-forms">
                       <div 
-                        className="flex items-center gap-2 p-2 rounded-md text-sm font-medium hover:bg-muted hover:text-primary transition-colors"
+                        className="flex items-center gap-2 p-3 rounded-md text-sm font-medium hover:bg-muted hover:text-primary transition-colors min-h-12"
                         onClick={() => document.body.click()}
                       >
                         <FileCheck className="h-4 w-4" />
@@ -261,7 +261,7 @@ const Header = () => {
                       </div>
                     </Link>
                     <div 
-                      className="flex items-center gap-2 p-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer"
+                      className="flex items-center gap-2 p-3 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer min-h-12"
                       onClick={(e) => {
                         logout();
                         document.body.click();
@@ -274,7 +274,7 @@ const Header = () => {
                 ) : (
                   <LoginDialog 
                     buttonText="Login / Sign Up" 
-                    className="w-full bg-blue-500 hover:bg-blue-600 text-white" 
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white min-h-12" 
                     onOpenChange={(open: boolean) => {
                       if (open) document.body.click();
                     }}
