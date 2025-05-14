@@ -32,10 +32,16 @@ export default function AdminLogin() {
     
     try {
       // Attempt login
-      const response = await apiRequest("POST", "/api/auth/admin-login", {
-        username,
-        password,
-      }, {});
+      const response = await fetch("/api/auth/admin-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username,
+          password
+        })
+      });
       
       const data = await response.json();
       

@@ -905,36 +905,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
   const authRouter = express.Router();
   
-  // TEMPORARY: Direct admin login for testing purposes only
-  // REMOVE THIS IN PRODUCTION
-  authRouter.post("/dev-admin-login", async (req, res) => {
+  // Admin login endpoint
+  authRouter.post("/admin-login", async (req, res) => {
     try {
-      // Check if user exists, if not create admin user
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+      
+      // Hardcoded admin credentials check (username: admin, password: admin)
+      if (username !== "admin" || password !== "admin") {
+        return res.status(401).json({ message: "Invalid admin credentials" });
+      }
+      
+      // Check if admin user exists, create if not
       let adminUser = await storage.getUserByUsername("admin");
       
       if (!adminUser) {
-        // Create admin user if it doesn't exist
+        // Create admin user if it doesn't exist with password hash
+        const hashedPassword = await hashPassword("admin");
         adminUser = await storage.createUser({
           username: "admin",
-          password: "admin123", // In a real app, hash this password
+          password: hashedPassword,
           phone: "9876543210",
-          role: "admin"
+          role: UserRole.ADMIN,
         });
       }
       
-      // Return admin user for immediate login
-      res.status(200).json({ 
-        message: "Admin login successful", 
-        user: {
-          id: adminUser.id,
-          username: adminUser.username,
-          phone: adminUser.phone,
-          role: adminUser.role
-        } 
+      // Generate admin tokens with admin role
+      const accessToken = generateToken(adminUser);
+      const refreshToken = generateToken(adminUser, 'refresh');
+      
+      // SECURITY: Don't return the password hash
+      const { password: _, ...adminWithoutPassword } = adminUser;
+      
+      res.status(200).json({
+        user: adminWithoutPassword,
+        accessToken,
+        refreshToken,
+        message: "Admin login successful"
       });
     } catch (error) {
-      console.error("Error in dev admin login:", error);
+      console.error("Error in admin login:", error);
       res.status(500).json({ message: "Failed to login as admin" });
+    }
+  });
+  
+  // Verify admin token validity
+  authRouter.get("/verify-admin", authenticate, async (req: AuthenticatedRequest, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      // Check if user is an admin
+      const user = await storage.getUser(req.user.sub);
+      if (!user || user.role !== UserRole.ADMIN) {
+        return res.status(403).json({ message: "Forbidden - Admin access required" });
+      }
+      
+      res.status(200).json({ valid: true, message: "Admin token valid" });
+    } catch (error) {
+      console.error("Error verifying admin token:", error);
+      res.status(500).json({ message: "Failed to verify admin token" });
     }
   });
   

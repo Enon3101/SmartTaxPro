@@ -25,7 +25,11 @@ export function useAdminGuard() {
         }
 
         // Validate token on the server
-        const response = await apiRequest("GET", "/api/auth/verify-admin", undefined, {});
+        const response = await fetch("/api/auth/verify-admin", {
+          headers: {
+            "Authorization": `Bearer ${JSON.parse(adminAuth).token}`
+          }
+        });
 
         if (!response.ok) {
           // Token invalid or expired
@@ -62,7 +66,11 @@ function UserManagement() {
         const adminAuth = localStorage.getItem('adminAuth');
         if (!adminAuth) return;
 
-        const response = await apiRequest("GET", "/api/admin/users");
+        const response = await fetch("/api/admin/users", {
+          headers: {
+            "Authorization": `Bearer ${JSON.parse(adminAuth).token}`
+          }
+        });
 
         const data = await response.json();
         
@@ -160,7 +168,11 @@ function TaxFormManagement() {
         const adminAuth = localStorage.getItem('adminAuth');
         if (!adminAuth) return;
 
-        const response = await apiRequest("GET", "/api/admin/tax-forms");
+        const response = await fetch("/api/admin/tax-forms", {
+          headers: {
+            "Authorization": `Bearer ${JSON.parse(adminAuth).token}`
+          }
+        });
 
         const data = await response.json();
         
