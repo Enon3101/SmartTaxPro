@@ -920,12 +920,15 @@ const IncomeTaxCalculator = () => {
                             <span>Less: Standard Deduction U/s 16(ia)</span>
                             <span>{formatIndianCurrency(deductions.find(d => d.id === 'standard')?.value || 0)}</span>
                           </div>
-                          {deductions.find(d => d.id === 'hra')?.value > 0 && (
-                            <div className="flex justify-between text-gray-600">
-                              <span>Less: HRA Exemption U/s 10(13A)</span>
-                              <span>{formatIndianCurrency(deductions.find(d => d.id === 'hra')?.value || 0)}</span>
-                            </div>
-                          )}
+                          {(() => {
+                            const hraDeduction = deductions.find(d => d.id === 'hra');
+                            return hraDeduction && hraDeduction.value > 0 ? (
+                              <div className="flex justify-between text-gray-600">
+                                <span>Less: HRA Exemption U/s 10(13A)</span>
+                                <span>{formatIndianCurrency(hraDeduction.value)}</span>
+                              </div>
+                            ) : null;
+                          })()}
                         </div>
                       </div>
                     )}
@@ -968,14 +971,17 @@ const IncomeTaxCalculator = () => {
                           <span>{formatIndianCurrency(incomeSources.find(src => src.id === 'other_sources')?.value || 0)}</span>
                         </div>
                         {/* Add 80TTA deduction specifically for savings account interest */}
-                        {deductions.find(d => d.id === '80tta')?.value > 0 && (
-                          <div className="pl-4 mt-1">
-                            <div className="flex justify-between text-gray-600">
-                              <span>Interest from Savings Account</span>
-                              <span>{formatIndianCurrency(Math.min(deductions.find(d => d.id === '80tta')?.value || 0, 10000))}</span>
+                        {(() => {
+                          const ttaDeduction = deductions.find(d => d.id === '80tta');
+                          return ttaDeduction && ttaDeduction.value > 0 ? (
+                            <div className="pl-4 mt-1">
+                              <div className="flex justify-between text-gray-600">
+                                <span>Interest from Savings Account</span>
+                                <span>{formatIndianCurrency(Math.min(ttaDeduction.value, 10000))}</span>
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          ) : null;
+                        })()}
                       </div>
                     )}
                     

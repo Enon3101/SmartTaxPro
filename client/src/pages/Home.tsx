@@ -97,14 +97,14 @@ const Home = () => {
                 transition={{ duration: 0.5, delay: 0.6 }}
                 className="mb-6"
               >
-                <div className="flex items-center space-x-2">
-                  <CalendarDays className="h-5 w-5 text-blue-500" />
-                  <span className="font-medium">Assessment Year:</span>
+                <div className="inline-flex items-center px-4 py-2 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
+                  <CalendarDays className="h-5 w-5 text-blue-500 mr-2" />
+                  <span className="font-medium text-blue-700 mr-3">Assessment Year:</span>
                   <Select 
                     value={assessmentYear}
                     onValueChange={setAssessmentYear}
                   >
-                    <SelectTrigger className="w-36 bg-white">
+                    <SelectTrigger className="w-36 bg-white border-blue-300 focus:ring-blue-500">
                       <SelectValue placeholder="Select Year" />
                     </SelectTrigger>
                     <SelectContent>
@@ -114,9 +114,6 @@ const Home = () => {
                       <SelectItem value="2026-27">2026-27</SelectItem>
                     </SelectContent>
                   </Select>
-                  <div className="text-sm text-muted-foreground">
-                    Standard deduction: {assessmentYear === "2025-26" || assessmentYear === "2026-27" ? "₹75,000" : "₹50,000"}
-                  </div>
                 </div>
               </motion.div>
 
