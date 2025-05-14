@@ -1,16 +1,42 @@
-import type { Express } from "express";
+import type { Express, Request as ExpressRequest } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import express from "express";
 import path from "path";
 import fs from "fs";
+
+// Extended Express Request with authenticated user
+interface AuthenticatedRequest extends ExpressRequest {
+  user?: {
+    sub: string | number;
+    role: string;
+    type: string;
+    iat: number;
+  };
+}
 import { nanoid } from "nanoid";
 import { insertTaxFormSchema, insertDocumentSchema } from "@shared/schema";
 import { db } from "./db";
 import { sql } from "drizzle-orm";
-import { authenticate, authorize } from "./auth";
+import { 
+  authenticate, 
+  authorize, 
+  generateToken, 
+  rotateTokens, 
+  verifyPassword, 
+  generateOTP, 
+  verifyOTP, 
+  hashPassword,
+  UserRole
+} from "./auth";
 import { handleFileUpload, serveSecureFile, generatePresignedUrl } from "./fileUpload";
-import { validateInput, textInputSchema, sanitizeHtml } from "../client/src/lib/validation";
+import { 
+  validateInput, 
+  textInputSchema, 
+  sanitizeHtml, 
+  emailSchema, 
+  phoneSchema 
+} from "../client/src/lib/validation";
 
 // Upload folder is now configured in the fileUpload.ts module
 const uploadDir = path.resolve(process.cwd(), "uploads");
@@ -18,6 +44,20 @@ const uploadDir = path.resolve(process.cwd(), "uploads");
 export async function registerRoutes(app: Express): Promise<Server> {
   // Create a router for API routes
   const apiRouter = express.Router();
+  
+  // Add security middleware to the API router
+  apiRouter.use((req, res, next) => {
+    // SECURITY: Set additional security headers for API responses (Req E)
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    
+    // Log API access for audit purposes
+    const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    console.log(`API Access: ${req.method} ${req.path} from ${clientIP}`);
+    
+    next();
+  });
 
   // Tax Forms API
 
@@ -201,7 +241,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     authenticate, // SECURITY: Require authentication (Req B)
     authorize("upload_documents"), // SECURITY: Check authorization (Req B)
     ...handleFileUpload("file", "document"), // SECURITY: Secure file upload (Req H)
-    async (req, res) => {
+    async (req: AuthenticatedRequest, res) => {
       try {
         if (!req.file) {
           return res.status(400).json({ message: "No file uploaded" });
@@ -295,8 +335,216 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Set up the uploads directory to serve files
-  app.use("/uploads", express.static(uploadDir));
+  // SECURITY: Secure file serving with signed URLs (Req H)
+  apiRouter.get("/files/:filename", serveSecureFile);
+  
+  // Authentication endpoints
+  
+  // Register a new user
+  apiRouter.post("/auth/register", async (req, res) => {
+    try {
+      // SECURITY: Validate and sanitize input (Req A)
+      const { username, password, email, phone } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+      
+      // Validate email format
+      if (email) {
+        const emailResult = validateInput(emailSchema, email);
+        if (!emailResult.success) {
+          return res.status(400).json({ 
+            message: "Invalid email format", 
+            errors: emailResult.error.errors 
+          });
+        }
+      }
+      
+      // Validate phone format
+      if (phone) {
+        const phoneResult = validateInput(phoneSchema, phone);
+        if (!phoneResult.success) {
+          return res.status(400).json({ 
+            message: "Invalid phone number format", 
+            errors: phoneResult.error.errors 
+          });
+        }
+      }
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByUsername(username);
+      if (existingUser) {
+        // SECURITY: Don't reveal which field caused the conflict (Req E)
+        return res.status(409).json({ message: "User already exists" });
+      }
+      
+      // SECURITY: Hash password (Req C)
+      const hashedPassword = await hashPassword(password);
+      
+      // Create user
+      const newUser = await storage.createUser({
+        username,
+        password: hashedPassword,
+        email: email || null,
+        phone: phone || null,
+        role: UserRole.USER,
+      });
+      
+      // SECURITY: Don't return the password hash or sensitive data (Req E)
+      const { password: _, ...userWithoutPassword } = newUser;
+      
+      // Generate auth tokens
+      const accessToken = generateToken(newUser);
+      const refreshToken = generateToken(newUser, 'refresh');
+      
+      res.status(201).json({
+        user: userWithoutPassword,
+        accessToken,
+        refreshToken,
+      });
+    } catch (error) {
+      console.error("Error registering user:", error);
+      res.status(500).json({ message: "Failed to register user" });
+    }
+  });
+  
+  // Login endpoint
+  apiRouter.post("/auth/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+      
+      // Get user
+      const user = await storage.getUserByUsername(username);
+      
+      // SECURITY: Use same-time comparison to prevent timing attacks (Req B)
+      if (!user || !(await verifyPassword(password, user.password))) {
+        return res.status(401).json({ message: "Invalid username or password" });
+      }
+      
+      // SECURITY: Check if MFA is required (Req B)
+      if (user.mfaEnabled) {
+        // Generate OTP for multi-factor authentication
+        const otp = await generateOTP(user.phone);
+        
+        // TODO: In a real app, send this OTP via SMS
+        console.log(`OTP for ${user.username}: ${otp}`);
+        
+        return res.status(200).json({ 
+          message: "MFA required", 
+          requiresMfa: true,
+          userId: user.id,
+        });
+      }
+      
+      // Generate auth tokens
+      const accessToken = generateToken(user);
+      const refreshToken = generateToken(user, 'refresh');
+      
+      // SECURITY: Don't return the password hash (Req E)
+      const { password: _, ...userWithoutPassword } = user;
+      
+      res.status(200).json({
+        user: userWithoutPassword,
+        accessToken,
+        refreshToken,
+      });
+    } catch (error) {
+      console.error("Error logging in:", error);
+      res.status(500).json({ message: "Failed to login" });
+    }
+  });
+  
+  // Verify OTP for MFA
+  apiRouter.post("/auth/verify-otp", async (req, res) => {
+    try {
+      const { phone, otp } = req.body;
+      
+      if (!phone || !otp) {
+        return res.status(400).json({ message: "Phone number and OTP are required" });
+      }
+      
+      // Verify OTP
+      const isValid = await verifyOTP(phone, otp);
+      
+      if (!isValid) {
+        return res.status(401).json({ message: "Invalid or expired OTP" });
+      }
+      
+      // Get user
+      const user = await storage.getUserByPhone(phone);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Generate auth tokens
+      const accessToken = generateToken(user);
+      const refreshToken = generateToken(user, 'refresh');
+      
+      // SECURITY: Don't return the password hash (Req E)
+      const { password: _, ...userWithoutPassword } = user;
+      
+      res.status(200).json({
+        user: userWithoutPassword,
+        accessToken,
+        refreshToken,
+      });
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      res.status(500).json({ message: "Failed to verify OTP" });
+    }
+  });
+  
+  // Refresh access token
+  apiRouter.post("/auth/refresh-token", async (req, res) => {
+    try {
+      const { refreshToken } = req.body;
+      
+      if (!refreshToken) {
+        return res.status(400).json({ message: "Refresh token is required" });
+      }
+      
+      // SECURITY: Rotate tokens (Req D)
+      const tokens = rotateTokens(refreshToken);
+      
+      if (!tokens) {
+        return res.status(401).json({ message: "Invalid or expired refresh token" });
+      }
+      
+      res.status(200).json(tokens);
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      res.status(500).json({ message: "Failed to refresh token" });
+    }
+  });
+  
+  // Get current user
+  apiRouter.get("/auth/user", authenticate, async (req: AuthenticatedRequest, res) => {
+    try {
+      // User is already authenticated by middleware
+      const userId = req.user.sub;
+      
+      // Get user
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // SECURITY: Don't return the password hash (Req E)
+      const { password: _, ...userWithoutPassword } = user;
+      
+      res.status(200).json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error getting user:", error);
+      res.status(500).json({ message: "Failed to get user" });
+    }
+  });
 
   // Test endpoint for OpenRouter API
   apiRouter.get("/test-openrouter", async (req, res) => {
@@ -922,7 +1170,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api/admin", adminRouter);
   app.use("/api/admin/db", dbEditorRouter);
 
+  // Mount API router with /api prefix
+  app.use('/api', apiRouter);
+
+  // Create HTTP server
   const httpServer = createServer(app);
 
+  console.log("All routes registered successfully");
+  
   return httpServer;
 }
