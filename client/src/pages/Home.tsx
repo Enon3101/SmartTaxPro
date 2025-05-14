@@ -313,74 +313,74 @@ const Home = () => {
           <div className="logo-slider">
             <div className="logo-slide-track">
               {/* First set of logos */}
-              <div className="logo-slide">
-                <img src="/company-logos/tcs.png" alt="Tata Consultancy Services" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 1 } as React.CSSProperties}>
+                <img src="company-logos/tcs.png" alt="Tata Consultancy Services" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">Tata Consultancy Services</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/infosys.png" alt="Infosys" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 2 } as React.CSSProperties}>
+                <img src="company-logos/infosys.png" alt="Infosys" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">Infosys</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/reliance.png" alt="Reliance Industries" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 3 } as React.CSSProperties}>
+                <img src="company-logos/reliance.png" alt="Reliance Industries" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">Reliance Industries</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/wipro.png" alt="Wipro" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 4 } as React.CSSProperties}>
+                <img src="company-logos/wipro.png" alt="Wipro" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">Wipro</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/hdfc.png" alt="HDFC Bank" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 5 } as React.CSSProperties}>
+                <img src="company-logos/hdfc.png" alt="HDFC Bank" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">HDFC Bank</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/airtel.png" alt="Bharti Airtel" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 6 } as React.CSSProperties}>
+                <img src="company-logos/airtel.png" alt="Bharti Airtel" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">Bharti Airtel</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/itc.png" alt="ITC Limited" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 7 } as React.CSSProperties}>
+                <img src="company-logos/itc.png" alt="ITC Limited" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">ITC Limited</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/icici.png" alt="ICICI Bank" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 8 } as React.CSSProperties}>
+                <img src="company-logos/icici.png" alt="ICICI Bank" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">ICICI Bank</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/sbi.png" alt="State Bank of India" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 9 } as React.CSSProperties}>
+                <img src="company-logos/sbi.png" alt="State Bank of India" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">State Bank of India</span>
               </div>
               
               {/* Duplicate logos for infinite scroll effect */}
-              <div className="logo-slide">
-                <img src="/company-logos/tcs.png" alt="Tata Consultancy Services" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 10 } as React.CSSProperties}>
+                <img src="company-logos/tcs.png" alt="Tata Consultancy Services" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">Tata Consultancy Services</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/infosys.png" alt="Infosys" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 11 } as React.CSSProperties}>
+                <img src="company-logos/infosys.png" alt="Infosys" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">Infosys</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/reliance.png" alt="Reliance Industries" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 12 } as React.CSSProperties}>
+                <img src="company-logos/reliance.png" alt="Reliance Industries" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">Reliance Industries</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/wipro.png" alt="Wipro" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 13 } as React.CSSProperties}>
+                <img src="company-logos/wipro.png" alt="Wipro" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">Wipro</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/hdfc.png" alt="HDFC Bank" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 14 } as React.CSSProperties}>
+                <img src="company-logos/hdfc.png" alt="HDFC Bank" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">HDFC Bank</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/airtel.png" alt="Bharti Airtel" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 15 } as React.CSSProperties}>
+                <img src="company-logos/airtel.png" alt="Bharti Airtel" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">Bharti Airtel</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/itc.png" alt="ITC Limited" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 16 } as React.CSSProperties}>
+                <img src="company-logos/itc.png" alt="ITC Limited" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">ITC Limited</span>
               </div>
-              <div className="logo-slide">
-                <img src="/company-logos/icici.png" alt="ICICI Bank" className="logo-img" />
+              <div className="logo-slide" style={{ "--i": 17 } as React.CSSProperties}>
+                <img src="company-logos/icici.png" alt="ICICI Bank" className="logo-img" />
                 <span className="text-xs font-medium text-muted-foreground">ICICI Bank</span>
               </div>
             </div>

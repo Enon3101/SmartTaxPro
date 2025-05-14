@@ -9,22 +9,29 @@
     position: relative;
     overflow: hidden;
     padding: 30px 0;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   }
 
   .logo-slide-track {
     display: flex;
-    width: calc(200px * 18);
-    animation: logo-scroll 25s linear infinite;
+    width: calc(250px * 18);
+    animation: logo-scroll 30s linear infinite;
   }
 
   .logo-slide {
-    width: 200px;
-    height: 100px;
+    width: 250px;
+    height: 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin: 0 10px;
     transition: transform 0.3s;
+    animation: logo-pop 0.5s forwards;
+    animation-delay: calc(var(--i, 0) * 0.1s);
+    opacity: 0;
   }
 
   .logo-slide:hover {
@@ -32,12 +39,16 @@
   }
 
   .logo-img {
-    height: 50px;
+    height: 60px;
     width: auto;
     object-fit: contain;
     margin-bottom: 10px;
-    filter: grayscale(0%);
+    filter: grayscale(30%);
     transition: all 0.3s;
+  }
+
+  .logo-slide:hover .logo-img {
+    filter: grayscale(0%);
   }
 
   @keyframes logo-scroll {
@@ -45,7 +56,18 @@
       transform: translateX(0);
     }
     100% {
-      transform: translateX(calc(-200px * 9));
+      transform: translateX(calc(-250px * 9));
+    }
+  }
+
+  @keyframes logo-pop {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
     }
   }
 }
