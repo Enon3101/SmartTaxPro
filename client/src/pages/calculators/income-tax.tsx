@@ -898,93 +898,201 @@ const IncomeTaxCalculator = () => {
                 </div>
               ) : (
                 <div className="space-y-6">
-                  {/* Summary Card */}
+                  {/* Official Tax Computation Format */}
+                  <div className="border p-4 rounded-lg font-mono text-sm">
+                    <div className="text-center font-semibold mb-4 border-b pb-2">
+                      COMPUTATION OF TOTAL INCOME
+                    </div>
+                    
+                    {/* Income from Salary */}
+                    {incomeSources.find(src => src.id === 'salary' && src.value > 0) && (
+                      <div className="mb-4">
+                        <div className="flex justify-between font-semibold">
+                          <span>Salaries</span>
+                          <span>{formatIndianCurrency(incomeSources.find(src => src.id === 'salary')?.value || 0)}</span>
+                        </div>
+                        <div className="pl-4 mt-2">
+                          <div className="flex justify-between">
+                            <span>Salary</span>
+                            <span>{formatIndianCurrency(incomeSources.find(src => src.id === 'salary')?.value || 0)}</span>
+                          </div>
+                          <div className="flex justify-between text-gray-600">
+                            <span>Less: Standard Deduction U/s 16(ia)</span>
+                            <span>{formatIndianCurrency(deductions.find(d => d.id === 'standard')?.value || 0)}</span>
+                          </div>
+                          {deductions.find(d => d.id === 'hra')?.value > 0 && (
+                            <div className="flex justify-between text-gray-600">
+                              <span>Less: HRA Exemption U/s 10(13A)</span>
+                              <span>{formatIndianCurrency(deductions.find(d => d.id === 'hra')?.value || 0)}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Income from House Property */}
+                    {incomeSources.find(src => src.id === 'house_property' && src.value > 0) && (
+                      <div className="mb-4">
+                        <div className="flex justify-between font-semibold">
+                          <span>Income From House Property</span>
+                          <span>{formatIndianCurrency(incomeSources.find(src => src.id === 'house_property')?.value || 0)}</span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Income from Business */}
+                    {incomeSources.find(src => src.id === 'business' && src.value > 0) && (
+                      <div className="mb-4">
+                        <div className="flex justify-between font-semibold">
+                          <span>Profits And Gains From Business And Profession</span>
+                          <span>{formatIndianCurrency(incomeSources.find(src => src.id === 'business')?.value || 0)}</span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Income from Capital Gains */}
+                    {incomeSources.find(src => src.id === 'capital_gains' && src.value > 0) && (
+                      <div className="mb-4">
+                        <div className="flex justify-between font-semibold">
+                          <span>Capital Gains</span>
+                          <span>{formatIndianCurrency(incomeSources.find(src => src.id === 'capital_gains')?.value || 0)}</span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Income from Other Sources */}
+                    {incomeSources.find(src => src.id === 'other_sources' && src.value > 0) && (
+                      <div className="mb-4">
+                        <div className="flex justify-between font-semibold">
+                          <span>Income From Other Sources</span>
+                          <span>{formatIndianCurrency(incomeSources.find(src => src.id === 'other_sources')?.value || 0)}</span>
+                        </div>
+                        {/* Add 80TTA deduction specifically for savings account interest */}
+                        {deductions.find(d => d.id === '80tta')?.value > 0 && (
+                          <div className="pl-4 mt-1">
+                            <div className="flex justify-between text-gray-600">
+                              <span>Interest from Savings Account</span>
+                              <span>{formatIndianCurrency(Math.min(deductions.find(d => d.id === '80tta')?.value || 0, 10000))}</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* Gross Total Income */}
+                    <div className="flex justify-between font-semibold mt-4 border-t pt-2">
+                      <span>Gross Total Income</span>
+                      <span>{formatIndianCurrency(taxOutput.totalIncome)}</span>
+                    </div>
+                    
+                    {/* Deductions */}
+                    {regime === 'old' && taxOutput.totalDeductions > 0 && (
+                      <div className="mt-4">
+                        <div className="font-semibold">Less Deductions Under Chapter-VIA</div>
+                        <div className="pl-4 mt-2">
+                          {/* Show active deductions */}
+                          {deductions.filter(d => d.value > 0 && !['standard', 'hra', 'lta'].includes(d.id)).map((deduction) => (
+                            <div key={deduction.id} className="flex justify-between">
+                              <span>{deduction.name}</span>
+                              <span>{formatIndianCurrency(deduction.value)}</span>
+                            </div>
+                          ))}
+                          <div className="flex justify-between font-semibold border-t mt-2 pt-1">
+                            <span>Total Deductions</span>
+                            <span>{formatIndianCurrency(taxOutput.totalDeductions)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Total Income */}
+                    <div className="flex justify-between font-semibold mt-4 border-t pt-2">
+                      <span>Total Income</span>
+                      <span>{formatIndianCurrency(taxOutput.taxableIncome)}</span>
+                    </div>
+                    
+                    <div className="flex justify-between text-gray-600">
+                      <span>Total Income Rounded Off U/s 288A</span>
+                      <span>{formatIndianCurrency(Math.round(taxOutput.taxableIncome / 10) * 10)}</span>
+                    </div>
+                    
+                    {/* Tax Computation Section */}
+                    <div className="text-center font-semibold mt-6 mb-4 border-t border-b py-2">
+                      COMPUTATION OF TAX ON TOTAL INCOME
+                    </div>
+                    
+                    {/* Show slabwise tax breakdown */}
+                    {taxOutput.slabwiseBreakup.map((item, index) => (
+                      <div key={index} className="flex justify-between">
+                        <span>
+                          {item.slab.incomeFrom === 0 
+                            ? (item.slab.taxRate === 0 ? `Tax On Rs. ${item.slab.incomeTo?.toLocaleString('en-IN')}` : `Tax On Rs. ${Math.min(taxOutput.taxableIncome, (item.slab.incomeTo || 0)).toLocaleString('en-IN')}`)
+                            : `Tax On Rs. ${(Math.min(taxOutput.taxableIncome, (item.slab.incomeTo || taxOutput.taxableIncome)) - item.slab.incomeFrom).toLocaleString('en-IN')} (${Math.min(taxOutput.taxableIncome, (item.slab.incomeTo || taxOutput.taxableIncome)).toLocaleString('en-IN')}-${item.slab.incomeFrom.toLocaleString('en-IN')}) @ ${item.slab.taxRate}%`
+                          }
+                        </span>
+                        <span>
+                          {item.slab.taxRate === 0 
+                            ? 'Nil' 
+                            : formatIndianCurrency(item.tax)
+                          }
+                        </span>
+                      </div>
+                    ))}
+                    
+                    {/* Tax Amount */}
+                    <div className="flex justify-between font-semibold mt-2 pt-1">
+                      <span>Tax On Rs. {taxOutput.taxableIncome.toLocaleString('en-IN')}</span>
+                      <span>{formatIndianCurrency(taxOutput.taxAmount)}</span>
+                    </div>
+                    
+                    {/* Surcharge if applicable */}
+                    {taxOutput.surchargeAmount > 0 && (
+                      <div className="flex justify-between">
+                        <span>Add: Surcharge</span>
+                        <span>{formatIndianCurrency(taxOutput.surchargeAmount)}</span>
+                      </div>
+                    )}
+                    
+                    {/* Cess */}
+                    <div className="flex justify-between">
+                      <span>Add: Health & Education Cess @ 4%</span>
+                      <span>{formatIndianCurrency(taxOutput.cessAmount)}</span>
+                    </div>
+                    
+                    {/* Total Tax Liability */}
+                    <div className="flex justify-between font-semibold mt-2 pt-1 border-t">
+                      <span>Total Tax Liability</span>
+                      <span>{formatIndianCurrency(taxOutput.totalTaxPayable)}</span>
+                    </div>
+                    
+                    {/* Rounded Tax U/s 288B */}
+                    <div className="flex justify-between font-semibold mt-4 mb-4">
+                      <span>Tax Rounded Off U/s 288B</span>
+                      <span>{formatIndianCurrency(taxOutput.totalTaxPayable)}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Tax Summary Card */}
                   <div className="bg-muted p-4 rounded-lg">
+                    <h3 className="font-medium mb-2">Tax Summary</h3>
                     <div className="space-y-3">
                       <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Total Income</span>
+                        <span className="text-sm">Total Income</span>
                         <span className="font-medium">{formatIndianCurrency(taxOutput.totalIncome)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Total Deductions</span>
-                        <span className="font-medium">{formatIndianCurrency(taxOutput.totalDeductions)}</span>
-                      </div>
-                      <Separator />
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Taxable Income</span>
+                        <span className="text-sm">Taxable Income</span>
                         <span className="font-medium">{formatIndianCurrency(taxOutput.taxableIncome)}</span>
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Tax Breakup */}
-                  <div>
-                    <h3 className="font-medium mb-2">Tax Breakup</h3>
-                    <div className="space-y-2 mb-4">
                       <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Base Tax</span>
-                        <span className="font-medium">{formatIndianCurrency(taxOutput.taxAmount)}</span>
+                        <span className="text-sm">Total Tax</span>
+                        <span className="font-medium">{formatIndianCurrency(taxOutput.totalTaxPayable)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Surcharge</span>
-                        <span className="font-medium">{formatIndianCurrency(taxOutput.surchargeAmount)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-muted-foreground">Education Cess</span>
-                        <span className="font-medium">{formatIndianCurrency(taxOutput.cessAmount)}</span>
+                        <span className="text-sm">Effective Tax Rate</span>
+                        <span className="font-medium">{taxOutput.effectiveTaxRate.toFixed(2)}%</span>
                       </div>
                     </div>
-                    <div className="flex justify-between p-3 bg-green-50 border border-green-100 rounded-md">
-                      <span className="font-semibold">Total Tax Payable</span>
-                      <span className="font-bold text-green-700">{formatIndianCurrency(taxOutput.totalTaxPayable)}</span>
-                    </div>
-                    <div className="flex justify-between mt-2">
-                      <span className="text-sm text-muted-foreground">Effective Tax Rate</span>
-                      <span className="font-medium">{taxOutput.effectiveTaxRate.toFixed(2)}%</span>
-                    </div>
-                  </div>
-
-                  {/* Slabwise Breakup */}
-                  <div>
-                    <h3 className="font-medium mb-2">Slabwise Tax Breakup</h3>
-                    <ScrollArea className="h-[200px] rounded-md border">
-                      <div className="p-4">
-                        {taxOutput.slabwiseBreakup.length > 0 ? (
-                          <Table>
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead>Income Range</TableHead>
-                                <TableHead>Rate</TableHead>
-                                <TableHead className="text-right">Tax</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {taxOutput.slabwiseBreakup.map((item, index) => (
-                                <TableRow key={index}>
-                                  <TableCell className="font-medium">
-                                    {item.slab.incomeFrom === 0 
-                                      ? (item.slab.incomeTo === null ? 'Any income' : `Up to ${formatIndianCurrency(item.slab.incomeTo)}`) 
-                                      : (item.slab.incomeTo === null 
-                                          ? `Above ${formatIndianCurrency(item.slab.incomeFrom)}` 
-                                          : `${formatIndianCurrency(item.slab.incomeFrom)} - ${formatIndianCurrency(item.slab.incomeTo)}`
-                                        )
-                                    }
-                                  </TableCell>
-                                  <TableCell>{item.slab.taxRate}%</TableCell>
-                                  <TableCell className="text-right">
-                                    {formatIndianCurrency(item.tax)}
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">
-                            No tax liability in any slab
-                          </p>
-                        )}
-                      </div>
-                    </ScrollArea>
                   </div>
 
                   {/* Actions */}
