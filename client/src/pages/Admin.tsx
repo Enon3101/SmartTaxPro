@@ -456,7 +456,7 @@ export default function Admin() {
   // Logout function
   const handleLogout = () => {
     localStorage.removeItem('adminAuth');
-    navigate('/admin-login');
+    setLocation('/admin-login');
   };
   
   if (isAdmin === null) {

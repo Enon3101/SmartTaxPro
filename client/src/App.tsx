@@ -22,6 +22,7 @@ import FilingComplete from "@/pages/FilingComplete";
 import FilingRequirements from "@/pages/FilingRequirements";
 import ItrWizard from "@/pages/ItrWizard";
 import Admin from "@/pages/Admin";
+import AdminLogin from "@/pages/AdminLogin";
 import BlogPost from "@/pages/BlogPost";
 import BlogAdmin from "@/pages/BlogAdmin";
 import DatabaseEditor from "@/pages/DatabaseEditor";
@@ -174,6 +175,7 @@ function Router() {
       <Route path="/filing-requirements" component={FilingRequirements} />
       <Route path="/itr-wizard" component={ItrWizard} />
       <Route path="/admin" component={Admin} />
+      <Route path="/admin-login" component={AdminLogin} />
       <Route path="/blog-admin">{() => <BlogAdmin />}</Route>
       <Route path="/blog-admin/new">{() => <BlogAdmin mode="create" />}</Route>
       <Route path="/blog-admin/edit/:id">
