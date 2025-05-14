@@ -2,43 +2,18 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import express from "express";
-import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { nanoid } from "nanoid";
 import { insertTaxFormSchema, insertDocumentSchema } from "@shared/schema";
 import { db } from "./db";
 import { sql } from "drizzle-orm";
+import { authenticate, authorize } from "./auth";
+import { handleFileUpload, serveSecureFile, generatePresignedUrl } from "./fileUpload";
+import { validateInput, textInputSchema, sanitizeHtml } from "../client/src/lib/validation";
 
-// Configure multer for file uploads
+// Upload folder is now configured in the fileUpload.ts module
 const uploadDir = path.resolve(process.cwd(), "uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, uploadDir);
-    },
-    filename: function (req, file, cb) {
-      const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-      const ext = path.extname(file.originalname);
-      cb(null, file.fieldname + "-" + uniqueSuffix + ext);
-    },
-  }),
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB
-  },
-  fileFilter: function (req, file, cb) {
-    const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
-    if (allowedTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Invalid file type. Only PDF, JPEG, and PNG are allowed.") as any);
-    }
-  },
-});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Create a router for API routes
@@ -220,44 +195,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Documents API
 
-  // Upload a document
-  apiRouter.post("/tax-forms/:id/documents", upload.single("file"), async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ message: "No file uploaded" });
+  // Upload a document with security measures
+  apiRouter.post(
+    "/tax-forms/:id/documents", 
+    authenticate, // SECURITY: Require authentication (Req B)
+    authorize("upload_documents"), // SECURITY: Check authorization (Req B)
+    ...handleFileUpload("file", "document"), // SECURITY: Secure file upload (Req H)
+    async (req, res) => {
+      try {
+        if (!req.file) {
+          return res.status(400).json({ message: "No file uploaded" });
+        }
+        
+        // SECURITY: Sanitize and validate input (Req A)
+        const documentType = validateInput(
+          textInputSchema(1, 50, "Document Type"),
+          req.body.documentType || "Other"
+        );
+        
+        if (!documentType.success) {
+          return res.status(400).json({ 
+            message: "Invalid document type", 
+            errors: documentType.error.errors 
+          });
+        }
+        
+        const taxForm = await storage.getTaxFormById(req.params.id);
+        if (!taxForm) {
+          return res.status(404).json({ message: "Tax form not found" });
+        }
+        
+        // SECURITY: Verify ownership of tax form (Req B)
+        if (req.user && taxForm.userId !== req.user.sub) {
+          return res.status(403).json({ message: "You don't have permission to add documents to this tax form" });
+        }
+        
+        const { filename, originalname, mimetype, size } = req.file;
+        
+        // SECURITY: Generate a secure URL with expiration (Req H)
+        const secureUrl = generatePresignedUrl(`/uploads/${filename}`, 60); // 60 minute expiry
+        
+        const documentData = {
+          id: nanoid(),
+          taxFormId: req.params.id,
+          name: sanitizeHtml(originalname), // SECURITY: Sanitize filename (Req A)
+          type: mimetype,
+          size: size,
+          documentType: documentType.data,
+          url: secureUrl,
+        };
+        
+        // Validate with Zod schema
+        const validatedData = insertDocumentSchema.parse(documentData);
+        
+        const document = await storage.createDocument(validatedData);
+        res.status(201).json(document);
+      } catch (error) {
+        console.error("Error uploading document:", error);
+        res.status(500).json({ message: "Failed to upload document" });
       }
-      
-      const taxForm = await storage.getTaxFormById(req.params.id);
-      if (!taxForm) {
-        return res.status(404).json({ message: "Tax form not found" });
-      }
-      
-      const { filename, originalname, mimetype, size } = req.file;
-      const documentType = req.body.documentType || "Other";
-      
-      // Create a path that can be used to serve the file
-      const url = `/uploads/${filename}`;
-      
-      const documentData = {
-        id: nanoid(),
-        taxFormId: req.params.id,
-        name: originalname,
-        type: mimetype,
-        size: size,
-        documentType: documentType,
-        url: url,
-      };
-      
-      // Validate with Zod schema
-      const validatedData = insertDocumentSchema.parse(documentData);
-      
-      const document = await storage.createDocument(validatedData);
-      res.status(201).json(document);
-    } catch (error) {
-      console.error("Error uploading document:", error);
-      res.status(500).json({ message: "Failed to upload document" });
     }
-  });
+  );
 
   // Get all documents for a tax form
   apiRouter.get("/tax-forms/:id/documents", async (req, res) => {

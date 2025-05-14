@@ -1,10 +1,25 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { setupSecurityMiddleware } from "./securityMiddleware";
+import path from 'path';
+import fs from 'fs';
+
+// Create uploads directory if it doesn't exist
+const uploadDir = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+  log('Created uploads directory');
+}
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+// Apply security middleware
+setupSecurityMiddleware(app);
+
+// Body parsers
+app.use(express.json({ limit: '1mb' })); // Limit JSON payload size
+app.use(express.urlencoded({ extended: false, limit: '1mb' })); // Limit form payload size
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -41,10 +56,24 @@ app.use((req, res, next) => {
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
-    throw err;
+    
+    // SECURITY: Don't expose detailed error messages in production (Req E)
+    const isProduction = process.env.NODE_ENV === 'production';
+    const message = isProduction && status === 500 
+      ? "Internal Server Error" 
+      : err.message || "Internal Server Error";
+    
+    // SECURITY: Don't include stack traces in response (Req E)
+    const response = { message };
+    
+    log(`ERROR [${status}]: ${err.message}`);
+    
+    res.status(status).json(response);
+    
+    // Don't throw in production to prevent crashing the server
+    if (!isProduction) {
+      throw err;
+    }
   });
 
   // importantly only setup vite in development and after
