@@ -953,132 +953,290 @@ export default function StartFiling() {
                 Select all sources of income that apply to you for the assessment year {assessmentYear}.
               </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {showSalaryOption && (
-                  <div className="flex items-start space-x-2">
-                    <input 
-                      type="checkbox" 
-                      id="income-salary"
-                      className="mt-1"
-                      checked={formData.incomeSource.includes("salary")}
-                      onChange={(e) => {
-                        const updatedSources = e.target.checked 
-                          ? [...formData.incomeSource, "salary"]
-                          : formData.incomeSource.filter(source => source !== "salary");
-                        setFormData({...formData, incomeSource: updatedSources});
-                      }}
-                    />
-                    <div>
-                      <label htmlFor="income-salary" className="text-base font-medium cursor-pointer">
+                  <div 
+                    className={`border p-4 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-24 flex items-center ${
+                      formData.incomeSource.includes("salary") 
+                        ? "border-blue-500 bg-blue-50" 
+                        : "border-gray-200 hover:border-blue-300"
+                    }`}
+                    onClick={() => {
+                      const updatedSources = formData.incomeSource.includes("salary")
+                        ? formData.incomeSource.filter(source => source !== "salary")
+                        : [...formData.incomeSource, "salary"];
+                      setFormData({...formData, incomeSource: updatedSources});
+                    }}
+                  >
+                    <div className="relative w-6 h-6 flex-shrink-0 mr-3">
+                      <input 
+                        type="checkbox" 
+                        id="income-salary"
+                        className="sr-only"
+                        checked={formData.incomeSource.includes("salary")}
+                        onChange={() => {}} // Handled by parent div click
+                      />
+                      <div className={`w-5 h-5 border rounded flex items-center justify-center ${
+                        formData.incomeSource.includes("salary") 
+                          ? "border-blue-500 bg-blue-500" 
+                          : "border-gray-300"
+                      }`}>
+                        {formData.incomeSource.includes("salary") && (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex-grow">
+                      <h4 className={`text-base font-medium ${formData.incomeSource.includes("salary") ? "text-blue-700" : "text-gray-800"}`}>
                         Salary Income
-                      </label>
-                      <p className="text-gray-500 text-sm">Income from employment or pension</p>
+                      </h4>
+                      <p className={`text-sm ${formData.incomeSource.includes("salary") ? "text-blue-600" : "text-gray-500"}`}>Income from employment or pension</p>
+                    </div>
+                    <div className={`flex-shrink-0 ml-2 p-2 rounded-full ${formData.incomeSource.includes("salary") ? "bg-blue-100" : "bg-gray-100"}`}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("salary") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                      </svg>
                     </div>
                   </div>
                 )}
                 
-                <div className="flex items-start space-x-2">
-                  <input 
-                    type="checkbox" 
-                    id="income-house-property"
-                    className="mt-1"
-                    checked={formData.incomeSource.includes("house-property")}
-                    onChange={(e) => {
-                      const updatedSources = e.target.checked 
-                        ? [...formData.incomeSource, "house-property"]
-                        : formData.incomeSource.filter(source => source !== "house-property");
-                      setFormData({...formData, incomeSource: updatedSources});
-                    }}
-                  />
-                  <div>
-                    <label htmlFor="income-house-property" className="text-base font-medium cursor-pointer">
+                <div 
+                  className={`border p-4 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-24 flex items-center ${
+                    formData.incomeSource.includes("house-property") 
+                      ? "border-blue-500 bg-blue-50" 
+                      : "border-gray-200 hover:border-blue-300"
+                  }`}
+                  onClick={() => {
+                    const updatedSources = formData.incomeSource.includes("house-property")
+                      ? formData.incomeSource.filter(source => source !== "house-property")
+                      : [...formData.incomeSource, "house-property"];
+                    setFormData({...formData, incomeSource: updatedSources});
+                  }}
+                >
+                  <div className="relative w-6 h-6 flex-shrink-0 mr-3">
+                    <input 
+                      type="checkbox" 
+                      id="income-house-property"
+                      className="sr-only"
+                      checked={formData.incomeSource.includes("house-property")}
+                      onChange={() => {}} // Handled by parent div click
+                    />
+                    <div className={`w-5 h-5 border rounded flex items-center justify-center ${
+                      formData.incomeSource.includes("house-property") 
+                        ? "border-blue-500 bg-blue-500" 
+                        : "border-gray-300"
+                    }`}>
+                      {formData.incomeSource.includes("house-property") && (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex-grow">
+                    <h4 className={`text-base font-medium ${formData.incomeSource.includes("house-property") ? "text-blue-700" : "text-gray-800"}`}>
                       House Property Income
-                    </label>
-                    <p className="text-gray-500 text-sm">Rental income or interest on housing loan</p>
+                    </h4>
+                    <p className={`text-sm ${formData.incomeSource.includes("house-property") ? "text-blue-600" : "text-gray-500"}`}>Rental income or interest on housing loan</p>
+                  </div>
+                  <div className={`flex-shrink-0 ml-2 p-2 rounded-full ${formData.incomeSource.includes("house-property") ? "bg-blue-100" : "bg-gray-100"}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("house-property") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
                   </div>
                 </div>
                 
-                <div className="flex items-start space-x-2">
-                  <input 
-                    type="checkbox" 
-                    id="income-capital-gains"
-                    className="mt-1"
-                    checked={formData.incomeSource.includes("capital-gains")}
-                    onChange={(e) => {
-                      const updatedSources = e.target.checked 
-                        ? [...formData.incomeSource, "capital-gains"]
-                        : formData.incomeSource.filter(source => source !== "capital-gains");
-                      setFormData({...formData, incomeSource: updatedSources});
-                    }}
-                  />
-                  <div>
-                    <label htmlFor="income-capital-gains" className="text-base font-medium cursor-pointer">
+                <div 
+                  className={`border p-4 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-24 flex items-center ${
+                    formData.incomeSource.includes("capital-gains") 
+                      ? "border-blue-500 bg-blue-50" 
+                      : "border-gray-200 hover:border-blue-300"
+                  }`}
+                  onClick={() => {
+                    const updatedSources = formData.incomeSource.includes("capital-gains")
+                      ? formData.incomeSource.filter(source => source !== "capital-gains")
+                      : [...formData.incomeSource, "capital-gains"];
+                    setFormData({...formData, incomeSource: updatedSources});
+                  }}
+                >
+                  <div className="relative w-6 h-6 flex-shrink-0 mr-3">
+                    <input 
+                      type="checkbox" 
+                      id="income-capital-gains"
+                      className="sr-only"
+                      checked={formData.incomeSource.includes("capital-gains")}
+                      onChange={() => {}} // Handled by parent div click
+                    />
+                    <div className={`w-5 h-5 border rounded flex items-center justify-center ${
+                      formData.incomeSource.includes("capital-gains") 
+                        ? "border-blue-500 bg-blue-500" 
+                        : "border-gray-300"
+                    }`}>
+                      {formData.incomeSource.includes("capital-gains") && (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex-grow">
+                    <h4 className={`text-base font-medium ${formData.incomeSource.includes("capital-gains") ? "text-blue-700" : "text-gray-800"}`}>
                       Capital Gains
-                    </label>
-                    <p className="text-gray-500 text-sm">Profit from sale of assets, shares, or property</p>
+                    </h4>
+                    <p className={`text-sm ${formData.incomeSource.includes("capital-gains") ? "text-blue-600" : "text-gray-500"}`}>Profit from sale of assets, shares, or property</p>
+                  </div>
+                  <div className={`flex-shrink-0 ml-2 p-2 rounded-full ${formData.incomeSource.includes("capital-gains") ? "bg-blue-100" : "bg-gray-100"}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("capital-gains") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                      <polyline points="17 6 23 6 23 12"></polyline>
+                    </svg>
                   </div>
                 </div>
                 
-                <div className="flex items-start space-x-2">
-                  <input 
-                    type="checkbox" 
-                    id="income-business"
-                    className="mt-1"
-                    checked={formData.incomeSource.includes("business")}
-                    onChange={(e) => {
-                      const updatedSources = e.target.checked 
-                        ? [...formData.incomeSource, "business"]
-                        : formData.incomeSource.filter(source => source !== "business");
-                      setFormData({...formData, incomeSource: updatedSources});
-                    }}
-                  />
-                  <div>
-                    <label htmlFor="income-business" className="text-base font-medium cursor-pointer">
+                <div 
+                  className={`border p-4 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-24 flex items-center ${
+                    formData.incomeSource.includes("business") 
+                      ? "border-blue-500 bg-blue-50" 
+                      : "border-gray-200 hover:border-blue-300"
+                  }`}
+                  onClick={() => {
+                    const updatedSources = formData.incomeSource.includes("business")
+                      ? formData.incomeSource.filter(source => source !== "business")
+                      : [...formData.incomeSource, "business"];
+                    setFormData({...formData, incomeSource: updatedSources});
+                  }}
+                >
+                  <div className="relative w-6 h-6 flex-shrink-0 mr-3">
+                    <input 
+                      type="checkbox" 
+                      id="income-business"
+                      className="sr-only"
+                      checked={formData.incomeSource.includes("business")}
+                      onChange={() => {}} // Handled by parent div click
+                    />
+                    <div className={`w-5 h-5 border rounded flex items-center justify-center ${
+                      formData.incomeSource.includes("business") 
+                        ? "border-blue-500 bg-blue-500" 
+                        : "border-gray-300"
+                    }`}>
+                      {formData.incomeSource.includes("business") && (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex-grow">
+                    <h4 className={`text-base font-medium ${formData.incomeSource.includes("business") ? "text-blue-700" : "text-gray-800"}`}>
                       Business Income
-                    </label>
-                    <p className="text-gray-500 text-sm">Income from business or profession</p>
+                    </h4>
+                    <p className={`text-sm ${formData.incomeSource.includes("business") ? "text-blue-600" : "text-gray-500"}`}>Income from business or profession</p>
+                  </div>
+                  <div className={`flex-shrink-0 ml-2 p-2 rounded-full ${formData.incomeSource.includes("business") ? "bg-blue-100" : "bg-gray-100"}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("business") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
                   </div>
                 </div>
                 
-                <div className="flex items-start space-x-2">
-                  <input 
-                    type="checkbox" 
-                    id="income-interest"
-                    className="mt-1"
-                    checked={formData.incomeSource.includes("interest")}
-                    onChange={(e) => {
-                      const updatedSources = e.target.checked 
-                        ? [...formData.incomeSource, "interest"]
-                        : formData.incomeSource.filter(source => source !== "interest");
-                      setFormData({...formData, incomeSource: updatedSources});
-                    }}
-                  />
-                  <div>
-                    <label htmlFor="income-interest" className="text-base font-medium cursor-pointer">
+                <div 
+                  className={`border p-4 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-24 flex items-center ${
+                    formData.incomeSource.includes("interest") 
+                      ? "border-blue-500 bg-blue-50" 
+                      : "border-gray-200 hover:border-blue-300"
+                  }`}
+                  onClick={() => {
+                    const updatedSources = formData.incomeSource.includes("interest")
+                      ? formData.incomeSource.filter(source => source !== "interest")
+                      : [...formData.incomeSource, "interest"];
+                    setFormData({...formData, incomeSource: updatedSources});
+                  }}
+                >
+                  <div className="relative w-6 h-6 flex-shrink-0 mr-3">
+                    <input 
+                      type="checkbox" 
+                      id="income-interest"
+                      className="sr-only"
+                      checked={formData.incomeSource.includes("interest")}
+                      onChange={() => {}} // Handled by parent div click
+                    />
+                    <div className={`w-5 h-5 border rounded flex items-center justify-center ${
+                      formData.incomeSource.includes("interest") 
+                        ? "border-blue-500 bg-blue-500" 
+                        : "border-gray-300"
+                    }`}>
+                      {formData.incomeSource.includes("interest") && (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex-grow">
+                    <h4 className={`text-base font-medium ${formData.incomeSource.includes("interest") ? "text-blue-700" : "text-gray-800"}`}>
                       Interest Income
-                    </label>
-                    <p className="text-gray-500 text-sm">Interest from savings, deposits, or bonds</p>
+                    </h4>
+                    <p className={`text-sm ${formData.incomeSource.includes("interest") ? "text-blue-600" : "text-gray-500"}`}>Interest from savings, deposits, or bonds</p>
+                  </div>
+                  <div className={`flex-shrink-0 ml-2 p-2 rounded-full ${formData.incomeSource.includes("interest") ? "bg-blue-100" : "bg-gray-100"}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("interest") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="8" x2="12" y2="12"></line>
+                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
                   </div>
                 </div>
                 
-                <div className="flex items-start space-x-2">
-                  <input 
-                    type="checkbox" 
-                    id="income-other"
-                    className="mt-1"
-                    checked={formData.incomeSource.includes("other")}
-                    onChange={(e) => {
-                      const updatedSources = e.target.checked 
-                        ? [...formData.incomeSource, "other"]
-                        : formData.incomeSource.filter(source => source !== "other");
-                      setFormData({...formData, incomeSource: updatedSources});
-                    }}
-                  />
-                  <div>
-                    <label htmlFor="income-other" className="text-base font-medium cursor-pointer">
+                <div 
+                  className={`border p-4 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-24 flex items-center ${
+                    formData.incomeSource.includes("other") 
+                      ? "border-blue-500 bg-blue-50" 
+                      : "border-gray-200 hover:border-blue-300"
+                  }`}
+                  onClick={() => {
+                    const updatedSources = formData.incomeSource.includes("other")
+                      ? formData.incomeSource.filter(source => source !== "other")
+                      : [...formData.incomeSource, "other"];
+                    setFormData({...formData, incomeSource: updatedSources});
+                  }}
+                >
+                  <div className="relative w-6 h-6 flex-shrink-0 mr-3">
+                    <input 
+                      type="checkbox" 
+                      id="income-other"
+                      className="sr-only"
+                      checked={formData.incomeSource.includes("other")}
+                      onChange={() => {}} // Handled by parent div click
+                    />
+                    <div className={`w-5 h-5 border rounded flex items-center justify-center ${
+                      formData.incomeSource.includes("other") 
+                        ? "border-blue-500 bg-blue-500" 
+                        : "border-gray-300"
+                    }`}>
+                      {formData.incomeSource.includes("other") && (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex-grow">
+                    <h4 className={`text-base font-medium ${formData.incomeSource.includes("other") ? "text-blue-700" : "text-gray-800"}`}>
                       Other Income
-                    </label>
-                    <p className="text-gray-500 text-sm">Gifts, lottery, gambling, or other sources</p>
+                    </h4>
+                    <p className={`text-sm ${formData.incomeSource.includes("other") ? "text-blue-600" : "text-gray-500"}`}>Gifts, lottery, gambling, or other sources</p>
+                  </div>
+                  <div className={`flex-shrink-0 ml-2 p-2 rounded-full ${formData.incomeSource.includes("other") ? "bg-blue-100" : "bg-gray-100"}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("other") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                      <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                      <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                    </svg>
                   </div>
                 </div>
               </div>
