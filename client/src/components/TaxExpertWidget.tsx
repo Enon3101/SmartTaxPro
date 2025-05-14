@@ -70,11 +70,12 @@ const TaxExpertWidget = () => {
       timestamp: new Date()
     };
     
-    setMessages(prev => [...prev, userMessage]);
     setInputValue("");
     setIsLoading(true);
     
     try {
+      setMessages(prev => [...prev, userMessage]);
+      
       const response = await apiRequest("/api/tax-expert-chat", 
         { method: "POST" },
         { message: userMessage.content }

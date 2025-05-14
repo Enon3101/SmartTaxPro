@@ -310,7 +310,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Fetch from Google Gemini API
-      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent", {
+      const response = await fetch("https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -336,25 +336,7 @@ User question: ${message}`
             topK: 40,
             topP: 0.95,
             maxOutputTokens: 800,
-          },
-          safetySettings: [
-            {
-              category: "HARM_CATEGORY_HARASSMENT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
-            },
-            {
-              category: "HARM_CATEGORY_HATE_SPEECH",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
-            },
-            {
-              category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
-            },
-            {
-              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
-            }
-          ]
+          }
         })
       });
 
@@ -363,12 +345,31 @@ User question: ${message}`
       // Handle response format from Gemini API
       if (data.error) {
         console.error("Gemini API error:", data.error);
-        return res.status(500).json({ error: "Error getting response from tax expert" });
+        return res.status(500).json({ 
+          error: "Error getting response from tax expert", 
+          details: JSON.stringify(data.error)
+        });
       }
+
+      console.log("Gemini API response format:", JSON.stringify(data).substring(0, 200) + "...");
 
       let responseText = "";
       try {
-        responseText = data.candidates[0].content.parts[0].text;
+        // Handle different response formats
+        if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+          // v1 format
+          responseText = data.candidates[0].content.parts[0].text;
+        } else if (data.response && data.response.candidates && data.response.candidates[0]) {
+          // Alternative format
+          responseText = data.response.candidates[0].content.parts[0].text;
+        } else if (data.content && data.content.parts) {
+          // Another possible format
+          responseText = data.content.parts[0].text;
+        } else {
+          // If we can't find the text in expected locations, return the raw data
+          responseText = "I couldn't format my response properly. Here's what I know: " + 
+                         JSON.stringify(data).substring(0, 500);
+        }
       } catch (e) {
         console.error("Error parsing Gemini response:", e);
         console.error("Gemini response:", JSON.stringify(data));

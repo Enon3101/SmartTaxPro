@@ -78,11 +78,11 @@ const TaxExpert = () => {
       timestamp: new Date()
     };
     
-    setMessages(prev => [...prev, userMessage]);
     setInputValue("");
     setIsLoading(true);
     
     try {
+      setMessages(prev => [...prev, userMessage]);
       const response = await apiRequest("/api/tax-expert-chat", 
         { method: "POST" },
         { message: userMessage.content }
@@ -111,10 +111,17 @@ const TaxExpert = () => {
         variant: "destructive"
       });
       
+      let errorMsg = "Sorry, I'm having trouble connecting to my knowledge base right now. Please try again later.";
+      
+      if (error instanceof Error && error.message) {
+        console.log("Detailed error:", error.message);
+        errorMsg += "\n\nError details: " + error.message.substring(0, 200);
+      }
+      
       setMessages(prev => [
         ...prev, 
         {
-          content: "Sorry, I'm having trouble connecting to my knowledge base right now. Please try again later.",
+          content: errorMsg,
           sender: "bot",
           timestamp: new Date()
         }
