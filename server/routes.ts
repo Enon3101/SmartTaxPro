@@ -300,6 +300,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Set up the uploads directory to serve files
   app.use("/uploads", express.static(uploadDir));
 
+  // Test endpoint for Gemini API
+  apiRouter.get("/test-gemini", async (req, res) => {
+    try {
+      if (!process.env.GOOGLE_GEMINI_API_KEY) {
+        return res.json({
+          success: false,
+          message: "Google Gemini API key is missing"
+        });
+      }
+      
+      // Try a super simple request to the API
+      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": process.env.GOOGLE_GEMINI_API_KEY
+        },
+        body: JSON.stringify({
+          prompt: {
+            text: "Hello, what is 2+2?"
+          },
+          temperature: 0.2,
+          candidate_count: 1
+        })
+      });
+      
+      const data = await response.json();
+      console.log("Test API response:", JSON.stringify(data));
+      
+      res.json({
+        success: true,
+        response: data
+      });
+    } catch (error) {
+      console.error("Error testing Gemini API:", error);
+      res.json({
+        success: false,
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
   // Tax Expert Chatbot API Status Check
   apiRouter.get("/tax-expert-chat/status", async (req, res) => {
     try {
@@ -369,40 +411,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Get the available models from the API status endpoint
-      const statusResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models", {
-        headers: {
-          "x-goog-api-key": process.env.GOOGLE_GEMINI_API_KEY || ""
-        }
-      });
-      
-      const statusData = await statusResponse.json();
-      
-      // Find a suitable model to use
-      let modelName = "gemini-pro";
-      if (statusData.models && statusData.models.length > 0) {
-        // Look for models that support generateContent
-        const availableModels = statusData.models
-          .filter((model: any) => 
-            model.supportedGenerationMethods && 
-            model.supportedGenerationMethods.includes("generateContent"))
-          .map((model: any) => model.name);
-        
-        console.log("Available models:", availableModels);
-        
-        // Try to find the right model
-        if (availableModels.includes("models/gemini-pro")) {
-          modelName = "models/gemini-pro";
-        } else if (availableModels.length > 0) {
-          // Use the first available model that supports generateContent
-          modelName = availableModels[0].replace("models/", "");
-        }
-      }
-      
-      console.log("Using model:", modelName);
-      
+      // Let's try with the gemini-pro model
       // Fetch from Google Gemini API
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -417,8 +428,6 @@ Current date: ${new Date().toLocaleDateString()}
 User question: ${message}`
           },
           temperature: 0.2,
-          top_k: 40,
-          top_p: 0.95,
           candidate_count: 1,
           max_output_tokens: 800
         })
@@ -439,24 +448,20 @@ User question: ${message}`
 
       let responseText = "";
       try {
-        // Handle different response formats
-        if (data.candidates && data.candidates[0]) {
-          if (data.candidates[0].content && data.candidates[0].content.parts) {
-            // v1 format
-            responseText = data.candidates[0].content.parts[0].text;
-          } else if (data.candidates[0].text) {
-            // v1beta format
-            responseText = data.candidates[0].text;
-          }
-        } else if (data.response && data.response.candidates && data.response.candidates[0]) {
-          // Alternative format
-          responseText = data.response.candidates[0].content.parts[0].text;
-        } else if (data.content && data.content.parts) {
-          // Another possible format
-          responseText = data.content.parts[0].text;
+        console.log("Full API response:", JSON.stringify(data));
+        
+        // For v1beta, response should be in data.candidates[0].text
+        if (data && data.candidates && data.candidates.length > 0 && data.candidates[0].text) {
+          responseText = data.candidates[0].text;
+        } else if (data && data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts) {
+          // v1 format
+          responseText = data.candidates[0].content.parts[0].text;
+        } else if (data && data.error) {
+          // Error response
+          throw new Error(JSON.stringify(data.error));
         } else {
           // If we can't find the text in expected locations, return the raw data
-          responseText = "I couldn't format my response properly. Here's what I know: " + 
+          responseText = "I couldn't format my response properly. Here's what I received: " + 
                          JSON.stringify(data).substring(0, 500);
         }
       } catch (e) {
