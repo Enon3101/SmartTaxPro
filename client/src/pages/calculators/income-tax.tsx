@@ -30,7 +30,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Slider } from '@/components/ui/slider';
+// Slider removed for a more modern interface
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -72,6 +72,7 @@ const IncomeTaxCalculator = () => {
   const [personType, setPersonType] = useState('individual');
   const [ageGroup, setAgeGroup] = useState('below60');
   const [isResident, setIsResident] = useState(true);
+  const [activeTab, setActiveTab] = useState('basic-details');
   
   // Income sources state
   const [incomeSources, setIncomeSources] = useState<IncomeSource[]>([
@@ -313,7 +314,7 @@ const IncomeTaxCalculator = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="basic-details" className="w-full">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid grid-cols-3 mb-4">
                   <TabsTrigger value="basic-details">Basic Details</TabsTrigger>
                   <TabsTrigger value="income">Income</TabsTrigger>
@@ -403,7 +404,7 @@ const IncomeTaxCalculator = () => {
                     
                     <div className="mt-4">
                       <Button 
-                        onClick={() => setTaxOutput(null)}
+                        onClick={() => setActiveTab('income')}
                         variant="outline"
                         className="w-full mt-2"
                       >
@@ -446,14 +447,6 @@ const IncomeTaxCalculator = () => {
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Slider
-                            id={source.id}
-                            value={[source.value]}
-                            max={3000000}
-                            step={1000}
-                            onValueChange={(values) => handleIncomeChange(source.id, values[0])}
-                            className="flex-1"
-                          />
                           <Input
                             id={`${source.id}-input`}
                             type="number"
@@ -487,7 +480,7 @@ const IncomeTaxCalculator = () => {
                         Reset Income
                       </Button>
                       <Button 
-                        onClick={() => setTaxOutput(null)}
+                        onClick={() => setActiveTab('deductions')}
                         className="flex-1"
                       >
                         Continue to Deductions <ArrowRight className="ml-2 h-4 w-4" />
