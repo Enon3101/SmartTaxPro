@@ -1,0 +1,72 @@
+{
+  "S": {
+    "itr": "ITR-1",
+    "description": "Salary only (≤ ₹50 L, resident)",
+    "schedules": ["Employer TAN", "Form-16 figures", "Sec 10 exemptions"]
+  },
+  "SH": {
+    "itr": "ITR-1",
+    "description": "Salary + One self-occupied House Prop.",
+    "schedules": ["Interest on housing loan (Sec 24)", "Address of house"]
+  },
+  "SP": {
+    "itr": "ITR-4",
+    "description": "Salary + PGBP presumptive (44AD/ADA)",
+    "schedules": ["Gross turnover", "Digital % receipts", "Cash % receipts"]
+  },
+  "SG": {
+    "itr": "ITR-2",
+    "description": "Salary + Capital Gains",
+    "schedules": ["ISIN", "Sale/purchase dates", "Cost", "FMV", "Indexation"]
+  },
+  "B": {
+    "itr": "ITR-3",
+    "description": "Business/Profession (books audited)",
+    "schedules": ["Balance Sheet", "P&L heads", "44AB audit report date"]
+  },
+  "C": {
+    "itr": "ITR-6",
+    "description": "Company / LLP",
+    "schedules": ["DS-sign", "MAT calc", "CSR", "Depreciation schedule"]
+  },
+  "H": {
+    "itr": "ITR-2",
+    "description": "House Property Income only",
+    "schedules": ["Interest on housing loan (Sec 24)", "Address of house"]
+  },
+  "G": {
+    "itr": "ITR-2",
+    "description": "Capital Gains only",
+    "schedules": ["ISIN", "Sale/purchase dates", "Cost", "FMV", "Indexation"]
+  },
+  "I": {
+    "itr": "ITR-2",
+    "description": "Interest Income only",
+    "schedules": ["Bank details", "TDS certificate"]
+  },
+  "O": {
+    "itr": "ITR-2",
+    "description": "Other Income only",
+    "schedules": ["Source details", "TDS if applicable"]
+  },
+  "SHG": {
+    "itr": "ITR-2",
+    "description": "Salary + House Property + Capital Gains",
+    "schedules": ["Form-16", "Address of house", "Interest on housing loan", "Gain calculation details"]
+  },
+  "SI": {
+    "itr": "ITR-1",
+    "description": "Salary + Interest Income",
+    "schedules": ["Form-16", "Bank details", "TDS certificate"]
+  },
+  "SHI": {
+    "itr": "ITR-1",
+    "description": "Salary + House Property + Interest Income",
+    "schedules": ["Form-16", "Address of house", "Interest on housing loan", "Bank details", "TDS certificate"]
+  },
+  "SB": {
+    "itr": "ITR-3",
+    "description": "Salary + Business Income",
+    "schedules": ["Form-16", "Balance Sheet", "P&L heads", "44AB audit report date"]
+  }
+}

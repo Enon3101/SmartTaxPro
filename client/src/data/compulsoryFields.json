@@ -1,0 +1,53 @@
+{
+  "S": [
+    "employerName",
+    "employerTAN",
+    "grossSalary",
+    "standardDeduction",
+    "section10Exemptions"
+  ],
+  "H": [
+    "propertyAddress",
+    "ownershipType",
+    "interestPaid",
+    "rentalIncome",
+    "municipalTaxes"
+  ],
+  "G": [
+    "assetType",
+    "purchaseDate",
+    "saleDate",
+    "purchaseCost",
+    "saleCost",
+    "improvementCost",
+    "indexationApplicable"
+  ],
+  "B": [
+    "businessName",
+    "businessNature",
+    "turnover",
+    "netProfit",
+    "cashPercentage",
+    "digitalPercentage",
+    "booksAudited"
+  ],
+  "P": [
+    "businessName",
+    "turnover",
+    "cashPercentage",
+    "digitalPercentage",
+    "presumptiveSection"
+  ],
+  "I": [
+    "interestSource",
+    "interestType",
+    "interestAmount",
+    "tdsAmount"
+  ],
+  "O": [
+    "incomeSource",
+    "incomeDescription",
+    "incomeAmount",
+    "tdsCertificate"
+  ]
+}

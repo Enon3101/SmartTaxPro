@@ -1,0 +1,210 @@
+Below is a hands-on “cookbook” that walks you—from an empty Replit workspace all the way to a working, hosted wizard that
+
+lets users tick their income-source tiles
+
+auto-asks only those compulsory follow-up questions that law requires, and
+
+selects the correct ITR form in the background.
+
+I assume you are comfortable with basic HTML/CSS but new to modern tooling, so I keep the stack minimal, comment every block, and note why each choice helps future scale (analytics, A/B tests, AI autofill, etc.).
+
+0. Pre-build reference tables (keep this handy)
+Code	Income-source combination (FY 2024-25)	ITR picked	Extra schedules / compulsory inputs you must capture
+S	Salary only (≤ ₹50 L, resident)	ITR-1	Employer TAN, Form-16 figures, Sec 10 exemptions
+SH	Salary + One self-occupied House Prop.	ITR-1	Interest on housing loan (Sec 24); address of house
+SP	Salary + PGBP presumptive (44AD/ADA)	ITR-4	Gross turnover, digital % receipts, cash % receipts
+SG	Salary + Capital Gains	ITR-2	ISIN, sale/purchase dates, cost, FMV, indexation
+B	Business/Profession (books audited)	ITR-3	Balance Sheet, P&L heads, 44AB audit report date
+C	Company / LLP	ITR-6 / 5	DS-sign, MAT calc, CSR, depreciation schedule
+…	…	…	…
+
+Tip: Store the table as formRules.json so the UI can stay dumb and you can update rules server-side when CBDT issues new forms.
+
+1. Spin up the Repl
+Log in → New Repl → Template: “Create React App”
+Why React? Declarative components fit your tile-selection UI and Replit auto-optimises CRA builds.
+
+Name it itr-wizard, choose “Public” only if you’re OK sharing code.
+
+Replit instantly gives you:
+
+bash
+Copy
+Edit
+/src
+  ├── App.js
+  ├── index.js
+  └── ...
+2. Organise the project
+pgsql
+Copy
+Edit
+/src
+  /components        ← small presentational bits
+     IncomeTile.jsx
+     StepIndicator.jsx
+  /pages
+     Step1Basic.jsx
+     Step2Sources.jsx
+     Step3Details.jsx
+     Step4Deductions.jsx
+     Summary.jsx
+  /data
+     formRules.json   ← the table above
+     compulsoryFields.json
+  App.js              ← routes + context
+  context.js          ← global wizard state
+Reason: Keeping pages separate from tiny components avoids “god files” and makes it trivial to move to Next.js later.
+
+3. Add global wizard state (Context API)
+jsx
+Copy
+Edit
+// context.js
+import { createContext, useReducer } from "react";
+
+export const WizardCtx = createContext();
+const initial = { step: 1, sources: [], compulsory: {}, itr: null };
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "SET_SOURCES":
+      return { ...state, sources: action.payload };
+    case "SET_COMPULSORY":
+      return { ...state, compulsory: action.payload };
+    case "SET_ITR":
+      return { ...state, itr: action.payload };
+    default:
+      return state;
+  }
+}
+
+export function WizardProvider({ children }) {
+  const [state, dispatch] = useReducer(reducer, initial);
+  return (
+    <WizardCtx.Provider value={{ state, dispatch }}>
+      {children}
+    </WizardCtx.Provider>
+  );
+}
+Why not Redux? Context + reducer is two files vs. Redux boilerplate; good enough until ≥ 50 actions.
+
+4. Bring in the income-source tiles (Step 2 UI)
+jsx
+Copy
+Edit
+// components/IncomeTile.jsx
+export default function IncomeTile({ code, label, desc, icon, selected, onClick }) {
+  return (
+    <div
+      onClick={() => onClick(code)}
+      className={`border rounded-xl p-4 cursor-pointer
+                  ${selected ? "ring-2 ring-blue-600" : "hover:bg-gray-100"}`}>
+      <span className="text-xl">{icon}</span>
+      <h3 className="font-semibold">{label}</h3>
+      <p className="text-xs text-gray-500">{desc}</p>
+    </div>
+  );
+}
+Step2Sources.jsx loops over an array of six tiles and stores selected codes in context.
+
+5. Map selected sources → ITR form
+Create /src/utils/itrSelector.js:
+
+jsx
+Copy
+Edit
+import rules from "../data/formRules.json";
+
+export function pickITR(sourceCodes) {
+  const key = sourceCodes.sort().join("");   // e.g. ["S","H"] => "SH"
+  // Fallback logic: iterate over complex rules…
+  return rules[key] ? rules[key].itr : "ITR-2"; // safe default
+}
+Call it when the user hits Next on Step 2:
+
+jsx
+Copy
+Edit
+// inside Step2Sources.jsx
+const goNext = () => {
+  const itr = pickITR(state.sources);
+  dispatch({ type: "SET_ITR", payload: itr });
+  navigate("/details");   // Step 3
+};
+6. Inject compulsory follow-ups dynamically
+compulsoryFields.json might look like:
+
+json
+Copy
+Edit
+{
+  "Salary": ["employerName", "employerTAN", "grossSalary"],
+  "HouseProperty": ["ownershipType", "interestPaid"],
+  "Business": ["turnover", "cashPercentage", "digitalPercentage"]
+}
+In Step3Details.jsx:
+
+jsx
+Copy
+Edit
+import compulsory from "../data/compulsoryFields.json";
+
+const dynamicFields = state.sources
+  .flatMap(src => compulsory[srcMap[src]])   // srcMap maps tile code → json key
+  .filter((v, i, a) => a.indexOf(v) === i);  // remove duplicates
+Render an <Input /> for each field.
+Why JSON driven? Changes in law → edit file, no code commit.
+
+7. Validate & persist (simple first, scalable later)
+Install tiny validator:
+
+css
+Copy
+Edit
+npm i yup
+Validate on Next; show toast errors.
+
+Persist draft locally (so refresh doesn’t lose data):
+
+js
+Copy
+Edit
+useEffect(() => {
+  localStorage.setItem("itrDraft", JSON.stringify(state));
+}, [state]);
+Optional (production): Use Replit’s built-in key/value DB:
+
+bash
+Copy
+Edit
+npm i @replit/database
+8. Show the auto-selected form on the summary page
+jsx
+Copy
+Edit
+<h2 className="text-lg font-semibold">
+  ✅  You will be filing <span className="text-blue-600">{state.itr}</span> for AY 2024-25
+</h2>
+Also list compulsory data captured so the user can review.
+
+9. One-click deploy on Replit
+In the Replit sidebar → “Deployments” → “Static Web Site”.
+
+Replit builds CRA automatically and gives you a URL like
+https://itr-wizard.jit.repl.co.
+
+10. Forward-thinking add-ons
+Future need	Quick hook
+Prefill AIS/TIS	Add a “Upload AIS JSON” button → parse & autofill salary, interest
+A/B test UI	Wrap tiles with react-gtm-module → push events to GA4
+AI chatbot help	Lazy-load OpenAI-powered sidebar only when user clicks “Ask”
+
+Recap
+React + Context keeps wizard logic simple and portable.
+
+JSON-driven rules separate tax law from UI—tomorrow’s CBDT tweak ≠ code rewrite.
+
+pickITR() function makes your “automatic form suggestion” bullet-proof and testable.
+
+Replit’s static-site deploy gives you HTTPS hosting in under a minute.
