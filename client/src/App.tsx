@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { TaxDataProvider } from "./context/TaxDataProvider";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeProvider";
+import { ItrWizardProvider } from "./context/ItrWizardContext";
 import { lazy, Suspense } from "react";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
@@ -19,6 +20,7 @@ import StartFiling from "@/pages/StartFiling";
 import Payment from "@/pages/Payment";
 import FilingComplete from "@/pages/FilingComplete";
 import FilingRequirements from "@/pages/FilingRequirements";
+import ItrWizard from "@/pages/ItrWizard";
 import Admin from "@/pages/Admin";
 import BlogPost from "@/pages/BlogPost";
 import BlogAdmin from "@/pages/BlogAdmin";
@@ -168,6 +170,7 @@ function Router() {
       <Route path="/pricing" component={Pricing} />
       <Route path="/start-filing" component={StartFiling} />
       <Route path="/filing-requirements" component={FilingRequirements} />
+      <Route path="/itr-wizard" component={ItrWizard} />
       <Route path="/admin" component={Admin} />
       <Route path="/blog-admin">{() => <BlogAdmin />}</Route>
       <Route path="/blog-admin/new">{() => <BlogAdmin mode="create" />}</Route>
@@ -285,18 +288,20 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <TaxDataProvider>
-            <TooltipProvider>
-              <div className="flex flex-col min-h-screen bg-background text-foreground">
-                <ScrollToTop />
-                <Header />
-                <main className="flex-grow pb-16 sm:pb-0">
-                  <Router />
-                </main>
-                <Footer />
-                <BottomNav />
-              </div>
-              <Toaster />
-            </TooltipProvider>
+            <ItrWizardProvider>
+              <TooltipProvider>
+                <div className="flex flex-col min-h-screen bg-background text-foreground">
+                  <ScrollToTop />
+                  <Header />
+                  <main className="flex-grow pb-16 sm:pb-0">
+                    <Router />
+                  </main>
+                  <Footer />
+                  <BottomNav />
+                </div>
+                <Toaster />
+              </TooltipProvider>
+            </ItrWizardProvider>
           </TaxDataProvider>
         </AuthProvider>
       </ThemeProvider>

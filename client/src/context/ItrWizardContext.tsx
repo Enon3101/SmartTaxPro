@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
-import { pickITR } from '../utils/itrSelector';
+import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
+import { determineITRForm } from '../utils/itrSelector';
 
-// Define the types for our context
+// Define the state interface
 interface WizardState {
   step: number;
   sources: string[];
@@ -9,6 +9,7 @@ interface WizardState {
   itr: string | null;
 }
 
+// Define action types
 type WizardAction =
   | { type: 'SET_STEP'; payload: number }
   | { type: 'SET_SOURCES'; payload: string[] }
@@ -16,21 +17,22 @@ type WizardAction =
   | { type: 'SET_ITR'; payload: string | null }
   | { type: 'RESET' };
 
+// Define the context type
 interface WizardContextType {
   state: WizardState;
   dispatch: React.Dispatch<WizardAction>;
 }
-
-// Create the context
-const ItrWizardContext = createContext<WizardContextType | undefined>(undefined);
 
 // Initial state
 const initialState: WizardState = {
   step: 1,
   sources: [],
   compulsory: {},
-  itr: null,
+  itr: null
 };
+
+// Create context
+const WizardContext = createContext<WizardContextType | undefined>(undefined);
 
 // Reducer function
 function wizardReducer(state: WizardState, action: WizardAction): WizardState {
@@ -38,10 +40,11 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
     case 'SET_STEP':
       return { ...state, step: action.payload };
     case 'SET_SOURCES':
-      const itr = pickITR(action.payload);
+      // Auto-determine ITR form based on sources
+      const itr = determineITRForm(action.payload);
       return { ...state, sources: action.payload, itr };
     case 'SET_COMPULSORY':
-      return { ...state, compulsory: { ...state.compulsory, ...action.payload } };
+      return { ...state, compulsory: action.payload };
     case 'SET_ITR':
       return { ...state, itr: action.payload };
     case 'RESET':
@@ -59,40 +62,26 @@ interface ItrWizardProviderProps {
 export function ItrWizardProvider({ children }: ItrWizardProviderProps) {
   const [state, dispatch] = useReducer(wizardReducer, initialState);
 
-  // Persist state to localStorage
+  // Effect to calculate ITR when sources change
   useEffect(() => {
-    localStorage.setItem('itrWizardState', JSON.stringify(state));
-  }, [state]);
-
-  // Load state from localStorage when component mounts
-  useEffect(() => {
-    const savedState = localStorage.getItem('itrWizardState');
-    if (savedState) {
-      try {
-        const parsedState = JSON.parse(savedState);
-        // Restore each piece of state individually to ensure type safety
-        dispatch({ type: 'SET_STEP', payload: parsedState.step || 1 });
-        dispatch({ type: 'SET_SOURCES', payload: parsedState.sources || [] });
-        dispatch({ type: 'SET_COMPULSORY', payload: parsedState.compulsory || {} });
-        dispatch({ type: 'SET_ITR', payload: parsedState.itr || null });
-      } catch (error) {
-        console.error('Failed to parse saved state:', error);
+    if (state.sources.length > 0) {
+      const itr = determineITRForm(state.sources);
+      if (itr !== state.itr) {
+        dispatch({ type: 'SET_ITR', payload: itr });
       }
     }
-  }, []);
-
-  const value = { state, dispatch };
+  }, [state.sources]);
 
   return (
-    <ItrWizardContext.Provider value={value}>
+    <WizardContext.Provider value={{ state, dispatch }}>
       {children}
-    </ItrWizardContext.Provider>
+    </WizardContext.Provider>
   );
 }
 
 // Custom hook to use the context
 export function useItrWizard() {
-  const context = useContext(ItrWizardContext);
+  const context = useContext(WizardContext);
   if (context === undefined) {
     throw new Error('useItrWizard must be used within an ItrWizardProvider');
   }
