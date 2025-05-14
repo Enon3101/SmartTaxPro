@@ -30,7 +30,6 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-// Slider removed for a more modern interface
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -248,19 +247,6 @@ const IncomeTaxCalculator = () => {
     // Apply rounding to final tax amount
     const roundedTotalTax = roundTaxToNearest10(taxCalculation.totalTax);
     
-    // Generate detailed breakdown of all deductions
-    const generateDeductionBreakdown = () => {
-      if (regime === 'new') {
-        return [
-          { section: 'Standard Deduction', amount: deductions.find(d => d.id === 'standard')?.value || 0 }
-        ];
-      } else {
-        return deductions
-          .filter(d => d.value > 0)
-          .map(d => ({ section: d.name, amount: d.value }));
-      }
-    };
-    
     setTaxOutput({
       totalIncome,
       totalDeductions,
@@ -384,7 +370,6 @@ const IncomeTaxCalculator = () => {
                           <Select
                             value={ageGroup}
                             onValueChange={setAgeGroup}
-                            disabled={regime === 'new'}
                           >
                             <SelectTrigger id="age-group">
                               <SelectValue placeholder="Select Age Group" />
@@ -395,9 +380,6 @@ const IncomeTaxCalculator = () => {
                               <SelectItem value="above80">Above 80 years</SelectItem>
                             </SelectContent>
                           </Select>
-                          {regime === 'new' && (
-                            <p className="text-sm text-muted-foreground">Age is not relevant in the new tax regime</p>
-                          )}
                         </div>
                       )}
                     </div>
@@ -417,60 +399,47 @@ const IncomeTaxCalculator = () => {
                 {/* Income Tab */}
                 <TabsContent value="income">
                   <div className="space-y-6">
-                    <div className="bg-muted p-3 rounded-md">
-                      <h3 className="font-medium mb-2">Add Your Income Details</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Enter the income from various sources during the financial year
+                    <div className="bg-muted rounded-lg p-4">
+                      <h3 className="font-medium mb-2">Income Details</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Enter your income from various sources for the selected assessment year
                       </p>
+                      
+                      {incomeSources.map(source => (
+                        <div key={source.id} className="mb-4 p-3 bg-background rounded-md border">
+                          <div className="flex justify-between items-center mb-2">
+                            <Label htmlFor={source.id} className="font-medium">{source.name}</Label>
+                            <span className="text-sm font-medium">
+                              {formatIndianCurrency(source.value)}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Input
+                              id={`${source.id}-input`}
+                              type="number"
+                              value={source.value}
+                              onChange={(e) => handleIncomeChange(source.id, Number(e.target.value))}
+                              className="w-full"
+                              min={0}
+                              max={10000000}
+                              step={1000}
+                              placeholder={`Enter ${source.name}`}
+                            />
+                          </div>
+                        </div>
+                      ))}
                     </div>
                     
-                    {incomeSources.map((source) => (
-                      <div key={source.id} className="space-y-2">
-                        <div className="flex justify-between">
-                          <Label htmlFor={source.id} className="flex items-center">
-                            {source.name}
-                            {source.description && (
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <HelpCircle className="h-4 w-4 ml-1 text-muted-foreground" />
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>{source.description}</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            )}
-                          </Label>
-                          <span className="text-sm font-medium">
-                            {formatIndianCurrency(source.value)}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Input
-                            id={`${source.id}-input`}
-                            type="number"
-                            value={source.value}
-                            onChange={(e) => handleIncomeChange(source.id, Number(e.target.value))}
-                            className="w-24"
-                          />
-                        </div>
+                    <div className="bg-muted rounded-lg p-4">
+                      <div className="flex justify-between mb-2">
+                        <span className="font-medium">Total Income</span>
+                        <span className="font-bold">{formatIndianCurrency(totalIncome)}</span>
                       </div>
-                    ))}
-                    
-                    <div className="flex justify-between items-center p-3 bg-muted rounded-md">
-                      <div>
-                        <h3 className="font-medium">Total Income</h3>
-                        <p className="text-sm text-muted-foreground">Sum of all income sources</p>
-                      </div>
-                      <span className="text-xl font-bold">
-                        {formatIndianCurrency(totalIncome)}
-                      </span>
                     </div>
                     
-                    <div className="flex justify-between gap-2">
+                    <div className="flex gap-2">
                       <Button 
-                        variant="outline" 
+                        variant="outline"
                         onClick={() => {
                           setIncomeSources(prev => 
                             prev.map(source => ({...source, value: 0}))
@@ -492,364 +461,90 @@ const IncomeTaxCalculator = () => {
                 {/* Deductions Tab */}
                 <TabsContent value="deductions">
                   <div className="space-y-6">
-                    <div className="bg-muted p-3 rounded-md">
-                      <div className="flex justify-between items-center">
+                    <div className="bg-muted rounded-lg p-4">
+                      <div className="flex items-center gap-2">
                         <h3 className="font-medium">Deductions & Exemptions</h3>
-                        <Badge variant={regime === 'old' ? 'default' : 'destructive'}>
-                          {regime === 'old' ? 'Allowed' : 'Limited'}
-                        </Badge>
+                        {regime === 'new' && (
+                          <Badge variant="outline" className="font-normal text-xs">Limited in New Regime</Badge>
+                        )}
                       </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {regime === 'old' 
-                          ? 'The old tax regime allows various deductions to reduce your taxable income.' 
-                          : 'The new tax regime offers lower tax rates but limited deductions.'}
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Enter applicable deductions under various sections
                       </p>
-                    </div>
-                    
-                    {regime === 'new' && (
-                      <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-md">
-                        <div className="flex items-start">
-                          <AlertCircle className="h-5 w-5 text-yellow-500 mr-2 mt-0.5" />
-                          <div>
-                            <h4 className="font-medium text-yellow-800">Limited Deductions in New Regime</h4>
-                            <p className="text-sm text-yellow-700">
-                              In the new tax regime, most deductions are not allowed except for the standard deduction on salary income.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Categorize deductions for better organization */}
-                    <div className="space-y-6">
-                      {/* Common Deductions - Show first */}
-                      <div>
-                        <h4 className="text-sm font-semibold mb-3 text-blue-600">Common Deductions</h4>
-                        {deductions
-                          .filter(d => ['standard', '80c', '80d', '80tta'].includes(d.id))
-                          .map((deduction) => (
-                            <div key={deduction.id} className="space-y-2 mb-4">
-                              <div className="flex justify-between">
-                                <Label 
-                                  htmlFor={deduction.id} 
-                                  className={`flex items-center ${(regime === 'new' && deduction.id !== 'standard') ? 'text-muted-foreground' : ''}`}
-                                >
-                                  {deduction.name}
-                                  {deduction.description && (
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <HelpCircle className="h-4 w-4 ml-1 text-muted-foreground" />
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>{deduction.description}</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  )}
-                                </Label>
-                                <span className="text-sm font-medium">
-                                  {formatIndianCurrency(deduction.value)}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Slider
-                                  id={deduction.id}
-                                  value={[deduction.value]}
-                                  max={
-                                    deduction.id === '80c' ? 150000 : 
-                                    deduction.id === '80d' ? (personType === 'individual' && ageGroup !== 'below60' ? 100000 : 50000) : 
-                                    deduction.id === '80tta' ? 10000 : 
-                                    deduction.id === 'standard' ? 50000 : 
-                                    500000
-                                  }
-                                  step={100}
-                                  onValueChange={(values) => handleDeductionChange(deduction.id, values[0])}
-                                  className="flex-1"
-                                  disabled={regime === 'new' && deduction.id !== 'standard'}
-                                />
-                                <Input
-                                  id={`${deduction.id}-input`}
-                                  type="number"
-                                  value={deduction.value}
-                                  onChange={(e) => handleDeductionChange(deduction.id, Number(e.target.value))}
-                                  className="w-24"
-                                  disabled={regime === 'new' && deduction.id !== 'standard'}
-                                />
-                              </div>
-                              {/* Show limits reached messages */}
-                              {deduction.id === '80c' && deduction.value === 150000 && (
-                                <p className="text-sm text-amber-600">Maximum limit of ₹1.5 lakh reached</p>
-                              )}
-                              {deduction.id === '80d' && personType === 'individual' && ageGroup !== 'below60' && deduction.value === 100000 && (
-                                <p className="text-sm text-amber-600">Maximum limit of ₹1 lakh reached</p>
-                              )}
-                              {deduction.id === '80d' && (personType !== 'individual' || ageGroup === 'below60') && deduction.value === 50000 && (
-                                <p className="text-sm text-amber-600">Maximum limit of ₹50,000 reached</p>
-                              )}
-                              {deduction.id === '80tta' && deduction.value === 10000 && (
-                                <p className="text-sm text-amber-600">Maximum limit of ₹10,000 reached</p>
-                              )}
-                            </div>
-                          ))}
-                      </div>
                       
-                      {/* Retirement and Pension - Second category */}
-                      <div>
-                        <h4 className="text-sm font-semibold mb-3 text-blue-600">Retirement & Pension</h4>
+                      <div className="space-y-4">
                         {deductions
-                          .filter(d => ['80ccc', '80ccd1', '80ccd1b', '80ccd2'].includes(d.id))
-                          .map((deduction) => (
-                            <div key={deduction.id} className="space-y-2 mb-4">
-                              <div className="flex justify-between">
-                                <Label 
-                                  htmlFor={deduction.id} 
-                                  className={`flex items-center ${regime === 'new' ? 'text-muted-foreground' : ''}`}
-                                >
-                                  {deduction.name}
+                          .filter(deduction => 
+                            regime === 'old' || deduction.id === 'standard'
+                          )
+                          .map(deduction => (
+                            <div key={deduction.id} className="mb-4 p-3 bg-background rounded-md border">
+                              <div className="flex justify-between items-center mb-1">
+                                <div className="flex items-center gap-1">
+                                  <Label htmlFor={deduction.id} className="font-medium">{deduction.name}</Label>
                                   {deduction.description && (
                                     <TooltipProvider>
                                       <Tooltip>
                                         <TooltipTrigger asChild>
-                                          <HelpCircle className="h-4 w-4 ml-1 text-muted-foreground" />
+                                          <InfoIcon className="h-4 w-4 text-muted-foreground" />
                                         </TooltipTrigger>
-                                        <TooltipContent>
+                                        <TooltipContent className="max-w-xs">
                                           <p>{deduction.description}</p>
                                         </TooltipContent>
                                       </Tooltip>
                                     </TooltipProvider>
                                   )}
-                                </Label>
+                                </div>
                                 <span className="text-sm font-medium">
                                   {formatIndianCurrency(deduction.value)}
                                 </span>
                               </div>
                               <div className="flex items-center gap-2">
-                                <Slider
-                                  id={deduction.id}
-                                  value={[deduction.value]}
-                                  max={
-                                    deduction.id === '80ccd1b' ? 50000 : 
-                                    (deduction.id === '80ccc' || deduction.id === '80ccd1') ? 150000 :
-                                    200000
-                                  }
-                                  step={100}
-                                  onValueChange={(values) => handleDeductionChange(deduction.id, values[0])}
-                                  className="flex-1"
-                                  disabled={regime === 'new'}
-                                />
                                 <Input
                                   id={`${deduction.id}-input`}
                                   type="number"
                                   value={deduction.value}
                                   onChange={(e) => handleDeductionChange(deduction.id, Number(e.target.value))}
-                                  className="w-24"
-                                  disabled={regime === 'new'}
-                                />
-                              </div>
-                              {/* Additional info for specific deduction limits */}
-                              {deduction.id === '80ccd1b' && deduction.value === 50000 && (
-                                <p className="text-sm text-amber-600">Maximum limit of ₹50,000 reached</p>
-                              )}
-                            </div>
-                          ))}
-                      </div>
-                      
-                      {/* Medical and Health - Third category */}
-                      <div>
-                        <h4 className="text-sm font-semibold mb-3 text-blue-600">Medical & Health</h4>
-                        {deductions
-                          .filter(d => ['80dd', '80ddb', '80u'].includes(d.id))
-                          .map((deduction) => (
-                            <div key={deduction.id} className="space-y-2 mb-4">
-                              <div className="flex justify-between">
-                                <Label 
-                                  htmlFor={deduction.id} 
-                                  className={`flex items-center ${regime === 'new' ? 'text-muted-foreground' : ''}`}
-                                >
-                                  {deduction.name}
-                                  {deduction.description && (
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <HelpCircle className="h-4 w-4 ml-1 text-muted-foreground" />
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>{deduction.description}</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  )}
-                                </Label>
-                                <span className="text-sm font-medium">
-                                  {formatIndianCurrency(deduction.value)}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Slider
-                                  id={deduction.id}
-                                  value={[deduction.value]}
-                                  max={
-                                    deduction.id === '80ddb' ? 
-                                      (personType === 'individual' && ageGroup !== 'below60' ? 100000 : 40000) : 
-                                    125000
-                                  }
-                                  step={1000}
-                                  onValueChange={(values) => handleDeductionChange(deduction.id, values[0])}
-                                  className="flex-1"
-                                  disabled={regime === 'new'}
-                                />
-                                <Input
-                                  id={`${deduction.id}-input`}
-                                  type="number"
-                                  value={deduction.value}
-                                  onChange={(e) => handleDeductionChange(deduction.id, Number(e.target.value))}
-                                  className="w-24"
-                                  disabled={regime === 'new'}
+                                  className="w-full"
+                                  min={0}
+                                  placeholder={`Enter ${deduction.name}`}
                                 />
                               </div>
                             </div>
-                          ))}
-                      </div>
-                      
-                      {/* Loans and Interest - Fourth category */}
-                      <div>
-                        <h4 className="text-sm font-semibold mb-3 text-blue-600">Loans & Interest</h4>
-                        {deductions
-                          .filter(d => ['80e', '80ee', '80eea'].includes(d.id))
-                          .map((deduction) => (
-                            <div key={deduction.id} className="space-y-2 mb-4">
-                              <div className="flex justify-between">
-                                <Label 
-                                  htmlFor={deduction.id} 
-                                  className={`flex items-center ${regime === 'new' ? 'text-muted-foreground' : ''}`}
-                                >
-                                  {deduction.name}
-                                  {deduction.description && (
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <HelpCircle className="h-4 w-4 ml-1 text-muted-foreground" />
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>{deduction.description}</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  )}
-                                </Label>
-                                <span className="text-sm font-medium">
-                                  {formatIndianCurrency(deduction.value)}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Slider
-                                  id={deduction.id}
-                                  value={[deduction.value]}
-                                  max={
-                                    deduction.id === '80ee' ? 50000 : 
-                                    deduction.id === '80eea' ? 150000 : 
-                                    300000
-                                  }
-                                  step={1000}
-                                  onValueChange={(values) => handleDeductionChange(deduction.id, values[0])}
-                                  className="flex-1"
-                                  disabled={regime === 'new'}
-                                />
-                                <Input
-                                  id={`${deduction.id}-input`}
-                                  type="number"
-                                  value={deduction.value}
-                                  onChange={(e) => handleDeductionChange(deduction.id, Number(e.target.value))}
-                                  className="w-24"
-                                  disabled={regime === 'new'}
-                                />
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                      
-                      {/* Other Deductions - Fifth category */}
-                      <div>
-                        <h4 className="text-sm font-semibold mb-3 text-blue-600">Other Deductions</h4>
-                        {deductions
-                          .filter(d => ['80g', '80gg', '80ttb', 'hra', 'lta'].includes(d.id))
-                          .map((deduction) => (
-                            <div key={deduction.id} className="space-y-2 mb-4">
-                              <div className="flex justify-between">
-                                <Label 
-                                  htmlFor={deduction.id} 
-                                  className={`flex items-center ${regime === 'new' ? 'text-muted-foreground' : ''}`}
-                                >
-                                  {deduction.name}
-                                  {deduction.description && (
-                                    <TooltipProvider>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <HelpCircle className="h-4 w-4 ml-1 text-muted-foreground" />
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>{deduction.description}</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TooltipProvider>
-                                  )}
-                                </Label>
-                                <span className="text-sm font-medium">
-                                  {formatIndianCurrency(deduction.value)}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Slider
-                                  id={deduction.id}
-                                  value={[deduction.value]}
-                                  max={
-                                    deduction.id === '80ttb' ? 50000 : 
-                                    deduction.id === '80gg' ? 60000 : 
-                                    500000
-                                  }
-                                  step={1000}
-                                  onValueChange={(values) => handleDeductionChange(deduction.id, values[0])}
-                                  className="flex-1"
-                                  disabled={regime === 'new'}
-                                />
-                                <Input
-                                  id={`${deduction.id}-input`}
-                                  type="number"
-                                  value={deduction.value}
-                                  onChange={(e) => handleDeductionChange(deduction.id, Number(e.target.value))}
-                                  className="w-24"
-                                  disabled={regime === 'new'}
-                                />
-                              </div>
-                            </div>
-                          ))}
+                          ))
+                        }
                       </div>
                     </div>
                     
-                    <div className="flex justify-between items-center p-3 bg-muted rounded-md">
-                      <div>
-                        <h3 className="font-medium">Total Deductions</h3>
-                        <p className="text-sm text-muted-foreground">Sum of all applicable deductions</p>
+                    <div className="bg-muted rounded-lg p-4">
+                      <div className="flex justify-between mb-2">
+                        <span className="font-medium">Total Income</span>
+                        <span className="font-bold">{formatIndianCurrency(totalIncome)}</span>
                       </div>
-                      <span className="text-xl font-bold">
-                        {formatIndianCurrency(regime === 'old' ? totalDeductions : (personType === 'individual' ? 50000 : 0))}
-                      </span>
+                      <div className="flex justify-between mb-2">
+                        <span className="font-medium">Total Deductions</span>
+                        <span className="font-medium">{formatIndianCurrency(totalDeductions)}</span>
+                      </div>
+                      <Separator className="my-2" />
+                      <div className="flex justify-between mb-2">
+                        <span className="font-medium">Taxable Income</span>
+                        <span className="font-bold">{formatIndianCurrency(taxableIncome)}</span>
+                      </div>
                     </div>
                     
-                    <div className="flex flex-col gap-2">
+                    <div className="flex gap-2">
                       <Button 
-                        onClick={calculateTaxOutput}
-                        className="bg-green-600 hover:bg-green-700"
+                        variant="outline"
+                        onClick={() => resetCalculation()}
+                        className="flex-1"
                       >
-                        Calculate Tax <Calculator className="ml-2 h-4 w-4" />
+                        Reset All
                       </Button>
-                      
                       <Button 
-                        variant="outline" 
-                        onClick={resetCalculation}
+                        onClick={() => calculateTaxOutput()} 
+                        className="flex-1 bg-primary"
                       >
-                        Reset All Fields
+                        Calculate Tax
                       </Button>
                     </div>
                   </div>
@@ -864,257 +559,207 @@ const IncomeTaxCalculator = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center text-xl">
-                <Percent className="mr-2 h-5 w-5" /> Tax Calculation
+                <Percent className="mr-2 h-5 w-5" /> Tax Computation
               </CardTitle>
               <CardDescription>
-                Your income tax summary for Assessment Year {assessmentYear}
+                Your estimated tax liability
               </CardDescription>
             </CardHeader>
+            
             <CardContent>
-              {!taxOutput ? (
-                <div className="text-center py-8">
-                  <div className="bg-muted inline-flex p-4 rounded-full mb-3">
-                    <Calculator className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-medium mb-2">No Calculation Yet</h3>
-                  <p className="text-muted-foreground text-sm max-w-md mx-auto mb-6">
-                    Fill in your income and deduction details, then click 'Calculate Tax' to see your tax liability
-                  </p>
-                  <div className="flex flex-col gap-2 items-center">
-                    <Badge variant="outline" className="mb-2">
-                      {selectedRegimeData.name}
-                    </Badge>
-                    <p className="text-sm text-muted-foreground">
-                      {selectedRegimeData.description}
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {/* Official Tax Computation Format */}
-                  <div className="border p-4 rounded-lg font-mono text-sm">
-                    <div className="text-center font-semibold mb-4 border-b pb-2">
-                      COMPUTATION OF TOTAL INCOME
+              {taxOutput ? (
+                <div className="space-y-4">
+                  <div className="p-4 bg-muted rounded-lg">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium">Assessment Year</span>
+                      <span className="text-sm">{assessmentYear}</span>
                     </div>
-                    
-                    {/* Income from Salary */}
-                    {incomeSources.find(src => src.id === 'salary' && src.value > 0) && (
-                      <div className="mb-4">
-                        <div className="flex justify-between font-semibold">
-                          <span>Salaries</span>
-                          <span>{formatIndianCurrency(incomeSources.find(src => src.id === 'salary')?.value || 0)}</span>
-                        </div>
-                        <div className="pl-4 mt-2">
-                          <div className="flex justify-between">
-                            <span>Salary</span>
-                            <span>{formatIndianCurrency(incomeSources.find(src => src.id === 'salary')?.value || 0)}</span>
-                          </div>
-                          <div className="flex justify-between text-gray-600">
-                            <span>Less: Standard Deduction U/s 16(ia)</span>
-                            <span>{formatIndianCurrency(deductions.find(d => d.id === 'standard')?.value || 0)}</span>
-                          </div>
-                          {(() => {
-                            const hraDeduction = deductions.find(d => d.id === 'hra');
-                            return hraDeduction && hraDeduction.value > 0 ? (
-                              <div className="flex justify-between text-gray-600">
-                                <span>Less: HRA Exemption U/s 10(13A)</span>
-                                <span>{formatIndianCurrency(hraDeduction.value)}</span>
-                              </div>
-                            ) : null;
-                          })()}
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Income from House Property */}
-                    {incomeSources.find(src => src.id === 'house_property' && src.value > 0) && (
-                      <div className="mb-4">
-                        <div className="flex justify-between font-semibold">
-                          <span>Income From House Property</span>
-                          <span>{formatIndianCurrency(incomeSources.find(src => src.id === 'house_property')?.value || 0)}</span>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Income from Business */}
-                    {incomeSources.find(src => src.id === 'business' && src.value > 0) && (
-                      <div className="mb-4">
-                        <div className="flex justify-between font-semibold">
-                          <span>Profits And Gains From Business And Profession</span>
-                          <span>{formatIndianCurrency(incomeSources.find(src => src.id === 'business')?.value || 0)}</span>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Income from Capital Gains */}
-                    {incomeSources.find(src => src.id === 'capital_gains' && src.value > 0) && (
-                      <div className="mb-4">
-                        <div className="flex justify-between font-semibold">
-                          <span>Capital Gains</span>
-                          <span>{formatIndianCurrency(incomeSources.find(src => src.id === 'capital_gains')?.value || 0)}</span>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Income from Other Sources */}
-                    {incomeSources.find(src => src.id === 'other_sources' && src.value > 0) && (
-                      <div className="mb-4">
-                        <div className="flex justify-between font-semibold">
-                          <span>Income From Other Sources</span>
-                          <span>{formatIndianCurrency(incomeSources.find(src => src.id === 'other_sources')?.value || 0)}</span>
-                        </div>
-                        {/* Add 80TTA deduction specifically for savings account interest */}
-                        {(() => {
-                          const ttaDeduction = deductions.find(d => d.id === '80tta');
-                          return ttaDeduction && ttaDeduction.value > 0 ? (
-                            <div className="pl-4 mt-1">
-                              <div className="flex justify-between text-gray-600">
-                                <span>Interest from Savings Account</span>
-                                <span>{formatIndianCurrency(Math.min(ttaDeduction.value, 10000))}</span>
-                              </div>
-                            </div>
-                          ) : null;
-                        })()}
-                      </div>
-                    )}
-                    
-                    {/* Gross Total Income */}
-                    <div className="flex justify-between font-semibold mt-4 border-t pt-2">
-                      <span>Gross Total Income</span>
-                      <span>{formatIndianCurrency(taxOutput.totalIncome)}</span>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium">Tax Regime</span>
+                      <Badge variant={regime === 'new' ? 'default' : 'outline'}>
+                        {regime === 'new' ? 'New' : 'Old'}
+                      </Badge>
                     </div>
-                    
-                    {/* Deductions */}
-                    {regime === 'old' && taxOutput.totalDeductions > 0 && (
-                      <div className="mt-4">
-                        <div className="font-semibold">Less Deductions Under Chapter-VIA</div>
-                        <div className="pl-4 mt-2">
-                          {/* Show active deductions */}
-                          {deductions.filter(d => d.value > 0 && !['standard', 'hra', 'lta'].includes(d.id)).map((deduction) => (
-                            <div key={deduction.id} className="flex justify-between">
-                              <span>{deduction.name}</span>
-                              <span>{formatIndianCurrency(deduction.value)}</span>
-                            </div>
-                          ))}
-                          <div className="flex justify-between font-semibold border-t mt-2 pt-1">
-                            <span>Total Deductions</span>
-                            <span>{formatIndianCurrency(taxOutput.totalDeductions)}</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Total Income */}
-                    <div className="flex justify-between font-semibold mt-4 border-t pt-2">
-                      <span>Total Income</span>
-                      <span>{formatIndianCurrency(taxOutput.taxableIncome)}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Person Type</span>
+                      <span className="text-sm capitalize">{personType}</span>
                     </div>
-                    
-                    <div className="flex justify-between text-gray-600">
-                      <span>Total Income Rounded Off U/s 288A</span>
-                      <span>{formatIndianCurrency(Math.round(taxOutput.taxableIncome / 10) * 10)}</span>
-                    </div>
-                    
-                    {/* Tax Computation Section */}
-                    <div className="text-center font-semibold mt-6 mb-4 border-t border-b py-2">
-                      COMPUTATION OF TAX ON TOTAL INCOME
-                    </div>
-                    
-                    {/* Show slabwise tax breakdown */}
-                    {taxOutput.slabwiseBreakup.map((item, index) => (
-                      <div key={index} className="flex justify-between">
-                        <span>
-                          {item.slab.incomeFrom === 0 
-                            ? (item.slab.taxRate === 0 ? `Tax On Rs. ${item.slab.incomeTo?.toLocaleString('en-IN')}` : `Tax On Rs. ${Math.min(taxOutput.taxableIncome, (item.slab.incomeTo || 0)).toLocaleString('en-IN')}`)
-                            : `Tax On Rs. ${(Math.min(taxOutput.taxableIncome, (item.slab.incomeTo || taxOutput.taxableIncome)) - item.slab.incomeFrom).toLocaleString('en-IN')} (${Math.min(taxOutput.taxableIncome, (item.slab.incomeTo || taxOutput.taxableIncome)).toLocaleString('en-IN')}-${item.slab.incomeFrom.toLocaleString('en-IN')}) @ ${item.slab.taxRate}%`
-                          }
-                        </span>
-                        <span>
-                          {item.slab.taxRate === 0 
-                            ? 'Nil' 
-                            : formatIndianCurrency(item.tax)
-                          }
+                    {personType === 'individual' && (
+                      <div className="flex justify-between items-center mt-2">
+                        <span className="text-sm font-medium">Age Group</span>
+                        <span className="text-sm">
+                          {ageGroup === 'below60' ? 'Below 60 years' : 
+                           ageGroup === '60to80' ? '60 to 80 years' : 'Above 80 years'}
                         </span>
                       </div>
-                    ))}
-                    
-                    {/* Tax Amount */}
-                    <div className="flex justify-between font-semibold mt-2 pt-1">
-                      <span>Tax On Rs. {taxOutput.taxableIncome.toLocaleString('en-IN')}</span>
-                      <span>{formatIndianCurrency(taxOutput.taxAmount)}</span>
-                    </div>
-                    
-                    {/* Surcharge if applicable */}
-                    {taxOutput.surchargeAmount > 0 && (
-                      <div className="flex justify-between">
-                        <span>Add: Surcharge</span>
-                        <span>{formatIndianCurrency(taxOutput.surchargeAmount)}</span>
-                      </div>
                     )}
-                    
-                    {/* Cess */}
-                    <div className="flex justify-between">
-                      <span>Add: Health & Education Cess @ 4%</span>
-                      <span>{formatIndianCurrency(taxOutput.cessAmount)}</span>
-                    </div>
-                    
-                    {/* Total Tax Liability */}
-                    <div className="flex justify-between font-semibold mt-2 pt-1 border-t">
-                      <span>Total Tax Liability</span>
-                      <span>{formatIndianCurrency(taxOutput.totalTaxPayable)}</span>
-                    </div>
-                    
-                    {/* Rounded Tax U/s 288B */}
-                    <div className="flex justify-between font-semibold mt-4 mb-4">
-                      <span>Tax Rounded Off U/s 288B</span>
-                      <span>{formatIndianCurrency(taxOutput.totalTaxPayable)}</span>
-                    </div>
                   </div>
                   
-                  {/* Tax Summary Card */}
-                  <div className="bg-muted p-4 rounded-lg">
-                    <h3 className="font-medium mb-2">Tax Summary</h3>
-                    <div className="space-y-3">
+                  <Separator />
+                  
+                  <div>
+                    <h4 className="font-medium mb-2">Income & Deductions</h4>
+                    <div className="space-y-2">
                       <div className="flex justify-between">
                         <span className="text-sm">Total Income</span>
                         <span className="font-medium">{formatIndianCurrency(taxOutput.totalIncome)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm">Taxable Income</span>
-                        <span className="font-medium">{formatIndianCurrency(taxOutput.taxableIncome)}</span>
+                        <span className="text-sm">Total Deductions</span>
+                        <span className="font-medium">- {formatIndianCurrency(taxOutput.totalDeductions)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm">Total Tax</span>
-                        <span className="font-medium">{formatIndianCurrency(taxOutput.totalTaxPayable)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm">Effective Tax Rate</span>
-                        <span className="font-medium">{taxOutput.effectiveTaxRate.toFixed(2)}%</span>
+                        <span className="text-sm font-medium">Taxable Income</span>
+                        <span className="font-bold">{formatIndianCurrency(taxOutput.taxableIncome)}</span>
                       </div>
                     </div>
                   </div>
-
-                  {/* Actions */}
-                  <div className="flex flex-col gap-2">
+                  
+                  <Separator />
+                  
+                  <div>
+                    <h4 className="font-medium mb-2">Tax Calculation</h4>
+                    
+                    <div className="mb-4">
+                      <h5 className="text-sm font-medium mb-2">Slab-wise Tax</h5>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-1/2">Income Slab</TableHead>
+                            <TableHead className="text-right">Tax</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {taxOutput.slabwiseBreakup.map((item, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="text-sm">
+                                {item.slab.min === 0 ? 'Up to ' : 
+                                 item.slab.max === Infinity ? 'Above ' + formatIndianCurrency(item.slab.min) : 
+                                 formatIndianCurrency(item.slab.min) + ' to ' + formatIndianCurrency(item.slab.max)}
+                                <span className="ml-1 text-xs text-muted-foreground">
+                                  @{item.slab.rate}%
+                                </span>
+                              </TableCell>
+                              <TableCell className="text-right font-medium">
+                                {formatIndianCurrency(item.tax)}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm">Base Tax</span>
+                        <span className="font-medium">{formatIndianCurrency(taxOutput.taxAmount)}</span>
+                      </div>
+                      {taxOutput.surchargeAmount > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-sm">Surcharge</span>
+                          <span className="font-medium">{formatIndianCurrency(taxOutput.surchargeAmount)}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between">
+                        <span className="text-sm">Health & Education Cess (4%)</span>
+                        <span className="font-medium">{formatIndianCurrency(taxOutput.cessAmount)}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 p-4 bg-primary/5 rounded-lg border-l-4 border-primary">
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold">Total Tax</span>
+                      <span className="text-xl font-bold">{formatIndianCurrency(taxOutput.totalTaxPayable)}</span>
+                    </div>
+                    <div className="flex justify-between items-center mt-1">
+                      <span className="text-sm text-muted-foreground">Effective Tax Rate</span>
+                      <span className="text-sm font-medium">{taxOutput.effectiveTaxRate.toFixed(2)}%</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-2 pt-2">
                     <Button 
                       variant="outline" 
-                      onClick={calculateTaxOutput}
                       className="w-full"
+                      onClick={() => resetCalculation()}
                     >
-                      Recalculate
+                      Reset
                     </Button>
-                    
-                    <Link href="/itr-wizard" className="w-full">
-                      <Button 
-                        variant="default" 
-                        className="w-full bg-blue-600 hover:bg-blue-700"
-                      >
-                        Start Filing ITR <ArrowUpRightFromCircle className="ml-2 h-4 w-4" />
-                      </Button>
-                    </Link>
+                    <Button 
+                      variant="default" 
+                      className="w-full"
+                      asChild
+                    >
+                      <Link to="/start-filing">Start Filing <ArrowUpRightFromCircle className="ml-2 h-4 w-4" /></Link>
+                    </Button>
                   </div>
                 </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12 text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Calculator className="h-8 w-8 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium">Tax Computation</h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Fill out the details in the form and click 'Calculate Tax' to see your tax estimate.
+                    </p>
+                  </div>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => setActiveTab('basic-details')}
+                  >
+                    Start Calculation
+                  </Button>
+                </div>
               )}
+            </CardContent>
+          </Card>
+          
+          {/* Additional tax info card */}
+          <Card className="mt-6">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Tax Slabs for {assessmentYear}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="flex items-center">
+                  <Badge variant={regime === 'new' ? 'default' : 'outline'} className="mr-2">
+                    {regime === 'new' ? 'New Regime' : 'Old Regime'}
+                  </Badge>
+                  {personType === 'individual' && (
+                    <Badge variant="outline">
+                      {ageGroup === 'below60' ? 'Below 60 years' : 
+                       ageGroup === '60to80' ? '60 to 80 years' : 'Above 80 years'}
+                    </Badge>
+                  )}
+                </div>
+                
+                <ScrollArea className="h-48 mt-2 rounded-md border p-2">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Income Range</TableHead>
+                        <TableHead className="text-right">Rate</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {selectedRegimeData.slabs.map((slab, i) => (
+                        <TableRow key={i}>
+                          <TableCell>
+                            {slab.min === 0 ? 'Up to ' + formatIndianCurrency(slab.max) : 
+                             slab.max === Infinity ? 'Above ' + formatIndianCurrency(slab.min) : 
+                             formatIndianCurrency(slab.min) + ' - ' + formatIndianCurrency(slab.max)}
+                          </TableCell>
+                          <TableCell className="text-right">{slab.rate}%</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              </div>
             </CardContent>
           </Card>
         </div>
