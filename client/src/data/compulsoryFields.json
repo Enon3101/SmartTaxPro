@@ -1,53 +1,378 @@
 {
-  "S": [
-    "employerName",
-    "employerTAN",
-    "grossSalary",
-    "standardDeduction",
-    "section10Exemptions"
-  ],
-  "H": [
-    "propertyAddress",
-    "ownershipType",
-    "interestPaid",
-    "rentalIncome",
-    "municipalTaxes"
-  ],
-  "G": [
-    "assetType",
-    "purchaseDate",
-    "saleDate",
-    "purchaseCost",
-    "saleCost",
-    "improvementCost",
-    "indexationApplicable"
-  ],
-  "B": [
-    "businessName",
-    "businessNature",
-    "turnover",
-    "netProfit",
-    "cashPercentage",
-    "digitalPercentage",
-    "booksAudited"
-  ],
-  "P": [
-    "businessName",
-    "turnover",
-    "cashPercentage",
-    "digitalPercentage",
-    "presumptiveSection"
-  ],
-  "I": [
-    "interestSource",
-    "interestType",
-    "interestAmount",
-    "tdsAmount"
-  ],
-  "O": [
-    "incomeSource",
-    "incomeDescription",
-    "incomeAmount",
-    "tdsCertificate"
-  ]
+  "S": {
+    "fields": [
+      {
+        "id": "employerName",
+        "label": "Employer Name",
+        "type": "text",
+        "validation": {
+          "required": true,
+          "minLength": 3
+        }
+      },
+      {
+        "id": "grossSalary",
+        "label": "Gross Salary",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        }
+      },
+      {
+        "id": "tdsDeducted",
+        "label": "TDS Deducted",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        }
+      }
+    ],
+    "description": "Income from salary or pension requires details about your employer and salary breakup."
+  },
+  "H": {
+    "fields": [
+      {
+        "id": "propertyType",
+        "label": "Property Type",
+        "type": "select",
+        "options": [
+          { "value": "self-occupied", "label": "Self-Occupied" },
+          { "value": "let-out", "label": "Let Out" },
+          { "value": "deemed-let-out", "label": "Deemed Let Out" }
+        ],
+        "validation": {
+          "required": true
+        }
+      },
+      {
+        "id": "address",
+        "label": "Property Address",
+        "type": "textarea",
+        "validation": {
+          "required": true,
+          "minLength": 10
+        }
+      },
+      {
+        "id": "annualRentalValue",
+        "label": "Annual Value/Fair Rent",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        },
+        "showWhen": {
+          "field": "propertyType",
+          "equals": ["let-out", "deemed-let-out"]
+        }
+      },
+      {
+        "id": "municipalTaxes",
+        "label": "Municipal Taxes Paid",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        },
+        "showWhen": {
+          "field": "propertyType",
+          "equals": ["let-out", "deemed-let-out"]
+        }
+      },
+      {
+        "id": "interestOnLoan",
+        "label": "Interest on Housing Loan",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        }
+      }
+    ],
+    "description": "Income from house property requires details about property type, address, and financial information."
+  },
+  "G": {
+    "fields": [
+      {
+        "id": "assetType",
+        "label": "Type of Asset",
+        "type": "select",
+        "options": [
+          { "value": "equity", "label": "Equity Shares/Mutual Funds" },
+          { "value": "real-estate", "label": "Real Estate/Property" },
+          { "value": "debt", "label": "Debt Instruments" },
+          { "value": "other", "label": "Other Capital Assets" }
+        ],
+        "validation": {
+          "required": true
+        }
+      },
+      {
+        "id": "holdingPeriod",
+        "label": "Holding Period",
+        "type": "select",
+        "options": [
+          { "value": "short-term", "label": "Short Term" },
+          { "value": "long-term", "label": "Long Term" }
+        ],
+        "validation": {
+          "required": true
+        }
+      },
+      {
+        "id": "saleConsideration",
+        "label": "Sale Consideration",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        }
+      },
+      {
+        "id": "costOfAcquisition",
+        "label": "Cost of Acquisition",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        }
+      },
+      {
+        "id": "improvementCost",
+        "label": "Cost of Improvement",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        }
+      },
+      {
+        "id": "dateOfAcquisition",
+        "label": "Date of Acquisition",
+        "type": "date",
+        "validation": {
+          "required": true
+        }
+      },
+      {
+        "id": "dateOfTransfer",
+        "label": "Date of Transfer",
+        "type": "date",
+        "validation": {
+          "required": true
+        }
+      }
+    ],
+    "description": "Capital gains require information about the asset type, acquisition/sale details, and holding period."
+  },
+  "B": {
+    "fields": [
+      {
+        "id": "businessName",
+        "label": "Business Name",
+        "type": "text",
+        "validation": {
+          "required": true,
+          "minLength": 3
+        }
+      },
+      {
+        "id": "businessType",
+        "label": "Business Type",
+        "type": "select",
+        "options": [
+          { "value": "manufacturing", "label": "Manufacturing" },
+          { "value": "trading", "label": "Trading" },
+          { "value": "service", "label": "Service" },
+          { "value": "profession", "label": "Profession" },
+          { "value": "other", "label": "Other" }
+        ],
+        "validation": {
+          "required": true
+        }
+      },
+      {
+        "id": "grossReceipts",
+        "label": "Gross Receipts/Turnover",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        }
+      },
+      {
+        "id": "grossProfit",
+        "label": "Gross Profit",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        }
+      },
+      {
+        "id": "salariesWages",
+        "label": "Salaries and Wages",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        }
+      },
+      {
+        "id": "rentRates",
+        "label": "Rent, Rates, and Taxes",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        }
+      },
+      {
+        "id": "interestExpenses",
+        "label": "Interest Expenses",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        }
+      },
+      {
+        "id": "depreciation",
+        "label": "Depreciation",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        }
+      },
+      {
+        "id": "otherExpenses",
+        "label": "Other Expenses",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        }
+      },
+      {
+        "id": "netProfit",
+        "label": "Net Profit",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        }
+      }
+    ],
+    "description": "Business income requires information about your business operations, receipts, and expenses."
+  },
+  "P": {
+    "fields": [
+      {
+        "id": "businessName",
+        "label": "Business Name",
+        "type": "text",
+        "validation": {
+          "required": true,
+          "minLength": 3
+        }
+      },
+      {
+        "id": "presumptiveSection",
+        "label": "Presumptive Income Scheme",
+        "type": "select",
+        "options": [
+          { "value": "44AD", "label": "44AD - Business" },
+          { "value": "44ADA", "label": "44ADA - Profession" },
+          { "value": "44AE", "label": "44AE - Goods Carriage" }
+        ],
+        "validation": {
+          "required": true
+        }
+      },
+      {
+        "id": "grossTurnover",
+        "label": "Gross Turnover/Receipts",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        }
+      },
+      {
+        "id": "presumptiveIncome",
+        "label": "Presumptive Income",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        }
+      },
+      {
+        "id": "paymentMethod",
+        "label": "Receipts through Digital Modes",
+        "type": "select",
+        "options": [
+          { "value": "yes", "label": "Yes" },
+          { "value": "no", "label": "No" }
+        ],
+        "validation": {
+          "required": true
+        },
+        "showWhen": {
+          "field": "presumptiveSection",
+          "equals": ["44AD"]
+        }
+      }
+    ],
+    "description": "Presumptive business income requires details about your business turnover and the applicable presumptive scheme section."
+  },
+  "I": {
+    "fields": [
+      {
+        "id": "incomeSource",
+        "label": "Source of Interest",
+        "type": "select",
+        "options": [
+          { "value": "savings", "label": "Savings Account" },
+          { "value": "fd", "label": "Fixed Deposits" },
+          { "value": "rd", "label": "Recurring Deposits" },
+          { "value": "bonds", "label": "Bonds/Debentures" },
+          { "value": "other", "label": "Other Interest Income" }
+        ],
+        "validation": {
+          "required": true
+        }
+      },
+      {
+        "id": "amount",
+        "label": "Interest Amount",
+        "type": "number",
+        "validation": {
+          "required": true,
+          "min": 0
+        }
+      },
+      {
+        "id": "tdsDeducted",
+        "label": "TDS Deducted",
+        "type": "number",
+        "validation": {
+          "required": false,
+          "min": 0
+        }
+      },
+      {
+        "id": "description",
+        "label": "Description",
+        "type": "text",
+        "validation": {
+          "required": false
+        }
+      }
+    ],
+    "description": "Interest income requires information about the source of interest and the amount received."
+  }
 }

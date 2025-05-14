@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { ArrowLeft, ArrowRight, Briefcase, Building, Calculator, Home, LineChart, PiggyBank } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { IncomeTile } from '@/components/ItrWizard/IncomeTile';
 import { StepIndicator } from '@/components/ItrWizard/StepIndicator';
+import { DynamicForm } from '@/components/ItrWizard/DynamicForm';
 import { useItrWizard } from '@/context/ItrWizardContext';
 import { getITRDescription } from '@/utils/itrSelector';
+import { getAllCompulsoryFields, getCompulsoryFields } from '@/utils/compulsoryFieldsLoader';
 
 // Define wizard steps
 const wizardSteps = [
@@ -71,7 +73,19 @@ const incomeSources = [
 export default function ItrWizard() {
   const [location, navigate] = useLocation();
   const { state, dispatch } = useItrWizard();
-  const { step, sources, itr } = state;
+  const { step, sources, itr, compulsory } = state;
+  const [currentSource, setCurrentSource] = useState<string | null>(null);
+
+  // Load source fields when sources change
+  useEffect(() => {
+    if (sources.length > 0 && step === 2) {
+      // If there are selected sources but no current source is selected,
+      // set the first source as current
+      if (!currentSource || !sources.includes(currentSource)) {
+        setCurrentSource(sources[0]);
+      }
+    }
+  }, [sources, step, currentSource]);
 
   // Toggle a source code in the selected sources array
   const toggleSource = (code: string) => {
@@ -99,6 +113,33 @@ export default function ItrWizard() {
   // Reset the wizard
   const resetWizard = () => {
     dispatch({ type: 'RESET' });
+  };
+
+  // Handle form submission for required fields
+  const handleFormSubmit = (data: any) => {
+    // Update compulsory fields in state
+    const sourceCode = data.sourceCode;
+    const newCompulsory = { ...compulsory };
+    
+    // Initialize the source array if it doesn't exist
+    if (!newCompulsory[sourceCode]) {
+      newCompulsory[sourceCode] = [];
+    }
+    
+    // Add the form data, removing the sourceCode property
+    const { sourceCode: _, ...formData } = data;
+    newCompulsory[sourceCode].push(formData);
+    
+    dispatch({ type: 'SET_COMPULSORY', payload: newCompulsory });
+    
+    // If this is the last source, move to next step
+    const currentIndex = sources.indexOf(sourceCode);
+    if (currentIndex < sources.length - 1) {
+      setCurrentSource(sources[currentIndex + 1]);
+    } else {
+      // Move to summary step
+      goToNextStep();
+    }
   };
 
   return (
@@ -145,9 +186,9 @@ export default function ItrWizard() {
               </div>
 
               {sources.length === 0 && (
-                <Alert variant="warning" className="mb-4">
-                  <AlertTitle>No income sources selected</AlertTitle>
-                  <AlertDescription>
+                <Alert className="mb-4 bg-amber-50 border-amber-200">
+                  <AlertTitle className="text-amber-700">No income sources selected</AlertTitle>
+                  <AlertDescription className="text-amber-600">
                     Please select at least one source of income to proceed.
                   </AlertDescription>
                 </Alert>
@@ -155,19 +196,82 @@ export default function ItrWizard() {
             </div>
           )}
 
-          {/* Step 2: Required Details (placeholder for now) */}
+          {/* Step 2: Required Details with Dynamic Form */}
           {step === 2 && (
             <div>
-              <p className="text-gray-600 mb-4">
-                Based on your selected income sources, we need some additional information.
-                This section will be customized based on your selections.
-              </p>
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <p className="text-sm text-blue-800">
-                  This is where we would dynamically generate forms based on the compulsory fields
-                  for your selected income sources. For now, you can proceed to the summary.
-                </p>
-              </div>
+              {sources.length > 0 ? (
+                <div>
+                  <div className="flex mb-6 overflow-x-auto py-2 gap-2">
+                    {sources.map((sourceCode) => {
+                      const source = incomeSources.find(s => s.code === sourceCode);
+                      const isComplete = compulsory[sourceCode]?.length > 0;
+                      const isActive = sourceCode === currentSource;
+                      
+                      return (
+                        <div 
+                          key={sourceCode}
+                          onClick={() => setCurrentSource(sourceCode)}
+                          className={`
+                            px-4 py-2 border rounded-lg flex items-center cursor-pointer min-w-max
+                            ${isComplete ? 'bg-green-50 border-green-300 text-green-700' : ''}
+                            ${isActive && !isComplete ? 'bg-blue-50 border-blue-300 text-blue-700' : ''}
+                            ${!isActive && !isComplete ? 'bg-gray-50 border-gray-300 text-gray-700' : ''}
+                          `}
+                        >
+                          <div className="mr-2">
+                            {source?.icon}
+                          </div>
+                          <div>
+                            <span className="font-medium">{source?.label}</span>
+                            {isComplete && (
+                              <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                                Complete
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  {currentSource && (
+                    <div>
+                      {(() => {
+                        const sourceFields = getCompulsoryFields(currentSource);
+                        const source = incomeSources.find(s => s.code === currentSource);
+                        
+                        if (sourceFields) {
+                          return (
+                            <DynamicForm
+                              sourceCode={currentSource}
+                              fields={sourceFields}
+                              onSubmit={(data) => handleFormSubmit({...data, sourceCode: currentSource})}
+                              title={`${source?.label} Details`}
+                              description={sourceFields.description}
+                            />
+                          );
+                        }
+                        
+                        return (
+                          <Alert className="mb-4">
+                            <AlertTitle>No form fields found for {source?.label}</AlertTitle>
+                            <AlertDescription>
+                              Please contact support for assistance.
+                            </AlertDescription>
+                          </Alert>
+                        );
+                      })()}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Alert className="mb-4 bg-amber-50 border-amber-200">
+                  <AlertTitle className="text-amber-700">No income sources selected</AlertTitle>
+                  <AlertDescription className="text-amber-600">
+                    Please go back to step 1 and select at least one source of income.
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
           )}
 
