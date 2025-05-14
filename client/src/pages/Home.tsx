@@ -223,7 +223,7 @@ const Home = () => {
         className="py-8 bg-muted"
       >
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {[
               {
                 href: "/start-filing",
@@ -252,6 +252,12 @@ const Home = () => {
                 ),
                 title: "Tax Resources",
                 description: "Access guides and ITR forms"
+              },
+              {
+                href: "/tax-expert",
+                icon: <Bot className="h-6 w-6 text-blue-500" />,
+                title: "TaxGuru AI Expert",
+                description: "Get instant answers to tax questions"
               },
               {
                 href: "/support",
