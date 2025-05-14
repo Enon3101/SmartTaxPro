@@ -300,29 +300,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Set up the uploads directory to serve files
   app.use("/uploads", express.static(uploadDir));
 
-  // Test endpoint for Gemini API
-  apiRouter.get("/test-gemini", async (req, res) => {
+  // Test endpoint for OpenRouter API
+  apiRouter.get("/test-openrouter", async (req, res) => {
     try {
-      if (!process.env.GOOGLE_GEMINI_API_KEY) {
+      if (!process.env.OPENROUTER_API_KEY) {
         return res.json({
           success: false,
-          message: "Google Gemini API key is missing"
+          message: "OpenRouter API key is missing"
         });
       }
       
       // Try a super simple request to the API
-      const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent", {
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-goog-api-key": process.env.GOOGLE_GEMINI_API_KEY
+          "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          "HTTP-Referer": "https://mytaxindia.com", // Replace with your domain
+          "X-Title": "Indian Tax Expert"
         },
         body: JSON.stringify({
-          prompt: {
-            text: "Hello, what is 2+2?"
-          },
-          temperature: 0.2,
-          candidate_count: 1
+          model: "openai/gpt-3.5-turbo", // Use a free-tier model
+          messages: [
+            {
+              role: "user",
+              content: "Hello, what is 2+2?"
+            }
+          ],
+          temperature: 0.2
         })
       });
       
@@ -334,7 +339,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         response: data
       });
     } catch (error) {
-      console.error("Error testing Gemini API:", error);
+      console.error("Error testing OpenRouter API:", error);
       res.json({
         success: false,
         error: error instanceof Error ? error.message : String(error)
