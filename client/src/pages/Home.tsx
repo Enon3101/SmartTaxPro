@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "wouter";
-import { ArrowRight, CheckCircle, Star, FileText, Calculator, CalendarDays, Upload, Phone } from "lucide-react";
+import { ArrowRight, CheckCircle, Star, FileText, Calculator, CalendarDays, Upload, Phone, Bot } from "lucide-react";
 import { LoginDialog } from "@/components/LoginDialog";
 import { useAuth } from "@/context/AuthContext";
 import { useState, useContext } from "react";
@@ -363,6 +363,110 @@ const Home = () => {
                 </Card>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* AI Tax Expert Section */}
+      <motion.section 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="py-12 bg-white"
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col lg:flex-row items-center gap-8">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="lg:w-1/2"
+            >
+              <span className="text-sm font-medium px-3 py-1 bg-blue-50 text-blue-600 rounded-full">NEW FEATURE</span>
+              <h2 className="text-2xl md:text-3xl font-bold mt-3 mb-4">
+                Meet <span className="text-blue-600">TaxGuru</span>, Your Personal Tax Expert
+              </h2>
+              <p className="text-gray-700 mb-6">
+                Have questions about Indian tax laws, deductions, or filing requirements? Our AI-powered 
+                Tax Expert is here to help you understand complex tax concepts in simple language. Get 
+                immediate answers to your tax queries anytime.
+              </p>
+              <ul className="space-y-3 mb-6">
+                {[
+                  "Understand tax deductions and exemptions",
+                  "Learn about income tax slabs and calculations",
+                  "Get guidance on choosing the right ITR form",
+                  "Know filing deadlines and requirements",
+                  "Explore tax saving investment options"
+                ].map((item, index) => (
+                  <motion.li 
+                    key={index}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.5 + (index * 0.1) }}
+                    className="flex items-start"
+                  >
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
+                    <span>{item}</span>
+                  </motion.li>
+                ))}
+              </ul>
+              <Link href="/tax-expert">
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                  Ask TaxGuru Now <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="lg:w-1/2"
+            >
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100 shadow-md">
+                <div className="flex items-center gap-3 mb-4 pb-3 border-b border-blue-100">
+                  <div className="bg-blue-600 text-white p-2 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                      <circle cx="12" cy="12" r="10"/>
+                      <path d="M12 16v-4"/>
+                      <path d="M12 8h.01"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-blue-800">TaxGuru - Indian Tax Expert</h3>
+                    <p className="text-sm text-blue-700">Answers all your tax-related questions</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-4 mb-4">
+                  <div className="bg-white p-3 rounded-lg shadow-sm ml-auto mr-0 max-w-[80%] border border-blue-100">
+                    <p className="text-sm">What are the tax slabs for AY 2026-27?</p>
+                  </div>
+                  
+                  <div className="bg-blue-50 p-3 rounded-lg shadow-sm max-w-[80%] border border-blue-100">
+                    <p className="text-sm">Here are the income tax slabs for AY 2026-27 (FY 2025-26) under the new tax regime:</p>
+                    <ul className="text-sm list-disc pl-5 mt-1 space-y-1">
+                      <li>Up to ₹3,00,000: No tax</li>
+                      <li>₹3,00,001 to ₹6,00,000: 5%</li>
+                      <li>₹6,00,001 to ₹9,00,000: 10%</li>
+                      <li>₹9,00,001 to ₹12,00,000: 15%</li>
+                      <li>₹12,00,001 to ₹15,00,000: 20%</li>
+                      <li>Above ₹15,00,000: 30%</li>
+                    </ul>
+                    <p className="text-sm mt-2">Remember, these rates apply only to the new tax regime. The old regime has different slabs with various deductions available.</p>
+                  </div>
+                </div>
+                
+                <div className="text-center">
+                  <Link href="/tax-expert">
+                    <Button variant="outline" className="bg-white border-blue-200 text-blue-700 hover:bg-blue-50">
+                      Try TaxGuru Now
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </motion.section>
