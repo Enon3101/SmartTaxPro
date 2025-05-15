@@ -149,7 +149,14 @@ export default function LoginDialog({
     try {
       const response = await fetch("/api/auth/dev-admin-login", {
         method: "POST",
-        credentials: "include"
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: "admin",
+          password: "admin"
+        })
       });
       
       if (!response.ok) {
