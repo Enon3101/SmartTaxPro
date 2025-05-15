@@ -130,22 +130,34 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
     posts.find(post => post.id === Number(id)) : null;
   
   // Use admin tokens for all fetch requests
-  const fetchWithAdminAuth = async (url: string, options = {}) => {
+  const fetchWithAdminAuth = async (url: string, options: RequestInit = {}) => {
     try {
       const adminAuth = localStorage.getItem('adminAuth');
       if (!adminAuth) throw new Error('No admin auth token');
       
       const { token } = JSON.parse(adminAuth);
       
-      const headers = {
+      // Create new Headers object
+      const defaultHeaders = new Headers({
         'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        ...(options.headers || {})
-      };
+        'Content-Type': 'application/json'
+      });
+      
+      // Add any existing headers from options
+      if (options.headers) {
+        const existingHeaders = options.headers instanceof Headers 
+          ? options.headers 
+          : new Headers(options.headers as HeadersInit);
+          
+        // Merge headers
+        for (const [key, value] of Array.from(existingHeaders.entries())) {
+          defaultHeaders.set(key, value);
+        }
+      }
       
       return fetch(url, {
         ...options,
-        headers
+        headers: defaultHeaders
       });
     } catch (error) {
       console.error('Fetch with admin auth error:', error);
