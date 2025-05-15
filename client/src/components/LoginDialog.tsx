@@ -145,8 +145,26 @@ export default function LoginDialog({
     verifyOtpMutation.mutate();
   };
 
+  const [adminUsername, setAdminUsername] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  
+  const handleAdminLoginClick = () => {
+    setShowAdminLogin(true);
+  };
+  
   const handleAdminLogin = async () => {
     try {
+      // Validate inputs
+      if (!adminUsername || !adminPassword) {
+        toast({
+          title: "Missing Credentials",
+          description: "Please enter both username and password",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       const response = await fetch("/api/auth/dev-admin-login", {
         method: "POST",
         credentials: "include",
@@ -154,8 +172,8 @@ export default function LoginDialog({
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          username: "admin",
-          password: "admin"
+          username: adminUsername,
+          password: adminPassword
         })
       });
       
@@ -165,21 +183,39 @@ export default function LoginDialog({
       
       const data = await response.json();
       if (data.user) {
+        // Store admin session data in localStorage
+        const authData = {
+          token: data.accessToken || 'dev-admin-token',
+          refreshToken: data.refreshToken || 'dev-admin-refresh',
+          user: data.user || { id: 0, username: 'admin', role: 'admin' },
+        };
+        
+        localStorage.setItem('adminAuth', JSON.stringify(authData));
+        
         if (onLoginSuccess) {
           onLoginSuccess(data.user);
         }
+        
         handleOpenChange(false);
+        
         toast({
           title: "Admin Login Successful",
           description: "You are now logged in as Admin",
         });
+        
+        // Redirect to admin dashboard
+        window.location.href = "/admin";
       }
     } catch (error) {
       toast({
         title: "Admin Login Failed",
-        description: "Could not log in as admin",
+        description: "Invalid username or password",
         variant: "destructive",
       });
+    } finally {
+      // Reset the form
+      setAdminUsername("");
+      setAdminPassword("");
     }
   };
 
