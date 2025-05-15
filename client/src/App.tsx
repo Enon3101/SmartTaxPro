@@ -7,6 +7,7 @@ import { TaxDataProvider } from "./context/TaxDataProvider";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeProvider";
 import { ItrWizardProvider } from "./context/ItrWizardContext";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { lazy, Suspense } from "react";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
@@ -29,6 +30,7 @@ import DatabaseEditor from "@/pages/DatabaseEditor";
 import TaxExpert from "@/pages/TaxExpert";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
+import Profile from "@/pages/Profile";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BottomNav from "@/components/BottomNav";
@@ -189,6 +191,7 @@ function Router() {
       <Route path="/tax-expert" component={TaxExpert} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
+      <Route path="/profile" component={Profile} />
 
       {/* Calculator Routes */}
       <Route path="/calculators/index">
