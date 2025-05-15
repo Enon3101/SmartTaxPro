@@ -230,16 +230,66 @@ export default function LoginDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
-            {step === "phone" ? "Login with Mobile" : "Enter OTP"}
+            {showAdminLogin 
+              ? "Admin Login" 
+              : (step === "phone" ? "Login with Mobile" : "Enter OTP")}
           </DialogTitle>
           <DialogDescription>
-            {step === "phone"
-              ? "Enter your mobile number to receive a one-time password."
-              : "Enter the OTP sent to your mobile phone."}
+            {showAdminLogin
+              ? "Enter your admin credentials to access the admin panel."
+              : (step === "phone"
+                ? "Enter your mobile number to receive a one-time password."
+                : "Enter the OTP sent to your mobile phone.")}
           </DialogDescription>
         </DialogHeader>
 
-        {step === "phone" ? (
+        {showAdminLogin ? (
+          // Admin Login Form
+          <form onSubmit={(e) => { e.preventDefault(); handleAdminLogin(); }}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="adminUsername" className="text-right">
+                  Username
+                </Label>
+                <Input
+                  id="adminUsername"
+                  className="col-span-3"
+                  value={adminUsername}
+                  onChange={(e) => setAdminUsername(e.target.value)}
+                  placeholder="Admin username"
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="adminPassword" className="text-right">
+                  Password
+                </Label>
+                <Input
+                  id="adminPassword"
+                  type="password"
+                  className="col-span-3"
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  placeholder="Admin password"
+                  required
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit" className="w-full">
+                Login as Admin
+              </Button>
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="w-full mt-2"
+                onClick={() => setShowAdminLogin(false)}
+              >
+                Back to User Login
+              </Button>
+            </DialogFooter>
+          </form>
+        ) : step === "phone" ? (
           <form onSubmit={handleSendOtp}>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
@@ -291,7 +341,7 @@ export default function LoginDialog({
                     type="button"
                     variant="outline"
                     className="w-full"
-                    onClick={handleAdminLogin}
+                    onClick={handleAdminLoginClick}
                   >
                     <FiLogIn className="mr-2 h-4 w-4" /> Admin Login (Dev Only)
                   </Button>
@@ -367,7 +417,7 @@ export default function LoginDialog({
                     type="button"
                     variant="outline"
                     className="w-full"
-                    onClick={handleAdminLogin}
+                    onClick={handleAdminLoginClick}
                   >
                     <FiLogIn className="mr-2 h-4 w-4" /> Admin Login (Dev Only)
                   </Button>
