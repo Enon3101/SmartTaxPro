@@ -328,8 +328,8 @@ function TaxFormManagement() {
             </div>
             
             {/* Display form data if available */}
-            {(form.personalInfo || form.incomeData || form.deductions80C || 
-              form.deductions80D || form.otherDeductions || form.taxPaid) && (
+            {(form.personalInfo !== undefined || form.incomeData !== undefined || form.deductions80C !== undefined || 
+              form.deductions80D !== undefined || form.otherDeductions !== undefined || form.taxPaid !== undefined) && (
               <div className="mt-6 border-t pt-4">
                 <h3 className="text-lg font-medium mb-4">Form Data</h3>
                 
@@ -345,37 +345,61 @@ function TaxFormManagement() {
                   
                   <TabsContent value="personal" className="p-4 border rounded-md mt-2">
                     <pre className="text-xs overflow-auto max-h-60">
-                      {form.personalInfo ? JSON.stringify(form.personalInfo, null, 2) : "No personal info data"}
+                      {form.personalInfo !== undefined ? 
+                        (typeof form.personalInfo === 'object' ? 
+                          JSON.stringify(form.personalInfo, null, 2) : 
+                          String(form.personalInfo)) 
+                        : "No personal info data"}
                     </pre>
                   </TabsContent>
                   
                   <TabsContent value="income" className="p-4 border rounded-md mt-2">
                     <pre className="text-xs overflow-auto max-h-60">
-                      {form.incomeData ? JSON.stringify(form.incomeData, null, 2) : "No income data"}
+                      {form.incomeData !== undefined ? 
+                        (typeof form.incomeData === 'object' ? 
+                          JSON.stringify(form.incomeData, null, 2) : 
+                          String(form.incomeData)) 
+                        : "No income data"}
                     </pre>
                   </TabsContent>
                   
                   <TabsContent value="deductions80c" className="p-4 border rounded-md mt-2">
                     <pre className="text-xs overflow-auto max-h-60">
-                      {form.deductions80C ? JSON.stringify(form.deductions80C, null, 2) : "No 80C deduction data"}
+                      {form.deductions80C !== undefined ? 
+                        (typeof form.deductions80C === 'object' ? 
+                          JSON.stringify(form.deductions80C, null, 2) : 
+                          String(form.deductions80C)) 
+                        : "No 80C deduction data"}
                     </pre>
                   </TabsContent>
                   
                   <TabsContent value="deductions80d" className="p-4 border rounded-md mt-2">
                     <pre className="text-xs overflow-auto max-h-60">
-                      {form.deductions80D ? JSON.stringify(form.deductions80D, null, 2) : "No 80D deduction data"}
+                      {form.deductions80D !== undefined ? 
+                        (typeof form.deductions80D === 'object' ? 
+                          JSON.stringify(form.deductions80D, null, 2) : 
+                          String(form.deductions80D)) 
+                        : "No 80D deduction data"}
                     </pre>
                   </TabsContent>
                   
                   <TabsContent value="other" className="p-4 border rounded-md mt-2">
                     <pre className="text-xs overflow-auto max-h-60">
-                      {form.otherDeductions ? JSON.stringify(form.otherDeductions, null, 2) : "No other deduction data"}
+                      {form.otherDeductions !== undefined ? 
+                        (typeof form.otherDeductions === 'object' ? 
+                          JSON.stringify(form.otherDeductions, null, 2) : 
+                          String(form.otherDeductions)) 
+                        : "No other deduction data"}
                     </pre>
                   </TabsContent>
                   
                   <TabsContent value="taxpaid" className="p-4 border rounded-md mt-2">
                     <pre className="text-xs overflow-auto max-h-60">
-                      {form.taxPaid ? JSON.stringify(form.taxPaid, null, 2) : "No tax paid data"}
+                      {form.taxPaid !== undefined ? 
+                        (typeof form.taxPaid === 'object' ? 
+                          JSON.stringify(form.taxPaid, null, 2) : 
+                          String(form.taxPaid)) 
+                        : "No tax paid data"}
                     </pre>
                   </TabsContent>
                 </Tabs>
