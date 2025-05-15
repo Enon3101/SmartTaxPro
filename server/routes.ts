@@ -16,7 +16,7 @@ interface AuthenticatedRequest extends ExpressRequest {
   };
 }
 import { nanoid } from "nanoid";
-import { insertTaxFormSchema, insertDocumentSchema } from "@shared/schema";
+import { insertTaxFormSchema, insertDocumentSchema, InsertBlogPost } from "@shared/schema";
 import { db } from "./db";
 import { sql } from "drizzle-orm";
 import { 
@@ -909,6 +909,176 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching documents:", error);
       res.status(500).json({ message: "Failed to fetch documents" });
+    }
+  });
+  
+  // Blog post management endpoints (admin only)
+  
+  // Get all blog posts (with filtering options)
+  adminRouter.get("/blog-posts", async (req, res) => {
+    try {
+      const { limit = 50, offset = 0, category, searchTerm, published } = req.query;
+      
+      // Admin can view all posts regardless of published status
+      const options = {
+        limit: Number(limit),
+        offset: Number(offset),
+        published: published !== undefined ? published === 'true' : undefined,
+        category: category ? String(category) : undefined,
+        searchTerm: searchTerm ? String(searchTerm) : undefined
+      };
+      
+      const result = await storage.getAllBlogPosts(options);
+      res.json(result);
+    } catch (error) {
+      console.error("Error fetching blog posts for admin:", error);
+      res.status(500).json({ message: "Failed to fetch blog posts" });
+    }
+  });
+  
+  // Get a single blog post by ID
+  adminRouter.get("/blog-posts/:id", async (req, res) => {
+    try {
+      const post = await storage.getBlogPostById(Number(req.params.id));
+      
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      res.json(post);
+    } catch (error) {
+      console.error("Error fetching blog post:", error);
+      res.status(500).json({ message: "Failed to fetch blog post" });
+    }
+  });
+  
+  // Create a new blog post
+  adminRouter.post("/blog-posts", async (req, res) => {
+    try {
+      const { 
+        title, 
+        slug, 
+        summary, 
+        content,
+        authorId,
+        authorName, 
+        featuredImage, 
+        category, 
+        tags, 
+        readTime,
+        published
+      } = req.body;
+      
+      // Validate required fields
+      if (!title || !slug || !content || !category) {
+        return res.status(400).json({ 
+          message: "Missing required fields: title, slug, content, and category are required" 
+        });
+      }
+      
+      // Check if slug already exists
+      const existingPost = await storage.getBlogPostBySlug(slug);
+      if (existingPost) {
+        return res.status(400).json({ message: "A post with this slug already exists" });
+      }
+      
+      // Create the post
+      const blogPost = await storage.createBlogPost({
+        title,
+        slug,
+        summary: summary || "",
+        content,
+        authorId: authorId || 1, // Default to admin user ID
+        featuredImage: featuredImage || "",
+        category,
+        tags: tags || [],
+        readTime: readTime || 5,
+        published: published === true
+      });
+      
+      res.status(201).json(blogPost);
+    } catch (error) {
+      console.error("Error creating blog post:", error);
+      res.status(500).json({ message: "Failed to create blog post" });
+    }
+  });
+  
+  // Update a blog post
+  adminRouter.put("/blog-posts/:id", async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      const { 
+        title, 
+        slug, 
+        summary, 
+        content,
+        authorId,
+        authorName, 
+        featuredImage, 
+        category, 
+        tags, 
+        readTime,
+        published
+      } = req.body;
+      
+      // Check if the post exists
+      const existingPost = await storage.getBlogPostById(id);
+      if (!existingPost) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      // If slug is changed, check if it's already in use by another post
+      if (slug !== existingPost.slug) {
+        const postWithSlug = await storage.getBlogPostBySlug(slug);
+        if (postWithSlug && postWithSlug.id !== id) {
+          return res.status(400).json({ message: "A post with this slug already exists" });
+        }
+      }
+      
+      // Prepare update data
+      const updateData: Partial<InsertBlogPost> = {
+        title: title || existingPost.title,
+        slug: slug || existingPost.slug,
+        summary: summary !== undefined ? summary : existingPost.summary,
+        content: content || existingPost.content,
+        authorId: authorId || existingPost.authorId,
+        featuredImage: featuredImage !== undefined ? featuredImage : existingPost.featuredImage,
+        category: category || existingPost.category,
+        tags: tags || existingPost.tags,
+        readTime: readTime || existingPost.readTime
+      };
+      
+      // Special handling for published status change
+      if (published !== undefined && published !== existingPost.published) {
+        updateData.published = published;
+      }
+      
+      // Update the post
+      const updatedPost = await storage.updateBlogPost(id, updateData);
+      res.json(updatedPost);
+    } catch (error) {
+      console.error("Error updating blog post:", error);
+      res.status(500).json({ message: "Failed to update blog post" });
+    }
+  });
+  
+  // Delete a blog post
+  adminRouter.delete("/blog-posts/:id", async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      
+      // Check if the post exists
+      const existingPost = await storage.getBlogPostById(id);
+      if (!existingPost) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      // Delete the post
+      await storage.deleteBlogPost(id);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting blog post:", error);
+      res.status(500).json({ message: "Failed to delete blog post" });
     }
   });
 
