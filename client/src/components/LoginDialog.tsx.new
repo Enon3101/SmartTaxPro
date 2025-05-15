@@ -20,110 +20,104 @@ import GoogleLoginButton from "./GoogleLoginButton";
 interface LoginDialogProps {
   onLoginSuccess?: (user: any) => void;
   buttonText?: string;
-  buttonVariant?: "default" | "outline" | "ghost" | "link" | "destructive" | "secondary";
+  buttonVariant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
   className?: string;
-  onOpenChange?: (open: boolean) => void;
 }
 
-export function LoginDialog({
+export default function LoginDialog({
   onLoginSuccess,
   buttonText = "Login",
   buttonVariant = "default",
-  className,
-  onOpenChange,
+  className = "",
 }: LoginDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [step, setStep] = useState<"phone" | "otp">("phone");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
-  const [step, setStep] = useState<"phone" | "otp">("phone");
   const { toast } = useToast();
 
-  interface SendOtpResponse {
-    message: string;
-    phone: string;
-    otp?: string;
-  }
-
-  // Send OTP mutation
   const sendOtpMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest<SendOtpResponse>("/api/auth/send-otp", {
+      if (!phone || !phone.match(/^[6-9]\d{9}$/)) {
+        throw new Error("Please enter a valid 10-digit mobile number");
+      }
+
+      const response = await apiRequest("/api/auth/send-otp", {
         method: "POST",
+        body: JSON.stringify({ phone }),
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ phone }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to send OTP");
+      }
+
+      return await response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       setStep("otp");
       toast({
         title: "OTP Sent",
-        description: "Check your phone for the OTP code",
+        description: `OTP has been sent to your mobile number ${phone}`,
       });
-      
-      // For development, auto-fill OTP if provided in response
-      if (data.otp) {
-        setOtp(data.otp);
-      }
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
-        title: "Error",
-        description: error?.message || "Failed to send OTP",
+        title: "Failed to send OTP",
+        description: error.message,
         variant: "destructive",
       });
     },
   });
 
-  interface VerifyOtpResponse {
-    message: string;
-    user: {
-      id: number;
-      username: string;
-      phone: string;
-      role: string;
-    };
-  }
-
-  // Verify OTP mutation
   const verifyOtpMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest<VerifyOtpResponse>("/api/auth/verify-otp", {
+      if (!otp || !otp.match(/^\d{6}$/)) {
+        throw new Error("Please enter a valid 6-digit OTP");
+      }
+
+      const response = await apiRequest("/api/auth/verify-otp", {
         method: "POST",
+        body: JSON.stringify({ phone, otp }),
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ phone, otp }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Invalid OTP");
+      }
+
+      return await response.json();
     },
-    onSuccess: (data: VerifyOtpResponse) => {
+    onSuccess: (data) => {
       toast({
         title: "Login Successful",
-        description: "You are now logged in",
+        description: "You have been logged in successfully",
       });
       
-      // Set user in localStorage for persistent login
-      if (data.user) {
-        localStorage.setItem("taxUser", JSON.stringify(data.user));
-        
-        // Invalidate queries that might depend on auth status
-        queryClient.invalidateQueries();
-        
-        // Call the onLoginSuccess callback if provided
-        if (onLoginSuccess) {
-          onLoginSuccess(data.user);
-        }
+      if (onLoginSuccess) {
+        onLoginSuccess(data.user);
       }
       
-      // Close the dialog
       setIsOpen(false);
-      resetForm();
+      
+      // Reset form
+      setStep("phone");
+      setPhone("");
+      setOtp("");
+      
+      // Update cache
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
-        title: "Error",
-        description: error?.message || "Invalid OTP",
+        title: "Verification Failed",
+        description: error.message,
         variant: "destructive",
       });
     },
@@ -131,52 +125,16 @@ export function LoginDialog({
 
   const handleSendOtp = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone || phone.length < 10) {
-      toast({
-        title: "Invalid Input",
-        description: "Please enter a valid phone number",
-        variant: "destructive",
-      });
-      return;
-    }
-    
     sendOtpMutation.mutate();
   };
 
   const handleVerifyOtp = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!otp || otp.length < 4) {
-      toast({
-        title: "Invalid Input",
-        description: "Please enter the OTP sent to your phone",
-        variant: "destructive",
-      });
-      return;
-    }
-    
     verifyOtpMutation.mutate();
   };
 
-  const resetForm = () => {
-    setPhone("");
-    setOtp("");
-    setStep("phone");
-  };
-
-  const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
-    if (!open) {
-      // Reset form when dialog is closed
-      resetForm();
-    }
-    // Also call the external onOpenChange callback if provided
-    if (onOpenChange) {
-      onOpenChange(open);
-    }
-  };
-
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant={buttonVariant} className={className}>
           <FiLogIn className="mr-2 h-4 w-4" />
@@ -229,39 +187,52 @@ export function LoginDialog({
                 <FiPhone className="ml-2 h-4 w-4" />
               </Button>
               
-              {/* TEMPORARY: Admin login for development only */}
+              {/* Alternative login methods */}
               <div className="w-full mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full"
-                  onClick={async () => {
-                    try {
-                      const response = await apiRequest("/api/auth/dev-admin-login", {
-                        method: "POST",
-                      });
-                      
-                      if (response && response.user) {
-                        if (onLoginSuccess) {
-                          onLoginSuccess(response.user);
+                <div className="flex flex-col gap-2">
+                  {/* Google Login */}
+                  <div className="w-full">
+                    <GoogleLoginButton 
+                      size="large"
+                      theme="outline"
+                      text="signin_with"
+                      width="100%"
+                    />
+                  </div>
+                  
+                  {/* Admin Login (Development only) */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={async () => {
+                      try {
+                        const response = await apiRequest("/api/auth/dev-admin-login", {
+                          method: "POST",
+                        });
+                        
+                        if (response && response.user) {
+                          if (onLoginSuccess) {
+                            onLoginSuccess(response.user);
+                          }
+                          setIsOpen(false);
+                          toast({
+                            title: "Admin Login Successful",
+                            description: "You are now logged in as Admin",
+                          });
                         }
-                        setIsOpen(false);
+                      } catch (error) {
                         toast({
-                          title: "Admin Login Successful",
-                          description: "You are now logged in as Admin",
+                          title: "Admin Login Failed",
+                          description: "Could not log in as admin",
+                          variant: "destructive",
                         });
                       }
-                    } catch (error) {
-                      toast({
-                        title: "Admin Login Failed",
-                        description: "Could not log in as admin",
-                        variant: "destructive",
-                      });
-                    }
-                  }}
-                >
-                  <FiLogIn className="mr-2 h-4 w-4" /> Admin Login (Dev Only)
-                </Button>
+                    }}
+                  >
+                    <FiLogIn className="mr-2 h-4 w-4" /> Admin Login (Dev Only)
+                  </Button>
+                </div>
               </div>
             </DialogFooter>
           </form>
@@ -315,39 +286,52 @@ export function LoginDialog({
                 {verifyOtpMutation.isPending ? "Verifying..." : "Verify & Login"}
               </Button>
               
-              {/* TEMPORARY: Admin login for development only */}
+              {/* Alternative login methods */}
               <div className="w-full mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full"
-                  onClick={async () => {
-                    try {
-                      const response = await apiRequest("/api/auth/dev-admin-login", {
-                        method: "POST",
-                      });
-                      
-                      if (response && response.user) {
-                        if (onLoginSuccess) {
-                          onLoginSuccess(response.user);
+                <div className="flex flex-col gap-2">
+                  {/* Google Login */}
+                  <div className="w-full">
+                    <GoogleLoginButton 
+                      size="large"
+                      theme="outline"
+                      text="signin_with"
+                      width="100%"
+                    />
+                  </div>
+                  
+                  {/* Admin Login (Development only) */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={async () => {
+                      try {
+                        const response = await apiRequest("/api/auth/dev-admin-login", {
+                          method: "POST",
+                        });
+                        
+                        if (response && response.user) {
+                          if (onLoginSuccess) {
+                            onLoginSuccess(response.user);
+                          }
+                          setIsOpen(false);
+                          toast({
+                            title: "Admin Login Successful",
+                            description: "You are now logged in as Admin",
+                          });
                         }
-                        setIsOpen(false);
+                      } catch (error) {
                         toast({
-                          title: "Admin Login Successful",
-                          description: "You are now logged in as Admin",
+                          title: "Admin Login Failed",
+                          description: "Could not log in as admin",
+                          variant: "destructive",
                         });
                       }
-                    } catch (error) {
-                      toast({
-                        title: "Admin Login Failed",
-                        description: "Could not log in as admin",
-                        variant: "destructive",
-                      });
-                    }
-                  }}
-                >
-                  <FiLogIn className="mr-2 h-4 w-4" /> Admin Login (Dev Only)
-                </Button>
+                    }}
+                  >
+                    <FiLogIn className="mr-2 h-4 w-4" /> Admin Login (Dev Only)
+                  </Button>
+                </div>
               </div>
             </DialogFooter>
           </form>
