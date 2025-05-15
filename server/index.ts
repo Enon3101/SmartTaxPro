@@ -14,6 +14,9 @@ if (!fs.existsSync(uploadDir)) {
 
 const app = express();
 
+// Trust proxies for proper client IP detection (needed for rate limiting)
+app.set('trust proxy', 1);
+
 // Apply security middleware
 setupSecurityMiddleware(app);
 

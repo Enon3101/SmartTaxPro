@@ -1,12 +1,9 @@
 import { OAuth2Client } from 'google-auth-library';
-import { storage } from './storage';
 import { generateToken } from './auth';
-import { UserRole } from './auth';
+import { storage } from './storage';
 
-// Create a Google OAuth client instance with the client ID
-const googleClient = new OAuth2Client({
-  clientId: process.env.GOOGLE_CLIENT_ID,
-});
+// Create an OAuth client using the client ID
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 /**
  * Verify Google ID token and get user information
@@ -16,27 +13,35 @@ const googleClient = new OAuth2Client({
 export async function verifyGoogleToken(idToken: string) {
   try {
     // Verify the token
-    const ticket = await googleClient.verifyIdToken({
+    const ticket = await client.verifyIdToken({
       idToken,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience: process.env.GOOGLE_CLIENT_ID
     });
-
+    
     // Get the payload from the ticket
     const payload = ticket.getPayload();
-    
     if (!payload) {
       throw new Error('Invalid Google token payload');
     }
-
-    // Extract user information from the payload
-    const { sub, email, given_name, family_name, picture } = payload;
-
+    
+    // Extract user info from the payload
+    const googleId = payload['sub']; // Google's unique identifier for the user
+    const email = payload['email'];
+    const firstName = payload['given_name'];
+    const lastName = payload['family_name'];
+    const profileImageUrl = payload['picture'];
+    
+    // Verify email is verified by Google (optional, but recommended)
+    if (payload['email_verified'] !== true) {
+      throw new Error('Email not verified by Google');
+    }
+    
     return {
-      googleId: sub,
-      email: email,
-      firstName: given_name,
-      lastName: family_name,
-      profileImageUrl: picture,
+      googleId,
+      email,
+      firstName,
+      lastName,
+      profileImageUrl
     };
   } catch (error) {
     console.error('Error verifying Google token:', error);
@@ -52,53 +57,53 @@ export async function verifyGoogleToken(idToken: string) {
  */
 export async function processGoogleLogin(googleUserInfo: {
   googleId: string;
-  email: string;
+  email: string | undefined;
   firstName?: string;
   lastName?: string;
   profileImageUrl?: string;
 }) {
   try {
-    // Try to find an existing user with this Google ID
+    // First, try to find a user with this Google ID
     let user = await storage.getUserByGoogleId(googleUserInfo.googleId);
-
+    
     // If no user found, try to find by email
     if (!user && googleUserInfo.email) {
       user = await storage.getUserByEmail(googleUserInfo.email);
-    }
-
-    // If still no user found, create a new user
-    if (!user) {
-      // Generate a username from the email
-      const username = googleUserInfo.email.split('@')[0] + Math.floor(Math.random() * 1000);
       
-      // Create a new user with Google information
-      user = await storage.createUser({
-        username: username,
-        email: googleUserInfo.email,
-        googleId: googleUserInfo.googleId,
-        firstName: googleUserInfo.firstName || '',
-        lastName: googleUserInfo.lastName || '',
-        profileImageUrl: googleUserInfo.profileImageUrl || '',
-        role: UserRole.USER, // Default role for new users
-      });
-    } 
-    // If user exists but doesn't have a Google ID, update the user with the Google ID
-    else if (user && !user.googleId) {
-      user = await storage.updateUserGoogleId(user.id, googleUserInfo.googleId);
+      // If found by email, update the user with Google ID
+      if (user) {
+        user = await storage.updateUserGoogleId(user.id, googleUserInfo.googleId);
+      }
     }
-
-    // Generate authentication tokens
-    const accessToken = generateToken(user);
+    
+    // If still no user found, create a new one
+    if (!user) {
+      // Generate a username based on email (or use a placeholder + random string)
+      const username = googleUserInfo.email 
+        ? googleUserInfo.email.split('@')[0] 
+        : `user_${Math.random().toString(36).substring(2, 10)}`;
+      
+      user = await storage.createUser({
+        username,
+        email: googleUserInfo.email || undefined,
+        firstName: googleUserInfo.firstName || undefined,
+        lastName: googleUserInfo.lastName || undefined,
+        role: 'user',
+        googleId: googleUserInfo.googleId,
+        profileImageUrl: googleUserInfo.profileImageUrl || undefined,
+        mfaEnabled: false,
+        password: undefined // No password for Google-authenticated users
+      });
+    }
+    
+    // Update last login timestamp
+    // This would ideally be in storage.updateLastLogin but not implementing for brevity
+    
+    // Generate auth tokens
+    const accessToken = generateToken(user, 'access');
     const refreshToken = generateToken(user, 'refresh');
-
-    // Remove sensitive information before returning
-    const { password, ...userWithoutPassword } = user;
-
-    return {
-      user: userWithoutPassword,
-      accessToken,
-      refreshToken,
-    };
+    
+    return { user, accessToken, refreshToken };
   } catch (error) {
     console.error('Error processing Google login:', error);
     throw new Error('Failed to process Google login');
