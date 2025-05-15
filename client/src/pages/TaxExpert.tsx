@@ -282,16 +282,44 @@ const TaxExpert = () => {
             </CardHeader>
             <CardContent className="text-sm">
               <ul className="space-y-2">
-                <li className="p-2 bg-blue-50 rounded-md hover:bg-blue-100 cursor-pointer transition-colors">
+                <li 
+                  className="p-2 bg-blue-50 rounded-md hover:bg-blue-100 cursor-pointer transition-colors"
+                  onClick={() => {
+                    const question = "What are the tax slabs for AY 2026-27?";
+                    setInputValue(question);
+                    inputRef.current?.focus();
+                  }}
+                >
                   What are the tax slabs for AY 2026-27?
                 </li>
-                <li className="p-2 bg-blue-50 rounded-md hover:bg-blue-100 cursor-pointer transition-colors">
+                <li 
+                  className="p-2 bg-blue-50 rounded-md hover:bg-blue-100 cursor-pointer transition-colors"
+                  onClick={() => {
+                    const question = "How much can I claim under section 80C?";
+                    setInputValue(question);
+                    inputRef.current?.focus();
+                  }}
+                >
                   How much can I claim under section 80C?
                 </li>
-                <li className="p-2 bg-blue-50 rounded-md hover:bg-blue-100 cursor-pointer transition-colors">
+                <li 
+                  className="p-2 bg-blue-50 rounded-md hover:bg-blue-100 cursor-pointer transition-colors"
+                  onClick={() => {
+                    const question = "What is the difference between old and new tax regime?";
+                    setInputValue(question);
+                    inputRef.current?.focus();
+                  }}
+                >
                   What is the difference between old and new tax regime?
                 </li>
-                <li className="p-2 bg-blue-50 rounded-md hover:bg-blue-100 cursor-pointer transition-colors">
+                <li 
+                  className="p-2 bg-blue-50 rounded-md hover:bg-blue-100 cursor-pointer transition-colors"
+                  onClick={() => {
+                    const question = "Which ITR form should I use as a salaried employee?";
+                    setInputValue(question);
+                    inputRef.current?.focus();
+                  }}
+                >
                   Which ITR form should I use as a salaried employee?
                 </li>
               </ul>
@@ -304,13 +332,69 @@ const TaxExpert = () => {
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
-                <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer">Section 80C</Badge>
-                <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer">HRA Exemption</Badge>
-                <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer">ITR Filing</Badge>
-                <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer">Tax Saving</Badge>
-                <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer">Income Tax Refund</Badge>
-                <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer">Standard Deduction</Badge>
-                <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer">Capital Gains</Badge>
+                <Badge 
+                  className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
+                  onClick={() => {
+                    setInputValue("Explain Section 80C deductions in detail");
+                    inputRef.current?.focus();
+                  }}
+                >
+                  Section 80C
+                </Badge>
+                <Badge 
+                  className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
+                  onClick={() => {
+                    setInputValue("How is HRA exemption calculated?");
+                    inputRef.current?.focus();
+                  }}
+                >
+                  HRA Exemption
+                </Badge>
+                <Badge 
+                  className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
+                  onClick={() => {
+                    setInputValue("What are the deadlines for ITR Filing?");
+                    inputRef.current?.focus();
+                  }}
+                >
+                  ITR Filing
+                </Badge>
+                <Badge 
+                  className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
+                  onClick={() => {
+                    setInputValue("What are the best ways for tax saving?");
+                    inputRef.current?.focus();
+                  }}
+                >
+                  Tax Saving
+                </Badge>
+                <Badge 
+                  className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
+                  onClick={() => {
+                    setInputValue("How can I check my income tax refund status?");
+                    inputRef.current?.focus();
+                  }}
+                >
+                  Income Tax Refund
+                </Badge>
+                <Badge 
+                  className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
+                  onClick={() => {
+                    setInputValue("What is standard deduction and how much can I claim?");
+                    inputRef.current?.focus();
+                  }}
+                >
+                  Standard Deduction
+                </Badge>
+                <Badge 
+                  className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
+                  onClick={() => {
+                    setInputValue("How are capital gains taxed in India?");
+                    inputRef.current?.focus();
+                  }}
+                >
+                  Capital Gains
+                </Badge>
               </div>
             </CardContent>
           </Card>
