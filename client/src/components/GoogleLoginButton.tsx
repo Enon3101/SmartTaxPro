@@ -24,7 +24,12 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
   const [renderMode, setRenderMode] = useState<'default' | 'fallback'>('default');
   
   useEffect(() => {
-    // If Google API isn't available after 2 seconds, show the fallback button
+    // Always use the fallback button for now as we're having issues with the Google API
+    console.log("Using fallback Google login button");
+    setRenderMode('fallback');
+    
+    // This code is kept but commented out in case we want to revert to checking Google API
+    /*
     const timer = setTimeout(() => {
       console.log("Checking if Google API is available...");
       if (!(window as any).google) {
@@ -34,6 +39,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
     }, 2000);
     
     return () => clearTimeout(timer);
+    */
   }, []);
   
   // Handle Google Login success
