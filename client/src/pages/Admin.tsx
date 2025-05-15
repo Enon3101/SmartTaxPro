@@ -750,7 +750,7 @@ export default function Admin() {
         
         <Tabs defaultValue="dashboard" className="flex-1">
           <div className="block md:hidden p-2 border-b">
-            <TabsList className="w-full">
+            <TabsList className="w-full grid grid-cols-4">
               <TabsTrigger value="dashboard" className="flex-1">
                 <LayoutDashboard className="mr-2 h-4 w-4" />
                 Dashboard
@@ -765,7 +765,7 @@ export default function Admin() {
               </TabsTrigger>
               <TabsTrigger value="blogs" className="flex-1">
                 <FileText className="mr-2 h-4 w-4" />
-                Blogs
+                Blog
               </TabsTrigger>
               <TabsTrigger value="settings" className="flex-1">
                 <Settings className="mr-2 h-4 w-4" />
