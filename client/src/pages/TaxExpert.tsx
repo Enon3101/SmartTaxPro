@@ -69,6 +69,70 @@ const TaxExpert = () => {
     }, 500);
   }, []);
 
+  // Helper function to automatically submit a question
+  const handleAutoSendMessage = async (question: string) => {
+    if (!question.trim()) return;
+    
+    const userMessage = {
+      content: question.trim(),
+      sender: "user" as const,
+      timestamp: new Date()
+    };
+    
+    setInputValue("");
+    setIsLoading(true);
+    
+    try {
+      setMessages(prev => [...prev, userMessage]);
+      const response = await fetch("/api/tax-expert-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage.content })
+      });
+      
+      const data = await response.json();
+      
+      if (data.response) {
+        setMessages(prev => [
+          ...prev, 
+          {
+            content: data.response,
+            sender: "bot",
+            timestamp: new Date()
+          }
+        ]);
+      } else {
+        throw new Error(data.error || "Failed to get response");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast({
+        title: "Error",
+        description: "Failed to get a response from the tax expert. Please try again.",
+        variant: "destructive"
+      });
+      
+      let errorMsg = "Sorry, I'm having trouble connecting to my knowledge base right now. Please try again later.";
+      
+      if (error instanceof Error && error.message) {
+        console.log("Detailed error:", error.message);
+        errorMsg += "\n\nError details: " + error.message.substring(0, 200);
+      }
+      
+      setMessages(prev => [
+        ...prev, 
+        {
+          content: errorMsg,
+          sender: "bot",
+          timestamp: new Date()
+        }
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Main function to handle sending messages from the input field
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
     
@@ -83,13 +147,17 @@ const TaxExpert = () => {
     
     try {
       setMessages(prev => [...prev, userMessage]);
-      const response = await apiRequest("/api/tax-expert-chat", 
-        { method: "POST" },
-        { message: userMessage.content }
+      const response = await apiRequest(
+        "POST",
+        "/api/tax-expert-chat", 
+        { 
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userMessage.content })
+        }
       );
       
-      // apiRequest already returns the parsed JSON data
-      const data = response;
+      // Parse the JSON data from the response
+      const data = await response.json();
       
       if (data.response) {
         setMessages(prev => [
@@ -284,41 +352,25 @@ const TaxExpert = () => {
               <ul className="space-y-2">
                 <li 
                   className="p-2 bg-blue-50 rounded-md hover:bg-blue-100 cursor-pointer transition-colors"
-                  onClick={() => {
-                    const question = "What are the tax slabs for AY 2026-27?";
-                    setInputValue(question);
-                    inputRef.current?.focus();
-                  }}
+                  onClick={() => handleAutoSendMessage("What are the tax slabs for AY 2026-27?")}
                 >
                   What are the tax slabs for AY 2026-27?
                 </li>
                 <li 
                   className="p-2 bg-blue-50 rounded-md hover:bg-blue-100 cursor-pointer transition-colors"
-                  onClick={() => {
-                    const question = "How much can I claim under section 80C?";
-                    setInputValue(question);
-                    inputRef.current?.focus();
-                  }}
+                  onClick={() => handleAutoSendMessage("How much can I claim under section 80C?")}
                 >
                   How much can I claim under section 80C?
                 </li>
                 <li 
                   className="p-2 bg-blue-50 rounded-md hover:bg-blue-100 cursor-pointer transition-colors"
-                  onClick={() => {
-                    const question = "What is the difference between old and new tax regime?";
-                    setInputValue(question);
-                    inputRef.current?.focus();
-                  }}
+                  onClick={() => handleAutoSendMessage("What is the difference between old and new tax regime?")}
                 >
                   What is the difference between old and new tax regime?
                 </li>
                 <li 
                   className="p-2 bg-blue-50 rounded-md hover:bg-blue-100 cursor-pointer transition-colors"
-                  onClick={() => {
-                    const question = "Which ITR form should I use as a salaried employee?";
-                    setInputValue(question);
-                    inputRef.current?.focus();
-                  }}
+                  onClick={() => handleAutoSendMessage("Which ITR form should I use as a salaried employee?")}
                 >
                   Which ITR form should I use as a salaried employee?
                 </li>
@@ -334,64 +386,43 @@ const TaxExpert = () => {
               <div className="flex flex-wrap gap-2">
                 <Badge 
                   className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
-                  onClick={() => {
-                    setInputValue("Explain Section 80C deductions in detail");
-                    inputRef.current?.focus();
-                  }}
+                  onClick={() => handleAutoSendMessage("Explain Section 80C deductions in detail")}
                 >
                   Section 80C
                 </Badge>
                 <Badge 
                   className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
-                  onClick={() => {
-                    setInputValue("How is HRA exemption calculated?");
-                    inputRef.current?.focus();
-                  }}
+                  onClick={() => handleAutoSendMessage("How is HRA exemption calculated?")}
                 >
                   HRA Exemption
                 </Badge>
                 <Badge 
                   className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
-                  onClick={() => {
-                    setInputValue("What are the deadlines for ITR Filing?");
-                    inputRef.current?.focus();
-                  }}
+                  onClick={() => handleAutoSendMessage("What are the deadlines for ITR Filing?")}
                 >
                   ITR Filing
                 </Badge>
                 <Badge 
                   className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
-                  onClick={() => {
-                    setInputValue("What are the best ways for tax saving?");
-                    inputRef.current?.focus();
-                  }}
+                  onClick={() => handleAutoSendMessage("What are the best ways for tax saving?")}
                 >
                   Tax Saving
                 </Badge>
                 <Badge 
                   className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
-                  onClick={() => {
-                    setInputValue("How can I check my income tax refund status?");
-                    inputRef.current?.focus();
-                  }}
+                  onClick={() => handleAutoSendMessage("How can I check my income tax refund status?")}
                 >
                   Income Tax Refund
                 </Badge>
                 <Badge 
                   className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
-                  onClick={() => {
-                    setInputValue("What is standard deduction and how much can I claim?");
-                    inputRef.current?.focus();
-                  }}
+                  onClick={() => handleAutoSendMessage("What is standard deduction and how much can I claim?")}
                 >
                   Standard Deduction
                 </Badge>
                 <Badge 
                   className="bg-blue-100 text-blue-800 hover:bg-blue-200 cursor-pointer"
-                  onClick={() => {
-                    setInputValue("How are capital gains taxed in India?");
-                    inputRef.current?.focus();
-                  }}
+                  onClick={() => handleAutoSendMessage("How are capital gains taxed in India?")}
                 >
                   Capital Gains
                 </Badge>
