@@ -33,20 +33,21 @@ function cleanupCache() {
 }
 
 export async function apiRequest<T = any>(
+  method: string,
   url: string,
   options?: RequestInit,
-  data?: unknown | undefined,
-): Promise<T> {
-  const method = options?.method || 'GET';
-  
+): Promise<Response> {
   // Only cache GET requests
-  if (method === 'GET') {
-    const cacheKey = generateCacheKey(url, method, data);
+  if (method === 'GET' && !options?.body) {
+    const cacheKey = generateCacheKey(url, method, undefined);
     const cachedResponse = apiCache.get(cacheKey);
     
     // Return cached response if it's still valid
     if (cachedResponse && (Date.now() - cachedResponse.timestamp) < CACHE_TTL) {
-      return cachedResponse.data as T;
+      return new Response(JSON.stringify(cachedResponse.data), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
     }
   }
   
@@ -55,28 +56,30 @@ export async function apiRequest<T = any>(
     method,
     headers: {
       ...options?.headers,
-      ...(data || options?.body ? { "Content-Type": "application/json" } : {})
     },
-    body: data ? JSON.stringify(data) : options?.body,
     credentials: "include",
   });
 
-  await throwIfResNotOk(res);
-  const responseData = await res.json();
-  
-  // Cache successful GET requests
-  if (method === 'GET') {
-    const cacheKey = generateCacheKey(url, method, data);
-    apiCache.set(cacheKey, { 
-      data: responseData, 
-      timestamp: Date.now() 
-    });
-    
-    // Clean up cache if it's too large
-    cleanupCache();
+  // Cache successful GET responses
+  if (method === 'GET' && res.ok && !options?.body) {
+    try {
+      const clonedRes = res.clone();
+      const responseData = await clonedRes.json();
+      
+      const cacheKey = generateCacheKey(url, method, undefined);
+      apiCache.set(cacheKey, { 
+        data: responseData, 
+        timestamp: Date.now() 
+      });
+      
+      // Clean up cache if it's too large
+      cleanupCache();
+    } catch (error) {
+      console.error("Failed to cache response:", error);
+    }
   }
   
-  return responseData as T;
+  return res;
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";

@@ -27,6 +27,8 @@ import BlogPost from "@/pages/BlogPost";
 import BlogAdmin from "@/pages/BlogAdmin";
 import DatabaseEditor from "@/pages/DatabaseEditor";
 import TaxExpert from "@/pages/TaxExpert";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BottomNav from "@/components/BottomNav";
@@ -185,6 +187,8 @@ function Router() {
       <Route path="/payment" component={Payment} />
       <Route path="/filing-complete" component={FilingComplete} />
       <Route path="/tax-expert" component={TaxExpert} />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
 
       {/* Calculator Routes */}
       <Route path="/calculators/index">
