@@ -505,14 +505,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Google Sign-In authentication
   apiRouter.post("/auth/google", async (req, res) => {
     try {
-      const { credential } = req.body;
+      const { credential, token_type } = req.body;
       
       if (!credential) {
-        return res.status(400).json({ message: "Google ID token is required" });
+        return res.status(400).json({ message: "Google credential is required" });
       }
       
-      // Verify the Google ID token
-      const googleUserInfo = await verifyGoogleToken(credential);
+      // Verify the Google token (either ID token or access token)
+      const googleUserInfo = await verifyGoogleToken(credential, token_type);
       
       // Process Google login (find or create user)
       const { user, accessToken, refreshToken } = await processGoogleLogin(googleUserInfo);

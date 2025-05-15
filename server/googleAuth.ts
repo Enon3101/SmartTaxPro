@@ -6,33 +6,49 @@ import { storage } from './storage';
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 /**
- * Verify Google ID token and get user information
- * @param idToken Google ID token received from client
+ * Verify Google token and get user information
+ * @param token Google token received from client (either ID token or access token)
+ * @param token_type Type of token (e.g., 'Bearer' for access tokens)
  * @returns User information if verification successful
  */
-export async function verifyGoogleToken(idToken: string) {
+export async function verifyGoogleToken(token: string, token_type?: string) {
   try {
-    // Verify the token
-    const ticket = await client.verifyIdToken({
-      idToken,
-      audience: process.env.GOOGLE_CLIENT_ID
-    });
+    let payload;
     
-    // Get the payload from the ticket
-    const payload = ticket.getPayload();
-    if (!payload) {
-      throw new Error('Invalid Google token payload');
+    if (token_type === 'Bearer') {
+      // This is an access token, use the Google OAuth2 API to get user info
+      const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch user info from Google API');
+      }
+      
+      payload = await response.json();
+    } else {
+      // Assume this is an ID token, verify it
+      const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID
+      });
+      
+      // Get the payload from the ticket
+      payload = ticket.getPayload();
+      if (!payload) {
+        throw new Error('Invalid Google token payload');
+      }
     }
     
     // Extract user info from the payload
     const googleId = payload['sub']; // Google's unique identifier for the user
     const email = payload['email'];
-    const firstName = payload['given_name'];
+    const firstName = payload['given_name'] || payload['name'];
     const lastName = payload['family_name'];
     const profileImageUrl = payload['picture'];
     
-    // Verify email is verified by Google (optional, but recommended)
-    if (payload['email_verified'] !== true) {
+    // Verify email is verified by Google if we have that info
+    if (payload['email_verified'] === false) {
       throw new Error('Email not verified by Google');
     }
     

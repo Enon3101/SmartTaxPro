@@ -23,12 +23,13 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
   const [, setLocation] = useLocation();
   
   const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (codeResponse) => {
+    onSuccess: async (tokenResponse) => {
       try {
-        // Exchange the code for tokens on your backend
+        // Get ID token with OAuth2
         const response = await apiRequest('POST', '/api/auth/google', {
           body: JSON.stringify({
-            credential: codeResponse.access_token
+            credential: tokenResponse.access_token,
+            token_type: tokenResponse.token_type
           }),
           headers: {
             'Content-Type': 'application/json'
