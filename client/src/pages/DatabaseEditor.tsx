@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { useAdminGuard } from "@/hooks/useAdminGuard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -78,14 +78,14 @@ const DatabaseEditor = () => {
   const [queryResult, setQueryResult] = useState<QueryResult | null>(null);
   const [isQueryLoading, setIsQueryLoading] = useState(false);
   
-  const { isAuthenticated, user } = useAuth();
+  const isAdmin = useAdminGuard();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (isAuthenticated && user?.role === "admin") {
+    if (isAdmin === true) {
       fetchTables();
     }
-  }, [isAuthenticated, user]);
+  }, [isAdmin]);
 
   const fetchTables = async () => {
     try {
@@ -206,7 +206,7 @@ const DatabaseEditor = () => {
   };
 
   // Check for admin access
-  if (!isAuthenticated || user?.role !== "admin") {
+  if (isAdmin === false) {
     return (
       <div className="container mx-auto px-4 py-12">
         <div className="text-center">
@@ -219,6 +219,18 @@ const DatabaseEditor = () => {
               Back to Home
             </Button>
           </Link>
+        </div>
+      </div>
+    );
+  }
+  
+  // Show loading state while checking admin status
+  if (isAdmin === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mb-4"></div>
+          <p className="text-muted-foreground">Verifying admin access...</p>
         </div>
       </div>
     );

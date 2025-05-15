@@ -117,7 +117,7 @@ interface BlogAdminProps {
 // Component to manage blog posts
 const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
   const [location, setLocation] = useLocation();
-  const { isAuthenticated, user } = useAuth();
+  const isAdmin = useAdminGuard();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [posts, setPosts] = useState(blogPostsData);
@@ -128,6 +128,54 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
   // If in edit mode, find the post by id
   const editingPost = mode === "edit" && id ? 
     posts.find(post => post.id === Number(id)) : null;
+  
+  // Use admin tokens for all fetch requests
+  const fetchWithAdminAuth = async (url: string, options = {}) => {
+    try {
+      const adminAuth = localStorage.getItem('adminAuth');
+      if (!adminAuth) throw new Error('No admin auth token');
+      
+      const { token } = JSON.parse(adminAuth);
+      
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+      };
+      
+      return fetch(url, {
+        ...options,
+        headers
+      });
+    } catch (error) {
+      console.error('Fetch with admin auth error:', error);
+      throw error;
+    }
+  };
+  
+  // Fetch posts from API
+  useEffect(() => {
+    const loadPosts = async () => {
+      if (isAdmin) {
+        try {
+          const response = await fetchWithAdminAuth('/api/admin/blog-posts');
+          if (!response.ok) throw new Error('Failed to fetch blog posts');
+          
+          const data = await response.json();
+          setPosts(data.posts || blogPostsData);
+        } catch (error) {
+          console.error('Error loading blog posts:', error);
+          toast({
+            title: 'Error',
+            description: 'Failed to load blog posts. Using sample data instead.',
+            variant: 'destructive'
+          });
+        }
+      }
+    };
+    
+    loadPosts();
+  }, [isAdmin]);
   
   // Filter posts based on search and tab
   const filteredPosts = posts.filter(post => {
@@ -159,7 +207,7 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
   };
   
   // Check for admin access
-  if (!isAuthenticated || user?.role !== "admin") {
+  if (isAdmin === false) {
     return (
       <div className="container mx-auto px-4 py-12">
         <div className="text-center">
@@ -173,6 +221,18 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
               Back to Learning Resources
             </Button>
           </Link>
+        </div>
+      </div>
+    );
+  }
+  
+  // Show loading state while checking admin status
+  if (isAdmin === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center">
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mb-4"></div>
+          <p className="text-muted-foreground">Verifying admin access...</p>
         </div>
       </div>
     );
