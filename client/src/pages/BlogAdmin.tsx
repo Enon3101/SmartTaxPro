@@ -23,7 +23,17 @@ import {
   Calendar,
   Clock 
 } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
+// TODO: Replace with actual authentication hook
+const useAuth = () => {
+  // Check if there's an admin auth in localStorage
+  const adminAuth = localStorage.getItem('adminAuth');
+  const user = adminAuth ? JSON.parse(adminAuth) : null;
+  
+  return {
+    isAuthenticated: !!adminAuth,
+    user: user ? { ...user, role: 'admin' } : null
+  };
+};
 
 // Sample blog post data (to be replaced with API call)
 const blogPostsData = [

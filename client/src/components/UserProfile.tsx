@@ -64,7 +64,27 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId, token }) => {
     setLocation('/');
   };
 
-  if (!isAuthenticated || !user) {
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="p-4 flex flex-col items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+        <p className="mt-2 text-sm text-muted-foreground">Loading user data...</p>
+      </div>
+    );
+  }
+  
+  // If user ID was provided but no user data found
+  if (userId && !user) {
+    return (
+      <div className="p-4 text-center">
+        <p className="text-red-500">User not found or data could not be loaded.</p>
+      </div>
+    );
+  }
+  
+  // If no user is provided or authenticated
+  if (!userId && (!isAuthenticated || !user)) {
     return (
       <div className="p-4">
         <p>You are not logged in.</p>
