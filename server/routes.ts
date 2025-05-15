@@ -72,6 +72,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Public Blog API
+  
+  // Get published blog posts with filtering
+  apiRouter.get("/blog-posts", async (req, res) => {
+    try {
+      const { limit = 10, offset = 0, category, searchTerm } = req.query;
+      
+      // For public routes, only return published posts
+      const options = {
+        limit: Number(limit),
+        offset: Number(offset),
+        published: true, // Always true for public routes
+        category: category ? String(category) : undefined,
+        searchTerm: searchTerm ? String(searchTerm) : undefined
+      };
+      
+      const result = await storage.getAllBlogPosts(options);
+      res.json(result);
+    } catch (error) {
+      console.error("Error fetching published blog posts:", error);
+      res.status(500).json({ message: "Failed to fetch blog posts" });
+    }
+  });
+  
+  // Get a single published blog post by slug
+  apiRouter.get("/blog-posts/:slug", async (req, res) => {
+    try {
+      const post = await storage.getBlogPostBySlug(req.params.slug);
+      
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      // Only return published posts on public routes
+      if (!post.published) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      res.json(post);
+    } catch (error) {
+      console.error("Error fetching blog post:", error);
+      res.status(500).json({ message: "Failed to fetch blog post" });
+    }
+  });
+  
   // Tax Forms API
 
   // Create a new tax form
@@ -941,6 +986,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching stats:", error);
       res.status(500).json({ message: "Failed to fetch dashboard statistics" });
+    }
+  });
+  
+  // Blog Post Management Routes (Admin only)
+  
+  // Get all blog posts with optional filtering
+  adminRouter.get("/blog-posts", async (req, res) => {
+    try {
+      const { limit = 20, offset = 0, published, category, searchTerm } = req.query;
+      
+      const options = {
+        limit: Number(limit),
+        offset: Number(offset),
+        published: published === 'true' ? true : published === 'false' ? false : undefined,
+        category: category ? String(category) : undefined,
+        searchTerm: searchTerm ? String(searchTerm) : undefined
+      };
+      
+      const result = await storage.getAllBlogPosts(options);
+      res.json(result);
+    } catch (error) {
+      console.error("Error fetching blog posts:", error);
+      res.status(500).json({ message: "Failed to fetch blog posts" });
+    }
+  });
+  
+  // Get a single blog post by ID
+  adminRouter.get("/blog-posts/:id", async (req, res) => {
+    try {
+      const post = await storage.getBlogPostById(Number(req.params.id));
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      res.json(post);
+    } catch (error) {
+      console.error("Error fetching blog post:", error);
+      res.status(500).json({ message: "Failed to fetch blog post" });
+    }
+  });
+  
+  // Create a new blog post
+  adminRouter.post("/blog-posts", async (req, res) => {
+    try {
+      const blogPost = await storage.createBlogPost(req.body);
+      res.status(201).json(blogPost);
+    } catch (error) {
+      console.error("Error creating blog post:", error);
+      res.status(500).json({ message: "Failed to create blog post" });
+    }
+  });
+  
+  // Update a blog post
+  adminRouter.put("/blog-posts/:id", async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      const post = await storage.getBlogPostById(id);
+      
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      const updatedPost = await storage.updateBlogPost(id, req.body);
+      res.json(updatedPost);
+    } catch (error) {
+      console.error("Error updating blog post:", error);
+      res.status(500).json({ message: "Failed to update blog post" });
+    }
+  });
+  
+  // Delete a blog post
+  adminRouter.delete("/blog-posts/:id", async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      const post = await storage.getBlogPostById(id);
+      
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      
+      await storage.deleteBlogPost(id);
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting blog post:", error);
+      res.status(500).json({ message: "Failed to delete blog post" });
     }
   });
 
