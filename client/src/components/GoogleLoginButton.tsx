@@ -1,5 +1,5 @@
-import React from 'react';
-import { useGoogleLogin } from '@react-oauth/google';
+import React, { useEffect, useState } from 'react';
+import { useGoogleLogin, GoogleLogin } from '@react-oauth/google';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
@@ -21,50 +21,77 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
 }) => {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [renderMode, setRenderMode] = useState<'default' | 'fallback'>('default');
   
+  useEffect(() => {
+    // If Google API isn't available after 2 seconds, show the fallback button
+    const timer = setTimeout(() => {
+      console.log("Checking if Google API is available...");
+      if (!(window as any).google) {
+        console.warn("Google API not available, using fallback button");
+        setRenderMode('fallback');
+      }
+    }, 2000);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  // Handle Google Login success
+  const handleSuccess = async (credentialResponse: any) => {
+    try {
+      console.log("Google login success:", credentialResponse);
+      
+      // Get the token - either credential (from GoogleLogin component) or access_token (from useGoogleLogin hook)
+      const credential = credentialResponse.credential || credentialResponse.access_token;
+      const tokenType = credentialResponse.credential ? 'id_token' : credentialResponse.token_type || 'Bearer';
+      
+      if (!credential) {
+        throw new Error("No credential received from Google");
+      }
+      
+      const response = await apiRequest('POST', '/api/auth/google', {
+        body: JSON.stringify({
+          credential,
+          token_type: tokenType
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Google authentication failed');
+      }
+      
+      const data = await response.json();
+      
+      // Save auth data to localStorage
+      localStorage.setItem('authToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      toast({
+        title: "Login Successful",
+        description: "You have been logged in with Google successfully",
+      });
+      
+      // Redirect to home
+      setLocation('/');
+    } catch (error) {
+      console.error('Google auth error:', error);
+      toast({
+        title: "Google Sign-In Failed",
+        description: error instanceof Error ? error.message : "Failed to sign in with Google",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  // For direct Google login integration
   const handleGoogleLogin = useGoogleLogin({
     scope: 'openid email profile',
-    onSuccess: async (tokenResponse) => {
-      try {
-        // Get ID token with OAuth2
-        const response = await apiRequest('POST', '/api/auth/google', {
-          body: JSON.stringify({
-            credential: tokenResponse.access_token,
-            token_type: tokenResponse.token_type
-          }),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Google authentication failed');
-        }
-        
-        const data = await response.json();
-        
-        // Save auth data to localStorage
-        localStorage.setItem('authToken', data.accessToken);
-        localStorage.setItem('refreshToken', data.refreshToken);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        
-        toast({
-          title: "Login Successful",
-          description: "You have been logged in with Google successfully",
-        });
-        
-        // Redirect to home
-        setLocation('/');
-      } catch (error) {
-        console.error('Google auth error:', error);
-        toast({
-          title: "Google Sign-In Failed",
-          description: error instanceof Error ? error.message : "Failed to sign in with Google",
-          variant: "destructive",
-        });
-      }
-    },
+    onSuccess: handleSuccess,
     onError: (errorResponse) => {
       console.error('Google login error:', errorResponse);
       toast({
@@ -76,6 +103,31 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
     flow: 'implicit'
   });
   
+  // For Google hosted login button
+  if (renderMode === 'default') {
+    return (
+      <div style={{ width, display: 'flex', justifyContent: 'center' }}>
+        <GoogleLogin
+          onSuccess={handleSuccess}
+          onError={() => {
+            console.error('Google login failed');
+            toast({
+              title: "Google Sign-In Failed",
+              description: "Failed to sign in with Google. Please try again.",
+              variant: "destructive",
+            });
+          }}
+          useOneTap
+          theme="filled_blue"
+          text={text}
+          size="large"
+          width={width === 'auto' ? undefined : width}
+        />
+      </div>
+    );
+  }
+  
+  // Fallback button if Google API doesn't load properly
   return (
     <button
       onClick={() => handleGoogleLogin()}

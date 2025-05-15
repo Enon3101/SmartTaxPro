@@ -3,6 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from 'wouter';
 import GoogleLoginButton from '../components/GoogleLoginButton';
+import GoogleAuthCheck from '../components/GoogleAuthCheck';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -121,13 +122,16 @@ const Login: React.FC = () => {
             </div>
           </div>
           
-          <div className="flex justify-center">
-            <GoogleLoginButton 
-              size="large"
-              theme="filled_blue"
-              shape="rectangular"
-              width="100%"
-            />
+          <div className="flex flex-col gap-4">
+            <GoogleAuthCheck />
+            <div className="flex justify-center">
+              <GoogleLoginButton 
+                size="large"
+                theme="filled_blue"
+                shape="rectangular"
+                width="100%"
+              />
+            </div>
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-2">
