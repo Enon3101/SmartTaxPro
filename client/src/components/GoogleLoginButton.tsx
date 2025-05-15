@@ -15,7 +15,7 @@ interface GoogleLoginButtonProps {
 const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
   onSuccess,
   onError,
-  text = 'continue_with',
+  text = 'signin_with',
   shape = 'rectangular',
   size = 'large',
   theme = 'filled_blue',
@@ -91,7 +91,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
       <GoogleLogin
         onSuccess={handleSuccess}
         onError={handleError}
-        text={text}
+        text={text as "signin_with" | "continue_with" | "signup_with" | "signin" | undefined}
         shape={shape}
         size={size}
         theme={theme}

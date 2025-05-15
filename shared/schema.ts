@@ -7,7 +7,7 @@ import { z } from "zod";
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: varchar("username", { length: 50 }).notNull().unique(), // SECURITY: Length limit prevents buffer overflow
-  password: varchar("password", { length: 255 }).notNull(), // SECURITY: Hash will need space
+  password: varchar("password", { length: 255 }), // SECURITY: Hash will need space
   firstName: varchar("first_name", { length: 50 }),
   lastName: varchar("last_name", { length: 50 }),
   email: varchar("email", { length: 255 }),
@@ -18,6 +18,8 @@ export const users = pgTable("users", {
   loginAttempts: integer("login_attempts").default(0).notNull(), // SECURITY: Track failed login attempts 
   locked: boolean("locked").default(false).notNull(), // SECURITY: Account lockout functionality
   passwordChangedAt: timestamp("password_changed_at").defaultNow(), // SECURITY: Password rotation tracking
+  googleId: varchar("google_id", { length: 255 }).unique(), // Google OAuth ID for SSO
+  profileImageUrl: varchar("profile_image_url", { length: 1000 }), // Profile image from Google
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 }, (table) => {
@@ -25,6 +27,7 @@ export const users = pgTable("users", {
     phoneIdx: index("users_phone_idx").on(table.phone),
     roleIdx: index("users_role_idx").on(table.role),
     emailIdx: index("users_email_idx").on(table.email), // SECURITY: Index for faster lookups
+    googleIdIdx: index("users_google_id_idx").on(table.googleId), // Index for faster Google auth lookups
   };
 });
 
@@ -136,12 +139,16 @@ export const insertUserSchema = createInsertSchema(users).pick({
   phone: true,
   role: true,
   mfaEnabled: true,
+  googleId: true,
+  profileImageUrl: true,
 }).extend({
   // SECURITY: Additional validation rules
   username: z.string().min(3).max(50).regex(/^[a-zA-Z0-9_.]+$/),
-  password: z.string().min(8).max(100), // Will be hashed before storage
+  password: z.string().min(8).max(100).optional(), // Will be hashed before storage, optional for Google auth
   email: z.string().email().optional().nullable(),
   phone: z.string().regex(/^(\+?91)?[6-9]\d{9}$/).optional().nullable(), // Indian phone format
+  googleId: z.string().optional(),
+  profileImageUrl: z.string().url().optional(),
 });
 
 // Schema for OTP verification

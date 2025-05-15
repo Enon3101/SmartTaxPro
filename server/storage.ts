@@ -12,7 +12,10 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByPhone(phone: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByGoogleId(googleId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUserGoogleId(userId: number, googleId: string): Promise<User>;
   
   // OTP operations
   createOtpVerification(otpVerification: InsertOtpVerification): Promise<OtpVerification>;
@@ -67,6 +70,18 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db.select().from(users).where(eq(users.phone, phone));
     return user || undefined;
   }
+  
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    if (!email) return undefined;
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+  
+  async getUserByGoogleId(googleId: string): Promise<User | undefined> {
+    if (!googleId) return undefined;
+    const [user] = await db.select().from(users).where(eq(users.googleId, googleId));
+    return user || undefined;
+  }
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const [user] = await db
@@ -74,6 +89,19 @@ export class DatabaseStorage implements IStorage {
       .values(insertUser)
       .returning();
     return user;
+  }
+  
+  async updateUserGoogleId(userId: number, googleId: string): Promise<User> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ 
+        googleId, 
+        updatedAt: new Date() 
+      })
+      .where(eq(users.id, userId))
+      .returning();
+      
+    return updatedUser;
   }
   
   // OTP verification methods
