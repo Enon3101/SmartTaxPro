@@ -30,6 +30,7 @@ import {
   hashPassword,
   UserRole
 } from "./auth";
+import { verifyGoogleToken, processGoogleLogin } from "./googleAuth";
 import { handleFileUpload, serveSecureFile, generatePresignedUrl } from "./fileUpload";
 import { 
   validateInput, 
@@ -498,6 +499,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error verifying OTP:", error);
       res.status(500).json({ message: "Failed to verify OTP" });
+    }
+  });
+  
+  // Google Sign-In authentication
+  apiRouter.post("/auth/google", async (req, res) => {
+    try {
+      const { credential } = req.body;
+      
+      if (!credential) {
+        return res.status(400).json({ message: "Google ID token is required" });
+      }
+      
+      // Verify the Google ID token
+      const googleUserInfo = await verifyGoogleToken(credential);
+      
+      // Process Google login (find or create user)
+      const { user, accessToken, refreshToken } = await processGoogleLogin(googleUserInfo);
+      
+      // SECURITY: Don't return the password hash (Req E)
+      const { password: _, ...userWithoutPassword } = user;
+      
+      res.status(200).json({
+        user: userWithoutPassword,
+        accessToken,
+        refreshToken,
+      });
+    } catch (error) {
+      console.error("Error with Google authentication:", error);
+      res.status(401).json({ message: error instanceof Error ? error.message : "Google authentication failed" });
     }
   });
   
