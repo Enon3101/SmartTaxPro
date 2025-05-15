@@ -714,6 +714,10 @@ export default function Admin() {
               <FileText className="mr-2 h-4 w-4" />
               Tax Forms
             </TabsTrigger>
+            <TabsTrigger value="blogs" className="w-full justify-start">
+              <FileText className="mr-2 h-4 w-4" />
+              Blog Posts
+            </TabsTrigger>
             <TabsTrigger value="settings" className="w-full justify-start">
               <Settings className="mr-2 h-4 w-4" />
               Settings

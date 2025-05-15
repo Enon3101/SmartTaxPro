@@ -1,12 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
-import { Shield } from "lucide-react";
+import { Shield, User } from "lucide-react";
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
@@ -14,6 +13,45 @@ export default function AdminLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  
+  // Check if already logged in
+  useEffect(() => {
+    const adminAuth = localStorage.getItem('adminAuth');
+    if (adminAuth) {
+      try {
+        const parsedAuth = JSON.parse(adminAuth);
+        if (parsedAuth && parsedAuth.token) {
+          // Verify the token is still valid by checking with the server
+          verifyAdminAuth(parsedAuth.token);
+        }
+      } catch (error) {
+        console.error("Error parsing admin auth data:", error);
+        localStorage.removeItem('adminAuth');
+      }
+    }
+  }, []);
+  
+  // Verify admin token
+  const verifyAdminAuth = async (token: string) => {
+    try {
+      const response = await fetch("/api/auth/verify-admin", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        // Still logged in, redirect to admin dashboard
+        setLocation("/admin");
+      } else {
+        // Token invalid/expired, remove it
+        localStorage.removeItem('adminAuth');
+      }
+    } catch (error) {
+      console.error("Error verifying admin token:", error);
+      localStorage.removeItem('adminAuth');
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,6 +181,12 @@ export default function AdminLogin() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+            </div>
+            <div className="bg-blue-50 p-3 rounded-md text-sm border border-blue-100">
+              <p className="flex items-center text-blue-800">
+                <User className="h-4 w-4 mr-2" />
+                Default admin credentials: username: <strong className="mx-1">admin</strong> password: <strong className="mx-1">admin</strong>
+              </p>
             </div>
           </CardContent>
           <CardFooter>
