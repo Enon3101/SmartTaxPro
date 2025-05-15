@@ -14,6 +14,49 @@ export default function AdminLogin() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   
+  // Auto-login with default credentials function
+  const autoLoginWithDefault = async () => {
+    setUsername('admin');
+    setPassword('admin');
+    setIsLoading(true);
+      
+    try {
+      // Try the dev-admin-login endpoint first for automatic login
+      const response = await fetch("/api/auth/dev-admin-login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: 'admin',
+          password: 'admin'
+        })
+      });
+        
+      const data = await response.json();
+        
+      if (!response.ok) {
+        throw new Error(data.message || "Auto login failed");
+      }
+        
+      // For dev-admin-login, create a simple token structure
+      const authData = {
+        token: data.accessToken || 'dev-admin-token',
+        refreshToken: data.refreshToken || 'dev-admin-refresh',
+        user: data.user || { id: 0, username: 'admin', role: 'admin' },
+      };
+        
+      // Store admin session data
+      localStorage.setItem('adminAuth', JSON.stringify(authData));
+        
+      // Redirect to admin dashboard
+      setLocation("/admin");
+    } catch (error) {
+      console.error("Auto login error:", error);
+      setIsLoading(false);
+    }
+  };
+
   // Check if already logged in
   useEffect(() => {
     const adminAuth = localStorage.getItem('adminAuth');
@@ -28,6 +71,9 @@ export default function AdminLogin() {
         console.error("Error parsing admin auth data:", error);
         localStorage.removeItem('adminAuth');
       }
+    } else {
+      // If no existing login, try auto-login with default credentials
+      autoLoginWithDefault();
     }
   }, []);
   
@@ -156,47 +202,71 @@ export default function AdminLogin() {
           </div>
           <CardTitle className="text-2xl font-bold text-center">Admin Login</CardTitle>
           <CardDescription className="text-center">
-            Enter your credentials to access the admin dashboard
+            {isLoading ? "Attempting automatic login..." : "Enter your credentials to access the admin dashboard"}
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                placeholder="admin"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <div className="bg-blue-50 p-3 rounded-md text-sm border border-blue-100">
-              <p className="flex items-center text-blue-800">
-                <User className="h-4 w-4 mr-2" />
-                Default admin credentials: username: <strong className="mx-1">admin</strong> password: <strong className="mx-1">admin</strong>
-              </p>
-            </div>
+            {!isLoading && (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="username">Username</Label>
+                  <Input
+                    id="username"
+                    placeholder="admin"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="bg-blue-50 p-3 rounded-md text-sm border border-blue-100">
+                  <p className="flex items-center text-blue-800">
+                    <User className="h-4 w-4 mr-2" />
+                    Default admin credentials: username: <strong className="mx-1">admin</strong> password: <strong className="mx-1">admin</strong>
+                  </p>
+                </div>
+              </>
+            )}
+            {isLoading && (
+              <div className="flex flex-col items-center justify-center py-6">
+                <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mb-4"></div>
+                <p className="text-muted-foreground">Attempting to log in automatically...</p>
+              </div>
+            )}
           </CardContent>
-          <CardFooter>
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={isLoading}
-            >
-              {isLoading ? "Logging in..." : "Login to Dashboard"}
-            </Button>
+          <CardFooter className="flex flex-col space-y-4">
+            {!isLoading && (
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={isLoading}
+              >
+                Login to Dashboard
+              </Button>
+            )}
+            {isLoading && (
+              <div className="w-full">
+                <Button 
+                  type="button"
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => setLocation('/admin')}
+                >
+                  Try Direct Access to Dashboard
+                </Button>
+              </div>
+            )}
           </CardFooter>
         </form>
       </Card>

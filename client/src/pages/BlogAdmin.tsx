@@ -23,17 +23,8 @@ import {
   Calendar,
   Clock 
 } from "lucide-react";
-// TODO: Replace with actual authentication hook
-const useAuth = () => {
-  // Check if there's an admin auth in localStorage
-  const adminAuth = localStorage.getItem('adminAuth');
-  const user = adminAuth ? JSON.parse(adminAuth) : null;
-  
-  return {
-    isAuthenticated: !!adminAuth,
-    user: user ? { ...user, role: 'admin' } : null
-  };
-};
+// Use the admin guard hook for authentication
+import { useAdminGuard } from '@/hooks/useAdminGuard';
 
 // Sample blog post data (to be replaced with API call)
 const blogPostsData = [
