@@ -907,6 +907,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const authRouter = express.Router();
   
   // Admin login endpoint
+  // Development-only admin login endpoint (for testing)
+  authRouter.post("/dev-admin-login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      // Only for development environment and hardcoded admin creds
+      if (process.env.NODE_ENV === "production" || username !== "admin" || password !== "admin") {
+        return res.status(401).json({ message: "Invalid or unauthorized request" });
+      }
+      
+      // Create a mock admin user response
+      const mockAdminUser = {
+        id: 0,
+        username: "admin",
+        role: "admin",
+        type: "admin",
+        phone: "9876543210",
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      // Return a successful response with mock data
+      res.status(200).json({
+        user: mockAdminUser,
+        accessToken: "dev-admin-token", // Just a placeholder token
+        refreshToken: "dev-admin-refresh-token", // Just a placeholder refresh token
+        message: "Dev admin login successful"
+      });
+    } catch (error) {
+      console.error("Dev admin login error:", error);
+      res.status(500).json({ message: "Internal server error during dev login" });
+    }
+  });
+
+  // Regular admin login endpoint
   authRouter.post("/admin-login", async (req, res) => {
     try {
       const { username, password } = req.body;

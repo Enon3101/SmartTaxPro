@@ -209,6 +209,6 @@ export const formatIndianCurrency = (
     return result;
   } catch (error) {
     console.error('Error formatting Indian currency:', error);
-    return displaySymbol ? '₹0' : '0';
+    return options.displaySymbol ? '₹0' : '0';
   }
 };
