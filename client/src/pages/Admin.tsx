@@ -725,28 +725,30 @@ export default function Admin() {
         </div>
         
         <nav className="flex-1 p-4 space-y-1">
-          <TabsList className="flex-col h-auto space-y-1">
-            <TabsTrigger value="dashboard" className="w-full justify-start">
-              <LayoutDashboard className="mr-2 h-4 w-4" />
-              Dashboard
-            </TabsTrigger>
-            <TabsTrigger value="users" className="w-full justify-start">
-              <Users className="mr-2 h-4 w-4" />
-              Users
-            </TabsTrigger>
-            <TabsTrigger value="tax-forms" className="w-full justify-start">
-              <FileText className="mr-2 h-4 w-4" />
-              Tax Forms
-            </TabsTrigger>
-            <TabsTrigger value="blogs" className="w-full justify-start">
-              <FileText className="mr-2 h-4 w-4" />
-              Blog Posts
-            </TabsTrigger>
-            <TabsTrigger value="settings" className="w-full justify-start">
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
-            </TabsTrigger>
-          </TabsList>
+          <Tabs defaultValue="dashboard" orientation="vertical">
+            <TabsList className="flex-col h-auto space-y-1">
+              <TabsTrigger value="dashboard" className="w-full justify-start">
+                <LayoutDashboard className="mr-2 h-4 w-4" />
+                Dashboard
+              </TabsTrigger>
+              <TabsTrigger value="users" className="w-full justify-start">
+                <Users className="mr-2 h-4 w-4" />
+                Users
+              </TabsTrigger>
+              <TabsTrigger value="tax-forms" className="w-full justify-start">
+                <FileText className="mr-2 h-4 w-4" />
+                Tax Forms
+              </TabsTrigger>
+              <TabsTrigger value="blogs" className="w-full justify-start">
+                <FileText className="mr-2 h-4 w-4" />
+                Blog Posts
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="w-full justify-start">
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </nav>
         
         <div className="p-4 border-t">
