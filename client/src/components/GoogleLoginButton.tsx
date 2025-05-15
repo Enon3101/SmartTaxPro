@@ -23,6 +23,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
   const [, setLocation] = useLocation();
   
   const handleGoogleLogin = useGoogleLogin({
+    scope: 'openid email profile',
     onSuccess: async (tokenResponse) => {
       try {
         // Get ID token with OAuth2
