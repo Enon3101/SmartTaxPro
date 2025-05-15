@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import useGoogleAuth from '@/hooks/useGoogleAuth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,10 +6,54 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
 
-const UserProfile: React.FC = () => {
-  const { user, isAuthenticated, logout } = useGoogleAuth();
+interface UserProfileProps {
+  userId?: number | string;
+  token?: string;
+}
+
+const UserProfile: React.FC<UserProfileProps> = ({ userId, token }) => {
+  const { user: authUser, isAuthenticated, logout } = useGoogleAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  
+  useEffect(() => {
+    // If we have a userId and token, fetch the user data
+    if (userId && token) {
+      setLoading(true);
+      fetchUserById(userId, token);
+    } else if (authUser) {
+      // Otherwise use the authenticated user
+      setUser(authUser);
+    }
+  }, [userId, token, authUser]);
+  
+  const fetchUserById = async (id: number | string, authToken: string) => {
+    try {
+      const response = await fetch(`/api/admin/users/${id}`, {
+        headers: {
+          "Authorization": `Bearer ${authToken}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+      
+      const userData = await response.json();
+      setUser(userData);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load user data",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = async () => {
     await logout();

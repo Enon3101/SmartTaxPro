@@ -763,6 +763,10 @@ export default function Admin() {
                 <FileText className="mr-2 h-4 w-4" />
                 Forms
               </TabsTrigger>
+              <TabsTrigger value="blogs" className="flex-1">
+                <FileText className="mr-2 h-4 w-4" />
+                Blogs
+              </TabsTrigger>
               <TabsTrigger value="settings" className="flex-1">
                 <Settings className="mr-2 h-4 w-4" />
                 Settings
@@ -781,6 +785,30 @@ export default function Admin() {
             
             <TabsContent value="tax-forms">
               <TaxFormManagement />
+            </TabsContent>
+            
+            <TabsContent value="blogs">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-bold">Blog Management</h2>
+                  <Link href="/admin/blog/new">
+                    <Button className="bg-blue-600 hover:bg-blue-700">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+                      Create New Post
+                    </Button>
+                  </Link>
+                </div>
+                <p className="text-muted-foreground">
+                  Manage blog posts for the tax learning resources section. Create new posts, edit existing ones, and control publication status.
+                </p>
+                <div className="mt-6">
+                  <Link href="/admin/blog">
+                    <Button size="lg" className="w-full sm:w-auto">
+                      View All Blog Posts
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </TabsContent>
             
             <TabsContent value="settings">

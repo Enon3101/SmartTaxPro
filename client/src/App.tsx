@@ -180,9 +180,9 @@ function Router() {
       <Route path="/itr-wizard" component={ItrWizard} />
       <Route path="/admin" component={Admin} />
       <Route path="/admin-login" component={AdminLogin} />
-      <Route path="/blog-admin">{() => <BlogAdmin />}</Route>
-      <Route path="/blog-admin/new">{() => <BlogAdmin mode="create" />}</Route>
-      <Route path="/blog-admin/edit/:id">
+      <Route path="/admin/blog">{() => <BlogAdmin />}</Route>
+      <Route path="/admin/blog/new">{() => <BlogAdmin mode="create" />}</Route>
+      <Route path="/admin/blog/edit/:id">
         {(params) => <BlogAdmin mode="edit" id={params.id} />}
       </Route>
       <Route path="/admin/database-editor" component={DatabaseEditor} />
