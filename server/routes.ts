@@ -61,6 +61,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   });
 
+  // Configuration endpoints
+  apiRouter.get("/config/google-client-id", (req, res) => {
+    // Send the Google Client ID from server environment
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+    if (clientId) {
+      res.json({ clientId });
+    } else {
+      res.status(404).json({ error: "Google Client ID not configured" });
+    }
+  });
+  
   // Tax Forms API
 
   // Create a new tax form

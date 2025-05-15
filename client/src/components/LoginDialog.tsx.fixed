@@ -22,7 +22,6 @@ interface LoginDialogProps {
   buttonText?: string;
   buttonVariant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
   className?: string;
-  onOpenChange?: (open: boolean) => void;
 }
 
 export default function LoginDialog({
@@ -30,17 +29,8 @@ export default function LoginDialog({
   buttonText = "Login",
   buttonVariant = "default",
   className = "",
-  onOpenChange,
 }: LoginDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
-  
-  // Handle open state changes and call the onOpenChange prop if provided
-  const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
-    if (onOpenChange) {
-      onOpenChange(open);
-    }
-  };
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
@@ -116,7 +106,7 @@ export default function LoginDialog({
         onLoginSuccess(data.user);
       }
       
-      handleOpenChange(false);
+      setIsOpen(false);
       
       // Reset form
       setStep("phone");
@@ -161,7 +151,7 @@ export default function LoginDialog({
         if (onLoginSuccess) {
           onLoginSuccess(data.user);
         }
-        handleOpenChange(false);
+        setIsOpen(false);
         toast({
           title: "Admin Login Successful",
           description: "You are now logged in as Admin",
@@ -177,7 +167,7 @@ export default function LoginDialog({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant={buttonVariant} className={className}>
           <FiLogIn className="mr-2 h-4 w-4" />

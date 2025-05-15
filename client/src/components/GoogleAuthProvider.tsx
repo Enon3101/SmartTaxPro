@@ -22,14 +22,34 @@ const GoogleAuthProvider: React.FC<GoogleAuthProviderProps> = ({ children }) => 
   const [clientId, setClientId] = useState<string | null>(null);
   
   useEffect(() => {
-    // Check if Google API is loaded successfully
-    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    if (googleClientId) {
-      console.log("GoogleAuthProvider: Google Client ID is available");
+    // First try to get VITE_GOOGLE_CLIENT_ID from environment
+    let googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    
+    // If that's not available, fetch it from the server which has access to the regular environment variables
+    if (!googleClientId) {
+      fetch('/api/config/google-client-id')
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error('Failed to get Google Client ID');
+        })
+        .then(data => {
+          if (data.clientId) {
+            console.log("GoogleAuthProvider: Google Client ID retrieved from server");
+            setClientId(data.clientId);
+            setIsInitialized(true);
+          } else {
+            console.warn('GoogleAuthProvider: Server did not return a valid Google Client ID');
+          }
+        })
+        .catch(error => {
+          console.warn('GoogleAuthProvider: Failed to retrieve Google Client ID from server', error);
+        });
+    } else {
+      console.log("GoogleAuthProvider: Google Client ID is available from environment");
       setClientId(googleClientId);
       setIsInitialized(true);
-    } else {
-      console.warn('GoogleAuthProvider: Google Client ID not found. Google authentication will not work.');
     }
   }, []);
 

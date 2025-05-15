@@ -24,7 +24,7 @@ import {
   Bot,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { LoginDialog } from "@/components/LoginDialog";
+import LoginDialog from "@/components/LoginDialog";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
