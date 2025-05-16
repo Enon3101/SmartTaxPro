@@ -53,12 +53,20 @@ const TaxExpertWidget = () => {
     const checkApiStatus = async () => {
       if (isOpen && !apiStatus) {
         try {
-          const response = await apiRequest("GET", "/api/tax-expert-chat/status");
-          const statusData = response as { configured: boolean; message: string; error?: string };
-          setApiStatus(statusData);
+          const response = await fetch("/api/tax-expert-chat/status", {
+            method: "GET",
+            credentials: "include"
+          });
           
-          if (!statusData.configured) {
-            console.log("API not configured:", statusData.message);
+          if (!response.ok) {
+            throw new Error(`API status check failed: ${response.status}`);
+          }
+          
+          const responseData = await response.json();
+          setApiStatus(responseData);
+          
+          if (!responseData.configured) {
+            console.log("API not configured:", responseData.message);
             setMessages(prev => [
               ...prev,
               {
@@ -106,14 +114,20 @@ const TaxExpertWidget = () => {
     try {
       setMessages(prev => [...prev, userMessage]);
       
-      const response = await apiRequest(
-        "POST",
-        "/api/tax-expert-chat", 
-        { message: userMessage.content }
-      );
+      const response = await fetch("/api/tax-expert-chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: userMessage.content }),
+        credentials: "include"
+      });
       
-      // apiRequest already returns the parsed JSON data
-      const data = response;
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`);
+      }
+      
+      const data = await response.json();
       
       if (data.response) {
         setMessages(prev => [
