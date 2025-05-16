@@ -135,32 +135,34 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
     );
   }
   
-  // Fallback button if Google API doesn't load properly
+  // Modern, enhanced fallback button if Google API doesn't load properly
   return (
     <button
       onClick={() => handleGoogleLogin()}
-      className={`flex items-center justify-center gap-2 px-4 py-2 border rounded-md ${
+      className={`flex items-center justify-center gap-3 px-4 py-3 border transition-all duration-300 transform hover:scale-[1.02] shadow-md ${
         theme === 'outline' 
           ? 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50' 
           : theme === 'filled_black'
-            ? 'border-gray-800 bg-gray-800 text-white hover:bg-gray-700'
-            : 'border-blue-600 bg-blue-600 text-white hover:bg-blue-500'
+            ? 'bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white border-transparent'
+            : 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white border-transparent'
       } ${
-        size === 'large' ? 'text-base py-2.5' : 'text-sm'
+        size === 'large' ? 'text-base py-4' : 'text-sm py-3'
       } ${
         shape === 'pill' ? 'rounded-full' : 
         shape === 'square' ? 'rounded-sm' :
         shape === 'circle' ? 'rounded-full aspect-square p-0 justify-center' : 
-        'rounded-md'
+        'rounded-lg'
       }`}
       style={{ width: width }}
       type="button"
+      aria-label="Sign in with Google"
     >
       <svg 
         xmlns="http://www.w3.org/2000/svg" 
         viewBox="0 0 48 48" 
-        width={size === 'large' ? '24' : '20'} 
-        height={size === 'large' ? '24' : '20'}
+        width={size === 'large' ? '28' : '22'} 
+        height={size === 'large' ? '28' : '22'}
+        className="flex-shrink-0"
       >
         <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
         <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
@@ -169,7 +171,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
       </svg>
 
       {shape !== 'circle' && (
-        <span>
+        <span className="font-medium">
           {text === 'signin_with' && "Sign in with Google"}
           {text === 'signup_with' && "Sign up with Google"}
           {text === 'continue_with' && "Continue with Google"}
