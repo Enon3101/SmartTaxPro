@@ -80,21 +80,34 @@ const Header = () => {
           items: [
             { name: "Income Tax Calculator", path: "/calculators/income-tax" },
             { name: "Tax Regime Comparison", path: "/calculators/tax-regime" },
-            { name: "Advance Tax Calculator", path: "/calculators/advance-tax" },
-            { name: "HRA Calculator", path: "/calculators/hra" },
+            { name: "HRA Exemption Calculator", path: "/calculators/hra" },
             { name: "TDS Calculator", path: "/calculators/tds" },
-            { name: "Capital Gains", path: "/calculators/capital-gains" }
+            { name: "Capital Gains Tax", path: "/calculators/capital-gains" },
+            { name: "Take-home Salary Calculator", path: "/calculators/take-home-salary" },
+            { name: "GST Calculator", path: "/calculators/gst" }
           ]
         },
         {
-          category: "Financial Calculators",
+          category: "Investment Calculators",
           items: [
-            { name: "SIP Calculator", path: "/calculators/sip" },
-            { name: "FD Calculator", path: "/calculators/fd" },
+            { name: "SIP Return Calculator", path: "/calculators/sip" },
+            { name: "FD Maturity Calculator", path: "/calculators/fd" },
             { name: "PPF Calculator", path: "/calculators/ppf" },
-            { name: "RD Calculator", path: "/calculators/rd" },
+            { name: "NPS Pension Calculator", path: "/calculators/nps" },
+            { name: "Lumpsum MF Calculator", path: "/calculators/lumpsum" },
+            { name: "Compound Interest", path: "/calculators/compound-interest" }
+          ]
+        },
+        {
+          category: "Loan & Retirement",
+          items: [
             { name: "Loan EMI Calculator", path: "/calculators/loan-emi" },
-            { name: "Retirement Calculator", path: "/calculators/retirement" }
+            { name: "Home Loan EMI", path: "/calculators/home-loan" },
+            { name: "Car Loan EMI", path: "/calculators/car-loan" },
+            { name: "Personal Loan EMI", path: "/calculators/personal-loan" },
+            { name: "Loan Against Property", path: "/calculators/lap" },
+            { name: "Retirement Corpus Planner", path: "/calculators/retirement" },
+            { name: "Gratuity Calculator", path: "/calculators/gratuity" }
           ]
         }
       ]
