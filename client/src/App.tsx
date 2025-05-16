@@ -39,6 +39,7 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 
 // Lazy load calculator pages with improved loading
 const CalculatorsIndex = lazy(() => import("@/pages/calculators"));
+const LearningBlogPost = lazy(() => import("@/pages/learning/BlogPost"));
 
 // Take Home Salary Calculator
 const TakeHomeSalaryCalculator = lazy(() => {
@@ -225,7 +226,7 @@ function Router() {
       <Route path="/learning/:slug">
         {(params) => (
           <Suspense fallback={<PageLoading />}>
-            <lazy(() => import("@/pages/learning/[slug]")).default />
+            <LearningBlogPost />
           </Suspense>
         )}
       </Route>
