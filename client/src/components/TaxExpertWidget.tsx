@@ -71,7 +71,7 @@ const TaxExpertWidget = () => {
               ...prev,
               {
                 content: "I'm currently unavailable due to a configuration issue. Please try again later.",
-                sender: "bot",
+                sender: "bot" as const,
                 timestamp: new Date()
               }
             ]);
@@ -130,10 +130,12 @@ const TaxExpertWidget = () => {
       const data = await response.json();
       
       if (data.response) {
+        // Make sure bot responses are not undefined
+        const botResponse: string = data.response || "Sorry, I couldn't generate a response.";
         setMessages(prev => [
           ...prev, 
           {
-            content: data.response,
+            content: botResponse,
             sender: "bot",
             timestamp: new Date()
           }
@@ -155,7 +157,7 @@ const TaxExpertWidget = () => {
         ...prev, 
         {
           content: errorMsg,
-          sender: "bot",
+          sender: "bot" as const,
           timestamp: new Date()
         }
       ]);
