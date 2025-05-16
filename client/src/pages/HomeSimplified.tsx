@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue 
 } from "@/components/ui/select";
+import TrustedBySection from "@/components/TrustedBySection";
 
 // Performance-optimized home page without heavy animations
 const HomeSimplified = () => {
@@ -211,56 +212,8 @@ const HomeSimplified = () => {
         </div>
       </section>
 
-      {/* Trusted by section */}
-      <section className="py-8 bg-primary/5 border-y border-border">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-4">
-            <h3 className="text-lg font-medium text-muted-foreground">As trusted by</h3>
-          </div>
-          
-          <div className="logo-slider">
-            <div className="logo-slide-track">
-              {/* Optimized logo display */}
-              <div className="logo-slide">
-                <img src="company-logos/tcs.png" alt="Tata Consultancy Services" className="logo-img" />
-                <span className="text-xs font-medium text-muted-foreground">Tata Consultancy Services</span>
-              </div>
-              <div className="logo-slide">
-                <img src="company-logos/infosys.png" alt="Infosys" className="logo-img" />
-                <span className="text-xs font-medium text-muted-foreground">Infosys</span>
-              </div>
-              <div className="logo-slide">
-                <img src="company-logos/reliance.png" alt="Reliance Industries" className="logo-img" />
-                <span className="text-xs font-medium text-muted-foreground">Reliance Industries</span>
-              </div>
-              <div className="logo-slide">
-                <img src="company-logos/wipro.png" alt="Wipro" className="logo-img" />
-                <span className="text-xs font-medium text-muted-foreground">Wipro</span>
-              </div>
-              <div className="logo-slide">
-                <img src="company-logos/hdfc.png" alt="HDFC Bank" className="logo-img" />
-                <span className="text-xs font-medium text-muted-foreground">HDFC Bank</span>
-              </div>
-              <div className="logo-slide">
-                <img src="company-logos/airtel.png" alt="Bharti Airtel" className="logo-img" />
-                <span className="text-xs font-medium text-muted-foreground">Bharti Airtel</span>
-              </div>
-              <div className="logo-slide">
-                <img src="company-logos/itc.png" alt="ITC Limited" className="logo-img" />
-                <span className="text-xs font-medium text-muted-foreground">ITC Limited</span>
-              </div>
-              <div className="logo-slide">
-                <img src="company-logos/sbi.png" alt="State Bank of India" className="logo-img" />
-                <span className="text-xs font-medium text-muted-foreground">State Bank of India</span>
-              </div>
-              <div className="logo-slide">
-                <img src="company-logos/icici.png" alt="ICICI Bank" className="logo-img" />
-                <span className="text-xs font-medium text-muted-foreground">ICICI Bank</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            {/* Trusted by section - using the optimized component */}
+      <TrustedBySection />
       
       {/* Easy ways to file section */}
       <section className="py-12 bg-muted">
