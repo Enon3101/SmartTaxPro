@@ -330,8 +330,9 @@ const LearningResources = () => {
   }, [activeCategory, searchTerm, currentTab, setLocation]);
   
   // Process blog data from API
-  const blogPosts = blogData?.posts || [];
-  const totalBlogCount = blogData?.total || 0;
+  // If API data isn't available yet, use dummy data temporarily to avoid errors
+  const blogPosts = blogData?.posts || blogPostsData;
+  const totalBlogCount = blogData?.total || blogPostsData.length;
   
   // Filter and search updates
   const filteredUpdates = taxGuides.filter(guide => {
@@ -444,7 +445,34 @@ const LearningResources = () => {
         <TabsContent value="blogs">
           {/* Blog posts with pagination */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-            {currentPosts.length > 0 ? (
+            {isLoadingBlogs ? (
+              // Loading skeleton
+              Array(4).fill(0).map((_, index) => (
+                <Card key={index} className="flex flex-col h-full">
+                  <CardHeader className="pb-3">
+                    <div className="flex justify-between items-start mb-2">
+                      <Skeleton className="h-5 w-20" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                    <Skeleton className="h-6 w-full mb-2" />
+                    <Skeleton className="h-6 w-3/4" />
+                    <div className="flex items-center mt-2 space-x-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-grow pb-4">
+                    <Skeleton className="h-4 w-full mb-2" />
+                    <Skeleton className="h-4 w-full mb-2" />
+                    <Skeleton className="h-4 w-3/4 mb-4" />
+                    <div className="flex gap-1 mt-auto">
+                      <Skeleton className="h-5 w-16" />
+                      <Skeleton className="h-5 w-16" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : currentPosts.length > 0 ? (
               currentPosts.map((post) => (
                 <Card 
                   key={post.id} 
