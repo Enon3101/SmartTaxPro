@@ -55,14 +55,16 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
         throw new Error("No credential received from Google");
       }
       
-      const response = await apiRequest('POST', '/api/auth/google', {
+      const response = await fetch('/api/auth/google', {
+        method: 'POST',
         body: JSON.stringify({
           credential,
           token_type: tokenType
         }),
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        credentials: 'include'
       });
       
       if (!response.ok) {

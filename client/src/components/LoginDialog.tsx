@@ -90,21 +90,26 @@ export default function LoginDialog({
         throw new Error("Please enter a valid 6-digit OTP");
       }
 
-      const response = await fetch("/api/auth/verify-otp", {
-        method: "POST",
-        body: JSON.stringify({ phone, otp }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include"
-      });
+      try {
+        const response = await fetch("/api/auth/verify-otp", {
+          method: "POST",
+          body: JSON.stringify({ phone, otp }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include"
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Invalid OTP");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Invalid OTP");
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error("OTP verification error:", error);
+        throw error;
       }
-
-      return await response.json();
     },
     onSuccess: (data) => {
       toast({
@@ -142,7 +147,7 @@ export default function LoginDialog({
 
   const handleVerifyOtp = (e: React.FormEvent) => {
     e.preventDefault();
-    verifyOtpMutation.mutate();
+    verifyOtpMutation.mutate(undefined);
   };
 
   const [adminUsername, setAdminUsername] = useState("");
@@ -227,14 +232,14 @@ export default function LoginDialog({
           {buttonText}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" aria-describedby="login-dialog-description">
         <DialogHeader>
           <DialogTitle>
             {showAdminLogin 
               ? "Admin Login" 
               : (step === "phone" ? "Login with Mobile" : "Enter OTP")}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription id="login-dialog-description">
             {showAdminLogin
               ? "Enter your admin credentials to access the admin panel."
               : (step === "phone"
