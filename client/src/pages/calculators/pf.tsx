@@ -360,7 +360,7 @@ const PFCalculator = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <Label htmlFor="employeeContribution">Employee Contribution (%)</Label>
-                      <div className="flex items-center gap-4 mt-2">
+                      <div className="flex items-center gap-4 mt-2 mb-4">
                         <Slider
                           id="employeeContribution"
                           value={[employeeContribution]}
@@ -374,14 +374,14 @@ const PFCalculator = () => {
                           {employeeContribution.toFixed(2)}%
                         </div>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-muted-foreground mt-1 pt-1">
                         Statutory rate is 12%. You can contribute more voluntarily.
                       </p>
                     </div>
                     
                     <div>
                       <Label htmlFor="employerContribution">Employer Contribution (%)</Label>
-                      <div className="flex items-center gap-4 mt-2">
+                      <div className="flex items-center gap-4 mt-2 mb-4">
                         <Slider
                           id="employerContribution"
                           value={[employerContribution]}
@@ -395,7 +395,7 @@ const PFCalculator = () => {
                           {employerContribution.toFixed(2)}%
                         </div>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-muted-foreground mt-1 pt-1">
                         Statutory rate is 12%. (3.67% to EPF + 8.33% to EPS)
                       </p>
                     </div>
