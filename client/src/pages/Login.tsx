@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
-import { useLocation } from 'wouter';
-import GoogleLoginButton from '../components/GoogleLoginButton';
-import GoogleAuthCheck from '../components/GoogleAuthCheck';
+import { useState } from "react";
+import { useLocation } from "wouter";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
+import { Loader2, UserCheck } from "lucide-react";
+import { FiUser, FiLock } from "react-icons/fi";
+import WelcomeDialog from "@/components/WelcomeDialog";
 
-const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+export default function Login() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [, navigate] = useLocation();
   const { toast } = useToast();
-  const [, setLocation] = useLocation();
+  const { login } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,126 +34,133 @@ const Login: React.FC = () => {
     setIsLoading(true);
     
     try {
-      const response = await apiRequest('POST', '/api/auth/login', {
-        body: JSON.stringify({
-          username,
-          password,
-        }),
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({ username, password }),
+        credentials: "include",
       });
       
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Login failed');
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Invalid credentials");
       }
       
       const data = await response.json();
       
-      // Save auth data to localStorage
-      localStorage.setItem('authToken', data.accessToken);
-      localStorage.setItem('refreshToken', data.refreshToken);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // Save user data to context and localStorage
+      login(data.user);
       
       toast({
-        title: "Login Successful",
-        description: "You have been logged in successfully",
+        title: "Success",
+        description: "You have successfully logged in",
       });
       
-      // Redirect to home or dashboard
-      setLocation('/');
+      // Show welcome screen
+      setShowWelcome(true);
+      
     } catch (error) {
       toast({
-        title: "Login Failed",
-        description: error instanceof Error ? error.message : "Failed to login",
+        title: "Login failed",
+        description: error.message || "An error occurred during login",
         variant: "destructive",
       });
     } finally {
       setIsLoading(false);
     }
   };
-
+  
   return (
-    <div className="flex justify-center items-center min-h-[80vh] px-4 py-8">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Login to Your Account</CardTitle>
-          <CardDescription className="text-center">
-            Enter your credentials to access your account
+    <div className="container mx-auto max-w-md py-10">
+      <Card className="border shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-blue-600 to-blue-500 text-white space-y-1">
+          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+          <CardDescription className="text-blue-100">
+            Login to access your account and manage your tax filing
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <form onSubmit={handleLogin} className="space-y-4">
+        
+        <form onSubmit={handleLogin}>
+          <CardContent className="space-y-4 pt-6">
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
+                  <FiUser className="h-4 w-4" />
+                </div>
+                <Input
+                  id="username"
+                  placeholder="Enter your username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="pl-10"
+                  required
+                />
+              </div>
             </div>
+            
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
+                  <FiLock className="h-4 w-4" />
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-10"
+                  required
+                />
+              </div>
             </div>
-            <Button
-              type="submit"
-              className="w-full"
+          </CardContent>
+          
+          <CardFooter className="flex-col space-y-4">
+            <Button 
+              type="submit" 
+              className="w-full" 
               disabled={isLoading}
             >
-              {isLoading ? 'Logging in...' : 'Login'}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Logging in...
+                </>
+              ) : (
+                <>
+                  <UserCheck className="mr-2 h-4 w-4" />
+                  Login
+                </>
+              )}
             </Button>
-          </form>
-          
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator className="w-full" />
+            
+            <div className="text-center text-sm text-muted-foreground">
+              <span>Don't have an account? </span>
+              <Button 
+                variant="link" 
+                className="p-0 h-auto" 
+                onClick={() => navigate('/register')}
+              >
+                Register here
+              </Button>
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-            </div>
-          </div>
-          
-          <div className="flex flex-col gap-4">
-            <GoogleAuthCheck />
-            <div className="flex justify-center">
-              <GoogleLoginButton 
-                size="large"
-                theme="filled_blue"
-                shape="rectangular"
-                width="100%"
-              />
-            </div>
-          </div>
-        </CardContent>
-        <CardFooter className="flex flex-col space-y-2">
-          <div className="text-sm text-center">
-            Don't have an account?{' '}
-            <a 
-              href="/register" 
-              className="text-primary underline hover:text-primary/80"
-              onClick={(e) => {
-                e.preventDefault();
-                setLocation('/register');
-              }}
-            >
-              Register
-            </a>
-          </div>
-        </CardFooter>
+          </CardFooter>
+        </form>
       </Card>
+      
+      {/* Welcome Dialog */}
+      {showWelcome && (
+        <WelcomeDialog 
+          user={{ username }}  
+          open={showWelcome}
+          onOpenChange={setShowWelcome}
+        />
+      )}
     </div>
   );
-};
-
-export default Login;
+}
