@@ -785,12 +785,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      console.log("OpenRouter API response format:", JSON.stringify(data).substring(0, 200) + "...");
+      // Log a shorter version of the response to avoid cluttering logs
+      const responsePreview = JSON.stringify(data).substring(0, 200) + "...";
+      console.log("OpenRouter API response preview:", responsePreview);
 
       let responseText = "";
       try {
-        console.log("Full API response:", JSON.stringify(data));
-        
         // The OpenRouter API response follows OpenAI format
         if (data && data.choices && data.choices.length > 0 && data.choices[0].message) {
           responseText = data.choices[0].message.content;
@@ -798,9 +798,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Error response
           throw new Error(JSON.stringify(data.error));
         } else {
-          // If we can't find the text in expected locations, return the raw data
-          responseText = "I couldn't format my response properly. Here's what I received: " + 
-                         JSON.stringify(data).substring(0, 500);
+          // If we can't find the text in expected locations, provide a more user-friendly message
+          responseText = "I'm sorry, but I'm having trouble generating a response right now. Please try again later.";
+          console.error("Unexpected API response format:", JSON.stringify(data).substring(0, 500));
         }
       } catch (e) {
         console.error("Error parsing OpenRouter response:", e);
