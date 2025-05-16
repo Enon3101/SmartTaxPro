@@ -424,8 +424,8 @@ const IncomeTaxCalculator = () => {
                             <Input
                               id={`${source.id}-input`}
                               type="number"
-                              value={source.value}
-                              onChange={(e) => handleIncomeChange(source.id, Number(e.target.value))}
+                              value={source.value || ''}
+                              onChange={(e) => handleIncomeChange(source.id, Number(e.target.value) || 0)}
                               className="w-full"
                               min={0}
                               max={10000000}
@@ -510,8 +510,8 @@ const IncomeTaxCalculator = () => {
                                 <Input
                                   id={`${deduction.id}-input`}
                                   type="number"
-                                  value={deduction.value}
-                                  onChange={(e) => handleDeductionChange(deduction.id, Number(e.target.value))}
+                                  value={deduction.value || ''}
+                                  onChange={(e) => handleDeductionChange(deduction.id, Number(e.target.value) || 0)}
                                   className="w-full"
                                   min={0}
                                   placeholder={`Enter ${deduction.name}`}
@@ -633,22 +633,22 @@ const IncomeTaxCalculator = () => {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-1/2">Income Slab</TableHead>
-                            <TableHead className="text-right">Tax</TableHead>
+                            <TableHead className="w-[70%]">Income Slab</TableHead>
+                            <TableHead className="text-right w-[30%]">Tax</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
                           {taxOutput.slabwiseBreakup.map((item, index) => (
                             <TableRow key={index}>
                               <TableCell className="text-sm">
-                                {item.slab.incomeFrom === 0 ? 'Up to ' : 
+                                {item.slab.incomeFrom === 0 ? 'Up to ' + formatIndianCurrency(item.slab.incomeTo) : 
                                  item.slab.incomeTo === null ? 'Above ' + formatIndianCurrency(item.slab.incomeFrom) : 
                                  formatIndianCurrency(item.slab.incomeFrom) + ' to ' + formatIndianCurrency(item.slab.incomeTo)}
                                 <span className="ml-1 text-xs text-muted-foreground">
                                   @{item.slab.taxRate}%
                                 </span>
                               </TableCell>
-                              <TableCell className="text-right font-medium">
+                              <TableCell className="text-right font-medium w-[30%]">
                                 {formatIndianCurrency(item.tax)}
                               </TableCell>
                             </TableRow>
@@ -658,19 +658,19 @@ const IncomeTaxCalculator = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-sm">Base Tax</span>
-                        <span className="font-medium">{formatIndianCurrency(taxOutput.taxAmount)}</span>
+                      <div className="grid grid-cols-12 gap-2">
+                        <span className="text-sm col-span-9">Base Tax</span>
+                        <span className="font-medium col-span-3 text-right">{formatIndianCurrency(taxOutput.taxAmount)}</span>
                       </div>
                       {taxOutput.surchargeAmount > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-sm">Surcharge</span>
-                          <span className="font-medium">{formatIndianCurrency(taxOutput.surchargeAmount)}</span>
+                        <div className="grid grid-cols-12 gap-2">
+                          <span className="text-sm col-span-9">Surcharge</span>
+                          <span className="font-medium col-span-3 text-right">{formatIndianCurrency(taxOutput.surchargeAmount)}</span>
                         </div>
                       )}
-                      <div className="flex justify-between">
-                        <span className="text-sm">Health & Education Cess (4%)</span>
-                        <span className="font-medium">{formatIndianCurrency(taxOutput.cessAmount)}</span>
+                      <div className="grid grid-cols-12 gap-2">
+                        <span className="text-sm col-span-9">Health & Education Cess (4%)</span>
+                        <span className="font-medium col-span-3 text-right">{formatIndianCurrency(taxOutput.cessAmount)}</span>
                       </div>
                     </div>
                   </div>
