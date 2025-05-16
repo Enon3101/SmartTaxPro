@@ -256,28 +256,44 @@ export default function LoginDialog({
                 <Label htmlFor="adminUsername" className="text-right">
                   Username
                 </Label>
-                <Input
-                  id="adminUsername"
-                  className="col-span-3"
-                  value={adminUsername}
-                  onChange={(e) => setAdminUsername(e.target.value)}
-                  placeholder="Admin username"
-                  required
-                />
+                <div className="col-span-3 relative">
+                  <Input
+                    id="adminUsername"
+                    className="pl-9"
+                    value={adminUsername}
+                    onChange={(e) => setAdminUsername(e.target.value)}
+                    placeholder="Admin username"
+                    required
+                  />
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </div>
+                </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="adminPassword" className="text-right">
                   Password
                 </Label>
-                <Input
-                  id="adminPassword"
-                  type="password"
-                  className="col-span-3"
-                  value={adminPassword}
-                  onChange={(e) => setAdminPassword(e.target.value)}
-                  placeholder="Admin password"
-                  required
-                />
+                <div className="col-span-3 relative">
+                  <Input
+                    id="adminPassword"
+                    type="password"
+                    className="pl-9"
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    placeholder="Admin password"
+                    required
+                  />
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
             <DialogFooter>
@@ -301,20 +317,39 @@ export default function LoginDialog({
                 <Label htmlFor="phone" className="text-right">
                   Mobile
                 </Label>
-                <div className="col-span-3 flex">
-                  <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-muted-foreground text-sm">
-                    +91
-                  </span>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="rounded-l-none"
-                    placeholder="10-digit mobile number"
-                    autoComplete="tel"
-                    required
-                  />
+                <div className="col-span-3 relative">
+                  <div className="flex">
+                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-muted-foreground text-sm">
+                      +91
+                    </span>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => {
+                        // Only allow digits and limit to 10 characters
+                        const value = e.target.value.replace(/\D/g, '').substring(0, 10);
+                        setPhone(value);
+                      }}
+                      className="rounded-l-none"
+                      placeholder="10-digit mobile number"
+                      autoComplete="tel"
+                      maxLength={10}
+                      pattern="[6-9][0-9]{9}"
+                      title="Please enter a valid Indian mobile number"
+                      required
+                    />
+                  </div>
+                  {phone && phone.length > 0 && phone.length < 10 && (
+                    <div className="text-xs text-red-600 mt-1">
+                      Please enter a complete 10-digit number
+                    </div>
+                  )}
+                  {phone && !phone.match(/^[6-9]\d{9}$/) && phone.length === 10 && (
+                    <div className="text-xs text-red-600 mt-1">
+                      Indian mobile numbers should start with 6, 7, 8, or 9
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -361,16 +396,37 @@ export default function LoginDialog({
                 <Label htmlFor="otp" className="text-right">
                   OTP
                 </Label>
-                <Input
-                  id="otp"
-                  className="col-span-3"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  placeholder="Enter OTP"
-                  maxLength={6}
-                  required
-                />
+                <div className="col-span-3 relative">
+                  <Input
+                    id="otp"
+                    className="pl-9"
+                    value={otp}
+                    onChange={(e) => {
+                      // Only allow digits and limit to 6 characters
+                      const value = e.target.value.replace(/\D/g, '').substring(0, 6);
+                      setOtp(value);
+                    }}
+                    placeholder="Enter 6-digit OTP"
+                    maxLength={6}
+                    pattern="\d{6}"
+                    inputMode="numeric"
+                    title="Please enter a valid 6-digit OTP"
+                    autoComplete="one-time-code"
+                    required
+                  />
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="4" width="20" height="16" rx="2" />
+                      <path d="M8 11h.01M12 11h.01M16 11h.01" />
+                    </svg>
+                  </div>
+                </div>
               </div>
+              {otp && otp.length > 0 && otp.length < 6 && (
+                <div className="col-span-4 text-center text-xs text-red-600 mt-1">
+                  Please enter all 6 digits of the OTP
+                </div>
+              )}
               <div className="col-span-4 text-center text-sm">
                 <Button
                   variant="link"
