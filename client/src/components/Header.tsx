@@ -108,13 +108,13 @@ const Header = () => {
     >
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center">
-          <Link href="/">
+          <Link href={location.startsWith('/admin') ? '/admin' : '/'}>
             <div className="flex items-center cursor-pointer min-h-11 min-w-11">
               <div className="bg-primary/10 p-2 rounded-lg mr-2">
                 <FileText className="h-5 w-5 text-primary" />
               </div>
               <span className="text-primary font-bold text-xl">
-                myITR<span className="text-secondary">eturn</span>
+                {location.startsWith('/admin') ? 'Admin' : 'myITR'}<span className="text-secondary">{location.startsWith('/admin') ? 'Panel' : 'eturn'}</span>
               </span>
             </div>
           </Link>
@@ -201,13 +201,13 @@ const Header = () => {
           
             <div className="flex flex-col h-full">
               <div className="p-4 border-b border-border">
-                <Link href="/">
+                <Link href={location.startsWith('/admin') ? '/admin' : '/'}>
                   <div className="flex items-center cursor-pointer mb-4 min-h-11" onClick={() => document.body.click()}>
                     <div className="bg-primary/10 p-2 rounded-lg mr-2">
                       <FileText className="h-5 w-5 text-primary" />
                     </div>
                     <span className="text-primary font-bold text-xl">
-                      myITR<span className="text-secondary">eturn</span>
+                      {location.startsWith('/admin') ? 'Admin' : 'myITR'}<span className="text-secondary">{location.startsWith('/admin') ? 'Panel' : 'eturn'}</span>
                     </span>
                   </div>
                 </Link>
