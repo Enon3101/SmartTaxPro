@@ -550,7 +550,7 @@ const LearningResources = () => {
           </div>
           
           {/* Pagination controls */}
-          {filteredBlogs.length > postsPerPage && (
+          {blogPosts.length > postsPerPage && !isLoadingBlogs && (
             <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
               <Button
                 variant="outline"
@@ -567,7 +567,7 @@ const LearningResources = () => {
                 <span className="font-medium">Page {currentPage}</span>
                 <span className="text-muted-foreground"> of {totalPages}</span>
                 <div className="text-xs text-muted-foreground mt-1">
-                  Showing {indexOfFirstPost + 1}-{Math.min(indexOfLastPost, filteredBlogs.length)} of {filteredBlogs.length} articles
+                  Showing {indexOfFirstPost + 1}-{Math.min(indexOfLastPost, blogPosts.length)} of {blogPosts.length} articles
                 </div>
               </div>
               

@@ -222,7 +222,13 @@ function Router() {
       </Route>
       <Route path="/calculators" component={Calculators} />
       <Route path="/learning" component={LearningResources} />
-      <Route path="/learning/blog/:slug">{(params) => <BlogPost />}</Route>
+      <Route path="/learning/:slug">
+        {(params) => (
+          <Suspense fallback={<PageLoading />}>
+            <lazy(() => import("@/pages/learning/[slug]")).default />
+          </Suspense>
+        )}
+      </Route>
       <Route path="/tax-resources" component={TaxResources} />
       <Route path="/tax-resources/:formId">
         {(params) => (
