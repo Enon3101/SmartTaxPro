@@ -40,6 +40,14 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 // Lazy load calculator pages with improved loading
 const CalculatorsIndex = lazy(() => import("@/pages/calculators"));
 
+// Take Home Salary Calculator
+const TakeHomeSalaryCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/take-home-salary"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
 // Loan calculators
 const HomeLoanCalculator = lazy(() => {
   return Promise.all([
@@ -319,11 +327,9 @@ function Router() {
       
       {/* Additional calculator routes */}
       <Route path="/calculators/take-home-salary">
-        {() => (
-          <Suspense fallback={<PageLoading />}>
-            <TakeHomeSalaryCalculator />
-          </Suspense>
-        )}
+        <Suspense fallback={<PageLoading />}>
+          <TakeHomeSalaryCalculator />
+        </Suspense>
       </Route>
       <Route path="/calculators/ppf">
         <Suspense fallback={<PageLoading />}>
