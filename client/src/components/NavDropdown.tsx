@@ -12,6 +12,7 @@ interface NavItemProps {
     items: {
       name: string;
       path: string;
+      highlight?: boolean;
     }[];
   }[];
   isActive: boolean;
@@ -81,7 +82,9 @@ const NavDropdown = ({ name, path, icon, dropdownItems, isActive }: NavItemProps
                     <Link 
                       key={itemIndex} 
                       href={item.path}
-                      className="px-4 py-2 text-sm hover:bg-primary/10 transition-colors flex items-center"
+                      className={`px-4 py-2 text-sm hover:bg-primary/10 transition-colors flex items-center ${
+                        item.highlight ? 'bg-primary/10 text-primary font-medium' : ''
+                      }`}
                     >
                       {item.name}
                     </Link>

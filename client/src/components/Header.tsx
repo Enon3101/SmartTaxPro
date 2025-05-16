@@ -127,6 +127,7 @@ const Header = () => {
         {
           category: "ITR Forms",
           items: [
+            { name: "ITR Forms Guide", path: "/itr-forms-guide", highlight: true },
             { name: "ITR-1 (Sahaj)", path: "/tax-resources/itr1" },
             { name: "ITR-2", path: "/tax-resources/itr2" },
             { name: "ITR-3", path: "/tax-resources/itr3" },
