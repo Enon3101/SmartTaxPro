@@ -159,6 +159,14 @@ const ITRFormsGuidePage = lazy(() => {
   ]).then(([moduleExports]) => moduleExports);
 });
 
+// ITR Form Details
+const ITRFormDetails = lazy(() => {
+  return Promise.all([
+    import("@/pages/tax-resources/ITRFormDetails"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
 const AdvanceTaxCalculator = lazy(() => {
   return Promise.all([
     import("@/pages/calculators/advance-tax"),
@@ -208,6 +216,13 @@ function Router() {
       <Route path="/learning" component={LearningResources} />
       <Route path="/learning/blog/:slug">{(params) => <BlogPost />}</Route>
       <Route path="/tax-resources" component={TaxResources} />
+      <Route path="/tax-resources/:formId">
+        {(params) => (
+          <Suspense fallback={<PageLoading />}>
+            <ITRFormDetails />
+          </Suspense>
+        )}
+      </Route>
       <Route path="/support" component={Support} />
       <Route path="/pricing" component={Pricing} />
       <Route path="/start-filing" component={StartFiling} />
