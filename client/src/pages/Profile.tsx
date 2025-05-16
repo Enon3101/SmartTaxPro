@@ -52,6 +52,7 @@ const Profile: React.FC = () => {
         <TabsList className="mb-6">
           <TabsTrigger value="profile">Profile Information</TabsTrigger>
           <TabsTrigger value="history">Filing History</TabsTrigger>
+          <TabsTrigger value="documents">My Documents</TabsTrigger>
         </TabsList>
         
         <TabsContent value="profile">
@@ -126,6 +127,107 @@ const Profile: React.FC = () => {
                     </Card>
                   ))}
                 </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="documents">
+          <Card>
+            <CardHeader>
+              <CardTitle>My Documents</CardTitle>
+              <CardDescription>
+                Access and manage your uploaded tax documents and receipts
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="space-y-3">
+                  <Skeleton className="h-20 w-full rounded-md" />
+                  <Skeleton className="h-20 w-full rounded-md" />
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <Card className="p-4 border-dashed flex flex-col items-center justify-center hover:bg-muted/5 cursor-pointer transition-colors">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                      </div>
+                      <div className="text-center">
+                        <h3 className="font-medium">Upload Document</h3>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Add a new document or receipt
+                        </p>
+                      </div>
+                    </Card>
+                    
+                    {/* Example documents - these will be replaced with real data from API */}
+                    <Card className="p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                        </div>
+                        <div className="flex-grow">
+                          <h3 className="font-medium">PAN Card</h3>
+                          <div className="flex gap-3 text-xs text-muted-foreground mt-1">
+                            <span>PDF</span>
+                            <span>Uploaded on 12 Apr 2026</span>
+                          </div>
+                        </div>
+                        <button className="text-primary hover:underline text-sm">View</button>
+                      </div>
+                    </Card>
+                    
+                    <Card className="p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                        </div>
+                        <div className="flex-grow">
+                          <h3 className="font-medium">Form 16</h3>
+                          <div className="flex gap-3 text-xs text-muted-foreground mt-1">
+                            <span>PDF</span>
+                            <span>Uploaded on 10 Apr 2026</span>
+                          </div>
+                        </div>
+                        <button className="text-primary hover:underline text-sm">View</button>
+                      </div>
+                    </Card>
+                    
+                    <Card className="p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                        </div>
+                        <div className="flex-grow">
+                          <h3 className="font-medium">Investment Proof</h3>
+                          <div className="flex gap-3 text-xs text-muted-foreground mt-1">
+                            <span>PDF</span>
+                            <span>Uploaded on 5 Apr 2026</span>
+                          </div>
+                        </div>
+                        <button className="text-primary hover:underline text-sm">View</button>
+                      </div>
+                    </Card>
+                  </div>
+                  
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground mb-2">
+                      Documents are securely stored and only accessible by you
+                    </p>
+                    <a href="#" className="text-primary text-sm hover:underline">
+                      Manage all documents
+                    </a>
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>
