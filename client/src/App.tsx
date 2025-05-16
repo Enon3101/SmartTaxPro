@@ -318,6 +318,13 @@ function Router() {
       </Route>
       
       {/* Additional calculator routes */}
+      <Route path="/calculators/take-home-salary">
+        {() => (
+          <Suspense fallback={<PageLoading />}>
+            <TakeHomeSalaryCalculator />
+          </Suspense>
+        )}
+      </Route>
       <Route path="/calculators/ppf">
         <Suspense fallback={<PageLoading />}>
           <PPFCalculator />
