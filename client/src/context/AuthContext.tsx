@@ -1,12 +1,15 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import WelcomeUser from "@/components/WelcomeUser";
 
 interface User {
   id: number;
   username: string;
   phone?: string;
   role: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 interface AuthContextType {
@@ -15,6 +18,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (userData: User) => void;
   logout: () => void;
+  showWelcome: boolean;
+  setShowWelcome: (show: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -23,10 +28,13 @@ const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   login: () => {},
   logout: () => {},
+  showWelcome: false,
+  setShowWelcome: () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [showWelcome, setShowWelcome] = useState(false);
   
   // Try to get stored user from localStorage on initial load
   useEffect(() => {
@@ -54,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryKey: ["user", user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
-      return apiRequest<UserResponse>(`/api/auth/me?userId=${user.id}`);
+      return apiRequest<UserResponse>("GET", `/api/auth/me?userId=${user.id}`);
     },
     enabled: !!user?.id,
     retry: false,
@@ -73,10 +81,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = (userData: User) => {
     setUser(userData);
     localStorage.setItem("taxUser", JSON.stringify(userData));
+    // Show welcome screen on successful login
+    setShowWelcome(true);
   };
 
   const logout = () => {
     setUser(null);
+    setShowWelcome(false);
     localStorage.removeItem("taxUser");
   };
 
@@ -88,9 +99,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!user,
         login,
         logout,
+        showWelcome,
+        setShowWelcome
       }}
     >
       {children}
+      {user && showWelcome && (
+        <WelcomeUser user={user} onClose={() => setShowWelcome(false)} />
+      )}
     </AuthContext.Provider>
   );
 }

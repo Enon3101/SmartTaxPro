@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
-import { FiPhone, FiLogIn, FiArrowLeft } from "react-icons/fi";
+import { FiPhone, FiLogIn, FiArrowLeft, FiCheck } from "react-icons/fi";
 import { Loader2 } from "lucide-react";
 import GoogleLoginButton from "./GoogleLoginButton";
 
