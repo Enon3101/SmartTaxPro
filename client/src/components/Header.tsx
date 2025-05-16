@@ -135,7 +135,27 @@ const Header = () => {
       name: "Learning", 
       path: "/learning", 
       icon: <BookOpen className="h-4 w-4" />,
-      hasDropdown: false
+      hasDropdown: true,
+      dropdownItems: [
+        {
+          category: "Tax Learning",
+          items: [
+            { name: "Tax Basics", path: "/learning/tax-basics" },
+            { name: "Deductions Guide", path: "/learning/deductions" },
+            { name: "Investment Planning", path: "/learning/investment" },
+            { name: "Tax-Saving Tips", path: "/learning/tax-saving" }
+          ]
+        },
+        {
+          category: "Finance Education",
+          items: [
+            { name: "Personal Finance", path: "/learning/personal-finance" },
+            { name: "Retirement Planning", path: "/learning/retirement" },
+            { name: "Financial Independence", path: "/learning/financial-independence" },
+            { name: "Wealth Creation", path: "/learning/wealth-creation" }
+          ]
+        }
+      ]
     },
     { 
       name: "Pricing", 
