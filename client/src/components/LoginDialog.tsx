@@ -33,11 +33,16 @@ export default function LoginDialog({
   className = "",
   onOpenChange,
 }: LoginDialogProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  // Handle open state changes and call the onOpenChange prop if provided
   const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
+    setStep("phone");
+    setShowAdminLogin(false);
+    setPhone("");
+    setOtp("");
+    setUsername("");
+    setPassword("");
+    setAdminUsername("");
+    setAdminPassword("");
+    
     if (onOpenChange) {
       onOpenChange(open);
     }
@@ -53,35 +58,39 @@ export default function LoginDialog({
   const sendOtpMutation = useMutation({
     mutationFn: async () => {
       if (!phone || !phone.match(/^[6-9]\d{9}$/)) {
-        throw new Error("Please enter a valid 10-digit mobile number");
+        throw new Error("Please enter a valid Indian mobile number");
       }
 
-      const response = await fetch("/api/auth/send-otp", {
-        method: "POST",
-        body: JSON.stringify({ phone }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include"
-      });
+      try {
+        const response = await fetch("/api/auth/send-otp", {
+          method: "POST",
+          body: JSON.stringify({ phone }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to send OTP");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to send OTP");
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error("Send OTP error:", error);
+        throw error;
       }
-
-      return await response.json();
     },
     onSuccess: () => {
       setStep("otp");
       toast({
         title: "OTP Sent",
-        description: `OTP has been sent to your mobile number ${phone}`,
+        description: `Verification code has been sent to +91 ${phone}`,
       });
     },
     onError: (error: Error) => {
       toast({
-        title: "Failed to send OTP",
+        title: "Failed to Send OTP",
         description: error.message,
         variant: "destructive",
       });
@@ -90,12 +99,12 @@ export default function LoginDialog({
 
   const verifyOtpMutation = useMutation({
     mutationFn: async () => {
-      if (!otp || !otp.match(/^\d{6}$/)) {
+      if (!otp || otp.length !== 6) {
         throw new Error("Please enter a valid 6-digit OTP");
       }
 
       try {
-        const response = await fetch("/api/auth/verify-otp", {
+        const response = await fetch("/api/auth/login-with-otp", {
           method: "POST",
           body: JSON.stringify({ phone, otp }),
           headers: {
@@ -106,12 +115,12 @@ export default function LoginDialog({
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message || "Invalid OTP");
+          throw new Error(errorData.message || "OTP verification failed");
         }
         
         return await response.json();
       } catch (error) {
-        console.error("OTP verification error:", error);
+        console.error("Verify OTP error:", error);
         throw error;
       }
     },
@@ -128,8 +137,6 @@ export default function LoginDialog({
       handleOpenChange(false);
       
       // Reset form
-      setStep("phone");
-      setPhone("");
       setOtp("");
       
       // Update cache
@@ -137,7 +144,7 @@ export default function LoginDialog({
     },
     onError: (error: Error) => {
       toast({
-        title: "Verification Failed",
+        title: "OTP Verification Failed",
         description: error.message,
         variant: "destructive",
       });
@@ -151,7 +158,7 @@ export default function LoginDialog({
 
   const handleVerifyOtp = (e: React.FormEvent) => {
     e.preventDefault();
-    verifyOtpMutation.mutate(undefined);
+    verifyOtpMutation.mutate();
   };
   
   // Username/password login mutation
@@ -218,82 +225,70 @@ export default function LoginDialog({
   const [adminUsername, setAdminUsername] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
   const [showAdminLogin, setShowAdminLogin] = useState(false);
-  
+
+  const adminLoginMutation = useMutation({
+    mutationFn: async () => {
+      if (!adminUsername || !adminPassword) {
+        throw new Error("Please enter both username and password");
+      }
+
+      try {
+        const response = await fetch("/api/auth/dev-admin-login", {
+          method: "POST",
+          body: JSON.stringify({ username: adminUsername, password: adminPassword }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include"
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Invalid admin credentials");
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error("Admin login error:", error);
+        throw error;
+      }
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Admin Login Successful",
+        description: "Welcome to the admin dashboard",
+      });
+      
+      if (onLoginSuccess) {
+        onLoginSuccess(data.user);
+      }
+      
+      handleOpenChange(false);
+      
+      // Redirect to admin dashboard
+      window.location.href = "/admin";
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Admin Login Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleAdminLogin = () => {
+    adminLoginMutation.mutate();
+  };
+
   const handleAdminLoginClick = () => {
     setShowAdminLogin(true);
   };
-  
-  const handleAdminLogin = async () => {
-    try {
-      // Validate inputs
-      if (!adminUsername || !adminPassword) {
-        toast({
-          title: "Missing Credentials",
-          description: "Please enter both username and password",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      const response = await fetch("/api/auth/dev-admin-login", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          username: adminUsername,
-          password: adminPassword
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error("Admin login failed");
-      }
-      
-      const data = await response.json();
-      if (data.user) {
-        // Store admin session data in localStorage
-        const authData = {
-          token: data.accessToken || 'dev-admin-token',
-          refreshToken: data.refreshToken || 'dev-admin-refresh',
-          user: data.user || { id: 0, username: 'admin', role: 'admin' },
-        };
-        
-        localStorage.setItem('adminAuth', JSON.stringify(authData));
-        
-        if (onLoginSuccess) {
-          onLoginSuccess(data.user);
-        }
-        
-        handleOpenChange(false);
-        
-        toast({
-          title: "Admin Login Successful",
-          description: "You are now logged in as Admin",
-        });
-        
-        // Redirect to admin dashboard
-        window.location.href = "/admin";
-      }
-    } catch (error) {
-      toast({
-        title: "Admin Login Failed",
-        description: "Invalid username or password",
-        variant: "destructive",
-      });
-    } finally {
-      // Reset the form
-      setAdminUsername("");
-      setAdminPassword("");
-    }
-  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+    <Dialog onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant={buttonVariant} className={className}>
-          <FiLogIn className="mr-2 h-4 w-4" />
           {buttonText}
         </Button>
       </DialogTrigger>
@@ -531,34 +526,30 @@ export default function LoginDialog({
                     )}
                   </div>
                 </div>
-              </div>
-              
-              <div className="mt-6 space-y-3">
-                <Button
-                  type="submit"
-                  disabled={!phone || phone.length !== 10 || !phone.match(/^[6-9]\d{9}$/) || sendOtpMutation.isPending}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-md transition-all duration-200 transform hover:scale-[1.01] py-6"
-                >
-                  {sendOtpMutation.isPending ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      <span>Sending OTP...</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                      </svg>
-                      <span>Get Verification OTP</span>
-                    </div>
-                  )}
-                </Button>
                 
-                {/* Alternative login methods */}
-                <div className="relative my-4">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
-                  </div>
+                <div className="mt-6">
+                  <Button 
+                    type="submit" 
+                    disabled={sendOtpMutation.isPending || !phone.match(/^[6-9]\d{9}$/)}
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-md transition-all duration-200 transform hover:scale-[1.01] py-6"
+                  >
+                    {sendOtpMutation.isPending ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        <span>Sending OTP...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-2">
+                        <FiPhone className="h-5 w-5" />
+                        <span>Continue with Mobile</span>
+                      </div>
+                    )}
+                  </Button>
+                </div>
+                
+                {/* Divider */}
+                <div className="relative flex py-5 items-center">
+                  <div className="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
                   <div className="relative flex justify-center text-xs">
                     <span className="px-2 bg-white dark:bg-gray-800 text-muted-foreground">
                       OR CONTINUE WITH
@@ -619,85 +610,61 @@ export default function LoginDialog({
                   <Label htmlFor="otp" className="text-sm font-medium">
                     Verification Code
                   </Label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="2" y="4" width="20" height="16" rx="2" />
-                        <path d="M8 11h.01M12 11h.01M16 11h.01" />
-                      </svg>
-                    </div>
-                    <Input
-                      id="otp"
-                      className="pl-10 focus:ring-2 focus:ring-green-500 focus:border-green-500 text-lg tracking-widest font-medium"
-                      value={otp}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, '').substring(0, 6);
-                        setOtp(value);
-                      }}
-                      placeholder="Enter 6-digit OTP"
-                      maxLength={6}
-                      pattern="\d{6}"
-                      inputMode="numeric"
-                      title="Please enter a valid 6-digit OTP"
-                      autoComplete="one-time-code"
-                      required
-                    />
-                  </div>
-                  {otp && otp.length > 0 && otp.length < 6 && (
-                    <div className="text-xs text-red-600 mt-1">
-                      Please enter all 6 digits of the OTP
-                    </div>
-                  )}
+                  <Input
+                    id="otp"
+                    type="text"
+                    value={otp}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '').substring(0, 6);
+                      setOtp(value);
+                    }}
+                    className="text-center text-xl tracking-widest font-medium"
+                    placeholder="000000"
+                    required
+                    maxLength={6}
+                    inputMode="numeric"
+                    autoFocus
+                  />
                 </div>
-              </div>
-              
-              <div className="flex items-center justify-between mt-3 text-sm">
-                <Button
-                  variant="link"
-                  type="button"
-                  onClick={() => {
-                    setStep("phone");
-                    setOtp("");
-                  }}
-                  className="p-0 h-auto text-blue-600 hover:text-blue-800"
-                >
-                  <div className="flex items-center">
-                    <FiArrowLeft className="mr-1 h-3 w-3" />
-                    <span>Change phone number</span>
+                
+                <div className="mt-6 space-y-3">
+                  <Button 
+                    type="submit" 
+                    disabled={verifyOtpMutation.isPending || otp.length !== 6}
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-md transition-all duration-200 transform hover:scale-[1.01] py-6"
+                  >
+                    {verifyOtpMutation.isPending ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        <span>Verifying...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-2">
+                        <FiCheck className="h-5 w-5" />
+                        <span>Verify and Continue</span>
+                      </div>
+                    )}
+                  </Button>
+                  
+                  <div className="flex justify-between items-center text-sm">
+                    <button 
+                      type="button" 
+                      className="text-blue-600 hover:text-blue-700 hover:underline"
+                      onClick={() => setStep("phone")}
+                    >
+                      Use different number
+                    </button>
+                    
+                    <button 
+                      type="button" 
+                      disabled={sendOtpMutation.isPending}
+                      className="text-blue-600 hover:text-blue-700 hover:underline disabled:opacity-50" 
+                      onClick={() => sendOtpMutation.mutate()}
+                    >
+                      {sendOtpMutation.isPending ? "Sending..." : "Resend OTP"}
+                    </button>
                   </div>
-                </Button>
-                <Button
-                  variant="link"
-                  type="button"
-                  onClick={() => sendOtpMutation.mutate()}
-                  disabled={sendOtpMutation.isPending}
-                  className="p-0 h-auto text-blue-600 hover:text-blue-800"
-                >
-                  {sendOtpMutation.isPending ? "Sending..." : "Resend OTP"}
-                </Button>
-              </div>
-              
-              <div className="mt-6">
-                <Button 
-                  type="submit"
-                  disabled={!otp || otp.length !== 6 || verifyOtpMutation.isPending}
-                  className="w-full bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white shadow-md transition-all duration-200 transform hover:scale-[1.01] py-6"
-                >
-                  {verifyOtpMutation.isPending ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      <span>Verifying OTP...</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                      </svg>
-                      <span>Verify & Continue</span>
-                    </div>
-                  )}
-                </Button>
+                </div>
               </div>
             </form>
           )}
