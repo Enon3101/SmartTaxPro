@@ -175,6 +175,13 @@ const IncomeTaxCalculator = () => {
     setIncomeSources(prev => 
       prev.map(source => source.id === id ? {...source, value} : source)
     );
+    
+    // Automatically adjust standard deduction when salary income changes
+    if (id === 'salary') {
+      // Standard deduction can't exceed salary and is capped at 50,000
+      const standardDeductionValue = Math.min(value, 50000);
+      handleDeductionChange('standard', standardDeductionValue);
+    }
   };
   
   // Handle deduction change
