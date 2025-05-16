@@ -1624,6 +1624,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Mount API router with /api prefix
   app.use('/api', apiRouter);
+  
+  // Register calculator routes
+  app.use('/api/calculators', calculatorRouter);
 
   // Create HTTP server
   const httpServer = createServer(app);

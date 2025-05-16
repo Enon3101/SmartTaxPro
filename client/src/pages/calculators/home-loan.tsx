@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useMutation } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
+import { calculatorClient, HomeLoanResponse } from '@/lib/calculatorClient';
 
 import {
   Form,
@@ -53,20 +53,8 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface LoanCalculationResult {
-  monthlyEmi: number;
-  totalAmount: number;
-  totalInterest: number;
-  principal: number;
-  tenureYears: number;
-  interestRate: number;
-  loanType: string;
-  additionalInfo: {
-    stampDuty: number;
-    registrationFee: number;
-    processingFee: number;
-  };
-}
+// Using the interface from calculatorClient.ts
+// No need to redefine LoanCalculationResult
 
 const currencyFormatter = new Intl.NumberFormat('en-IN', {
   style: 'currency',
@@ -75,7 +63,7 @@ const currencyFormatter = new Intl.NumberFormat('en-IN', {
 });
 
 const HomeLoanCalculator = () => {
-  const [calculationResult, setCalculationResult] = useState<LoanCalculationResult | null>(null);
+  const [calculationResult, setCalculationResult] = useState<HomeLoanResponse | null>(null);
   const [activeTab, setActiveTab] = useState('basic');
 
   // Format amounts as Indian Rupees
@@ -95,10 +83,9 @@ const HomeLoanCalculator = () => {
   
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: FormValues) => {
-      const response = await apiRequest('POST', '/api/calculators/home-loan', data);
-      return response.json();
+      return calculatorClient.calculateHomeLoan(data);
     },
-    onSuccess: (data: LoanCalculationResult) => {
+    onSuccess: (data: HomeLoanResponse) => {
       setCalculationResult(data);
     },
     onError: (error) => {
