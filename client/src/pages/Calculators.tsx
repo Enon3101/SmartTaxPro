@@ -16,7 +16,8 @@ import {
   LineChart,
   Percent,
   Building,
-  Landmark
+  Landmark,
+  Wallet
 } from "lucide-react";
 import { usePreloadCalculator } from "@/hooks/usePreloadCalculator";
 import { motion } from "framer-motion";
@@ -97,6 +98,12 @@ const Calculators = () => {
                   icon: <DollarSign className="text-primary h-16 w-16" />,
                   href: "/calculators/tds",
                   preloadFn: preloadTdsCalculator
+                },
+                {
+                  title: "Take Home Salary Calculator",
+                  description: "Calculate your in-hand salary after tax and all deductions based on Indian income tax laws.",
+                  icon: <Wallet className="text-primary h-16 w-16" />,
+                  href: "/calculators/take-home-salary"
                 },
                 {
                   title: "HRA Exemption Calculator",
