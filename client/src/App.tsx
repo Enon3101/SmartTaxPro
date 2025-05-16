@@ -40,6 +40,28 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 // Lazy load calculator pages with improved loading
 const CalculatorsIndex = lazy(() => import("@/pages/calculators"));
 
+// Loan calculators
+const HomeLoanCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/home-loan"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const CarLoanCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/car-loan"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const PersonalLoanCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/personal-loan"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
 // Tax calculators with better prefetching
 const TaxRegimeCalculator = lazy(() => {
   // Add a small delay to give browser time to prioritize current page rendering
@@ -286,6 +308,23 @@ function Router() {
       <Route path="/calculators/compound-interest">
         <Suspense fallback={<PageLoading />}>
           <CompoundInterestCalculator />
+        </Suspense>
+      </Route>
+      
+      {/* Loan calculator routes */}
+      <Route path="/calculators/home-loan">
+        <Suspense fallback={<PageLoading />}>
+          <HomeLoanCalculator />
+        </Suspense>
+      </Route>
+      <Route path="/calculators/car-loan">
+        <Suspense fallback={<PageLoading />}>
+          <CarLoanCalculator />
+        </Suspense>
+      </Route>
+      <Route path="/calculators/personal-loan">
+        <Suspense fallback={<PageLoading />}>
+          <PersonalLoanCalculator />
         </Suspense>
       </Route>
 
