@@ -160,10 +160,31 @@ const IncomeTaxCalculator = () => {
     
     // In new regime, only standard deduction is allowed for salary
     if (regime === 'new') {
-      const standardDeduction = deductions.find(d => d.id === 'standard')?.value || 0;
+      // Standard deduction is automatically applied to salary (50,000 or salary, whichever is lower)
+      const salaryIncome = incomeSources.find(source => source.id === 'salary')?.value || 0;
+      const standardDeduction = salaryIncome > 0 ? Math.min(50000, salaryIncome) : 0;
+      
+      // Update the standard deduction field
+      if (deductions.find(d => d.id === 'standard')?.value !== standardDeduction) {
+        setDeductions(prev => 
+          prev.map(d => d.id === 'standard' ? {...d, value: standardDeduction} : d)
+        );
+      }
+      
       return Math.max(0, taxable - standardDeduction);
     } else {
-      // In old regime, all deductions are allowed
+      // In old regime, all deductions are allowed including standard deduction
+      // Apply standard deduction automatically (50,000 or salary, whichever is lower)
+      const salaryIncome = incomeSources.find(source => source.id === 'salary')?.value || 0;
+      const standardDeduction = salaryIncome > 0 ? Math.min(50000, salaryIncome) : 0;
+      
+      // Update the standard deduction field
+      if (deductions.find(d => d.id === 'standard')?.value !== standardDeduction) {
+        setDeductions(prev => 
+          prev.map(d => d.id === 'standard' ? {...d, value: standardDeduction} : d)
+        );
+      }
+      
       return Math.max(0, taxable - totalDeductions);
     }
   };
