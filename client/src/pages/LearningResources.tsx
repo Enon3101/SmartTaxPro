@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   BookOpen, 
   FileText, 
@@ -265,6 +266,25 @@ const LearningResources = () => {
   const [location, setLocation] = useLocation();
   const { isAuthenticated, user } = useAuth();
   
+  // Fetch blog posts from API
+  const { data: blogData, isLoading: isLoadingBlogs } = useQuery({
+    queryKey: ['/api/blog-posts', activeCategory, searchTerm],
+    queryFn: async () => {
+      let url = '/api/blog-posts?published=true';
+      
+      if (activeCategory && activeCategory !== 'all') {
+        url += `&category=${encodeURIComponent(activeCategory)}`;
+      }
+      
+      if (searchTerm) {
+        url += `&searchTerm=${encodeURIComponent(searchTerm)}`;
+      }
+      
+      return fetch(url).then(res => res.json());
+    },
+    enabled: currentTab === "blogs",
+  });
+  
   // Check if blog post has detailed content
   const hasDetailedContent = (slug: string) => {
     return Object.keys(blogContents).includes(slug);
@@ -309,17 +329,9 @@ const LearningResources = () => {
     }
   }, [activeCategory, searchTerm, currentTab, setLocation]);
   
-  // Filter and search blogs
-  const filteredBlogs = blogPostsData.filter(post => {
-    const matchesSearch = 
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    
-    const matchesCategory = activeCategory === "all" || post.category === activeCategory;
-    
-    return matchesSearch && matchesCategory;
-  });
+  // Process blog data from API
+  const blogPosts = blogData?.posts || [];
+  const totalBlogCount = blogData?.total || 0;
   
   // Filter and search updates
   const filteredUpdates = taxGuides.filter(guide => {
@@ -334,14 +346,14 @@ const LearningResources = () => {
   });
   
   // Get unique categories from blog posts and tax guides
-  const allCategories = [...blogPostsData.map(post => post.category), ...taxGuides.map(guide => guide.category)];
+  const allCategories = [...(blogPosts?.map(post => post.category) || []), ...taxGuides.map(guide => guide.category)];
   const categories = ["all", ...Array.from(new Set(allCategories))];
   
   // Pagination logic for blogs
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = filteredBlogs.slice(indexOfFirstPost, indexOfLastPost);
-  const totalBlogPages = Math.ceil(filteredBlogs.length / postsPerPage);
+  const currentPosts = blogPosts.slice(indexOfFirstPost, indexOfLastPost);
+  const totalBlogPages = Math.ceil(blogPosts.length / postsPerPage);
   
   // Pagination logic for updates
   const currentUpdates = filteredUpdates.slice(indexOfFirstPost, indexOfLastPost);
