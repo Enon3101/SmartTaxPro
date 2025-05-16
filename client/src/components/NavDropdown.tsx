@@ -62,7 +62,7 @@ const NavDropdown = ({ name, path, icon, dropdownItems, isActive }: NavItemProps
           <span className="flex items-center gap-1.5">
             {icon}
             {name}
-            <ChevronDown className="h-3.5 w-3.5 ml-0.5" />
+            {isHovered && <ChevronDown className="h-3.5 w-3.5 ml-0.5" />}
           </span>
         </Link>
       </Button>
