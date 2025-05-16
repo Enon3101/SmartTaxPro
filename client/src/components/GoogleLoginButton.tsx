@@ -10,6 +10,7 @@ interface GoogleLoginButtonProps {
   shape?: 'rectangular' | 'pill' | 'circle' | 'square';
   theme?: 'outline' | 'filled_blue' | 'filled_black';
   width?: string;
+  onLoginSuccess?: (user: any) => void;
 }
 
 const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
@@ -17,7 +18,8 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
   size = 'large',
   shape = 'rectangular',
   theme = 'filled_blue',
-  width = 'auto'
+  width = 'auto',
+  onLoginSuccess
 }) => {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
@@ -83,6 +85,11 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
         title: "Login Successful",
         description: "You have been logged in with Google successfully",
       });
+      
+      // Call login success callback if provided
+      if (onLoginSuccess) {
+        onLoginSuccess(data.user);
+      }
       
       // Redirect to home
       setLocation('/');

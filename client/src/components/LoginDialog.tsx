@@ -580,6 +580,12 @@ export default function LoginDialog({
                     theme="outline"
                     text="signin_with"
                     width="100%"
+                    onLoginSuccess={(user) => {
+                      if (onLoginSuccess) {
+                        onLoginSuccess(user);
+                      }
+                      handleOpenChange(false);
+                    }}
                   />
                   
                   {/* Admin Login (Development only) */}
