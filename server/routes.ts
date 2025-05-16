@@ -823,7 +823,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { users } = await import("@shared/schema");
       const { db } = await import("./db");
-      const allUsers = await db.select().from(users);
+      
+      // Select only specific columns that we know exist to avoid errors
+      const allUsers = await db.select({
+        id: users.id,
+        username: users.username,
+        email: users.email,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        phone: users.phone,
+        role: users.role,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+        googleId: users.googleId,
+        profileImageUrl: users.profileImageUrl
+      }).from(users);
+      
       res.json(allUsers);
     } catch (error) {
       console.error("Error fetching users:", error);

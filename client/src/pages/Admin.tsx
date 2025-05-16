@@ -3,6 +3,7 @@ import { useLocation, Link } from 'wouter';
 import { Users, FileText, ChevronRight, LogOut, User, Settings, LayoutDashboard, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -16,6 +17,8 @@ function UserManagement() {
   const [users, setUsers] = useState<UserType[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterRole, setFilterRole] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -99,6 +102,44 @@ function UserManagement() {
         <Button variant="outline">Add New User</Button>
       </div>
       
+      {/* Search and Filter Controls */}
+      <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+          </div>
+          <Input 
+            className="pl-10"
+            placeholder="Search by name or email"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div>
+          <select 
+            className="w-full h-10 px-3 rounded-md border border-input bg-transparent ring-offset-background"
+            value={filterRole || ''}
+            onChange={(e) => setFilterRole(e.target.value === '' ? null : e.target.value)}
+          >
+            <option value="">All Roles</option>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+            <option value="tax_expert">Tax Expert</option>
+          </select>
+        </div>
+        <div className="flex justify-end">
+          <Button variant="outline" onClick={() => {
+            setSearchTerm('');
+            setFilterRole(null);
+          }}>
+            Clear Filters
+          </Button>
+        </div>
+      </div>
+      
       <div className="rounded-md border">
         <div className="relative w-full overflow-auto">
           <table className="w-full caption-bottom text-sm">
@@ -117,7 +158,28 @@ function UserManagement() {
                   <td colSpan={5} className="p-4 text-center">No users found</td>
                 </tr>
               ) : (
-                users.map((user) => (
+                users
+                  .filter(user => {
+                    // Apply search filter
+                    if (searchTerm) {
+                      const searchLower = searchTerm.toLowerCase();
+                      return (
+                        (user.username?.toLowerCase().includes(searchLower) || false) ||
+                        (user.email?.toLowerCase().includes(searchLower) || false) ||
+                        (user.firstName?.toLowerCase().includes(searchLower) || false) ||
+                        (user.lastName?.toLowerCase().includes(searchLower) || false)
+                      );
+                    }
+                    return true;
+                  })
+                  .filter(user => {
+                    // Apply role filter
+                    if (filterRole) {
+                      return user.role === filterRole;
+                    }
+                    return true;
+                  })
+                  .map((user) => (
                   <tr key={user.id} className="border-b">
                     <td className="p-4 align-middle">{user.id}</td>
                     <td className="p-4 align-middle">{user.username}</td>
@@ -731,7 +793,7 @@ export default function Admin() {
         </div>
         
         <nav className="flex-1 p-4 space-y-1">
-          <Tabs defaultValue="dashboard" orientation="vertical">
+          <Tabs value={activeTab} onValueChange={setActiveTab} orientation="vertical">
             <TabsList className="flex-col h-auto space-y-1">
               <TabsTrigger value="dashboard" className="w-full justify-start">
                 <LayoutDashboard className="mr-2 h-4 w-4" />
