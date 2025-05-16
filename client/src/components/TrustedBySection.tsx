@@ -1,23 +1,23 @@
 // Modern company logos carousel component
 const TrustedBySection = () => {
-  // Company logos with names and new SVG files
+  // Company logos with real PNG images
   const companies = [
-    { name: 'Tata Consultancy Services', logo: 'company-logos-new/tcs.svg' },
-    { name: 'Infosys', logo: 'company-logos-new/infosys.svg' },
-    { name: 'Reliance Industries', logo: 'company-logos-new/reliance.svg' },
-    { name: 'Wipro', logo: 'company-logos-new/wipro.svg' },
-    { name: 'HDFC Bank', logo: 'company-logos-new/hdfc.svg' },
-    { name: 'Bharti Airtel', logo: 'company-logos-new/airtel.svg' },
-    { name: 'ITC Limited', logo: 'company-logos-new/itc.svg' },
-    { name: 'State Bank of India', logo: 'company-logos-new/sbi.svg' },
-    { name: 'ICICI Bank', logo: 'company-logos-new/icici.svg' },
+    { name: 'Tata Consultancy Services', logo: 'company-logos-new/tcs.png' },
+    { name: 'Infosys', logo: 'company-logos-new/infosys.png' },
+    { name: 'Reliance Industries', logo: 'company-logos-new/reliance.png' },
+    { name: 'Wipro', logo: 'company-logos-new/wipro.png' },
+    { name: 'HDFC Bank', logo: 'company-logos-new/hdfc.png' },
+    { name: 'Bharti Airtel', logo: 'company-logos-new/airtel.png' },
+    { name: 'ITC Limited', logo: 'company-logos-new/itc.png' },
+    { name: 'State Bank of India', logo: 'company-logos-new/sbi.png' },
+    { name: 'ICICI Bank', logo: 'company-logos-new/icici.png' },
     // Duplicate the list to ensure continuous scrolling
-    { name: 'Tata Consultancy Services', logo: 'company-logos-new/tcs.svg' },
-    { name: 'Infosys', logo: 'company-logos-new/infosys.svg' },
-    { name: 'Reliance Industries', logo: 'company-logos-new/reliance.svg' },
-    { name: 'Wipro', logo: 'company-logos-new/wipro.svg' },
-    { name: 'HDFC Bank', logo: 'company-logos-new/hdfc.svg' },
-    { name: 'Bharti Airtel', logo: 'company-logos-new/airtel.svg' },
+    { name: 'Tata Consultancy Services', logo: 'company-logos-new/tcs.png' },
+    { name: 'Infosys', logo: 'company-logos-new/infosys.png' },
+    { name: 'Reliance Industries', logo: 'company-logos-new/reliance.png' },
+    { name: 'Wipro', logo: 'company-logos-new/wipro.png' },
+    { name: 'HDFC Bank', logo: 'company-logos-new/hdfc.png' },
+    { name: 'Bharti Airtel', logo: 'company-logos-new/airtel.png' },
   ];
 
   return (
@@ -45,9 +45,6 @@ const TrustedBySection = () => {
                     }}
                   />
                 </div>
-                <span className="text-xs font-medium text-muted-foreground text-center">
-                  {company.name}
-                </span>
               </div>
             ))}
           </div>
