@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import useGoogleAuth from '@/hooks/useGoogleAuth';
+import { useAuth } from '@/context/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface UserProfileProps {
   userId?: number | string;
   token?: string;
+  hideLogout?: boolean;
 }
 
-const UserProfile: React.FC<UserProfileProps> = ({ userId, token }) => {
-  const { user: authUser, isAuthenticated, logout } = useGoogleAuth();
+const UserProfile: React.FC<UserProfileProps> = ({ userId, token, hideLogout = false }) => {
+  const { user: authUser, isAuthenticated, logout } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [user, setUser] = useState<any>(null);
