@@ -233,21 +233,24 @@ export default function LoginDialog({
           {buttonText}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]" aria-describedby="login-dialog-description">
-        <DialogHeader>
-          <DialogTitle>
-            {showAdminLogin 
-              ? "Admin Login" 
-              : (step === "phone" ? "Login with Mobile" : "Enter OTP")}
-          </DialogTitle>
-          <DialogDescription id="login-dialog-description">
-            {showAdminLogin
-              ? "Enter your admin credentials to access the admin panel."
-              : (step === "phone"
-                ? "Enter your mobile number to receive a one-time password."
-                : "Enter the OTP sent to your mobile phone.")}
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden border shadow-xl" aria-describedby="login-dialog-description">
+        <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white">
+          <DialogHeader className="text-left space-y-2 pb-2">
+            <DialogTitle className="text-2xl font-bold">
+              {showAdminLogin 
+                ? "Admin Access" 
+                : (step === "phone" ? "Welcome Back" : "Verify Your Identity")}
+            </DialogTitle>
+            <DialogDescription id="login-dialog-description" className="text-blue-100 opacity-90">
+              {showAdminLogin
+                ? "Enter your credentials to access the admin dashboard"
+                : (step === "phone"
+                  ? "Log in securely with your mobile number to continue"
+                  : "Enter the verification code sent to your mobile")}
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+        <div className="p-6">
 
         {showAdminLogin ? (
           // Admin Login Form
@@ -298,8 +301,24 @@ export default function LoginDialog({
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit" className="w-full">
-                Login as Admin
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white shadow-lg transition-all duration-300 transform hover:scale-[1.02] rounded-lg py-6 text-base"
+              >
+                {verifyOtpMutation.isPending ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <span>Authenticating...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    <span>Login as Admin</span>
+                  </div>
+                )}
               </Button>
               <Button 
                 type="button" 
@@ -512,6 +531,7 @@ export default function LoginDialog({
             </DialogFooter>
           </form>
         )}
+        </div>
       </DialogContent>
     </Dialog>
   );
