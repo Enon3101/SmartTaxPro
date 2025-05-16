@@ -696,11 +696,17 @@ function AdminSettings() {
 export default function Admin() {
   const isAdmin = useAdminGuard();
   const [, setLocation] = useLocation();
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const { toast } = useToast();
   
   // Logout function
   const handleLogout = () => {
     localStorage.removeItem('adminAuth');
     setLocation('/admin-login');
+    toast({
+      title: "Logged out",
+      description: "You have been logged out successfully"
+    });
   };
   
   if (isAdmin === null) {
@@ -765,18 +771,37 @@ export default function Admin() {
           <h1 className="text-xl font-bold md:hidden">Admin Dashboard</h1>
           
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="icon" className="rounded-full" asChild>
-              <Link href="/">
-                <span className="sr-only">Go to home</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="font-medium flex items-center gap-2"
+                onClick={() => setActiveTab("dashboard")}
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                Dashboard Home
+              </Button>
+              <span className="text-gray-300">|</span>
+              <Link href="/admin/blog" className="text-sm hover:underline text-blue-600">
+                Blog Manager
               </Link>
-            </Button>
+              <span className="text-gray-300">|</span>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="text-red-600 hover:text-red-800 hover:bg-red-50" 
+                onClick={handleLogout}
+              >
+                <LogOut className="mr-1 h-4 w-4" />
+                Logout
+              </Button>
+            </div>
           </div>
         </header>
         
-        <Tabs defaultValue="dashboard" className="flex-1">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
           <div className="block md:hidden p-2 border-b">
-            <TabsList className="w-full grid grid-cols-4">
+            <TabsList className="w-full grid grid-cols-5">
               <TabsTrigger value="dashboard" className="flex-1">
                 <LayoutDashboard className="mr-2 h-4 w-4" />
                 Dashboard
