@@ -28,6 +28,7 @@ import LoginDialog from "@/components/LoginDialog";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
+import NavDropdown from "@/components/NavDropdown";
 
 const Header = () => {
   const [location] = useLocation();
@@ -60,41 +61,93 @@ const Header = () => {
     return name.charAt(0).toUpperCase();
   };
 
+  // Enhanced navigation items with dropdown menus
   const navItems = [
     { 
       name: "File ITR", 
       path: "/start-filing", 
-      icon: <FileText className="h-4 w-4" /> 
+      icon: <FileText className="h-4 w-4" />,
+      hasDropdown: false
     },
     { 
       name: "Calculators", 
       path: "/calculators", 
-      icon: <Calculator className="h-4 w-4" /> 
+      icon: <Calculator className="h-4 w-4" />,
+      hasDropdown: true,
+      dropdownItems: [
+        {
+          category: "Tax Calculators",
+          items: [
+            { name: "Income Tax Calculator", path: "/calculators/income-tax" },
+            { name: "Tax Regime Comparison", path: "/calculators/tax-regime" },
+            { name: "Advance Tax Calculator", path: "/calculators/advance-tax" },
+            { name: "HRA Calculator", path: "/calculators/hra" },
+            { name: "TDS Calculator", path: "/calculators/tds" },
+            { name: "Capital Gains", path: "/calculators/capital-gains" }
+          ]
+        },
+        {
+          category: "Financial Calculators",
+          items: [
+            { name: "SIP Calculator", path: "/calculators/sip" },
+            { name: "FD Calculator", path: "/calculators/fd" },
+            { name: "PPF Calculator", path: "/calculators/ppf" },
+            { name: "RD Calculator", path: "/calculators/rd" },
+            { name: "Loan EMI Calculator", path: "/calculators/loan-emi" },
+            { name: "Retirement Calculator", path: "/calculators/retirement" }
+          ]
+        }
+      ]
     },
     { 
       name: "Tax Expert", 
       path: "/tax-expert", 
-      icon: <Bot className="h-4 w-4" /> 
+      icon: <Bot className="h-4 w-4" />,
+      hasDropdown: false
     },
     { 
       name: "Tax Resources", 
       path: "/tax-resources", 
-      icon: <FileSearch className="h-4 w-4" /> 
+      icon: <FileSearch className="h-4 w-4" />,
+      hasDropdown: true,
+      dropdownItems: [
+        {
+          category: "ITR Forms",
+          items: [
+            { name: "ITR-1 (Sahaj)", path: "/tax-resources/itr1" },
+            { name: "ITR-2", path: "/tax-resources/itr2" },
+            { name: "ITR-3", path: "/tax-resources/itr3" },
+            { name: "ITR-4 (Sugam)", path: "/tax-resources/itr4" }
+          ]
+        },
+        {
+          category: "Tax Guides",
+          items: [
+            { name: "Tax Deductions", path: "/tax-resources/deductions" },
+            { name: "Tax Slabs", path: "/tax-resources/slabs" },
+            { name: "e-Filing Guide", path: "/tax-resources/e-filing" },
+            { name: "Due Dates", path: "/tax-resources/due-dates" }
+          ]
+        }
+      ]
     },
     { 
       name: "Learning", 
       path: "/learning", 
-      icon: <BookOpen className="h-4 w-4" /> 
+      icon: <BookOpen className="h-4 w-4" />,
+      hasDropdown: false
     },
     { 
       name: "Pricing", 
       path: "/pricing", 
-      icon: <DollarSign className="h-4 w-4" /> 
+      icon: <DollarSign className="h-4 w-4" />,
+      hasDropdown: false
     },
     { 
       name: "Support", 
       path: "/support", 
-      icon: <Phone className="h-4 w-4" /> 
+      icon: <Phone className="h-4 w-4" />,
+      hasDropdown: false
     }
   ];
 
@@ -122,22 +175,14 @@ const Header = () => {
         
         <div className="hidden md:flex items-center space-x-1 text-sm">
           {navItems.map((item, index) => (
-            <Link key={index} href={item.path}>
-              <Button 
-                variant={isActive(item.path) ? "default" : "ghost"} 
-                size="sm" 
-                className={`font-medium transition-all px-3 py-2 h-9 ${
-                  isActive(item.path) 
-                    ? "bg-primary text-white" 
-                    : "hover:bg-primary/10 hover:text-primary"
-                }`}
-              >
-                <span className="flex items-center gap-1.5">
-                  {item.icon}
-                  {item.name}
-                </span>
-              </Button>
-            </Link>
+            <NavDropdown
+              key={index}
+              name={item.name}
+              path={item.path}
+              icon={item.icon}
+              dropdownItems={item.hasDropdown ? item.dropdownItems : undefined}
+              isActive={isActive(item.path)}
+            />
           ))}
           
           {isAuthenticated ? (
