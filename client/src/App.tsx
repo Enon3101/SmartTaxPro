@@ -10,7 +10,7 @@ import { ItrWizardProvider } from "./context/ItrWizardContext";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { lazy, Suspense } from "react";
 import NotFound from "@/pages/not-found";
-import Home from "@/pages/Home";
+import Home from "@/pages/HomeSimplified";
 import TaxFiling from "@/pages/TaxFiling";
 import Calculators from "@/pages/Calculators";
 import LearningResources from "@/pages/LearningResources";
