@@ -158,30 +158,41 @@ const IncomeTaxCalculator = () => {
   const calculateTaxableIncome = () => {
     let taxable = totalIncome;
     
+    // Get standard deduction limit based on assessment year
+    const standardDeductionLimit = assessmentYear === '2026-27' ? 75000 : 50000;
+    
     // In new regime, only standard deduction is allowed for salary
     if (regime === 'new') {
-      // Standard deduction is automatically applied to salary (50,000 or salary, whichever is lower)
+      // Standard deduction is automatically applied to salary (limit or salary, whichever is lower)
       const salaryIncome = incomeSources.find(source => source.id === 'salary')?.value || 0;
-      const standardDeduction = salaryIncome > 0 ? Math.min(50000, salaryIncome) : 0;
+      const standardDeduction = salaryIncome > 0 ? Math.min(standardDeductionLimit, salaryIncome) : 0;
       
       // Update the standard deduction field
       if (deductions.find(d => d.id === 'standard')?.value !== standardDeduction) {
         setDeductions(prev => 
-          prev.map(d => d.id === 'standard' ? {...d, value: standardDeduction} : d)
+          prev.map(d => d.id === 'standard' ? {
+            ...d, 
+            value: standardDeduction,
+            description: `Standard deduction on salary income (${formatIndianCurrency(standardDeductionLimit)} or salary, whichever is lower)`
+          } : d)
         );
       }
       
       return Math.max(0, taxable - standardDeduction);
     } else {
       // In old regime, all deductions are allowed including standard deduction
-      // Apply standard deduction automatically (50,000 or salary, whichever is lower)
+      // Apply standard deduction automatically (limit or salary, whichever is lower)
       const salaryIncome = incomeSources.find(source => source.id === 'salary')?.value || 0;
-      const standardDeduction = salaryIncome > 0 ? Math.min(50000, salaryIncome) : 0;
+      const standardDeduction = salaryIncome > 0 ? Math.min(standardDeductionLimit, salaryIncome) : 0;
       
       // Update the standard deduction field
       if (deductions.find(d => d.id === 'standard')?.value !== standardDeduction) {
         setDeductions(prev => 
-          prev.map(d => d.id === 'standard' ? {...d, value: standardDeduction} : d)
+          prev.map(d => d.id === 'standard' ? {
+            ...d, 
+            value: standardDeduction,
+            description: `Standard deduction on salary income (${formatIndianCurrency(standardDeductionLimit)} or salary, whichever is lower)`
+          } : d)
         );
       }
       
