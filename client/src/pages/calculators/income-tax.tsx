@@ -548,9 +548,10 @@ const IncomeTaxCalculator = () => {
                         Reset All
                       </Button>
                       <Button 
-                        onClick={() => calculateTaxOutput()} 
+                        onClick={() => calculateTaxOutput()}
                         className="flex-1 bg-primary"
                       >
+                        <Calculator className="mr-2 h-4 w-4" />
                         Calculate Tax
                       </Button>
                     </div>
@@ -640,11 +641,11 @@ const IncomeTaxCalculator = () => {
                           {taxOutput.slabwiseBreakup.map((item, index) => (
                             <TableRow key={index}>
                               <TableCell className="text-sm">
-                                {item.slab.min === 0 ? 'Up to ' : 
-                                 item.slab.max === Infinity ? 'Above ' + formatIndianCurrency(item.slab.min) : 
-                                 formatIndianCurrency(item.slab.min) + ' to ' + formatIndianCurrency(item.slab.max)}
+                                {item.slab.incomeFrom === 0 ? 'Up to ' : 
+                                 item.slab.incomeTo === null ? 'Above ' + formatIndianCurrency(item.slab.incomeFrom) : 
+                                 formatIndianCurrency(item.slab.incomeFrom) + ' to ' + formatIndianCurrency(item.slab.incomeTo)}
                                 <span className="ml-1 text-xs text-muted-foreground">
-                                  @{item.slab.rate}%
+                                  @{item.slab.taxRate}%
                                 </span>
                               </TableCell>
                               <TableCell className="text-right font-medium">
@@ -756,11 +757,11 @@ const IncomeTaxCalculator = () => {
                       {selectedRegimeData.slabs.map((slab, i) => (
                         <TableRow key={i}>
                           <TableCell>
-                            {slab.min === 0 ? 'Up to ' + formatIndianCurrency(slab.max) : 
-                             slab.max === Infinity ? 'Above ' + formatIndianCurrency(slab.min) : 
-                             formatIndianCurrency(slab.min) + ' - ' + formatIndianCurrency(slab.max)}
+                            {slab.incomeFrom === 0 ? 'Up to ' + formatIndianCurrency(slab.incomeTo) : 
+                             slab.incomeTo === null ? 'Above ' + formatIndianCurrency(slab.incomeFrom) : 
+                             formatIndianCurrency(slab.incomeFrom) + ' - ' + formatIndianCurrency(slab.incomeTo)}
                           </TableCell>
-                          <TableCell className="text-right">{slab.rate}%</TableCell>
+                          <TableCell className="text-right">{slab.taxRate}%</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
