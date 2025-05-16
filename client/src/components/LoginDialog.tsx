@@ -43,9 +43,11 @@ export default function LoginDialog({
     }
   };
 
-  const [step, setStep] = useState<"phone" | "otp">("phone");
+  const [step, setStep] = useState<"phone" | "otp" | "credentials">("phone");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const { toast } = useToast();
 
   const sendOtpMutation = useMutation({
@@ -151,6 +153,67 @@ export default function LoginDialog({
     e.preventDefault();
     verifyOtpMutation.mutate(undefined);
   };
+  
+  // Username/password login mutation
+  const loginWithCredentialsMutation = useMutation({
+    mutationFn: async () => {
+      if (!username || !password) {
+        throw new Error("Please enter both username and password");
+      }
+
+      try {
+        const response = await fetch("/api/auth/login", {
+          method: "POST",
+          body: JSON.stringify({ username, password }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include"
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Invalid credentials");
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error("Login error:", error);
+        throw error;
+      }
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Login Successful",
+        description: "You have been logged in successfully",
+      });
+      
+      if (onLoginSuccess) {
+        onLoginSuccess(data.user);
+      }
+      
+      handleOpenChange(false);
+      
+      // Reset form
+      setUsername("");
+      setPassword("");
+      
+      // Update cache
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Login Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+  
+  const handleCredentialsLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    loginWithCredentialsMutation.mutate();
+  };
 
   const [adminUsername, setAdminUsername] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
@@ -242,14 +305,20 @@ export default function LoginDialog({
             <DialogTitle className="text-2xl font-bold tracking-tight">
               {showAdminLogin 
                 ? "Admin Access" 
-                : (step === "phone" ? "Welcome Back" : "Verify Your Identity")}
+                : (step === "phone" 
+                   ? "Welcome Back" 
+                   : step === "otp" 
+                     ? "Verify Your Identity" 
+                     : "Login with Credentials")}
             </DialogTitle>
             <DialogDescription className="text-blue-100 opacity-90">
               {showAdminLogin
                 ? "Enter your credentials to access the dashboard"
                 : (step === "phone"
-                  ? "Log in securely with your mobile number"
-                  : `Enter the verification code sent to +91 ${phone}`)}
+                  ? "Choose your preferred login method"
+                  : step === "otp"
+                    ? `Enter the verification code sent to +91 ${phone}`
+                    : "Enter your username and password to continue")}
             </DialogDescription>
           </DialogHeader>
         </div>
@@ -334,6 +403,92 @@ export default function LoginDialog({
                 </Button>
               </div>
             </form>
+          ) : step === "credentials" ? (
+            // Username/Password Login Form
+            <form onSubmit={handleCredentialsLogin}>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="username" className="text-sm font-medium">
+                    Username
+                  </Label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                    </div>
+                    <Input
+                      id="username"
+                      className="pl-10"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="Your username"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-sm font-medium">
+                    Password
+                  </Label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                      </svg>
+                    </div>
+                    <Input
+                      id="password"
+                      type="password"
+                      className="pl-10"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Your password"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-6 space-y-3">
+                <Button 
+                  type="submit" 
+                  disabled={loginWithCredentialsMutation.isPending}
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-md transition-all duration-200 transform hover:scale-[1.01] py-6"
+                >
+                  {loginWithCredentialsMutation.isPending ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <span>Logging in...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                      </svg>
+                      <span>Login</span>
+                    </div>
+                  )}
+                </Button>
+                
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => setStep("phone")}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <FiArrowLeft className="h-4 w-4" /> 
+                    <span>Back to Login Options</span>
+                  </div>
+                </Button>
+              </div>
+            </form>
           ) : step === "phone" ? (
             // Phone Form
             <form onSubmit={handleSendOtp}>
@@ -412,6 +567,22 @@ export default function LoginDialog({
                 </div>
                 
                 <div className="space-y-3">
+                  {/* Username/Password Login */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => setStep("credentials")}
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                      </svg>
+                      <span>Continue with Username</span>
+                    </div>
+                  </Button>
+                  
                   {/* Google Login */}
                   <GoogleLoginButton 
                     size="large"
