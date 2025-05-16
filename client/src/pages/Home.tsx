@@ -28,20 +28,10 @@ const Home = () => {
       >
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8 items-center">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-left"
-            >
-              <motion.h1 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70"
-              >
+            <div className="text-left">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/70">
                 Fill, File and Smile
-              </motion.h1>
+              </h1>
               <motion.p 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -211,7 +201,7 @@ const Home = () => {
             </motion.div>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* Navigation cards */}
       <section className="py-8 bg-muted">
