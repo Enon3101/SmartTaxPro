@@ -1,23 +1,23 @@
 // Modern company logos carousel component
 const TrustedBySection = () => {
-  // Company logos with names
+  // Company logos with names and new SVG files
   const companies = [
-    { name: 'Tata Consultancy Services', logo: 'company-logos/tcs.png' },
-    { name: 'Infosys', logo: 'company-logos/infosys.png' },
-    { name: 'Reliance Industries', logo: 'company-logos/reliance.png' },
-    { name: 'Wipro', logo: 'company-logos/wipro.png' },
-    { name: 'HDFC Bank', logo: 'company-logos/hdfc.png' },
-    { name: 'Bharti Airtel', logo: 'company-logos/airtel.png' },
-    { name: 'ITC Limited', logo: 'company-logos/itc.png' },
-    { name: 'State Bank of India', logo: 'company-logos/sbi.png' },
-    { name: 'ICICI Bank', logo: 'company-logos/icici.png' },
+    { name: 'Tata Consultancy Services', logo: 'company-logos-new/tcs.svg' },
+    { name: 'Infosys', logo: 'company-logos-new/infosys.svg' },
+    { name: 'Reliance Industries', logo: 'company-logos-new/reliance.svg' },
+    { name: 'Wipro', logo: 'company-logos-new/wipro.svg' },
+    { name: 'HDFC Bank', logo: 'company-logos-new/hdfc.svg' },
+    { name: 'Bharti Airtel', logo: 'company-logos-new/airtel.svg' },
+    { name: 'ITC Limited', logo: 'company-logos-new/itc.svg' },
+    { name: 'State Bank of India', logo: 'company-logos-new/sbi.svg' },
+    { name: 'ICICI Bank', logo: 'company-logos-new/icici.svg' },
     // Duplicate the list to ensure continuous scrolling
-    { name: 'Tata Consultancy Services', logo: 'company-logos/tcs.png' },
-    { name: 'Infosys', logo: 'company-logos/infosys.png' },
-    { name: 'Reliance Industries', logo: 'company-logos/reliance.png' },
-    { name: 'Wipro', logo: 'company-logos/wipro.png' },
-    { name: 'HDFC Bank', logo: 'company-logos/hdfc.png' },
-    { name: 'Bharti Airtel', logo: 'company-logos/airtel.png' },
+    { name: 'Tata Consultancy Services', logo: 'company-logos-new/tcs.svg' },
+    { name: 'Infosys', logo: 'company-logos-new/infosys.svg' },
+    { name: 'Reliance Industries', logo: 'company-logos-new/reliance.svg' },
+    { name: 'Wipro', logo: 'company-logos-new/wipro.svg' },
+    { name: 'HDFC Bank', logo: 'company-logos-new/hdfc.svg' },
+    { name: 'Bharti Airtel', logo: 'company-logos-new/airtel.svg' },
   ];
 
   return (
