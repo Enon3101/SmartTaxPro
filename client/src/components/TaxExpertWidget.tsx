@@ -53,7 +53,7 @@ const TaxExpertWidget = () => {
     const checkApiStatus = async () => {
       if (isOpen && !apiStatus) {
         try {
-          const response = await apiRequest("/api/tax-expert-chat/status");
+          const response = await apiRequest("GET", "/api/tax-expert-chat/status");
           setApiStatus(response);
           
           if (!response.configured) {
@@ -105,8 +105,9 @@ const TaxExpertWidget = () => {
     try {
       setMessages(prev => [...prev, userMessage]);
       
-      const response = await apiRequest("/api/tax-expert-chat", 
-        { method: "POST" },
+      const response = await apiRequest(
+        "POST",
+        "/api/tax-expert-chat", 
         { message: userMessage.content }
       );
       
