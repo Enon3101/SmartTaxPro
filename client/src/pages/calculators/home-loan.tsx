@@ -167,7 +167,7 @@ const HomeLoanCalculator = () => {
                               />
                             </div>
                           </FormControl>
-                          <div className="pt-2">
+                          <div className="pt-2 mb-4">
                             <Slider
                               min={100000}
                               max={10000000}
@@ -181,7 +181,7 @@ const HomeLoanCalculator = () => {
                               <span>₹1Cr</span>
                             </div>
                           </div>
-                          <FormDescription>
+                          <FormDescription className="pt-1">
                             Enter your home loan amount (₹1 lakh to ₹10 crore)
                           </FormDescription>
                           <FormMessage />
@@ -209,7 +209,7 @@ const HomeLoanCalculator = () => {
                               <Percent className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
                             </div>
                           </FormControl>
-                          <div className="pt-2">
+                          <div className="pt-2 mb-4">
                             <Slider
                               min={4}
                               max={20}
@@ -223,7 +223,7 @@ const HomeLoanCalculator = () => {
                               <span>20%</span>
                             </div>
                           </div>
-                          <FormDescription>
+                          <FormDescription className="pt-1">
                             Current home loan interest rates range from 6.5% to 11%
                           </FormDescription>
                           <FormMessage />
@@ -250,7 +250,7 @@ const HomeLoanCalculator = () => {
                               <span className="absolute right-3 top-2.5 text-sm text-muted-foreground">Years</span>
                             </div>
                           </FormControl>
-                          <div className="pt-2">
+                          <div className="pt-2 mb-4">
                             <Slider
                               min={1}
                               max={30}
@@ -264,7 +264,7 @@ const HomeLoanCalculator = () => {
                               <span>30 yrs</span>
                             </div>
                           </div>
-                          <FormDescription>
+                          <FormDescription className="pt-1">
                             Maximum home loan tenure is typically 30 years
                           </FormDescription>
                           <FormMessage />

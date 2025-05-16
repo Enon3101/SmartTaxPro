@@ -163,7 +163,7 @@ const PersonalLoanCalculator = () => {
                               />
                             </div>
                           </FormControl>
-                          <div className="pt-2">
+                          <div className="pt-2 mb-4">
                             <Slider
                               min={10000}
                               max={1000000}
@@ -177,7 +177,7 @@ const PersonalLoanCalculator = () => {
                               <span>₹10L</span>
                             </div>
                           </div>
-                          <FormDescription>
+                          <FormDescription className="pt-1">
                             Enter your personal loan amount (₹10,000 to ₹10,00,000)
                           </FormDescription>
                           <FormMessage />
@@ -205,7 +205,7 @@ const PersonalLoanCalculator = () => {
                               <Percent className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
                             </div>
                           </FormControl>
-                          <div className="pt-2">
+                          <div className="pt-2 mb-4">
                             <Slider
                               min={9}
                               max={30}
@@ -219,7 +219,7 @@ const PersonalLoanCalculator = () => {
                               <span>30%</span>
                             </div>
                           </div>
-                          <FormDescription>
+                          <FormDescription className="pt-1">
                             Personal loan interest rates typically range from 10.5% to 24%
                           </FormDescription>
                           <FormMessage />
@@ -247,7 +247,7 @@ const PersonalLoanCalculator = () => {
                               <span className="absolute right-3 top-2.5 text-sm text-muted-foreground">Years</span>
                             </div>
                           </FormControl>
-                          <div className="pt-2">
+                          <div className="pt-2 mb-4">
                             <Slider
                               min={0.5}
                               max={5}
@@ -261,7 +261,7 @@ const PersonalLoanCalculator = () => {
                               <span>5 yrs</span>
                             </div>
                           </div>
-                          <FormDescription>
+                          <FormDescription className="pt-1">
                             Personal loan tenure typically ranges from 6 months to 5 years
                           </FormDescription>
                           <FormMessage />

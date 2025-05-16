@@ -164,7 +164,7 @@ const CarLoanCalculator = () => {
                               />
                             </div>
                           </FormControl>
-                          <div className="pt-2">
+                          <div className="pt-2 mb-4">
                             <Slider
                               min={50000}
                               max={5000000}
@@ -178,7 +178,7 @@ const CarLoanCalculator = () => {
                               <span>₹50L</span>
                             </div>
                           </div>
-                          <FormDescription>
+                          <FormDescription className="pt-1">
                             Enter your car loan amount (₹50,000 to ₹50,00,000)
                           </FormDescription>
                           <FormMessage />
@@ -206,7 +206,7 @@ const CarLoanCalculator = () => {
                               <Percent className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground" />
                             </div>
                           </FormControl>
-                          <div className="pt-2">
+                          <div className="pt-2 mb-4">
                             <Slider
                               min={7}
                               max={20}
@@ -220,7 +220,7 @@ const CarLoanCalculator = () => {
                               <span>20%</span>
                             </div>
                           </div>
-                          <FormDescription>
+                          <FormDescription className="pt-1">
                             Current car loan interest rates range from 7.5% to 15%
                           </FormDescription>
                           <FormMessage />
@@ -247,7 +247,7 @@ const CarLoanCalculator = () => {
                               <span className="absolute right-3 top-2.5 text-sm text-muted-foreground">Years</span>
                             </div>
                           </FormControl>
-                          <div className="pt-2">
+                          <div className="pt-2 mb-4">
                             <Slider
                               min={1}
                               max={7}
@@ -261,7 +261,7 @@ const CarLoanCalculator = () => {
                               <span>7 yrs</span>
                             </div>
                           </div>
-                          <FormDescription>
+                          <FormDescription className="pt-1">
                             Car loan tenure typically ranges from 1 to 7 years
                           </FormDescription>
                           <FormMessage />
