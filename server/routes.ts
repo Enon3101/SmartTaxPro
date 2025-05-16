@@ -6,6 +6,7 @@ import path from "path";
 import fs from "fs";
 import userProfileRouter from "./userProfileRoutes";
 import calculatorRouter from "./calculatorRoutesFixed";
+import blogRouter from "./blogRoutes";
 
 // Extended Express Request with authenticated user
 interface AuthenticatedRequest extends ExpressRequest {

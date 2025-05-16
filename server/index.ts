@@ -3,6 +3,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { setupSecurityMiddleware } from "./securityMiddleware";
 import calculatorRouter from "./calculatorRoutesFixed";
+import blogRouter from "./blogRoutes";
 import path from 'path';
 import fs from 'fs';
 
@@ -27,6 +28,9 @@ app.use(express.urlencoded({ extended: false, limit: '1mb' })); // Limit form pa
 
 // Register calculator routes directly
 app.use('/api/calculators', calculatorRouter);
+
+// Register blog routes directly
+app.use('/api/blog-posts', blogRouter);
 
 app.use((req, res, next) => {
   const start = Date.now();
