@@ -673,9 +673,9 @@ const IncomeTaxCalculator = () => {
                           {taxOutput.slabwiseBreakup.map((item, index) => (
                             <TableRow key={index}>
                               <TableCell className="text-sm">
-                                {item.slab.incomeFrom === 0 ? 'Up to ' + formatIndianCurrency(item.slab.incomeTo) : 
+                                {item.slab.incomeFrom === 0 ? 'Up to ' + formatIndianCurrency(item.slab.incomeTo || 0) : 
                                  item.slab.incomeTo === null ? 'Above ' + formatIndianCurrency(item.slab.incomeFrom) : 
-                                 formatIndianCurrency(item.slab.incomeFrom) + ' to ' + formatIndianCurrency(item.slab.incomeTo)}
+                                 formatIndianCurrency(item.slab.incomeFrom) + ' to ' + formatIndianCurrency(item.slab.incomeTo || 0)}
                                 <span className="ml-1 text-xs text-muted-foreground">
                                   @{item.slab.taxRate}%
                                 </span>
@@ -789,9 +789,9 @@ const IncomeTaxCalculator = () => {
                       {selectedRegimeData.slabs.map((slab, i) => (
                         <TableRow key={i}>
                           <TableCell>
-                            {slab.incomeFrom === 0 ? 'Up to ' + formatIndianCurrency(slab.incomeTo) : 
+                            {slab.incomeFrom === 0 ? 'Up to ' + formatIndianCurrency(slab.incomeTo || 0) : 
                              slab.incomeTo === null ? 'Above ' + formatIndianCurrency(slab.incomeFrom) : 
-                             formatIndianCurrency(slab.incomeFrom) + ' - ' + formatIndianCurrency(slab.incomeTo)}
+                             formatIndianCurrency(slab.incomeFrom) + ' - ' + formatIndianCurrency(slab.incomeTo || 0)}
                           </TableCell>
                           <TableCell className="text-right">{slab.taxRate}%</TableCell>
                         </TableRow>
