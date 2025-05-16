@@ -153,7 +153,7 @@ export const formatPercentage = (
  * @returns Formatted currency string with Indian notation
  */
 export const formatIndianCurrency = (
-  amount: number,
+  amount: number | null,
   options: {
     displaySymbol?: boolean;
     decimalPlaces?: number;
@@ -162,7 +162,7 @@ export const formatIndianCurrency = (
   try {
     const { displaySymbol = true, decimalPlaces = 0 } = options;
     
-    if (typeof amount !== 'number' || isNaN(amount)) {
+    if (amount === null || typeof amount !== 'number' || isNaN(amount)) {
       return displaySymbol ? '₹0' : '0';
     }
     
