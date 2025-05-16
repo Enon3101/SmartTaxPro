@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { setupSecurityMiddleware } from "./securityMiddleware";
+import calculatorRouter from "./calculatorRoutesFixed";
 import path from 'path';
 import fs from 'fs';
 
@@ -23,6 +24,9 @@ setupSecurityMiddleware(app);
 // Body parsers
 app.use(express.json({ limit: '1mb' })); // Limit JSON payload size
 app.use(express.urlencoded({ extended: false, limit: '1mb' })); // Limit form payload size
+
+// Register calculator routes directly
+app.use('/api/calculators', calculatorRouter);
 
 app.use((req, res, next) => {
   const start = Date.now();
