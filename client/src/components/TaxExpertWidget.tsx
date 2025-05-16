@@ -54,10 +54,11 @@ const TaxExpertWidget = () => {
       if (isOpen && !apiStatus) {
         try {
           const response = await apiRequest("GET", "/api/tax-expert-chat/status");
-          setApiStatus(response);
+          const statusData = response as { configured: boolean; message: string; error?: string };
+          setApiStatus(statusData);
           
-          if (!response.configured) {
-            console.log("API not configured:", response.message);
+          if (!statusData.configured) {
+            console.log("API not configured:", statusData.message);
             setMessages(prev => [
               ...prev,
               {
