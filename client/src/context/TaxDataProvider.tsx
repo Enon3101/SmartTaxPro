@@ -1,22 +1,23 @@
-import { ReactNode, createContext, useEffect, useState } from "react";
-import { calculateTaxSummary } from "@/lib/taxCalculations";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
 import { nanoid } from "nanoid";
-import { 
+import { ReactNode, createContext, useEffect, useState } from "react";
+
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import { calculateTaxSummary } from "@/lib/taxCalculations";
+import {
   TaxFormData,
   IncomeData,
-  CapitalGainsEntry,
-  SalaryEntry,
-  HousePropertyEntry,
-  BusinessIncomeEntry,
-  InterestIncomeEntry,
-  OtherIncomeEntry,
   Deductions80C,
   Deductions80D,
   OtherDeductions,
-  TaxesPaid
-} from "@/lib/taxInterfaces";
+  TaxesPaid,
+  // CapitalGainsEntry, // Not directly used in this file's props/state after correction
+  // SalaryEntry, // Not directly used
+  // HousePropertyEntry, // Not directly used
+  // BusinessIncomeEntry, // Not directly used
+  // InterestIncomeEntry, // Not directly used
+  // OtherIncomeEntry, // Not directly used
+} from "@/lib/taxInterfaces"; // PersonalInfo is 'any' in TaxFormData
 
 interface TaxDataContextType {
   currentStep: number;
@@ -26,13 +27,13 @@ interface TaxDataContextType {
   taxFormId: string;
   taxSummary: ReturnType<typeof calculateTaxSummary>;
   taxFormData: TaxFormData | null;
-  updatePersonalInfo: (data: any) => void;
+  updatePersonalInfo: (data: any) => void; // personalInfo is 'any' in TaxFormData
   updateFormType: (formType: string) => void;
-  updateIncome: (data: any) => void;
-  updateDeductions80C: (data: any) => void;
-  updateDeductions80D: (data: any) => void;
-  updateOtherDeductions: (data: any) => void;
-  updateTaxPaid: (data: any) => void;
+  updateIncome: (data: Partial<IncomeData>) => void;
+  updateDeductions80C: (data: Partial<Deductions80C>) => void;
+  updateDeductions80D: (data: Partial<Deductions80D>) => void;
+  updateOtherDeductions: (data: Partial<OtherDeductions>) => void;
+  updateTaxPaid: (data: Partial<TaxesPaid>) => void;
   isLoading: boolean;
   assessmentYear: string;
   setAssessmentYear: (year: string) => void;
@@ -161,16 +162,27 @@ export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
         const newTaxFormId = nanoid();
         
         // Create a new tax form on the server
-        const data = await apiRequest(
-          "/api/tax-forms", 
-          { method: "POST" },
+        const response = await apiRequest(
+          "POST",
+          "/api/tax-forms",
           {
-            id: newTaxFormId,
-            status: "in_progress",
-            assessmentYear: assessmentYear,
-            formType: "ITR-1"
+            body: JSON.stringify({
+              id: newTaxFormId,
+              status: "in_progress",
+              assessmentYear: assessmentYear,
+              formType: "ITR-1"
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
         );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to create tax form: ${response.status} ${errorText}`);
+        }
+        const data = await response.json();
         
         setTaxFormId(newTaxFormId);
         setTaxFormData(data);
@@ -200,32 +212,32 @@ export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updatePersonalInfo = (data: any) => {
-    setTaxFormData((prev) => prev ? { ...prev, personalInfo: data } : null);
+  const updatePersonalInfo = (data: any) => { // personalInfo is 'any' in TaxFormData
+    setTaxFormData((prev) => prev ? { ...prev, personalInfo: { ...(prev.personalInfo || {}), ...data } } : null);
   };
 
   const updateFormType = (formType: string) => {
     setTaxFormData((prev) => prev ? { ...prev, formType } : null);
   };
 
-  const updateIncome = (data: any) => {
-    setTaxFormData((prev) => prev ? { ...prev, incomeData: data } : null);
+  const updateIncome = (data: Partial<IncomeData>) => {
+    setTaxFormData((prev) => prev ? { ...prev, incomeData: { ...(prev.incomeData || {}), ...data } as IncomeData } : null);
   };
 
-  const updateDeductions80C = (data: any) => {
-    setTaxFormData((prev) => prev ? { ...prev, deductions80C: data } : null);
+  const updateDeductions80C = (data: Partial<Deductions80C>) => {
+    setTaxFormData((prev) => prev ? { ...prev, deductions80C: { ...(prev.deductions80C || {}), ...data } as Deductions80C } : null);
   };
 
-  const updateDeductions80D = (data: any) => {
-    setTaxFormData((prev) => prev ? { ...prev, deductions80D: data } : null);
+  const updateDeductions80D = (data: Partial<Deductions80D>) => {
+    setTaxFormData((prev) => prev ? { ...prev, deductions80D: { ...(prev.deductions80D || {}), ...data } as Deductions80D } : null);
   };
 
-  const updateOtherDeductions = (data: any) => {
-    setTaxFormData((prev) => prev ? { ...prev, otherDeductions: data } : null);
+  const updateOtherDeductions = (data: Partial<OtherDeductions>) => {
+    setTaxFormData((prev) => prev ? { ...prev, otherDeductions: { ...(prev.otherDeductions || {}), ...data } as OtherDeductions } : null);
   };
 
-  const updateTaxPaid = (data: any) => {
-    setTaxFormData((prev) => prev ? { ...prev, taxPaid: data } : null);
+  const updateTaxPaid = (data: Partial<TaxesPaid>) => {
+    setTaxFormData((prev) => prev ? { ...prev, taxPaid: { ...(prev.taxPaid || {}), ...data } as TaxesPaid } : null);
   };
 
   return (

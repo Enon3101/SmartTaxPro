@@ -1,26 +1,14 @@
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
-import { createServer as createViteServer, createLogger } from "vite";
+import { createServer as createViteServer, createLogger, type ServerOptions } from "vite";
 import { type Server } from "http";
 import viteConfig from "../vite.config";
 import { nanoid } from "nanoid";
-
-const viteLogger = createLogger();
-
-export function log(message: string, source = "express") {
-  const formattedTime = new Date().toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-
-  console.log(`${formattedTime} [${source}] ${message}`);
-}
+import logger from './logger'; // Import shared logger
 
 export async function setupVite(app: Express, server: Server) {
-  const serverOptions = {
+  const serverOptions: ServerOptions = {
     middlewareMode: true,
     hmr: { server },
     allowedHosts: true,
@@ -29,12 +17,18 @@ export async function setupVite(app: Express, server: Server) {
   const vite = await createViteServer({
     ...viteConfig,
     configFile: false,
-    customLogger: {
-      ...viteLogger,
+    customLogger: { // Use the shared logger, map methods if necessary or use Pino's structure
+      info: (msg, options) => logger.info({ ...options, vite: true }, msg),
+      warn: (msg, options) => logger.warn({ ...options, vite: true }, msg),
       error: (msg, options) => {
-        viteLogger.error(msg, options);
-        process.exit(1);
+        logger.error({ ...options, vite: true }, msg);
+        // Consider if process.exit(1) is still desired here for Vite errors
+        // process.exit(1); // Removed to prevent server crash on all Vite errors during development
       },
+      clearScreen: () => {}, // Vite expects this, can be a no-op
+      hasWarned: false, // Vite expects this
+      warnOnce: (msg, options) => logger.warn({ ...options, vite: true, once: true }, msg), // Add warnOnce
+      hasErrorLogged: (_err) => false, // Add hasErrorLogged, assuming simple state
     },
     server: serverOptions,
     appType: "custom",
@@ -54,10 +48,7 @@ export async function setupVite(app: Express, server: Server) {
 
       // always reload the index.html file from disk incase it changes
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
-      template = template.replace(
-        `src="/src/main.tsx"`,
-        `src="/src/main.tsx?v=${nanoid()}"`,
-      );
+      // Removed manual cache busting with nanoid for main.tsx
       const page = await vite.transformIndexHtml(url, template);
       res.status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
@@ -68,7 +59,7 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(import.meta.dirname, "public");
+  const distPath = path.resolve(import.meta.dirname, "..", "dist", "public");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(

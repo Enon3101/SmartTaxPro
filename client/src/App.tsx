@@ -38,7 +38,7 @@ import TaxExpertWidget from "@/components/TaxExpertWidget";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
 // Lazy load calculator pages with improved loading
-const CalculatorsIndex = lazy(() => import("@/pages/calculators"));
+const CalculatorsIndex = lazy(() => import("@/pages/Calculators")); // Changed to uppercase 'C'
 const LearningBlogPost = lazy(() => import("@/pages/learning/BlogPost"));
 
 // Take Home Salary Calculator
@@ -193,6 +193,13 @@ const GratuityCalculator = lazy(() => {
 const PFCalculator = lazy(() => {
   return Promise.all([
     import("@/pages/calculators/pf"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const GstCalculator = lazy(() => {
+  return Promise.all([
+    import("@/components/GstCalculator"), // Path to the new component
     new Promise((resolve) => setTimeout(resolve, 300)),
   ]).then(([moduleExports]) => moduleExports);
 });
@@ -376,31 +383,48 @@ function Router() {
         </Suspense>
       </Route>
 
+      <Route path="/calculators/gst">
+        <Suspense fallback={<PageLoading />}>
+          <GstCalculator />
+        </Suspense>
+      </Route>
+
       <Route component={NotFound} />
     </Switch>
   );
 }
 
 function App() {
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+  if (!googleClientId) {
+    console.warn(
+      "VITE_GOOGLE_CLIENT_ID is not set. Google Sign-In will not function."
+    );
+    // Potentially render a fallback UI or allow app to run without Google Auth
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
           <TaxDataProvider>
             <ItrWizardProvider>
-              <TooltipProvider>
-                <div className="flex flex-col min-h-screen bg-background text-foreground">
-                  <ScrollToTop />
-                  <Header />
-                  <main className="flex-grow pb-16 sm:pb-0">
-                    <Router />
-                  </main>
-                  <Footer />
-                  <BottomNav />
-                  <TaxExpertWidget />
-                </div>
-                <Toaster />
-              </TooltipProvider>
+              <GoogleOAuthProvider clientId={googleClientId || "YOUR_GOOGLE_CLIENT_ID_PLACEHOLDER"}>
+                <TooltipProvider>
+                  <div className="flex flex-col min-h-screen bg-background text-foreground">
+                    <ScrollToTop />
+                    <Header />
+                    <main className="flex-grow pb-16 sm:pb-0">
+                      <Router />
+                    </main>
+                    <Footer />
+                    <BottomNav />
+                    <TaxExpertWidget />
+                  </div>
+                  <Toaster />
+                </TooltipProvider>
+              </GoogleOAuthProvider>
             </ItrWizardProvider>
           </TaxDataProvider>
         </AuthProvider>

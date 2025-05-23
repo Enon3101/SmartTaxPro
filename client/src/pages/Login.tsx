@@ -8,13 +8,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
 import { Loader2, UserCheck } from "lucide-react";
 import { FiUser, FiLock } from "react-icons/fi";
-import WelcomeDialog from "@/components/WelcomeDialog";
+// import WelcomeDialog from "@/components/WelcomeDialog"; // Removed, AuthContext will handle WelcomeUser
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(false);
+  // const [showWelcome, setShowWelcome] = useState(false); // Removed local showWelcome state
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { login } = useAuth();
@@ -58,13 +58,22 @@ export default function Login() {
         description: "You have successfully logged in",
       });
       
-      // Show welcome screen
-      setShowWelcome(true);
+      // AuthContext will now handle showing the welcome message via WelcomeUser component
+      // setShowWelcome(true); // Removed
       
+      // After successful login and context update, typically navigate away or rely on AuthProvider to show welcome
+      // For now, let's assume AuthContext's WelcomeUser is sufficient and no immediate navigation here.
+      // If navigation is desired here, it would be: navigate('/'); or navigate('/dashboard');
     } catch (error) {
+      let errorMessage = "An error occurred during login";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
       toast({
         title: "Login failed",
-        description: error.message || "An error occurred during login",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -153,14 +162,7 @@ export default function Login() {
         </form>
       </Card>
       
-      {/* Welcome Dialog */}
-      {showWelcome && (
-        <WelcomeDialog 
-          user={{ username }}  
-          open={showWelcome}
-          onOpenChange={setShowWelcome}
-        />
-      )}
+      {/* Welcome Dialog rendering removed, AuthContext handles WelcomeUser */}
     </div>
   );
 }

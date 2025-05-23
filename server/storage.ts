@@ -55,36 +55,49 @@ import { desc, eq, and, like, or, sql, asc, SQL, gte } from "drizzle-orm";
 import { db } from "./db";
 
 export class DatabaseStorage implements IStorage {
+  private checkDb(): void {
+    if (!db) {
+      console.error("Database service is not available.");
+      throw new Error("Database service is currently unavailable.");
+    }
+  }
+
   // User operations
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
+    this.checkDb();
+    const [user] = await db!.select().from(users).where(eq(users.id, id));
     return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
+    this.checkDb();
+    const [user] = await db!.select().from(users).where(eq(users.username, username));
     return user || undefined;
   }
   
   async getUserByPhone(phone: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.phone, phone));
+    this.checkDb();
+    const [user] = await db!.select().from(users).where(eq(users.phone, phone));
     return user || undefined;
   }
   
   async getUserByEmail(email: string): Promise<User | undefined> {
+    this.checkDb();
     if (!email) return undefined;
-    const [user] = await db.select().from(users).where(eq(users.email, email));
+    const [user] = await db!.select().from(users).where(eq(users.email, email));
     return user || undefined;
   }
   
   async getUserByGoogleId(googleId: string): Promise<User | undefined> {
+    this.checkDb();
     if (!googleId) return undefined;
-    const [user] = await db.select().from(users).where(eq(users.googleId, googleId));
+    const [user] = await db!.select().from(users).where(eq(users.googleId, googleId));
     return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
+    this.checkDb();
+    const [user] = await db!
       .insert(users)
       .values(insertUser)
       .returning();
@@ -92,7 +105,8 @@ export class DatabaseStorage implements IStorage {
   }
   
   async updateUserGoogleId(userId: number, googleId: string): Promise<User> {
-    const [updatedUser] = await db
+    this.checkDb();
+    const [updatedUser] = await db!
       .update(users)
       .set({ 
         googleId, 
@@ -106,7 +120,8 @@ export class DatabaseStorage implements IStorage {
   
   // OTP verification methods
   async createOtpVerification(otpVerification: InsertOtpVerification): Promise<OtpVerification> {
-    const [verification] = await db
+    this.checkDb();
+    const [verification] = await db!
       .insert(otpVerifications)
       .values(otpVerification)
       .returning();
@@ -114,7 +129,8 @@ export class DatabaseStorage implements IStorage {
   }
   
   async getLatestOtpForPhone(phone: string): Promise<OtpVerification | undefined> {
-    const [latestOtp] = await db
+    this.checkDb();
+    const [latestOtp] = await db!
       .select()
       .from(otpVerifications)
       .where(eq(otpVerifications.phone, phone))
@@ -124,8 +140,9 @@ export class DatabaseStorage implements IStorage {
   }
   
   async verifyOtp(phone: string, otp: string): Promise<boolean> {
+    this.checkDb();
     // Get latest non-expired OTP for this phone
-    const [otpRecord] = await db
+    const [otpRecord] = await db!
       .select()
       .from(otpVerifications)
       .where(
@@ -143,7 +160,7 @@ export class DatabaseStorage implements IStorage {
     }
     
     // Mark OTP as verified
-    await db
+    await db!
       .update(otpVerifications)
       .set({ verified: true })
       .where(eq(otpVerifications.id, otpRecord.id));
@@ -152,7 +169,8 @@ export class DatabaseStorage implements IStorage {
   }
   
   async updateOtpVerificationStatus(id: number, verified: boolean): Promise<OtpVerification | undefined> {
-    const [updatedVerification] = await db
+    this.checkDb();
+    const [updatedVerification] = await db!
       .update(otpVerifications)
       .set({ verified })
       .where(eq(otpVerifications.id, id))
@@ -163,24 +181,19 @@ export class DatabaseStorage implements IStorage {
 
   // Tax form operations
   async createTaxForm(insertTaxForm: InsertTaxForm): Promise<TaxForm> {
+    this.checkDb();
     const createdAt = new Date();
     const updatedAt = new Date();
     
+    // Fields in insertTaxForm are id, userId, status, formType, assessmentYear
+    // Other fields (personalInfo, incomeData etc.) are jsonb and will default to null in DB or be updated later.
     const taxFormData = {
-      ...insertTaxForm,
-      personalInfo: insertTaxForm.personalInfo ?? null,
-      formType: insertTaxForm.formType || "ITR-1",
-      incomeData: insertTaxForm.incomeData ?? null,
-      deductions80C: insertTaxForm.deductions80C ?? null,
-      deductions80D: insertTaxForm.deductions80D ?? null,
-      otherDeductions: insertTaxForm.otherDeductions ?? null,
-      taxPaid: insertTaxForm.taxPaid ?? null,
-      assessmentYear: insertTaxForm.assessmentYear || "2024-25",
+      ...insertTaxForm, // Contains all fields from InsertTaxForm type
       createdAt,
       updatedAt
     };
     
-    const [taxForm] = await db
+    const [taxForm] = await db!
       .insert(taxForms)
       .values(taxFormData)
       .returning();
@@ -189,16 +202,19 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getTaxFormById(id: string): Promise<TaxForm | undefined> {
-    const [taxForm] = await db.select().from(taxForms).where(eq(taxForms.id, id));
+    this.checkDb();
+    const [taxForm] = await db!.select().from(taxForms).where(eq(taxForms.id, id));
     return taxForm || undefined;
   }
 
   async getTaxFormsByUserId(userId: number): Promise<TaxForm[]> {
-    return db.select().from(taxForms).where(eq(taxForms.userId, userId));
+    this.checkDb();
+    return db!.select().from(taxForms).where(eq(taxForms.userId, userId));
   }
 
   async updateTaxFormPersonalInfo(id: string, personalInfo: any): Promise<TaxForm | undefined> {
-    const [updatedTaxForm] = await db
+    this.checkDb();
+    const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
         personalInfo, 
@@ -211,7 +227,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormIncomeData(id: string, incomeData: any): Promise<TaxForm | undefined> {
-    const [updatedTaxForm] = await db
+    this.checkDb();
+    const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
         incomeData, 
@@ -224,7 +241,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormDeductions80C(id: string, deductions80C: any): Promise<TaxForm | undefined> {
-    const [updatedTaxForm] = await db
+    this.checkDb();
+    const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
         deductions80C, 
@@ -237,7 +255,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormDeductions80D(id: string, deductions80D: any): Promise<TaxForm | undefined> {
-    const [updatedTaxForm] = await db
+    this.checkDb();
+    const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
         deductions80D, 
@@ -250,7 +269,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormOtherDeductions(id: string, otherDeductions: any): Promise<TaxForm | undefined> {
-    const [updatedTaxForm] = await db
+    this.checkDb();
+    const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
         otherDeductions, 
@@ -263,7 +283,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormTaxPaid(id: string, taxPaid: any): Promise<TaxForm | undefined> {
-    const [updatedTaxForm] = await db
+    this.checkDb();
+    const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
         taxPaid, 
@@ -276,7 +297,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormType(id: string, formType: string): Promise<TaxForm | undefined> {
-    const [updatedTaxForm] = await db
+    this.checkDb();
+    const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
         formType, 
@@ -289,7 +311,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTaxFormStatus(id: string, status: string): Promise<TaxForm | undefined> {
-    const [updatedTaxForm] = await db
+    this.checkDb();
+    const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
         status, 
@@ -303,7 +326,8 @@ export class DatabaseStorage implements IStorage {
 
   // Document operations
   async createDocument(insertDocument: InsertDocument): Promise<Document> {
-    const [document] = await db
+    this.checkDb();
+    const [document] = await db!
       .insert(documents)
       .values({
         ...insertDocument,
@@ -315,7 +339,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getDocumentById(id: string): Promise<Document | undefined> {
-    const [document] = await db
+    this.checkDb();
+    const [document] = await db!
       .select()
       .from(documents)
       .where(eq(documents.id, id));
@@ -324,21 +349,24 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getDocumentsByTaxFormId(taxFormId: string): Promise<Document[]> {
-    return db
+    this.checkDb();
+    return db!
       .select()
       .from(documents)
       .where(eq(documents.taxFormId, taxFormId));
   }
 
   async deleteDocument(id: string): Promise<void> {
-    await db
+    this.checkDb();
+    await db!
       .delete(documents)
       .where(eq(documents.id, id));
   }
   
   // Blog post operations
   async createBlogPost(blogPost: InsertBlogPost): Promise<BlogPost> {
-    const [post] = await db
+    this.checkDb();
+    const [post] = await db!
       .insert(blogPosts)
       .values({
         ...blogPost,
@@ -350,7 +378,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getBlogPostById(id: number): Promise<BlogPost | undefined> {
-    const [post] = await db
+    this.checkDb();
+    const [post] = await db!
       .select()
       .from(blogPosts)
       .where(eq(blogPosts.id, id));
@@ -358,7 +387,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
-    const [post] = await db
+    this.checkDb();
+    const [post] = await db!
       .select()
       .from(blogPosts)
       .where(eq(blogPosts.slug, slug));
@@ -372,10 +402,9 @@ export class DatabaseStorage implements IStorage {
     category?: string;
     searchTerm?: string;
   }): Promise<{ posts: BlogPost[]; total: number }> {
-    let query = db.select().from(blogPosts);
+    this.checkDb();
     
-    // Apply filters
-    const conditions = [];
+    const conditions: SQL[] = [];
     
     if (options?.published !== undefined) {
       conditions.push(eq(blogPosts.published, options.published));
@@ -386,46 +415,51 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (options?.searchTerm) {
-      conditions.push(
-        or(
-          like(blogPosts.title, `%${options.searchTerm}%`),
-          like(blogPosts.content, `%${options.searchTerm}%`),
-          like(blogPosts.summary, `%${options.searchTerm}%`)
-        )
+      const searchTermCondition = or(
+        like(blogPosts.title, `%${options.searchTerm}%`),
+        like(blogPosts.content, `%${options.searchTerm}%`),
+        like(blogPosts.summary, `%${options.searchTerm}%`)
       );
+      if (searchTermCondition) { // Ensure 'or' didn't return undefined
+        conditions.push(searchTermCondition);
+      }
     }
-    
+
+    // Base query for data, to be built step-by-step
+    let dataQueryBuilder = db!.select().from(blogPosts).$dynamic(); // Use $dynamic for type flexibility
+
     if (conditions.length > 0) {
-      query = query.where(and(...conditions));
+      dataQueryBuilder = dataQueryBuilder.where(and(...conditions));
     }
     
-    // Get total count
-    const totalCount = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(blogPosts)
-      .where(conditions.length > 0 ? and(...conditions) : undefined);
+    dataQueryBuilder = dataQueryBuilder.orderBy(desc(blogPosts.createdAt));
     
-    // Apply pagination
-    query = query.orderBy(desc(blogPosts.createdAt));
-    
-    if (options?.limit) {
-      query = query.limit(options.limit);
+    if (options?.limit !== undefined) { // Check for undefined explicitly for limit/offset
+      dataQueryBuilder = dataQueryBuilder.limit(options.limit);
     }
     
-    if (options?.offset) {
-      query = query.offset(options.offset);
+    if (options?.offset !== undefined) {
+      dataQueryBuilder = dataQueryBuilder.offset(options.offset);
     }
     
-    const posts = await query;
+    const posts = await dataQueryBuilder;
+
+    // Base query for total count
+    let countQueryBuilder = db!.select({ count: sql<number>`count(*)` }).from(blogPosts).$dynamic();
+    if (conditions.length > 0) {
+      countQueryBuilder = countQueryBuilder.where(and(...conditions));
+    }
+    const totalCountResult = await countQueryBuilder;
     
     return {
       posts,
-      total: totalCount[0]?.count || 0
+      total: totalCountResult[0]?.count || 0
     };
   }
 
   async updateBlogPost(id: number, blogPost: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
-    const [updatedPost] = await db
+    this.checkDb();
+    const [updatedPost] = await db!
       .update(blogPosts)
       .set({
         ...blogPost,
@@ -437,7 +471,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteBlogPost(id: number): Promise<void> {
-    await db
+    this.checkDb();
+    await db!
       .delete(blogPosts)
       .where(eq(blogPosts.id, id));
   }

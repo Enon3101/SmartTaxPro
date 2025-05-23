@@ -9,6 +9,7 @@ import {
   DollarSign,
   Home,
   BarChart3,
+  // FileText, // Added for GST Calculator - This was the duplicate
   Calendar,
   Coins,
   PiggyBank,
@@ -136,6 +137,13 @@ const Calculators = () => {
                   description: "Calculate your gratuity amount based on your salary and years of service.",
                   icon: <PiggyBank className="text-primary h-16 w-16" />,
                   href: "/calculators/gratuity"
+                },
+                {
+                  title: "GST Calculator",
+                  description: "Calculate Goods and Services Tax (GST) amount based on price and GST rate.",
+                  icon: <FileText className="text-primary h-16 w-16" />,
+                  href: "/calculators/gst"
+                  // preloadFn: undefined, // No preload function for this new calculator yet
                 }
               ].map((calculator, index) => (
                 <motion.div

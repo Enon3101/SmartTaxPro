@@ -1,30 +1,32 @@
 import { useState, useEffect } from "react";
-import { Link, useParams, useLocation } from "wouter";
+import { Link, useLocation } from "wouter"; // Removed useParams
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Removed TabsContent
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"; // Removed DialogTrigger
 import { useToast } from "@/hooks/use-toast";
-import { 
-  ArrowLeft, 
-  Plus, 
-  Pencil, 
-  Trash2, 
-  Check, 
-  X, 
-  Upload, 
-  Eye, 
-  Save, 
+import {
+  ArrowLeft,
+  Plus,
+  Pencil,
+  Trash2,
+  Check,
+  // X, // Removed X
+  // Upload, // Removed Upload
+  Eye,
+  Save,
   Calendar,
-  Clock 
+  // Clock // Removed Clock
 } from "lucide-react";
 // Use the admin guard hook for authentication
 import { useAdminGuard } from '@/hooks/useAdminGuard';
+// Removed one of the duplicate TiptapEditor imports, the other one (if it was truly duplicated by the tool) would also be gone or this one is the sole correct one.
+import TiptapEditor from "@/components/RichTextEditor"; // Import the RichTextEditor
 
 // Sample blog post data (to be replaced with API call)
 const blogPostsData = [
@@ -116,7 +118,7 @@ interface BlogAdminProps {
 
 // Component to manage blog posts
 const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation(); // Ignored location variable
   const isAdmin = useAdminGuard();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
@@ -124,10 +126,80 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
   const [tabValue, setTabValue] = useState(mode === "create" ? "new" : mode === "edit" ? "edit" : "published");
   const [deletePostId, setDeletePostId] = useState<number | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+
+  const initialFormState = {
+    title: "",
+    slug: "",
+    summary: "",
+    content: "", // This will be handled by RichTextEditor
+    category: categoryOptions[0] || "",
+    tags: [], // Represent as an array of strings
+    readTime: 5,
+    published: false,
+    featuredImage: "", // URL or path
+    authorId: 1, // Default or fetch logged-in admin user's ID
+    authorName: "Admin", // Default or fetch
+  };
+
+  const [currentPostData, setCurrentPostData] = useState(initialFormState);
   
-  // If in edit mode, find the post by id
-  const editingPost = mode === "edit" && id ? 
+  // If in edit mode, find the post by id and set form data
+  const editingPost = mode === "edit" && id ?
     posts.find(post => post.id === Number(id)) : null;
+
+  useEffect(() => {
+    if (mode === "edit" && editingPost) {
+      setCurrentPostData({
+        title: editingPost.title || "",
+        slug: editingPost.slug || "",
+        summary: editingPost.summary || "",
+        content: editingPost.content || "",
+        category: editingPost.category || categoryOptions[0] || "",
+        tags: editingPost.tags || [],
+        readTime: editingPost.readTime || 5,
+        published: editingPost.published || false,
+        featuredImage: editingPost.featuredImage || "",
+        authorId: editingPost.authorId || 1,
+        authorName: editingPost.authorName || "Admin",
+      });
+    } else if (mode === "create") {
+      setCurrentPostData(initialFormState);
+    }
+  }, [mode, id, editingPost, posts]); // Added posts to dependency array for editingPost re-evaluation
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setCurrentPostData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSwitchChange = (checked: boolean) => {
+    setCurrentPostData(prev => ({ ...prev, published: checked }));
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setCurrentPostData(prev => ({ ...prev, category: value }));
+  };
+  
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Simple comma-separated tags for now
+    setCurrentPostData(prev => ({ ...prev, tags: e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag) }));
+  };
+
+  const handleContentChange = (newContent: string) => {
+    setCurrentPostData(prev => ({ ...prev, content: newContent }));
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: Implement API call to save/update post
+    console.log("Submitting post:", currentPostData);
+    toast({
+      title: mode === "create" ? "Post Created (Simulated)" : "Post Updated (Simulated)",
+      description: `Title: ${currentPostData.title}`,
+    });
+    // Navigate back to list or the edited post view
+    setLocation("/admin/blog");
+  };
   
   // Use admin tokens for all fetch requests
   const fetchWithAdminAuth = async (url: string, options: RequestInit = {}) => {
@@ -249,7 +321,131 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
       </div>
     );
   }
+
+  if (mode === "create" || mode === "edit") {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Button variant="outline" size="sm" onClick={() => setLocation("/admin/blog")} className="mb-6">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Blog List
+        </Button>
+        <Card>
+          <CardHeader>
+            <CardTitle>{mode === "create" ? "Create New Blog Post" : "Edit Blog Post"}</CardTitle>
+            <CardDescription>
+              {mode === "create" ? "Fill in the details for your new blog post." : `Editing: ${editingPost?.title || 'post'}`}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleFormSubmit} className="space-y-6">
+              <div>
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  id="title"
+                  name="title"
+                  value={currentPostData.title}
+                  onChange={handleInputChange}
+                  placeholder="Enter blog post title"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="slug">Slug</Label>
+                <Input
+                  id="slug"
+                  name="slug"
+                  value={currentPostData.slug}
+                  onChange={handleInputChange}
+                  placeholder="e.g., my-awesome-post"
+                  required
+                />
+                 <p className="text-xs text-muted-foreground mt-1">
+                    Tip: A good slug is short, descriptive, and uses hyphens. Example: `understanding-tax-brackets`
+                  </p>
+              </div>
+              <div>
+                <Label htmlFor="summary">Summary</Label>
+                <Textarea
+                  id="summary"
+                  name="summary"
+                  value={currentPostData.summary}
+                  onChange={handleInputChange}
+                  placeholder="Write a short summary of the post (1-2 sentences)"
+                  rows={3}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="content">Content</Label>
+                <TiptapEditor
+                  content={currentPostData.content}
+                  onChange={handleContentChange}
+                  className="mt-1" // Add any specific styling needed for the container
+                />
+                 {/* The Textarea is now replaced by TiptapEditor */}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label htmlFor="category">Category</Label>
+                  <Select value={currentPostData.category} onValueChange={handleCategoryChange}>
+                    <SelectTrigger id="category">
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categoryOptions.map(option => (
+                        <SelectItem key={option} value={option}>{option}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="readTime">Read Time (minutes)</Label>
+                  <Input
+                    id="readTime"
+                    name="readTime"
+                    type="number"
+                    value={currentPostData.readTime}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 5"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="tags">Tags (comma-separated)</Label>
+                <Input
+                  id="tags"
+                  name="tags"
+                  value={currentPostData.tags.join(', ')}
+                  onChange={handleTagsChange}
+                  placeholder="e.g., tax, finance, guide"
+                />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="published"
+                  checked={currentPostData.published}
+                  onCheckedChange={handleSwitchChange}
+                />
+                <Label htmlFor="published">Published</Label>
+              </div>
+              {/* TODO: Add Featured Image Upload Here */}
+              <div className="flex justify-end space-x-3 pt-4">
+                <Button type="button" variant="outline" onClick={() => setLocation("/admin/blog")}>
+                  Cancel
+                </Button>
+                <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                  <Save className="mr-2 h-4 w-4" />
+                  {mode === "create" ? "Save Post" : "Update Post"}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
   
+  // Original list view rendering
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
@@ -288,7 +484,7 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
       </div>
       
       {/* Tabs - Published vs Drafts */}
-      <Tabs defaultValue="published" className="w-full mb-6" onValueChange={setTabValue}>
+      <Tabs defaultValue={tabValue} className="w-full mb-6" onValueChange={setTabValue}> {/* Use tabValue here */}
         <TabsList className="grid w-full grid-cols-2 max-w-md">
           <TabsTrigger value="published">Published ({posts.filter(p => p.published).length})</TabsTrigger>
           <TabsTrigger value="drafts">Drafts ({posts.filter(p => !p.published).length})</TabsTrigger>
@@ -306,8 +502,8 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center">
                         <span className={`inline-flex items-center px-2 py-1 text-xs rounded-full ${
-                          post.published 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                          post.published
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                             : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
                         }`}>
                           {post.published ? (
@@ -353,13 +549,13 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
                       </Link>
                     </Button>
                     <Button asChild variant="outline" size="sm" className="w-full">
-                      <Link href={`/learning/blog/${post.slug}`}>
+                      <Link href={`/learning/blog/${post.slug}`}> {/* Corrected path for viewing post */}
                         <Eye className="h-4 w-4 mr-2" /> View
                       </Link>
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
                       onClick={() => {
                         setDeletePostId(post.id);
@@ -382,14 +578,14 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
             </div>
             <h3 className="text-lg font-medium mb-2">No posts found</h3>
             <p className="text-muted-foreground text-sm mb-4">
-              {searchTerm 
+              {searchTerm
                 ? "No posts match your search criteria. Try adjusting your search terms."
                 : `No ${tabValue === "published" ? "published posts" : "drafts"} available.`
               }
             </p>
             {searchTerm && (
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setSearchTerm("")}
               >
                 Clear Search
@@ -412,8 +608,8 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
             <Button variant="outline" onClick={() => setConfirmDeleteOpen(false)}>
               Cancel
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={handleDeleteConfirm}
             >
               Delete

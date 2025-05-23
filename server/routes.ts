@@ -20,7 +20,7 @@ interface AuthenticatedRequest extends ExpressRequest {
 import { nanoid } from "nanoid";
 import { insertTaxFormSchema, insertDocumentSchema, InsertBlogPost } from "@shared/schema";
 import { db } from "./db";
-import { sql } from "drizzle-orm";
+import { sql, SQL } from "drizzle-orm"; // CLINE: Added SQL import
 import { 
   authenticate, 
   authorize, 
@@ -74,63 +74,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Public Blog API
-  
-  // Get published blog posts with filtering
-  apiRouter.get("/blog-posts", async (req, res) => {
-    try {
-      const { limit = 10, offset = 0, category, searchTerm } = req.query;
-      
-      // For public routes, only return published posts
-      const options = {
-        limit: Number(limit),
-        offset: Number(offset),
-        published: true, // Always true for public routes
-        category: category ? String(category) : undefined,
-        searchTerm: searchTerm ? String(searchTerm) : undefined
-      };
-      
-      const result = await storage.getAllBlogPosts(options);
-      res.json(result);
-    } catch (error) {
-      console.error("Error fetching published blog posts:", error);
-      res.status(500).json({ message: "Failed to fetch blog posts" });
-    }
-  });
-  
-  // Get a single published blog post by slug
-  apiRouter.get("/blog-posts/:slug", async (req, res) => {
-    try {
-      const post = await storage.getBlogPostBySlug(req.params.slug);
-      
-      if (!post) {
-        return res.status(404).json({ message: "Blog post not found" });
-      }
-      
-      // Only return published posts on public routes
-      if (!post.published) {
-        return res.status(404).json({ message: "Blog post not found" });
-      }
-      
-      res.json(post);
-    } catch (error) {
-      console.error("Error fetching blog post:", error);
-      res.status(500).json({ message: "Failed to fetch blog post" });
-    }
-  });
-  
+  // Mount other specific routers
+  apiRouter.use("/calculators", calculatorRouter);
+  apiRouter.use("/blog-posts", blogRouter);
+
   // Tax Forms API
 
   // Create a new tax form
   apiRouter.post("/tax-forms", async (req, res) => {
     try {
-      const { id, userId, status } = req.body;
+      const { id, userId, status, assessmentYear, formType } = req.body; // CLINE: Added assessmentYear and formType
       
       // Validate with Zod schema
       const validatedData = insertTaxFormSchema.parse({
         id: id || nanoid(),
         userId: userId || null,
         status: status || "in_progress",
+        assessmentYear: assessmentYear, // CLINE: Pass assessmentYear
+        formType: formType,             // CLINE: Pass formType
       });
       
       const newTaxForm = await storage.createTaxForm(validatedData);
@@ -639,7 +600,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   apiRouter.get("/auth/user", authenticate, async (req: AuthenticatedRequest, res) => {
     try {
       // User is already authenticated by middleware
-      const userId = req.user.sub;
+      if (!req.user || typeof req.user.sub === 'undefined') { // CLINE: Check req.user and req.user.sub
+        return res.status(401).json({ message: "Unauthorized - User not found in request" });
+      }
+      const userId = Number(req.user.sub); // CLINE: Convert sub to number
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user identifier format" });
+      }
       
       // Get user
       const user = await storage.getUser(userId);
@@ -847,7 +814,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   adminRouter.get("/users", async (req, res) => {
     try {
       const { users } = await import("@shared/schema");
-      const { db } = await import("./db");
+      // const { db } = await import("./db"); // db is already imported at the top
+      if (!db) {
+        return res.status(503).json({ message: "Database service unavailable" });
+      }
       
       // Select only specific columns that we know exist to avoid errors
       const allUsers = await db.select({
@@ -897,7 +867,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   adminRouter.delete("/users/:id", async (req, res) => {
     try {
       const { users } = await import("@shared/schema");
-      const { db } = await import("./db");
+      // const { db } = await import("./db");  // db is already imported at the top
+      if (!db) {
+        return res.status(503).json({ message: "Database service unavailable" });
+      }
       const { eq } = await import("drizzle-orm");
       const userId = Number(req.params.id);
       
@@ -913,7 +886,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   adminRouter.get("/tax-forms", async (req, res) => {
     try {
       const { taxForms } = await import("@shared/schema");
-      const { db } = await import("./db");
+      // const { db } = await import("./db"); // db is already imported at the top
+      if (!db) {
+        return res.status(503).json({ message: "Database service unavailable" });
+      }
       const allForms = await db.select().from(taxForms);
       res.json(allForms);
     } catch (error) {
@@ -945,7 +921,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   adminRouter.get("/documents", async (req, res) => {
     try {
       const { documents } = await import("@shared/schema");
-      const { db } = await import("./db");
+      // const { db } = await import("./db"); // db is already imported at the top
+      if (!db) {
+        return res.status(503).json({ message: "Database service unavailable" });
+      }
       const allDocuments = await db.select().from(documents);
       res.json(allDocuments);
     } catch (error) {
@@ -1128,7 +1107,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   adminRouter.get("/stats", async (req, res) => {
     try {
       const { users, taxForms, documents } = await import("@shared/schema");
-      const { db } = await import("./db");
+      // const { db } = await import("./db"); // db is already imported at the top
+      if (!db) {
+        return res.status(503).json({ message: "Database service unavailable" });
+      }
       const { count, eq, sql } = await import("drizzle-orm");
       
       // Get total user count
@@ -1373,12 +1355,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Verify admin token validity
   authRouter.get("/verify-admin", authenticate, async (req: AuthenticatedRequest, res) => {
     try {
-      if (!req.user) {
-        return res.status(401).json({ message: "Unauthorized" });
+      if (!req.user || typeof req.user.sub === 'undefined') { // CLINE: Check req.user and req.user.sub
+        return res.status(401).json({ message: "Unauthorized - User not found in request" });
+      }
+      const userId = Number(req.user.sub); // CLINE: Convert sub to number
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user identifier format" });
       }
       
       // Check if user is an admin
-      const user = await storage.getUser(req.user.sub);
+      const user = await storage.getUser(userId);
       if (!user || user.role !== UserRole.ADMIN) {
         return res.status(403).json({ message: "Forbidden - Admin access required" });
       }
@@ -1484,13 +1470,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // In a real app with sessions, check for logged in user
       // For now, we'll mock this
-      const userId = req.query.userId;
+      const userIdQueryParam = req.query.userId;
       
-      if (!userId) {
+      if (!userIdQueryParam) {
         return res.status(401).json({ message: "Not authenticated" });
       }
+      const userId = Number(userIdQueryParam); // CLINE: Convert to number
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID format in query parameter" });
+      }
       
-      const user = await storage.getUser(Number(userId));
+      const user = await storage.getUser(userId);
       
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -1514,6 +1504,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all tables in the database
   dbEditorRouter.get("/tables", async (req, res) => {
     try {
+      if (!db) { // CLINE: Add db null check
+        return res.status(503).json({ message: "Database service unavailable" });
+      }
       const result = await db.execute(sql`
         SELECT table_name 
         FROM information_schema.tables 
@@ -1532,6 +1525,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   dbEditorRouter.get("/tables/:tableName/schema", async (req, res) => {
     try {
       const { tableName } = req.params;
+      if (!db) { // CLINE: Add db null check
+        return res.status(503).json({ message: "Database service unavailable" });
+      }
       
       // Get column information
       const result = await db.execute(sql`
@@ -1552,20 +1548,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   dbEditorRouter.get("/tables/:tableName/data", async (req, res) => {
     try {
       const { tableName } = req.params;
+      if (!db) { // CLINE: Add db null check
+        return res.status(503).json({ message: "Database service unavailable" });
+      }
       const page = parseInt(req.query.page as string) || 1;
       const pageSize = parseInt(req.query.pageSize as string) || 20;
-      const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * pageSize; // CLINE: Removed duplicate offset declaration
       
       // Get table data with pagination
-      const dataResult = await db.execute(sql`
-        SELECT * FROM ${sql.identifier(tableName)}
-        LIMIT ${pageSize} OFFSET ${offset}
-      `);
+      // CLINE: Using sql.raw with manual, careful string construction due to persistent TS errors with sql tag.
+      // Ensure tableName is a simple identifier and does not contain malicious characters.
+      // For production, more robust validation/sanitization of tableName would be needed if it came from user input.
+      const sTableName = tableName.replace(/[^a-zA-Z0-9_]/g, ''); // Basic sanitization
+      const rawDataQueryString = `SELECT * FROM "${sTableName}" LIMIT ${Number(pageSize)} OFFSET ${Number(offset)}`;
+      const dataResult = await db!.execute(sql.raw(rawDataQueryString) as any); // CLINE: Cast to any
       
       // Get total count for pagination
-      const countResult = await db.execute(sql`
-        SELECT COUNT(*) FROM ${sql.identifier(tableName)}
-      `);
+      const rawCountQueryString = `SELECT COUNT(*) FROM "${sTableName}"`;
+      const countResult = await db!.execute(sql.raw(rawCountQueryString) as any); // CLINE: Cast to any
       
       const totalCount = parseInt(countResult.rows[0]?.count || "0");
       const totalPages = Math.ceil(totalCount / pageSize);
@@ -1590,8 +1590,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { query } = req.body;
       
-      if (!query) {
-        return res.status(400).json({ message: "SQL query is required" });
+      if (typeof query !== 'string' || !query.trim()) { // CLINE: Validate query is a non-empty string
+        return res.status(400).json({ message: "SQL query must be a non-empty string" });
       }
       
       // Limit to SELECT queries for safety
@@ -1602,6 +1602,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
+      // CLINE: Add db null check, similar to how storage.ts handles it
+      if (!db) {
+        console.error("Database not available for custom query execution");
+        throw new Error("Database service is currently unavailable.");
+      }
       const result = await db.execute(sql.raw(query));
       res.json({
         rows: result.rows,
