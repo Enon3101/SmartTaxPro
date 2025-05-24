@@ -260,7 +260,7 @@ const PricingPlan: React.FC = () => {
                     </th>
                     {ecaPlans.map((plan) => (
                       <th key={plan.key} scope="col" className="px-6 py-4 text-center min-w-[160px] align-top">
-                        <div className="flex flex-col h-full text-center"> {/* Flexbox container */}
+                        <div className="flex flex-col h-full text-center min-h-[450px]"> {/* Flexbox container with min-height */}
                           <plan.icon className="h-8 w-8 text-blue-500 mb-2 mx-auto" />
                           <h4 className="text-sm font-semibold text-foreground mb-1">{plan.name}</h4>
                           <div className="text-xs text-muted-foreground mb-2 w-full px-1 flex-grow self-start min-h-[48px]"> {/* Description with flex-grow */}
