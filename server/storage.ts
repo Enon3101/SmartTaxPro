@@ -53,6 +53,7 @@ export interface IStorage {
 
 import { desc, eq, and, like, or, sql, asc, SQL, gte } from "drizzle-orm";
 import { db } from "./db";
+import { hashPassword } from "./auth"; // Import hashPassword
 
 export class DatabaseStorage implements IStorage {
   private checkDb(): void {
@@ -139,8 +140,9 @@ export class DatabaseStorage implements IStorage {
     return latestOtp || undefined;
   }
   
-  async verifyOtp(phone: string, otp: string): Promise<boolean> {
+  async verifyOtp(phone: string, plaintextOtp: string): Promise<boolean> { // Renamed otp to plaintextOtp for clarity
     this.checkDb();
+    const hashedInputOtp = await hashPassword(plaintextOtp); // Hash the input OTP
     // Get latest non-expired OTP for this phone
     const [otpRecord] = await db!
       .select()
@@ -148,7 +150,7 @@ export class DatabaseStorage implements IStorage {
       .where(
         and(
           eq(otpVerifications.phone, phone),
-          eq(otpVerifications.otp, otp),
+          eq(otpVerifications.otp, hashedInputOtp), // Compare HASHED input with STORED HASH
           eq(otpVerifications.verified, false),
           gte(otpVerifications.expiresAt, new Date())
         )

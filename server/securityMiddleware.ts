@@ -9,7 +9,7 @@
  * - Request validation
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, Express } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 
@@ -87,7 +87,7 @@ export function configureHelmet() {
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://replit.com"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://replit.com", "https://accounts.google.com"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com"],
         imgSrc: ["'self'", "data:", "https:"],
         connectSrc: ["'self'", "https://api.openrouter.ai"],
@@ -99,7 +99,7 @@ export function configureHelmet() {
         formAction: ["'self'"],
       },
     },
-    crossOriginEmbedderPolicy: true, // Keep this, might need { policy: "credentialless" } if COEP issues persist with iframes
+    crossOriginEmbedderPolicy: { policy: "credentialless" }, // Keep this, might need { policy: "credentialless" } if COEP issues persist with iframes
     crossOriginOpenerPolicy: { policy: "same-origin" },
     crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow cross-origin resources
     dnsPrefetchControl: { allow: false },
@@ -146,7 +146,7 @@ export function validateContentType(req: Request, res: Response, next: NextFunct
  * Setup all security middleware
  * SECURITY: Comprehensive security middleware setup (Req A, E, L)
  */
-export function setupSecurityMiddleware(app: any) {
+export function setupSecurityMiddleware(app: Express) {
   // Apply helmet for security headers
   app.use(configureHelmet());
   

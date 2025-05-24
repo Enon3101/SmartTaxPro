@@ -1,0 +1,79 @@
+{
+  "home": {
+    "hero": {
+      "title": "Fill, File and Smile",
+      "subtitle": "Easy filing wizard",
+      "reviews": "4.7 | 22,500+ Reviews",
+      "description": "Complete your Income Tax Return in as little as 10 minutes. Get maximum refund with our intelligent tax engine.",
+      "assessmentYearLabel": "Assessment Year:"
+    },
+    "buttons": {
+      "startFiling": "Start Filing Now",
+      "whoShouldFile": "Who Should File ITR?",
+      "viewPricing": "View Pricing"
+    },
+    "easySteps": {
+      "title": "ITR Filing Made Easy",
+      "step1Title": "Enter Your Details",
+      "step1Description": "Simple step-by-step wizard to collect your information",
+      "step2Title": "Review Your Information",
+      "step2Description": "Verify your details and calculate your refund",
+      "step3Title": "Pay & Submit",
+      "step3Description": "Make payment and file your return securely",
+      "step4Title": "e-Verify Your Return",
+      "step4Description": "Complete the process with digital verification"
+    },
+    "navigationCards": {
+      "fileYourITRTitle": "File Your ITR",
+      "fileYourITRDescription": "Start filing your tax return for AY 2024-25",
+      "pricingPlansTitle": "Pricing Plans",
+      "pricingPlansDescription": "View our affordable plans and services",
+      "taxResourcesTitle": "Tax Resources",
+      "taxResourcesDescription": "Access guides and ITR forms",
+      "aiExpertTitle": "TaxGuru AI Expert",
+      "aiExpertDescription": "Get instant answers to tax questions",
+      "getSupportTitle": "Get Support",
+      "getSupportDescription": "Contact our tax experts for help"
+    },
+    "easyWaysToFile": {
+        "title": "Easy Ways to File Your ITR",
+        "uploadForm16Title": "Upload Form 16",
+        "uploadForm16Description": "Simply upload your Form 16 and we'll auto-fill most of your ITR details",
+        "expertAssistedTitle": "Expert-Assisted",
+        "expertAssistedDescription": "Connect with our tax experts who will guide you through the entire process",
+        "aiAssistantTitle": "AI Assistant",
+        "aiAssistantDescription": "Our AI-powered TaxGuru can answer your questions 24/7"
+    },
+    "aiTaxExpertSection": {
+        "subHeader": "AI-POWERED ASSISTANT",
+        "title": "Get Instant Tax Answers with TaxGuru AI",
+        "description": "Our AI tax expert can answer your tax-related questions instantly. Whether you're confused about deductions, tax slabs, or ITR forms, TaxGuru has got you covered.",
+        "askButton": "Ask TaxGuru",
+        "exampleQuestion": "What deductions can I claim under Section 80C?",
+        "exampleAnswerIntro": "Under Section 80C, you can claim deductions up to ₹1,50,000 for investments/expenses like:",
+        "exampleAnswerItem1": "EPF (Employee Provident Fund) contributions",
+        "exampleAnswerItem2": "PPF (Public Provident Fund) deposits",
+        "exampleAnswerItem3": "Life insurance premiums",
+        "exampleAnswerItem4": "ELSS (Equity Linked Saving Scheme) investments",
+        "exampleAnswerItem5": "Home loan principal repayment",
+        "exampleAnswerItem6": "Tuition fees for children's education (max 2 children)"
+    },
+    "benefits": {
+        "title": "Why File Your ITR with Us?",
+        "description": "We make the complex process of filing income tax returns simple, accurate, and fast.",
+        "accuracyTitle": "100% Accuracy",
+        "accuracyDescription": "Our intelligent tax engine ensures your return is error-free",
+        "refundTitle": "Maximum Refund",
+        "refundDescription": "We help you claim all eligible deductions and exemptions",
+        "fastProcessingTitle": "Fast Processing",
+        "fastProcessingDescription": "Complete your ITR in minutes, not hours",
+        "expertSupportTitle": "Expert Support",
+        "expertSupportDescription": "Get help from certified tax professionals whenever needed"
+    },
+    "cta": {
+        "title": "Ready to file your ITR?",
+        "description": "Join millions of Indians who trust us for easy and accurate tax filing. Our step-by-step process makes ITR filing simple for everyone.",
+        "button": "Start Filing Now"
+    }
+  }
+}

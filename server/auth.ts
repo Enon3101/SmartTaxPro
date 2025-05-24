@@ -8,13 +8,13 @@
  * - Token rotation and proper expiration
  */
 
-import crypto from 'crypto';
-import { db } from './db';
-import { storage } from './storage';
-import { users, OtpVerification, insertOtpVerificationSchema } from '@shared/schema';
-import { eq } from 'drizzle-orm';
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import crypto from 'crypto'; // Node built-in
+
+import argon2 from 'argon2'; // Third-party
+import { Request as ExpressRequest, Response, NextFunction } from 'express'; // Third-party
+import jwt from 'jsonwebtoken'; // Third-party
+
+import { storage } from './storage'; // Local
 
 // SECURITY: Secure JWT settings (Req D)
 const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex');
@@ -135,12 +135,8 @@ export async function verifyOTP(phoneNumber: string, otp: string): Promise<boole
  * SECURITY: Uses Argon2id for password hashing (Req C)
  */
 export async function hashPassword(password: string): Promise<string> {
-  // In a real implementation, we would use Argon2id here
-  // For now using a simpler hash until we add the proper library
-  return crypto
-    .createHash('sha256')
-    .update(password + process.env.PASSWORD_SALT)
-    .digest('hex');
+  // Using Argon2 for strong password hashing. It handles salting automatically.
+  return argon2.hash(password);
 }
 
 /**
@@ -148,21 +144,24 @@ export async function hashPassword(password: string): Promise<string> {
  * SECURITY: Implements secure password verification (Req B)
  */
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-  const hashedPassword = await hashPassword(password);
-  return crypto.timingSafeEqual(
-    Buffer.from(hashedPassword), 
-    Buffer.from(hash)
-  );
+  // argon2.verify is designed to be secure against timing attacks.
+  try {
+    return await argon2.verify(hash, password);
+  } catch (error) {
+    // Log error or handle specific argon2 errors if needed
+    console.error("Error verifying password with Argon2:", error);
+    return false;
+  }
 }
 
 /**
  * Generate a new JWT token for authentication
  * SECURITY: Short-lived JWTs with proper claims (Req D)
  */
-export function generateToken(user: any, tokenType: 'access' | 'refresh' = 'access'): string {
+export function generateToken(user: { id: string | number; role?: UserRole }, tokenType: 'access' | 'refresh' = 'access'): string {
   const payload = {
     sub: user.id,
-    role: user.role || UserRole.USER,
+    role: user.role || UserRole.USER, // Default to USER role if not specified
     type: tokenType,
     iat: Math.floor(Date.now() / 1000),
   };
@@ -177,9 +176,9 @@ export function generateToken(user: any, tokenType: 'access' | 'refresh' = 'acce
  * Verify a JWT token
  * SECURITY: Proper token verification (Req D)
  */
-export function verifyToken(token: string): any {
+export function verifyToken(token: string): AuthenticatedRequest['user'] | null {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, JWT_SECRET) as AuthenticatedRequest['user'];
   } catch (error) {
     return null;
   }
@@ -189,7 +188,18 @@ export function verifyToken(token: string): any {
  * Authentication middleware
  * SECURITY: Token-based authentication with proper validation (Req B, D)
  */
-export function authenticate(req: any, res: Response, next: NextFunction) {
+// Define a type for authenticated requests
+interface AuthenticatedRequest extends ExpressRequest {
+  user?: {
+    sub: string | number;
+    role: UserRole; // Use the imported UserRole enum
+    type: string;
+    iat: number;
+    // Add other properties from your JWT payload if necessary
+  };
+}
+
+export function authenticate(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
   
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -197,7 +207,7 @@ export function authenticate(req: any, res: Response, next: NextFunction) {
   }
   
   const token = authHeader.split(' ')[1];
-  const decoded = verifyToken(token);
+  const decoded = verifyToken(token) as AuthenticatedRequest['user']; // Cast to expected type
   
   if (!decoded) {
     return res.status(401).json({ message: 'Unauthorized: Invalid or expired token' });
@@ -213,11 +223,13 @@ export function authenticate(req: any, res: Response, next: NextFunction) {
  * SECURITY: Implements least-privilege authorization (Req B)
  */
 export function authorize(requiredPermission: string) {
-  return (req: any, res: Response, next: NextFunction) => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const userRole = req.user?.role || UserRole.ANONYMOUS;
     
     // Check if the user's role has the required permission
-    const hasPermission = ROLE_PERMISSIONS[userRole]?.includes(requiredPermission);
+    // Ensure userRole is a valid key for ROLE_PERMISSIONS
+    const permissions = ROLE_PERMISSIONS[userRole as keyof typeof ROLE_PERMISSIONS];
+    const hasPermission = permissions?.includes(requiredPermission);
     
     if (!hasPermission) {
       // SECURITY: Don't reveal specific permission details in error message

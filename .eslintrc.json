@@ -15,14 +15,21 @@
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
-    }
+    },
+    "project": "./tsconfig.json" // Added project reference
   },
   "settings": {
     "react": {
       "version": "detect"
     },
     "import/resolver": {
-      "typescript": {}
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json" // Added project reference for resolver
+      },
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
     }
   },
   "env": {
