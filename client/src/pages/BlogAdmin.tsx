@@ -1,32 +1,28 @@
-import { useState, useEffect } from "react";
-import { Link, useLocation } from "wouter"; // Removed useParams
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // Removed TabsContent
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"; // Removed DialogTrigger
-import { useToast } from "@/hooks/use-toast";
 import {
   ArrowLeft,
-  Plus,
-  Pencil,
-  Trash2,
-  Check,
-  // X, // Removed X
-  // Upload, // Removed Upload
-  Eye,
-  Save,
   Calendar,
-  // Clock // Removed Clock
-} from "lucide-react";
-// Use the admin guard hook for authentication
+  Check,
+  Eye,
+  Pencil,
+  Plus,
+  Save,
+  Trash2,
+} from "lucide-react"; // Sorted imports
+import { useEffect, useState } from "react"; // Sorted imports
+import { Link, useLocation } from "wouter";
+
+import TiptapEditor from "@/components/RichTextEditor";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import { useAdminGuard } from '@/hooks/useAdminGuard';
-// Removed one of the duplicate TiptapEditor imports, the other one (if it was truly duplicated by the tool) would also be gone or this one is the sole correct one.
-import TiptapEditor from "@/components/RichTextEditor"; // Import the RichTextEditor
 
 // Sample blog post data (to be replaced with API call)
 const blogPostsData = [
@@ -116,32 +112,46 @@ interface BlogAdminProps {
   id?: string;
 }
 
+interface BlogPostFormState {
+  title: string;
+  slug: string;
+  summary: string;
+  content: string;
+  category: string;
+  tags: string[]; // Ensure this is string[]
+  readTime: number;
+  published: boolean;
+  featuredImage: string;
+  authorId?: number; // Made optional as it's set by server
+  authorName?: string; // Made optional, for display, not submission
+}
+
 // Component to manage blog posts
 const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
-  const [, setLocation] = useLocation(); // Ignored location variable
+  const [, setLocation] = useLocation();
   const isAdmin = useAdminGuard();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
-  const [posts, setPosts] = useState(blogPostsData);
+  const [posts, setPosts] = useState(blogPostsData); // This state holds the full post structure from sample data
   const [tabValue, setTabValue] = useState(mode === "create" ? "new" : mode === "edit" ? "edit" : "published");
   const [deletePostId, setDeletePostId] = useState<number | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
-  const initialFormState = {
+  const initialFormState: BlogPostFormState = {
     title: "",
     slug: "",
     summary: "",
-    content: "", // This will be handled by RichTextEditor
+    content: "", 
     category: categoryOptions[0] || "",
-    tags: [], // Represent as an array of strings
+    tags: [], 
     readTime: 5,
     published: false,
-    featuredImage: "", // URL or path
-    authorId: 1, // Default or fetch logged-in admin user's ID
-    authorName: "Admin", // Default or fetch
+    featuredImage: "", 
+    authorId: 1, 
+    authorName: "Admin", 
   };
 
-  const [currentPostData, setCurrentPostData] = useState(initialFormState);
+  const [currentPostData, setCurrentPostData] = useState<BlogPostFormState>(initialFormState);
   
   // If in edit mode, find the post by id and set form data
   const editingPost = mode === "edit" && id ?
@@ -155,7 +165,7 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
         summary: editingPost.summary || "",
         content: editingPost.content || "",
         category: editingPost.category || categoryOptions[0] || "",
-        tags: editingPost.tags || [],
+        tags: Array.isArray(editingPost.tags) ? editingPost.tags : [], // Ensure tags is an array
         readTime: editingPost.readTime || 5,
         published: editingPost.published || false,
         featuredImage: editingPost.featuredImage || "",
@@ -165,7 +175,7 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
     } else if (mode === "create") {
       setCurrentPostData(initialFormState);
     }
-  }, [mode, id, editingPost, posts]); // Added posts to dependency array for editingPost re-evaluation
+  }, [mode, id, editingPost, posts]); 
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -191,14 +201,71 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement API call to save/update post
-    console.log("Submitting post:", currentPostData);
-    toast({
-      title: mode === "create" ? "Post Created (Simulated)" : "Post Updated (Simulated)",
-      description: `Title: ${currentPostData.title}`,
-    });
-    // Navigate back to list or the edited post view
-    setLocation("/admin/blog");
+    
+    const url = mode === "create" ? "/api/blog-posts/admin" : `/api/blog-posts/admin/${id}`;
+    const method = mode === "create" ? "POST" : "PUT";
+
+    // Ensure tags are an array of strings, even if input was empty
+    // Server expects tags as a comma-separated string or null
+    const tagsAsString = currentPostData.tags.length > 0 ? currentPostData.tags.join(',') : null;
+
+    // authorId and authorName should not be sent; server sets authorId.
+    // Prefix with _ to indicate they are intentionally unused after destructuring.
+    const { authorId: _authorId, authorName: _authorName, ...payloadToSend } = currentPostData;
+
+    const postPayload = {
+      ...payloadToSend,
+      tags: tagsAsString, 
+      readTime: Number(currentPostData.readTime) || 0,
+    };
+    
+    try {
+      const response = await fetchWithAdminAuth(url, {
+        method: method,
+        body: JSON.stringify(postPayload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: `Failed to ${mode === "create" ? "create" : "update"} post` }));
+        throw new Error(errorData.message);
+      }
+
+      const savedPostData = await response.json();
+      
+      // The API returns the full post object including authorId and potentially joined authorName.
+      // We need to ensure our local 'posts' state matches this structure.
+      // For now, assume savedPostData has a compatible structure or adapt as needed.
+      const newOrUpdatedPostForState = {
+        ...initialFormState, // Start with a base structure
+        ...savedPostData, // Overlay with API response
+        tags: Array.isArray(savedPostData.tags) ? savedPostData.tags : (typeof savedPostData.tags === 'string' ? savedPostData.tags.split(',').map((t:string) => t.trim()) : []),
+        // Ensure authorName is present if needed for display, API might not return it.
+        authorName: savedPostData.authorName || currentPostData.authorName || "Admin", 
+      };
+
+
+      toast({
+        title: `Post ${mode === "create" ? "Created" : "Updated"}`,
+        description: `"${newOrUpdatedPostForState.title}" has been successfully saved.`,
+      });
+
+      if (mode === "create") {
+        // Add the new post to the local state
+        // Ensure the structure matches what the list expects (e.g., if it needs authorName)
+        setPosts(prevPosts => [newOrUpdatedPostForState, ...prevPosts]);
+      } else {
+        // Update the existing post in the local state
+        setPosts(prevPosts => prevPosts.map(p => (p.id === newOrUpdatedPostForState.id ? newOrUpdatedPostForState : p)));
+      }
+      setLocation("/admin/blog"); 
+    } catch (error) {
+      console.error(`Error ${mode === "create" ? "creating" : "updating"} post:`, error);
+      toast({
+        title: `Error ${mode === "create" ? "Creating" : "Updating"} Post`,
+        description: error instanceof Error ? error.message : "An unknown error occurred.",
+        variant: "destructive",
+      });
+    }
   };
   
   // Use admin tokens for all fetch requests
@@ -240,13 +307,18 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
   // Fetch posts from API
   useEffect(() => {
     const loadPosts = async () => {
-      if (isAdmin) {
+      if (isAdmin) { // This check is good
         try {
-          const response = await fetchWithAdminAuth('/api/admin/blog-posts');
-          if (!response.ok) throw new Error('Failed to fetch blog posts');
+          // Fetch all posts (published and drafts) for admin view
+          const response = await fetchWithAdminAuth('/api/blog-posts/admin'); 
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: 'Failed to fetch blog posts' }));
+            throw new Error(errorData.message);
+          }
           
           const data = await response.json();
-          setPosts(data.posts || blogPostsData);
+          // The API /api/blog-posts/admin returns an array of posts directly
+          setPosts(Array.isArray(data) ? data : blogPostsData); 
         } catch (error) {
           console.error('Error loading blog posts:', error);
           toast({
@@ -282,11 +354,35 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
   };
   
   // Handle delete post
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (deletePostId) {
-      setPosts(posts.filter(post => post.id !== deletePostId));
-      setConfirmDeleteOpen(false);
-      setDeletePostId(null);
+      try {
+        const response = await fetchWithAdminAuth(`/api/blog-posts/admin/${deletePostId}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok && response.status !== 204) { // Check for non-OK and not 204
+            const errorData = await response.json().catch(() => ({ message: 'Failed to delete post' }));
+            throw new Error(errorData.message);
+        }
+        // If response.ok or response.status is 204, deletion was successful
+
+        setPosts(prevPosts => prevPosts.filter(post => post.id !== deletePostId));
+        toast({
+          title: "Post Deleted",
+          description: "The blog post has been successfully deleted.",
+        });
+      } catch (error) {
+        console.error("Error deleting post:", error);
+        toast({
+          title: "Error Deleting Post",
+          description: error instanceof Error ? error.message : "An unknown error occurred.",
+          variant: "destructive",
+        });
+      } finally {
+        setConfirmDeleteOpen(false);
+        setDeletePostId(null);
+      }
     }
   };
   
@@ -428,7 +524,53 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
                 />
                 <Label htmlFor="published">Published</Label>
               </div>
-              {/* TODO: Add Featured Image Upload Here */}
+
+              <div>
+                <Label htmlFor="featuredImage">Featured Image</Label>
+                <Input
+                  id="featuredImage"
+                  name="featuredImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const file = e.target.files[0];
+                      const formData = new FormData();
+                      formData.append("image", file); // "image" should match the fieldName in handleFileUpload
+
+                      try {
+                        // Assuming fetchWithAdminAuth handles admin token
+                        const response = await fetchWithAdminAuth("/api/admin/upload-image", {
+                          method: "POST",
+                          body: formData,
+                          // Content-Type is set automatically by browser for FormData
+                        });
+                        if (!response.ok) {
+                          const errorData = await response.json();
+                          throw new Error(errorData.message || "Image upload failed");
+                        }
+                        const result = await response.json();
+                        setCurrentPostData(prev => ({ ...prev, featuredImage: result.imageUrl }));
+                        toast({ title: "Image Uploaded", description: "Featured image updated." });
+                      } catch (error) {
+                        console.error("Error uploading featured image:", error);
+                        toast({
+                          title: "Image Upload Failed",
+                          description: error instanceof Error ? error.message : "Could not upload image.",
+                          variant: "destructive",
+                        });
+                      }
+                    }
+                  }}
+                />
+                {currentPostData.featuredImage && (
+                  <div className="mt-2">
+                    <img src={currentPostData.featuredImage} alt="Featured preview" className="max-h-40 rounded-md border" />
+                    <p className="text-xs text-muted-foreground mt-1">Current image: {currentPostData.featuredImage}</p>
+                  </div>
+                )}
+              </div>
+              
               <div className="flex justify-end space-x-3 pt-4">
                 <Button type="button" variant="outline" onClick={() => setLocation("/admin/blog")}>
                   Cancel

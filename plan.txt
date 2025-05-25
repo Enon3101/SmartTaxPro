@@ -1,0 +1,59 @@
+Phase-Wise Rollout Plan
+
+Development will be executed in phases, aligning with the module priorities discussed. Each phase below is roughly a sprint (2-3 weeks each, adjustable based on team size and complexity). The output is cumulative – each phase builds on previous ones, gradually unveiling more functionality:
+
+Phase 1: Foundation – Auth and Basic Setup
+Goals: Establish the project structure and implement authentication.
+Features:
+- Set up the monorepo or directories for frontend and backend. Configure Vite and Express with TypeScript.
+- Implement the user model and migration via Drizzle ORM (users table with fields for email, password hash, role, etc.).
+- Create REST endpoints for register/login. Integrate Passport (local strategy for login) and issue JWTs.
+- Develop simple login/register React pages and test end-to-end user signup and login.
+- Include basic client-side validation and server-side Zod validation for auth forms (e.g., password length, valid email format).
+Deliverable: Users can sign up, log in, and access a protected dummy page. Admin user (one hardcoded or inserted via DB) can log in and see an “Admin” dummy page. The tech stack baseline is proven (DB connectivity through Drizzle, API calls via React Query, etc.).
+
+Phase 2: User & Admin Dashboards, Content Management
+Goals: Provide a landing UI for users after login and enable admins to post content.
+Features:
+- Create the end-user Dashboard page showing placeholder data (welcome message, and sections where real data will go later). Ensure the dashboard is only accessible if JWT is present (use React Query or context to fetch user info).
+- Implement Admin Blog CMS: set up a posts table and an API for blog posts (CRUD operations). Develop an admin UI to create/edit posts (initially, even a basic form with title and content fields is fine). Support markdown or simple formatting in content.
+- Admin can publish a post, and it appears on a public blog page. Implement a public blog listing page and post detail page on the frontend.
+- Introduce the file manager minimal version for admins: allow image upload via the admin UI when editing a post (or at least a separate page to upload files and get a URL). This could reuse auth (admin must be logged in).
+- Implement route-based authorization on frontend (e.g., /admin/* routes accessible only to admin role, perhaps redirect if a non-admin tries).
+Deliverable: The platform supports basic content: admins can create blog posts, and users (or visitors) can read them. Users see a basic dashboard after login (even if not fully functional yet), confirming the login flow and role-based rendering works.
+
+Phase 3: Core Tax Filing and Documents (MVP release)
+Goals: Enable the primary use-case of filing a simple tax return, and allow document uploads. This phase is the MVP for a limited launch.
+Features:
+- ITR Filing Form (ITR-1): Implement the front-end form wizard for a simple salaried individual return. It should collect personal details (PAN, etc.), salary income, interest income, deductions (80C, etc.), and tax payment info. Include basic validation (required fields, numeric ranges).
+- Tax Calculation: Build the backend logic to compute tax on the given data (for FY 2024-25 for example). Return the calculated results to the frontend for display (tax liability or refund).
+- Save & Resume: Allow saving a draft of the return. For this, create API endpoints to save form data to DB (maybe a JSON column or relational tables for each section). The React app should save periodically or when user clicks "Save". Implement a “My Filings” list where user can see their in-progress or past filings.
+- Submit Return (Mock): Implement a submission function – for MVP, this can simply mark the record as “Filed” and generate a mock acknowledgment number. (Later this will integrate with actual filing process or allow download of file for manual upload.)
+- Document Vault: Enable users to upload files. Develop the UI for the Document Vault page where user can upload and see list of their documents. Backend to store files (set up an S3 bucket or use local disk in dev). Implement at least PDF and image upload, with size limits and virus scan stub (could integrate a scanner later or at least type check).
+- OCR Integration (basic): As a first cut, implement parsing of Form 16 PDF if possible (maybe using a known PDF structure or a third-party API). If OCR is too complex to fully implement in this phase, at least prepare the hooks for it – e.g., store the file and have a background job or placeholder that could process it. Possibly implement a simplified version: user uploads Form 16, then clicks “Extract Data” and the system grabs a few key fields if feasible. This feature can be marked beta.
+- Multi-Profile: Introduce the ability to add one additional profile in the UI. Keep it minimal: allow adding, listing, switching profiles. Ensure that filings and documents are linked to a profile. Test that the user cannot mix data between profiles (uploading a document when “Father” is selected should associate it with Father’s profile, etc.).
+- Basic Search: Add a search bar that looks up blog posts (since blog is the main content available now) – e.g., searching a keyword filters the list of posts. This can be a simple client-side filter or a call to an API that does SQL full-text search.
+Deliverable: A user can log in, create a profile (if needed), fill out a tax return form for FY year (with limited scope, e.g., only salary and bank interest), see the calculated tax, and mark it as filed (with an acknowledgment). They can upload supporting documents like Form 16. The MVP is essentially a working tax filing for a basic case, with supporting documents and reading material.
+
+Phase 4: Enhanced Features and Integrations
+Goals: Build on the MVP by adding more intricate features, improving automation, and ensuring compliance and performance. This phase likely involves refining the earlier features with feedback and adding the differentiators like integration with government services.
+Features:
+- Expand Tax Modules: Add support for ITR-2/3 forms (capital gains, business income). This means introducing new sections in the form UI (for capital gains, foreign income, etc.) and corresponding logic in the calculation engine. Also support more deduction sections (80GG, 80DD, etc.) and other schedules as needed.
+- E-Filing Integration: If an API or mechanism is available, integrate actual filing. For example, generate the JSON output as per the Income Tax Department schema and provide a one-click upload if through an API or at least a downloadable file with instructions to upload. Possibly integrate APIs for e-filing (some governments allow third-party software integration via token-based systems – research if available for India’s income tax). If not possible, the platform remains a preparation tool and just guides the user to the official portal for final submission.
+- E-Verify Flow: Implement the Aadhaar OTP e-verify integration. Possibly use an API from UIDAI or direct the user from our interface. For example, through the app, user requests OTP, we call a service (if available) that triggers OTP to their Aadhaar-registered mobile, user enters it, and we call verification. If direct integration isn’t allowed, at minimum open a webview or link to the govt e-verify page with clear steps. After e-verification, let user mark “Verified” in our system (maybe even fetch status via the govt site if possible).
+- DigiLocker Integration: Complete the DigiLocker connection feature. Use the official DigiLocker APIs: the user can link their account and select documents to import. Focus on importing PAN (for identity verification) and perhaps pre-fill of details. Also, if possible, fetch their Annual Information Statement (AIS) or Form 26AS through authorized channels (this might not be directly via DigiLocker but through the income tax site; if not feasible, skip).
+- CA Assistance: Introduce the CA assistance module for beta testing. Possibly limit to an internal admin acting as CA initially. Build the UI for a user to request help and an interface for the admin to view the user’s data. Implement basic messaging between user and admin (could be as simple as a comment thread on the filing). Ensure all access is logged.
+- Performance & Load Testing: Before wider release, do performance profiling. Optimize slow database queries, add indexes via Drizzle migrations, and test file upload/download performance (maybe introduce a CDN for static files and heavy content). Test with large number of concurrent users (simulate the end-of-July rush). Scale out as needed (e.g., deploy on a cluster with auto-scaling).
+- Security Audit & Compliance Check: Review the application for any security holes. Perhaps hire a third-party to do a penetration test. Fix any issues found. Double-check DPDP compliance – e.g., ensure consent texts are shown where needed, the privacy policy is easily accessible, and there’s a process for data deletion if user requests. Also verify that all sensitive data fields are properly encrypted or masked. Prepare documentation like Terms of Service, Privacy Policy for the platform’s launch.
+Deliverable: By end of Phase 4, the platform is feature-complete for a broad range of users – it handles complex tax scenarios, offers assisted filing, and integrates with external services to stand out from basic competitors. It’s secure, scalable, and ready for official launch.
+
+Phase 5: Post-Launch Improvements (Ongoing)
+Goals: After launch, gather user feedback and iterate. Add nice-to-have features and expand capabilities.
+Potential Features:
+- Mobile Optimization or App: Ensure the web UI is fully responsive. Consider if a React Native or Flutter mobile app is desired for ease of use on smartphones (many Indians use mobile primarily). If so, plan an API-first approach so the same backend serves mobile.
+- Additional Roles: Perhaps introduce a “tax partner” program – allow external CAs to sign up and use the platform for their clients (this could be a separate product offering, building on the multi-profile and CA modules).
+- Integration with Other Services: For example, integrate a payments API so that if a user owes tax, they can directly pay tax challan from the platform (through netbanking or UPI). Or integration with accounting software for self-employed users to import their data.
+- Continuous Content Updates: The content team (admins) will keep adding relevant blog posts (especially around budget time, year-end tax planning, etc.). Possibly integrate a push notification or mailing list for users who opt in to get important updates.
+- Monitoring & Customer Support: Set up admin tools for support queries – e.g., an admin can see error logs for a user or reset something quickly. Also possibly integrate a live chat support for users during business hours (embedding a service or using a chat widget).
+These improvements will be planned in agile sprints based on priority and feedback.
+Each phase’s rollout will include internal testing and likely a beta period for Phase 3 and 4 features. By splitting the development in phases, we ensure that critical features (like basic filing) go out early and the team can gather real user feedback, while still having a clear roadmap for advanced capabilities like integrations and expert support.

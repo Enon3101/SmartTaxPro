@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState } from "react"; // Keep useState for isLoading
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,48 +13,51 @@ import { Loader2, UserCheck } from "lucide-react";
 import { FiUser, FiLock } from "react-icons/fi";
 // import WelcomeDialog from "@/components/WelcomeDialog"; // Removed, AuthContext will handle WelcomeUser
 
+// Define Zod schema for the login form
+const loginFormSchema = z.object({
+  email: z.string().email({ message: "Invalid email address." }),
+  password: z.string().min(1, { message: "Password is required." }), // Min 1, as backend handles length
+});
+
+type LoginFormValues = z.infer<typeof loginFormSchema>;
+
 export default function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  // const [showWelcome, setShowWelcome] = useState(false); // Removed local showWelcome state
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { login } = useAuth();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!username || !password) {
-      toast({
-        title: "Error",
-        description: "Please enter both username and password",
-        variant: "destructive",
-      });
-      return;
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginFormSchema),
+    defaultValues: {
+      email: '',
+      password: ''
     }
-    
+  });
+
+  const onSubmit = async (formData: LoginFormValues) => {
     setIsLoading(true);
-    
     try {
+      // Using fetch as in the original code, can be swapped with apiRequest if preferred
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
-        credentials: "include",
+        body: JSON.stringify({ email: formData.email, password: formData.password }),
+        // credentials: "include", // Keep if session cookies are used, otherwise optional for JWT in header
       });
       
+      const responseData = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Invalid credentials");
+        // responseData might contain a message field from the backend
+        throw new Error(responseData.message || "Invalid credentials");
       }
       
-      const data = await response.json();
-      
-      // Save user data to context and localStorage
-      login(data.user);
+      // responseData should be { user, accessToken, refreshToken }
+      // The login function in AuthContext now expects this structure.
+      login(responseData); 
       
       toast({
         title: "Success",
@@ -91,22 +97,22 @@ export default function Login() {
           </CardDescription>
         </CardHeader>
         
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-4 pt-6">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="email">Email</Label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
                   <FiUser className="h-4 w-4" />
                 </div>
                 <Input
-                  id="username"
-                  placeholder="Enter your username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  {...register("email")}
                   className="pl-10"
-                  required
                 />
+                {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>}
               </div>
             </div>
             
@@ -120,8 +126,7 @@ export default function Login() {
                   id="password"
                   type="password"
                   placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  {...register("password")}
                   className="pl-10"
                   required
                 />

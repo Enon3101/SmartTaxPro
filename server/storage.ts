@@ -1,16 +1,22 @@
+import { desc, eq, and, like, or, sql, SQL, gte } from "drizzle-orm"; // Moved up
+
 import { 
-  User, InsertUser, users, 
-  TaxForm, InsertTaxForm, taxForms,
-  Document, InsertDocument, documents,
-  OtpVerification, InsertOtpVerification, otpVerifications,
-  BlogPost, InsertBlogPost, blogPosts
-} from "@shared/schema";
+  users, User, InsertUser,
+  taxForms, TaxForm, InsertTaxForm,
+  documents, Document, InsertDocument,
+  otpVerifications, OtpVerification, InsertOtpVerification,
+  blogPosts, BlogPost, InsertBlogPost
+} from "@shared/schema"; // Now importing explicit types
+
+import { db } from "./db";
+import { hashPassword } from "./auth"; // Import hashPassword
+
 
 // Interface for storage operations
 export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>; // Added back
   getUserByPhone(phone: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByGoogleId(googleId: string): Promise<User | undefined>;
@@ -27,12 +33,12 @@ export interface IStorage {
   createTaxForm(taxForm: InsertTaxForm): Promise<TaxForm>;
   getTaxFormById(id: string): Promise<TaxForm | undefined>;
   getTaxFormsByUserId(userId: number): Promise<TaxForm[]>;
-  updateTaxFormPersonalInfo(id: string, personalInfo: any): Promise<TaxForm | undefined>;
-  updateTaxFormIncomeData(id: string, incomeData: any): Promise<TaxForm | undefined>;
-  updateTaxFormDeductions80C(id: string, deductions80C: any): Promise<TaxForm | undefined>;
-  updateTaxFormDeductions80D(id: string, deductions80D: any): Promise<TaxForm | undefined>;
-  updateTaxFormOtherDeductions(id: string, otherDeductions: any): Promise<TaxForm | undefined>;
-  updateTaxFormTaxPaid(id: string, taxPaid: any): Promise<TaxForm | undefined>;
+  updateTaxFormPersonalInfo(id: string, personalInfo: Record<string, unknown>): Promise<TaxForm | undefined>;
+  updateTaxFormIncomeData(id: string, incomeData: Record<string, unknown>): Promise<TaxForm | undefined>;
+  updateTaxFormDeductions80C(id: string, deductions80C: Record<string, unknown>): Promise<TaxForm | undefined>;
+  updateTaxFormDeductions80D(id: string, deductions80D: Record<string, unknown>): Promise<TaxForm | undefined>;
+  updateTaxFormOtherDeductions(id: string, otherDeductions: Record<string, unknown>): Promise<TaxForm | undefined>;
+  updateTaxFormTaxPaid(id: string, taxPaid: Record<string, unknown>): Promise<TaxForm | undefined>;
   updateTaxFormType(id: string, formType: string): Promise<TaxForm | undefined>;
   updateTaxFormStatus(id: string, status: string): Promise<TaxForm | undefined>;
   
@@ -51,9 +57,7 @@ export interface IStorage {
   deleteBlogPost(id: number): Promise<void>;
 }
 
-import { desc, eq, and, like, or, sql, asc, SQL, gte } from "drizzle-orm";
-import { db } from "./db";
-import { hashPassword } from "./auth"; // Import hashPassword
+// Removed duplicate imports of drizzle-orm, db, hashPassword as they are at the top now
 
 export class DatabaseStorage implements IStorage {
   private checkDb(): void {
@@ -70,14 +74,16 @@ export class DatabaseStorage implements IStorage {
     return user || undefined;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
+  async getUserByUsername(username: string): Promise<User | undefined> { // Added back
     this.checkDb();
+    if (!username) return undefined; // Added check for empty username
     const [user] = await db!.select().from(users).where(eq(users.username, username));
     return user || undefined;
   }
   
   async getUserByPhone(phone: string): Promise<User | undefined> {
     this.checkDb();
+    if (!phone) return undefined; // Added check for empty phone
     const [user] = await db!.select().from(users).where(eq(users.phone, phone));
     return user || undefined;
   }
@@ -214,12 +220,12 @@ export class DatabaseStorage implements IStorage {
     return db!.select().from(taxForms).where(eq(taxForms.userId, userId));
   }
 
-  async updateTaxFormPersonalInfo(id: string, personalInfo: any): Promise<TaxForm | undefined> {
+  async updateTaxFormPersonalInfo(id: string, personalInfo: Record<string, unknown>): Promise<TaxForm | undefined> { // Changed any to Record
     this.checkDb();
     const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
-        personalInfo, 
+        personalInfo: JSON.stringify(personalInfo), // Assuming personalInfo is an object to be stored as JSON string
         updatedAt: new Date() 
       })
       .where(eq(taxForms.id, id))
@@ -228,12 +234,12 @@ export class DatabaseStorage implements IStorage {
     return updatedTaxForm || undefined;
   }
 
-  async updateTaxFormIncomeData(id: string, incomeData: any): Promise<TaxForm | undefined> {
+  async updateTaxFormIncomeData(id: string, incomeData: Record<string, unknown>): Promise<TaxForm | undefined> { // Changed any to Record
     this.checkDb();
     const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
-        incomeData, 
+        incomeData: JSON.stringify(incomeData), // Assuming incomeData is an object
         updatedAt: new Date() 
       })
       .where(eq(taxForms.id, id))
@@ -242,12 +248,12 @@ export class DatabaseStorage implements IStorage {
     return updatedTaxForm || undefined;
   }
 
-  async updateTaxFormDeductions80C(id: string, deductions80C: any): Promise<TaxForm | undefined> {
+  async updateTaxFormDeductions80C(id: string, deductions80C: Record<string, unknown>): Promise<TaxForm | undefined> { // Changed any to Record
     this.checkDb();
     const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
-        deductions80C, 
+        deductions80C: JSON.stringify(deductions80C), 
         updatedAt: new Date() 
       })
       .where(eq(taxForms.id, id))
@@ -256,12 +262,12 @@ export class DatabaseStorage implements IStorage {
     return updatedTaxForm || undefined;
   }
 
-  async updateTaxFormDeductions80D(id: string, deductions80D: any): Promise<TaxForm | undefined> {
+  async updateTaxFormDeductions80D(id: string, deductions80D: Record<string, unknown>): Promise<TaxForm | undefined> { // Changed any to Record
     this.checkDb();
     const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
-        deductions80D, 
+        deductions80D: JSON.stringify(deductions80D), 
         updatedAt: new Date() 
       })
       .where(eq(taxForms.id, id))
@@ -270,12 +276,12 @@ export class DatabaseStorage implements IStorage {
     return updatedTaxForm || undefined;
   }
 
-  async updateTaxFormOtherDeductions(id: string, otherDeductions: any): Promise<TaxForm | undefined> {
+  async updateTaxFormOtherDeductions(id: string, otherDeductions: Record<string, unknown>): Promise<TaxForm | undefined> { // Changed any to Record
     this.checkDb();
     const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
-        otherDeductions, 
+        otherDeductions: JSON.stringify(otherDeductions), 
         updatedAt: new Date() 
       })
       .where(eq(taxForms.id, id))
@@ -284,12 +290,12 @@ export class DatabaseStorage implements IStorage {
     return updatedTaxForm || undefined;
   }
 
-  async updateTaxFormTaxPaid(id: string, taxPaid: any): Promise<TaxForm | undefined> {
+  async updateTaxFormTaxPaid(id: string, taxPaid: Record<string, unknown>): Promise<TaxForm | undefined> { // Changed any to Record
     this.checkDb();
     const [updatedTaxForm] = await db!
       .update(taxForms)
       .set({ 
-        taxPaid, 
+        taxPaid: JSON.stringify(taxPaid), 
         updatedAt: new Date() 
       })
       .where(eq(taxForms.id, id))
@@ -298,7 +304,7 @@ export class DatabaseStorage implements IStorage {
     return updatedTaxForm || undefined;
   }
 
-  async updateTaxFormType(id: string, formType: string): Promise<TaxForm | undefined> {
+  async updateTaxFormType(id: string, formType: string): Promise<TaxForm | undefined> { // formType is already string
     this.checkDb();
     const [updatedTaxForm] = await db!
       .update(taxForms)

@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import pinoHttp from 'pino-http';
+import passport from 'passport'; // Import Passport
 import logger from './logger'; // Import shared logger
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic } from "./vite"; // Removed log import
@@ -32,6 +33,9 @@ app.use(express.urlencoded({ extended: false, limit: '1mb' })); // Limit form pa
 
 // Add pino-http logger middleware
 app.use(httpLogger);
+
+// Initialize Passport
+app.use(passport.initialize());
 
 (async () => {
   const server = await registerRoutes(app);

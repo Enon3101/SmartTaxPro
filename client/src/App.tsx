@@ -1,45 +1,54 @@
-import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { QueryClientProvider } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
+import { DefaultParams, Route, RouteComponentProps, Switch } from "wouter";
+
+import BottomNav from "@/components/BottomNav";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { ScrollToTop } from "@/components/ScrollToTop";
+import TaxExpertWidget from "@/components/TaxExpertWidget";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { TaxDataProvider } from "./context/TaxDataProvider";
-import { AuthProvider } from "./context/AuthContext";
-import { ThemeProvider } from "./context/ThemeProvider";
-import { ItrWizardProvider } from "./context/ItrWizardContext";
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { lazy, Suspense } from "react";
-import NotFound from "@/pages/not-found";
-import Home from "@/pages/HomeSimplified";
-import TaxFiling from "@/pages/TaxFiling";
-import Calculators from "@/pages/Calculators";
-import LearningResources from "@/pages/LearningResources";
-import TaxResources from "@/pages/TaxResources";
-import Support from "@/pages/Support";
-import Pricing from "@/pages/Pricing";
-import StartFiling from "@/pages/StartFiling";
-import Payment from "@/pages/Payment";
-import FilingComplete from "@/pages/FilingComplete";
-import FilingRequirements from "@/pages/FilingRequirements";
-import ItrWizard from "@/pages/ItrWizard";
 import Admin from "@/pages/Admin";
 import AdminLogin from "@/pages/AdminLogin";
-import BlogPost from "@/pages/BlogPost";
 import BlogAdmin from "@/pages/BlogAdmin";
+import Calculators from "@/pages/Calculators";
+import Dashboard from "@/pages/Dashboard";
 import DatabaseEditor from "@/pages/DatabaseEditor";
-import TaxExpert from "@/pages/TaxExpert";
+import DocumentVault from "@/pages/DocumentVault"; // Import DocumentVault page
+import FilingComplete from "@/pages/FilingComplete";
+import FilingRequirements from "@/pages/FilingRequirements";
+import Home from "@/pages/HomeSimplified";
+import ItrFiling from "@/pages/ItrFiling";
+import ItrWizard from "@/pages/ItrWizard";
+import BlogListPage from "@/pages/learning/BlogListPage";
 import Login from "@/pages/Login";
-import Register from "@/pages/Register";
+import MyFilings from "@/pages/MyFilings"; // Import MyFilings page
+import NotFound from "@/pages/not-found";
+import Payment from "@/pages/Payment";
+import Pricing from "@/pages/Pricing";
 import Profile from "@/pages/Profile";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import BottomNav from "@/components/BottomNav";
-import TaxExpertWidget from "@/components/TaxExpertWidget";
-import { ScrollToTop } from "@/components/ScrollToTop";
+import Register from "@/pages/Register";
+import StartFiling from "@/pages/StartFiling";
+import Support from "@/pages/Support";
+import TaxExpert from "@/pages/TaxExpert";
+import TaxFiling from "@/pages/TaxFiling";
+import TaxResources from "@/pages/TaxResources";
+import { AuthProvider } from "./context/AuthContext";
+import { ItrWizardProvider } from "./context/ItrWizardContext";
+import { TaxDataProvider } from "./context/TaxDataProvider";
+import { ThemeProvider } from "./context/ThemeProvider";
+import { queryClient } from "./lib/queryClient";
+
+
+// import LearningResources from "@/pages/LearningResources"; // Will be replaced by BlogListPage for /learning
+// import BlogPost from "@/pages/BlogPost"; // Unused import
 
 // Lazy load calculator pages with improved loading
 const CalculatorsIndex = lazy(() => import("@/pages/Calculators")); // Changed to uppercase 'C'
-const LearningBlogPost = lazy(() => import("@/pages/learning/BlogPost"));
+const LearningBlogPost = lazy(() => import("@/pages/learning/BlogPostPage")); // Updated path
 
 // Take Home Salary Calculator
 const TakeHomeSalaryCalculator = lazy(() => {
@@ -217,6 +226,19 @@ const PageLoading = () => (
   </div>
 );
 
+// Define components for routes to help with type inference
+const CreateBlogAdminPage: React.FC<RouteComponentProps<DefaultParams>> = () => {
+  return <BlogAdmin mode="create" />;
+};
+
+const EditBlogAdminPage: React.FC<RouteComponentProps<{ id: string }>> = (props) => {
+  return <BlogAdmin mode="edit" id={props.params.id} />;
+};
+
+const ListBlogAdminPage: React.FC<RouteComponentProps<DefaultParams>> = () => {
+  return <BlogAdmin mode="list" />;
+};
+
 function Router() {
   return (
     <Switch>
@@ -229,17 +251,15 @@ function Router() {
         </Suspense>
       </Route>
       <Route path="/calculators" component={Calculators} />
-      <Route path="/learning" component={LearningResources} />
-      <Route path="/learning/:slug">
-        {(params) => (
-          <Suspense fallback={<PageLoading />}>
-            <LearningBlogPost />
-          </Suspense>
-        )}
+      <Route path="/learning" component={BlogListPage} /> {/* Changed to BlogListPage */}
+      <Route path="/learning/blog/:slug">
+        <Suspense fallback={<PageLoading />}>
+          <LearningBlogPost />
+        </Suspense>
       </Route>
       <Route path="/tax-resources" component={TaxResources} />
       <Route path="/tax-resources/:formId">
-        {(params) => (
+        {() => ( // Removed unused _params
           <Suspense fallback={<PageLoading />}>
             <ITRFormDetails />
           </Suspense>
@@ -250,20 +270,35 @@ function Router() {
       <Route path="/start-filing" component={StartFiling} />
       <Route path="/filing-requirements" component={FilingRequirements} />
       <Route path="/itr-wizard" component={ItrWizard} />
-      <Route path="/admin" component={Admin} />
-      <Route path="/admin-login" component={AdminLogin} />
-      <Route path="/admin/blog">{() => <BlogAdmin />}</Route>
-      <Route path="/admin/blog/new">{() => <BlogAdmin mode="create" />}</Route>
-      <Route path="/admin/blog/edit/:id">
-        {(params) => <BlogAdmin mode="edit" id={params.id} />}
-      </Route>
-      <Route path="/admin/database-editor" component={DatabaseEditor} />
+      <ProtectedRoute path="/admin" component={Admin} allowedRoles={['admin']} /> {/* Protected for admin */}
+      <Route path="/admin-login" component={AdminLogin} /> {/* Public login for admin - can be removed if main login is used */}
+
+      {/* BlogAdmin routes using ProtectedRoute */}
+      <ProtectedRoute path="/admin/blog" component={ListBlogAdminPage} allowedRoles={['admin']} />
+      {/* Removed unused @ts-expect-error */}
+      <ProtectedRoute
+        path="/admin/blog/new"
+        component={CreateBlogAdminPage}
+        allowedRoles={['admin']}
+      />
+      <ProtectedRoute
+        path="/admin/blog/edit/:id"
+        component={EditBlogAdminPage}
+        allowedRoles={['admin']}
+      />
+      <ProtectedRoute path="/admin/database-editor" component={DatabaseEditor} allowedRoles={['admin']} /> {/* Protected for admin */}
       <Route path="/payment" component={Payment} />
       <Route path="/filing-complete" component={FilingComplete} />
       <Route path="/tax-expert" component={TaxExpert} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/profile" component={Profile} />
+      <ProtectedRoute path="/dashboard" component={Dashboard} />
+      <ProtectedRoute path="/itr-filing" component={ItrFiling} />
+      <ProtectedRoute path="/itr-filing/:filingId" component={ItrFiling} /> {/* Route for specific filing */}
+      <ProtectedRoute path="/my-filings" component={MyFilings} />
+      <ProtectedRoute path="/document-vault/:filingId" component={DocumentVault} /> {/* Route for specific filing's documents */}
+      <ProtectedRoute path="/document-vault" component={DocumentVault} /> {/* General document vault */}
 
       {/* Calculator Routes */}
       <Route path="/calculators/index">
@@ -338,7 +373,7 @@ function Router() {
           <PFCalculator />
         </Suspense>
       </Route>
-      
+
       {/* Additional calculator routes */}
       <Route path="/calculators/take-home-salary">
         <Suspense fallback={<PageLoading />}>
@@ -365,7 +400,7 @@ function Router() {
           <CompoundInterestCalculator />
         </Suspense>
       </Route>
-      
+
       {/* Loan calculator routes */}
       <Route path="/calculators/home-loan">
         <Suspense fallback={<PageLoading />}>

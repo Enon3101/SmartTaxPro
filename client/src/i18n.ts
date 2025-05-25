@@ -34,7 +34,7 @@ i18n
       escapeValue: false, // React already protects from XSS
     },
     react: {
-      useSuspense: false, // Set to true if you want to use React Suspense for loading translations
+      useSuspense: true, // Enable React Suspense for loading translations
     }
   });
 
