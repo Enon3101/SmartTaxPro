@@ -3,7 +3,6 @@ import {
   Building, 
   Calculator, 
   Calendar, 
-  Crown,
   ExternalLink, 
   FileText, 
   HelpCircle, 
@@ -18,9 +17,7 @@ import {
   Receipt,
   Folder,
   Building2,
-  IdCard,
-  Lightbulb,
-  Users2
+  IdCard
 } from "lucide-react";
 import React, { useState } from "react";
 import { Link } from "wouter";
@@ -37,7 +34,6 @@ import {
   Card, 
   CardHeader, 
   CardTitle, 
-  CardDescription, 
   CardContent 
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -50,16 +46,32 @@ import {
 } from "@/components/ui/select";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useTheme } from "@/context/ThemeProvider";
-import { govtTaxWebsites, taxToolsAndCalculators, taxInformationResources } from "@/data/govtResources";
+// import { useTheme } from "@/context/ThemeProvider"; // Removed unused import
+import { govtTaxWebsites } from "@/data/govtResources"; // Removed unused taxToolsAndCalculators, taxInformationResources
 import { currentTaxDeadlines, previousTaxDeadlines } from "@/data/taxDeadlines";
 import { 
   taxSlabs2024_25, 
   taxSlabs2025_26, 
-  seniorCitizenSlabs, 
-  superSeniorCitizenSlabs 
+  // seniorCitizenSlabs, // Removed unused import
+  // superSeniorCitizenSlabs // Removed unused import
 } from "@/data/taxSlabs";
 import { formatIndianCurrency } from "@/lib/formatters";
+
+interface TaxSlab {
+  incomeFrom: number;
+  incomeTo: number | null;
+  taxRate: number;
+  description: string;
+}
+
+// interface TaxRegime { // Removed unused interface, selectedTaxRegime will infer its type
+//   name: string;
+//   description: string;
+//   slabs: TaxSlab[];
+//   cess: number;
+//   surcharge?: { [key: string]: number };
+//   deductions?: string[];
+// }
 
 const TaxResources = () => {
   const [selectedTaxYear, setSelectedTaxYear] = useState("2024-25");
@@ -68,7 +80,7 @@ const TaxResources = () => {
   const [selectedAgeGroup, setSelectedAgeGroup] = useState("below60");
   const [selectedDeadlineCategory, setSelectedDeadlineCategory] = useState("all");
   const [filterText, setFilterText] = useState("");
-  const { theme } = useTheme();
+  // const { theme } = useTheme(); // Removed unused variable
 
   // Function to render icon based on icon name
   const renderIcon = (iconName: string) => {
@@ -100,15 +112,15 @@ const TaxResources = () => {
     resource.description.toLowerCase().includes(filterText.toLowerCase())
   );
 
-  const filteredTaxTools = taxToolsAndCalculators.filter(resource => 
-    resource.name.toLowerCase().includes(filterText.toLowerCase()) || 
-    resource.description.toLowerCase().includes(filterText.toLowerCase())
-  );
+  // const filteredTaxTools = taxToolsAndCalculators.filter(resource => 
+  //   resource.name.toLowerCase().includes(filterText.toLowerCase()) || 
+  //   resource.description.toLowerCase().includes(filterText.toLowerCase())
+  // ); // Removed unused variable
 
-  const filteredInfoResources = taxInformationResources.filter(resource => 
-    resource.name.toLowerCase().includes(filterText.toLowerCase()) || 
-    resource.description.toLowerCase().includes(filterText.toLowerCase())
-  );
+  // const filteredInfoResources = taxInformationResources.filter(resource => 
+  //   resource.name.toLowerCase().includes(filterText.toLowerCase()) || 
+  //   resource.description.toLowerCase().includes(filterText.toLowerCase())
+  // ); // Removed unused variable
   
   // Get the tax slabs based on selected year
   const getSelectedTaxSlabs = () => {
@@ -235,6 +247,28 @@ const TaxResources = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 gap-4">
+                    {/* Card for the new AY 2023-24 Guide */}
+                    <Card className="hover:shadow-md transition-shadow">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base flex items-center">
+                          <FileText className="mr-2" size={18} />
+                          <span className="flex-1">How to File ITR Online (AY 2023-24)</span>
+                        </CardTitle>
+                        <div className="flex justify-between items-center">
+                          <Badge variant="default">Guide</Badge>
+                          <Badge variant="secondary">Archived</Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground mb-4">A guide to filing your Income Tax Return online for the Assessment Year 2023-24.</p>
+                        <Button variant="outline" size="sm" className="w-full" asChild>
+                          <Link href="/tax-resources/how-to-file-itr-online-2023-24">
+                            View Guide <ExternalLink className="ml-2" size={14} />
+                          </Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
+
                     {filteredGovtWebsites.map((resource, index) => (
                       <Card key={index} className="hover:shadow-md transition-shadow">
                         <CardHeader className="pb-2">
@@ -341,7 +375,7 @@ const TaxResources = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {selectedTaxRegime.slabs.map((slab, index) => (
+                      {selectedTaxRegime.slabs.map((slab: TaxSlab, index: number) => (
                         <TableRow key={index}>
                           <TableCell className="font-semibold">
                             {slab.incomeFrom === 0 
@@ -388,11 +422,14 @@ const TaxResources = () => {
                           Surcharge is applicable at the following rates based on income:
                         </p>
                         <ul className="list-disc list-inside text-sm text-muted-foreground">
-                          {Object.entries(selectedTaxRegime.surcharge || {}).map(([threshold, rate], index) => (
-                            <li key={index}>
-                              {rate}% for income above ₹{parseInt(threshold).toLocaleString('en-IN')}
-                            </li>
-                          ))}
+                          {(selectedTaxRegime.surcharge ? Object.entries(selectedTaxRegime.surcharge) : []).map(([threshold, rateValue], index: number) => {
+                            const rate = rateValue as number; // Ensure rate is treated as a number
+                            return (
+                              <li key={index}>
+                                {rate}% for income above ₹{parseInt(threshold).toLocaleString('en-IN')}
+                              </li>
+                            );
+                          })}
                         </ul>
                       </div>
                     )}
@@ -404,7 +441,7 @@ const TaxResources = () => {
                           <h4 className="font-semibold">Allowed Deductions</h4>
                         </div>
                         <ul className="text-sm text-muted-foreground grid grid-cols-1 md:grid-cols-2 gap-1">
-                          {selectedTaxRegime.deductions.map((deduction, index) => (
+                          {selectedTaxRegime.deductions.map((deduction: string, index: number) => (
                             <li key={index} className="flex items-center">
                               <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
                               {deduction}
@@ -495,6 +532,28 @@ const TaxResources = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Card for the new AY 2023-24 Guide */}
+                  <Card className="hover:shadow-md transition-shadow">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base flex items-center">
+                        <FileText className="mr-2" size={18} />
+                        <span className="flex-1">How to File ITR Online (AY 2023-24)</span>
+                      </CardTitle>
+                      <div className="flex justify-between items-center">
+                        <Badge variant="default">Guide</Badge>
+                        <Badge variant="secondary">Archived</Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground mb-4">A guide to filing your Income Tax Return online for the Assessment Year 2023-24.</p>
+                      <Button variant="outline" size="sm" className="w-full" asChild>
+                        <Link href="/tax-resources/how-to-file-itr-online-2023-24">
+                          View Guide <ExternalLink className="ml-2" size={14} />
+                        </Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+
                   {filteredGovtWebsites.map((resource, index) => (
                     <Card key={index} className="hover:shadow-md transition-shadow">
                       <CardHeader className="pb-2">
@@ -597,7 +656,7 @@ const TaxResources = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {selectedTaxRegime.slabs.map((slab, index) => (
+                    {selectedTaxRegime.slabs.map((slab: TaxSlab, index: number) => (
                       <TableRow key={index}>
                         <TableCell className="font-semibold">
                           {slab.incomeFrom === 0 
@@ -643,31 +702,34 @@ const TaxResources = () => {
                       <p className="text-sm text-muted-foreground mb-2">
                         Surcharge is applicable at the following rates based on income:
                       </p>
-                      <ul className="list-disc list-inside text-sm text-muted-foreground">
-                        {Object.entries(selectedTaxRegime.surcharge || {}).map(([threshold, rate], index) => (
-                          <li key={index}>
-                            {rate}% for income above ₹{parseInt(threshold).toLocaleString('en-IN')}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  
-                  {selectedTaxRegime.deductions && selectedTaxRegime.deductions.length > 0 && (
-                    <div className="bg-muted p-4 rounded-md">
-                      <div className="flex items-center mb-2">
-                        <AlertCircle className="h-5 w-5 mr-2 text-primary" />
-                        <h4 className="font-semibold">Allowed Deductions</h4>
+                        <ul className="list-disc list-inside text-sm text-muted-foreground">
+                          {(selectedTaxRegime.surcharge ? Object.entries(selectedTaxRegime.surcharge) : []).map(([threshold, rateValue], index: number) => {
+                            const rate = rateValue as number; // Ensure rate is treated as a number
+                            return (
+                              <li key={index}>
+                                {rate}% for income above ₹{parseInt(threshold).toLocaleString('en-IN')}
+                              </li>
+                            );
+                          })}
+                        </ul>
                       </div>
-                      <ul className="text-sm text-muted-foreground grid grid-cols-1 md:grid-cols-2 gap-1">
-                        {selectedTaxRegime.deductions.map((deduction, index) => (
-                          <li key={index} className="flex items-center">
-                            <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
-                            {deduction}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    )}
+                    
+                    {selectedTaxRegime.deductions && selectedTaxRegime.deductions.length > 0 && (
+                      <div className="bg-muted p-4 rounded-md">
+                        <div className="flex items-center mb-2">
+                          <AlertCircle className="h-5 w-5 mr-2 text-primary" />
+                          <h4 className="font-semibold">Allowed Deductions</h4>
+                        </div>
+                        <ul className="text-sm text-muted-foreground grid grid-cols-1 md:grid-cols-2 gap-1">
+                          {selectedTaxRegime.deductions.map((deduction: string, index: number) => (
+                            <li key={index} className="flex items-center">
+                              <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                              {deduction}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                   )}
                 </div>
               </CardContent>

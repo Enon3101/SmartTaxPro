@@ -36,6 +36,13 @@ import Support from "@/pages/Support";
 import TaxExpert from "@/pages/TaxExpert";
 import TaxFiling from "@/pages/TaxFiling";
 import TaxResources from "@/pages/TaxResources";
+// Import for the new AY 2023-24 Guide
+const HowToFileITROnline2023_24 = lazy(() => {
+  return Promise.all([
+    import("@/pages/tax-resources/HowToFileITROnline2023_24"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
 
 import { AuthProvider } from "./context/AuthContext";
 import { ItrWizardProvider } from "./context/ItrWizardContext";
@@ -259,6 +266,11 @@ function Router() {
         </Suspense>
       </Route>
       <Route path="/tax-resources" component={TaxResources} />
+      <Route path="/tax-resources/how-to-file-itr-online-2023-24">
+        <Suspense fallback={<PageLoading />}>
+          <HowToFileITROnline2023_24 />
+        </Suspense>
+      </Route>
       <Route path="/tax-resources/:formId">
         {() => ( // Removed unused _params
           <Suspense fallback={<PageLoading />}>

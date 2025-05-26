@@ -1,36 +1,36 @@
-import { 
-  PiggyBank, 
-  Building,
-  Clock, 
-  Coins, 
-  HelpCircle, 
-  Info, 
+import {
+  PiggyBank,
+  // Building, // Unused
+  Clock,
+  Coins,
+  HelpCircle,
+  Info,
   AlertCircle,
   Calculator,
-  LineChart,
-  TrendingUp
+  // LineChart, // Unused
+  // TrendingUp // Unused
 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
-import { 
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; // Unused
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { 
+import {
   Table, 
   TableBody, 
   TableCell, 
@@ -46,22 +46,6 @@ import {
 } from "@/components/ui/tabs";
 import { formatIndianCurrency } from "@/lib/formatters";
 
-// Calculate compound interest
-const calculateCompoundInterest = (
-  principal: number, 
-  rateOfInterest: number, 
-  timeInYears: number,
-  compoundingFrequency: number = 1 // Annual by default
-) => {
-  const r = rateOfInterest / 100;
-  const n = compoundingFrequency;
-  const t = timeInYears;
-  
-  // Compound interest formula: P(1 + r/n)^(nt)
-  const amount = principal * Math.pow(1 + (r / n), n * t);
-  return amount;
-};
-
 // Main Calculator Component
 const PFCalculator = () => {
   // State for form inputs
@@ -69,8 +53,8 @@ const PFCalculator = () => {
   const [employeeContribution, setEmployeeContribution] = useState<number>(12);
   const [employerContribution, setEmployerContribution] = useState<number>(12);
   const [epsContribution, setEpsContribution] = useState<boolean>(true);
-  const [yearsOfService, setYearsOfService] = useState<number | "">(1);
-  const [interestRate, setInterestRate] = useState<number>(8.15); // Current EPF interest rate for 2023-24
+  const [yearsOfService, setYearsOfService] = useState<number | "">(1); // Used in Basic Calculator tab
+  const [interestRate, setInterestRate] = useState<number>(8.25); // Updated to 8.25% for FY 2023-24
   const [currentPFBalance, setCurrentPFBalance] = useState<number | "">("");
   const [retirementAge, setRetirementAge] = useState<number | "">(60);
   const [currentAge, setCurrentAge] = useState<number | "">(30);
@@ -226,7 +210,7 @@ const PFCalculator = () => {
     // Initialize variables for calculation
     let totalEmployeeContribution = 0;
     let totalEmployerContribution = 0;
-    let totalEpsContribution = 0;
+    // let totalEpsContribution = 0; // This was unused in final summary
     let totalInterestEarned = 0;
     let runningBalance = initialPfBalance;
     let currentBasicSalary = salary;
@@ -290,7 +274,7 @@ const PFCalculator = () => {
       // Update totals
       totalEmployeeContribution += employeeYearlyContribution;
       totalEmployerContribution += employerYearlyContribution;
-      totalEpsContribution += epsYearlyContribution;
+      // totalEpsContribution += epsYearlyContribution; // Not used in summary
       totalInterestEarned += yearlyInterest;
       
       // Increase salary for next year based on annual increment
@@ -461,7 +445,7 @@ const PFCalculator = () => {
                         </div>
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Current PF interest rate for FY 2023-24 is 8.15%
+                        Latest announced EPF rate is 8.25% (for FY 2023-24). You can override this.
                       </p>
                     </div>
                   </div>
@@ -822,7 +806,31 @@ const PFCalculator = () => {
                         <strong>Interest Calculation:</strong> Interest is calculated monthly but credited annually.
                       </p>
                       <p>
-                        <strong>Note:</strong> The current interest rate for EPF is 8.15% for the financial year 2023-24.
+                        <strong>Note:</strong> The interest rate for EPF is declared annually by EPFO. The rate for FY 2023-24 is 8.25%.
+                      </p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="tax-implications">
+                  <AccordionTrigger className="text-sm">
+                    <div className="flex items-center">
+                      <AlertCircle className="h-4 w-4 mr-2 text-destructive" />
+                      Important Tax Implications
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="text-sm text-muted-foreground space-y-2">
+                      <p>
+                        <strong>Employer's Contribution:</strong> If your employer contributes more than 12% of your (Basic + DA) to EPF, the excess amount is taxable in your hands.
+                      </p>
+                      <p>
+                        <strong>Aggregate Limit (Sec 17(2)(vii) & (viia)):</strong> If your employer's total annual contribution to EPF, NPS (National Pension System), and any superannuation fund exceeds ₹7.5 lakhs, the excess contribution is taxable as a perquisite. Furthermore, any interest, dividend, or return earned on this excess contribution is also taxable.
+                      </p>
+                      <p>
+                        <strong>Interest on Employee's Contribution:</strong> Interest earned on your own EPF contributions exceeding ₹2.5 lakhs in a financial year is taxable. This limit is ₹5 lakhs if your employer does not contribute to your EPF (e.g., for certain government employees).
+                      </p>
+                      <p>
+                        These taxability rules are important for individuals with higher salaries or contributions. This calculator estimates corpus growth but does not compute these specific taxes.
                       </p>
                     </div>
                   </AccordionContent>
