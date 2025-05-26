@@ -1,6 +1,7 @@
-import React from 'react';
-import { Button } from "@/components/ui/button";
 import { X, Plus, MinusCircle } from 'lucide-react';
+import React from 'react';
+
+import { Button } from "@/components/ui/button";
 
 interface SectionExemption {
   type: string;

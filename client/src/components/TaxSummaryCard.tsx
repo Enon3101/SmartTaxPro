@@ -1,6 +1,7 @@
+import { LightbulbIcon } from "lucide-react";
+
 import { useTaxFiling } from "@/hooks/useTaxFiling";
 import { formatCurrency } from "@/lib/taxCalculations";
-import { LightbulbIcon } from "lucide-react";
 
 interface TaxSummaryCardProps {
   className?: string;

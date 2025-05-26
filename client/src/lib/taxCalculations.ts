@@ -155,7 +155,7 @@ export function calculateTaxSummary(
   
   // Standard deduction is fixed at 50,000 (or the appropriate amount for the assessment year)
   // or salary income, whichever is lower
-  let standardDeductionApplied = salaryIncome > 0 ? Math.min(standardDeductionAmount, salaryIncome) : 0;
+  const standardDeductionApplied = salaryIncome > 0 ? Math.min(standardDeductionAmount, salaryIncome) : 0;
   
   // Standard deduction is applied only once regardless of number of employers
   const taxableIncome = Math.max(0, totalIncome - standardDeductionApplied - totalDeductions);

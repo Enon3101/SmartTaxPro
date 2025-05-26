@@ -1,6 +1,6 @@
-import { Link } from "wouter";
 import { Facebook, Twitter, Instagram, Linkedin, FileText, ArrowRight, ShieldCheck, Award, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { Link } from "wouter";
 
 const Footer = () => {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);

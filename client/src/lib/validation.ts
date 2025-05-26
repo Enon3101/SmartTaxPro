@@ -8,8 +8,8 @@
  * - Input sanitization
  */
 
-import { z } from "zod";
 import DOMPurify from "dompurify";
+import { z } from "zod";
 
 /**
  * Sanitize HTML input to prevent XSS attacks

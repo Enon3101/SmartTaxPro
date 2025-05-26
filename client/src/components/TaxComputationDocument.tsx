@@ -1,16 +1,3 @@
-import React from "react";
-import { formatIndianCurrency } from "@/lib/formatters";
-import { TaxSummary } from "@/lib/taxCalculations";
-import { Button } from "@/components/ui/button";
-import { 
-  Card, 
-  CardContent, 
-  CardFooter, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import { 
   Download, 
   FileText, 
@@ -24,6 +11,20 @@ import {
   Receipt, 
   IndianRupee 
 } from "lucide-react";
+import React from "react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { 
+  Card, 
+  CardContent, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { formatIndianCurrency } from "@/lib/formatters";
+import { TaxSummary } from "@/lib/taxCalculations";
 
 interface TaxComputationDocumentProps {
   taxSummary: TaxSummary;

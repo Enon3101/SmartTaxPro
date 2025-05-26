@@ -1,12 +1,15 @@
+import { motion } from 'framer-motion';
+import { DollarSign, AlertCircle, ArrowLeft } from "lucide-react";
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Link } from 'wouter';
+
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DollarSign, AlertCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/taxCalculations";
 
 // TDS rate data
@@ -53,7 +56,7 @@ const TdsCalculator = () => {
     let tdsRate = 0;
     let isHigherRate = false;
     let isBelowThreshold = false;
-    let annualAmount = periodMonthly ? paymentAmount * 12 : paymentAmount;
+    const annualAmount = periodMonthly ? paymentAmount * 12 : paymentAmount;
     
     setAnnualizedAmount(annualAmount);
     
@@ -91,7 +94,7 @@ const TdsCalculator = () => {
         }
         break;
         
-      case "rent":
+      case "rent": {
         const rentThreshold = tdsRates.rent.rates.find(r => r.type === payeeType)?.threshold || 240000;
         if (annualAmount <= rentThreshold) {
           tdsRate = 0;
@@ -100,6 +103,7 @@ const TdsCalculator = () => {
           tdsRate = 10;
         }
         break;
+      }
         
       case "commission":
         if (annualAmount <= 15000) {
@@ -119,7 +123,7 @@ const TdsCalculator = () => {
         }
         break;
         
-      case "contractor":
+      case "contractor": {
         const contractorInfo = tdsRates.contractor.rates.find(r => r.type === payeeType);
         if (contractorInfo) {
           if (periodMonthly && paymentAmount <= contractorInfo.threshold) {
@@ -133,6 +137,7 @@ const TdsCalculator = () => {
           }
         }
         break;
+      }
         
       default:
         tdsRate = 10;
@@ -186,18 +191,37 @@ const TdsCalculator = () => {
   return (
     <div className="container mx-auto px-4 sm:px-6 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2">TDS Calculator</h1>
-        <p className="text-muted-foreground">
-          Calculate Tax Deducted at Source (TDS) for various payment types under Indian tax laws
-        </p>
+        <Button asChild variant="ghost" size="sm" className="mb-4">
+          <Link href="/calculators">
+            <ArrowLeft className="mr-1 h-4 w-4" /> Back to Calculators
+          </Link>
+        </Button>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2">
+            <DollarSign className="h-7 w-7 text-primary" />
+            TDS Calculator
+          </h1>
+          <p className="text-muted-foreground">
+            Calculate Tax Deducted at Source (TDS) for various payment types under Indian tax laws
+          </p>
+        </motion.div>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1 space-y-6">
+        <motion.div
+          className="lg:col-span-1 space-y-6"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center text-xl">
-                <DollarSign className="mr-2 h-5 w-5" />
+                <DollarSign className="mr-2 h-5 w-5 text-primary" />
                 Payment Details
               </CardTitle>
             </CardHeader>
@@ -321,9 +345,14 @@ const TdsCalculator = () => {
               )}
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
         
-        <div className="lg:col-span-2 space-y-6">
+        <motion.div
+          className="lg:col-span-2 space-y-6"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           {isCalculated && (
             <>
               <Card className="bg-muted/50 border-primary border shadow-sm">
@@ -517,7 +546,7 @@ const TdsCalculator = () => {
               </CardContent>
             </Card>
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

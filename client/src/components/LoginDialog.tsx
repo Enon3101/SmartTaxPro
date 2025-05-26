@@ -1,8 +1,9 @@
+import { useMutation } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { FiPhone, FiLogIn, FiArrowLeft, FiCheck } from "react-icons/fi";
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -12,10 +13,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useMutation } from "@tanstack/react-query";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
-import { FiPhone, FiLogIn, FiArrowLeft, FiCheck } from "react-icons/fi";
-import { Loader2 } from "lucide-react";
+
+
 import GoogleLoginButton from "./GoogleLoginButton";
 
 interface LoginDialogProps {

@@ -1,4 +1,17 @@
+import { motion } from "framer-motion";
+import { 
+  Send, 
+  Bot, 
+  RefreshCcw, 
+  User,
+  AlertCircle,
+  ArrowLeft
+} from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { Link } from "wouter";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { 
   Card, 
   CardContent, 
@@ -8,23 +21,12 @@ import {
   CardTitle 
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { apiRequest } from "@/lib/queryClient";
-import { 
-  Send, 
-  Bot, 
-  RefreshCcw, 
-  User,
-  AlertCircle,
-  ArrowLeft
-} from "lucide-react";
-import { Link } from "wouter";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { motion } from "framer-motion";
+
 
 interface Message {
   content: string;

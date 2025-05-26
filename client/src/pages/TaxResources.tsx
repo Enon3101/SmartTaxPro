@@ -1,27 +1,3 @@
-import React, { useState } from "react";
-import { 
-  Card, 
-  CardHeader, 
-  CardTitle, 
-  CardDescription, 
-  CardContent 
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { 
   AlertCircle,
   Building, 
@@ -46,19 +22,44 @@ import {
   Lightbulb,
   Users2
 } from "lucide-react";
+import React, { useState } from "react";
 import { Link } from "wouter";
+
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { 
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription, 
+  CardContent 
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTheme } from "@/context/ThemeProvider";
 import { govtTaxWebsites, taxToolsAndCalculators, taxInformationResources } from "@/data/govtResources";
+import { currentTaxDeadlines, previousTaxDeadlines } from "@/data/taxDeadlines";
 import { 
   taxSlabs2024_25, 
   taxSlabs2025_26, 
   seniorCitizenSlabs, 
   superSeniorCitizenSlabs 
 } from "@/data/taxSlabs";
-import { currentTaxDeadlines, previousTaxDeadlines } from "@/data/taxDeadlines";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { formatIndianCurrency } from "@/lib/formatters";
-import { useTheme } from "@/context/ThemeProvider";
 
 const TaxResources = () => {
   const [selectedTaxYear, setSelectedTaxYear] = useState("2024-25");

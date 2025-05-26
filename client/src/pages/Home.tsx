@@ -1,11 +1,11 @@
+import { motion } from "framer-motion";
+import { ArrowRight, CheckCircle, Star, FileText, Calculator, CalendarDays, Upload, Phone, Bot } from "lucide-react";
+import { useContext } from "react";
+import { Link } from "wouter";
+
+import LoginDialog from "@/components/LoginDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Link } from "wouter";
-import { ArrowRight, CheckCircle, Star, FileText, Calculator, CalendarDays, Upload, Phone, Bot } from "lucide-react";
-import LoginDialog from "@/components/LoginDialog";
-import { useAuth } from "@/context/AuthContext";
-import { useState, useContext } from "react";
-import { TaxDataContext } from "@/context/TaxDataProvider";
 import { 
   Select,
   SelectContent,
@@ -13,12 +13,13 @@ import {
   SelectTrigger,
   SelectValue 
 } from "@/components/ui/select";
-import { motion } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
+import { TaxDataContext } from "@/context/TaxDataProvider";
 
 // Company logos will be loaded from the public directory
 
 const Home = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth(); // Removed user
   const { assessmentYear, setAssessmentYear } = useContext(TaxDataContext);
   
   return (
@@ -133,7 +134,7 @@ const Home = () => {
                   </div>
                 </Link>
               </motion.div>
-            </motion.div>
+            </div> {/* Added closing div for "text-left" */}
             
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
@@ -206,6 +207,10 @@ const Home = () => {
       {/* Navigation cards */}
       <section className="py-8 bg-muted">
         <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold mb-2 text-primary">Quick Navigation</h2>
+            <p className="text-lg text-muted-foreground">Easily access key sections of our platform.</p>
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {[
               {
@@ -263,7 +268,7 @@ const Home = () => {
                 whileHover={{ y: -5 }}
               >
                 <Link href={card.href}>
-                  <div className="bg-card p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-border h-full flex flex-col justify-between cursor-pointer">
+                  <div className="bg-card p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-border h-full flex flex-col items-center text-center justify-between cursor-pointer">
                     <div className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/30 flex items-center justify-center mb-4">
                       {card.icon}
                     </div>
@@ -277,7 +282,7 @@ const Home = () => {
             ))}
           </div>
         </div>
-      </motion.section>
+      </section> {/* Changed from motion.section to section */}
 
       {/* Trusted by section */}
       <motion.section 

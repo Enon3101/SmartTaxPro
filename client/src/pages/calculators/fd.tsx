@@ -1,17 +1,28 @@
+import { motion } from 'framer-motion';
+import { 
+  Percent, Calculator, Calendar, Building, BadgeIndianRupee, ArrowLeft
+  // DollarSign, PiggyBank removed as they are unused
+} from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link } from 'wouter';
+
+import { Button } from "@/components/ui/button"; 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
+import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { 
-  Percent, Calculator, DollarSign, Calendar,
-  PiggyBank, Building, BadgeIndianRupee
-} from "lucide-react";
 import { formatCurrency } from "@/lib/taxCalculations";
+
+interface YearlyBreakdownItem {
+  year: number;
+  startAmount: number;
+  interest: number;
+  endAmount: number;
+  months?: number; 
+}
 
 const FdCalculator = () => {
   const [principal, setPrincipal] = useState<number>(100000);
@@ -26,7 +37,7 @@ const FdCalculator = () => {
   const [maturityAmount, setMaturityAmount] = useState<number>(0);
   const [totalInterest, setTotalInterest] = useState<number>(0);
   const [effectiveYield, setEffectiveYield] = useState<number>(0);
-  const [yearlyBreakdown, setYearlyBreakdown] = useState<any[]>([]);
+  const [yearlyBreakdown, setYearlyBreakdown] = useState<YearlyBreakdownItem[]>([]);
   const [taxDeducted, setTaxDeducted] = useState<number>(0);
   
   // Senior citizen bonus interest rate
@@ -194,18 +205,37 @@ const FdCalculator = () => {
   return (
     <div className="container mx-auto px-4 sm:px-6 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2">FD Calculator</h1>
-        <p className="text-muted-foreground">
-          Calculate returns on your Fixed Deposit investments with different interest rates and tenures
-        </p>
+        <Button asChild variant="ghost" size="sm" className="mb-4">
+          <Link href="/calculators">
+            <ArrowLeft className="mr-1 h-4 w-4" /> Back to Calculators
+          </Link>
+        </Button>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2">
+            <Building className="h-7 w-7 text-primary" />
+            FD Calculator
+          </h1>
+          <p className="text-muted-foreground">
+            Calculate returns on your Fixed Deposit investments with different interest rates and tenures
+          </p>
+        </motion.div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1 space-y-6">
+        <motion.div
+          className="lg:col-span-1 space-y-6"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center text-xl">
-                <Building className="mr-2 h-5 w-5" />
+                <Building className="mr-2 h-5 w-5 text-primary" />
                 FD Details
               </CardTitle>
             </CardHeader>
@@ -394,9 +424,14 @@ const FdCalculator = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
         
-        <div className="lg:col-span-2 space-y-6">
+        <motion.div
+          className="lg:col-span-2 space-y-6"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <Card className="bg-muted/50 border-primary border shadow-sm">
             <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -467,7 +502,7 @@ const FdCalculator = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center text-xl">
-                <Calculator className="mr-2 h-5 w-5" />
+                <Calculator className="mr-2 h-5 w-5 text-primary" />
                 Year-wise Growth
               </CardTitle>
             </CardHeader>
@@ -511,7 +546,7 @@ const FdCalculator = () => {
               </ul>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

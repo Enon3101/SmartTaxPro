@@ -1,11 +1,12 @@
+import { ArrowRight, CheckCircle, Star, FileText, Calculator, CalendarDays, Upload, Bot, BadgeIndianRupee, Rocket, LifeBuoy } from "lucide-react";
 import { useContext } from "react"; // React import first
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
-import { ArrowRight, CheckCircle, Star, FileText, Calculator, CalendarDays, Upload, Bot, BadgeIndianRupee, Rocket, LifeBuoy } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import ExperienceHighlights from "@/components/ExperienceHighlights";
+import TrustedBySection from "@/components/TrustedBySection";
+import { Button } from "@/components/ui/button";
 import { 
   Select,
   SelectContent,
@@ -13,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue 
 } from "@/components/ui/select";
-import TrustedBySection from "@/components/TrustedBySection";
 import { useAuth } from "@/context/AuthContext"; // Context imports after components
 import { TaxDataContext } from "@/context/TaxDataProvider";
 

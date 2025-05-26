@@ -1,16 +1,18 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2, UserCheck } from "lucide-react";
 import { useState } from "react"; // Keep useState for isLoading
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { FiUser, FiLock } from "react-icons/fi";
 import { useLocation } from "wouter";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthContext";
-import { Loader2, UserCheck } from "lucide-react";
-import { FiUser, FiLock } from "react-icons/fi";
+import { useToast } from "@/hooks/use-toast";
+
 // import WelcomeDialog from "@/components/WelcomeDialog"; // Removed, AuthContext will handle WelcomeUser
 
 // Define Zod schema for the login form

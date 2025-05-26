@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'wouter';
 import { ArrowLeft, Info, Calculator, Download, Wallet } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'wouter';
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-
 import { formatIndianCurrency } from '@/lib/formatters';
 
 const TakeHomeSalaryCalculator = () => {
@@ -127,7 +126,7 @@ const TakeHomeSalaryCalculator = () => {
     // Tax calculation function
     const calculateTax = () => {
       let tax = 0;
-      let tempTaxableIncome = taxableIncome;
+      const tempTaxableIncome = taxableIncome;
       
       if (taxRegime === 'new') {
         // New tax regime slabs for FY 2024-25 (AY 2025-26)

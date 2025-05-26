@@ -1,14 +1,16 @@
 import 'dotenv/config';
+import fs from 'fs';
+import path from 'path';
+
 import express, { type Request, Response, NextFunction } from "express";
-import pinoHttp from 'pino-http';
 import passport from 'passport'; // Import Passport
+import pinoHttp from 'pino-http';
+
 import logger from './logger'; // Import shared logger
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic } from "./vite"; // Removed log import
 import { setupSecurityMiddleware } from "./securityMiddleware";
+import { setupVite, serveStatic } from "./vite"; // Removed log import
 // calculatorRouter and blogRouter are no longer used directly here
-import path from 'path';
-import fs from 'fs';
 
 const httpLogger = pinoHttp({ logger });
 

@@ -1,11 +1,16 @@
+import { X, Plus, BarChart4, Landmark, TrendingUp, ArrowDown, AlertTriangle, Briefcase, PiggyBank, DollarSign, Info } from 'lucide-react';
+import { nanoid } from "nanoid";
 import { useState, useContext, useEffect } from "react";
 import { useLocation } from "wouter";
+
+import ProgressTracker from "@/components/ProgressTracker";
+import SalarySection from "@/components/SalarySection";
+import TaxComputationDocument from "@/components/TaxComputationDocument";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -13,13 +18,9 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { X, Plus, BarChart4, Landmark, TrendingUp, ArrowDown, AlertTriangle, Briefcase, PiggyBank, DollarSign, Info } from 'lucide-react';
-import SalarySection from "@/components/SalarySection";
-import TaxComputationDocument from "@/components/TaxComputationDocument";
-import { nanoid } from "nanoid";
-import { formatCurrency, calculateIndexedCost, costInflationIndex } from "@/lib/taxCalculations";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TaxDataContext } from "@/context/TaxDataProvider";
-import ProgressTracker from "@/components/ProgressTracker";
+import { formatCurrency, calculateIndexedCost, costInflationIndex } from "@/lib/taxCalculations";
 
 // Indian PAN card validation utility functions
 // PAN Format: AAAPL1234C

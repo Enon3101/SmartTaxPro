@@ -31,14 +31,23 @@ const PlanCard: React.FC<PlanCardProps> = ({
     <div className="bg-card p-6 rounded-lg shadow-sm border border-border flex flex-col justify-between h-full">
       <div>
         {isFree && (
-          <div className="mb-2">
+          <div className="mb-2 flex justify-center">
             <span className="inline-block bg-green-500 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">
               {t('pricing.free')}
             </span>
           </div>
         )}
-        <h3 className="text-xl font-bold mb-1">{title}</h3>
-        {subtitle && <p className="text-sm text-muted-foreground mb-3">{subtitle}</p>}
+        <div className="flex flex-col items-center">
+          {item.icon && (
+            <div className="mb-4">
+              {React.cloneElement(item.icon as React.ReactElement, {
+                className: "h-12 w-12 text-primary/80"
+              })}
+            </div>
+          )}
+          <h3 className="text-xl font-bold mb-1 text-center">{title}</h3>
+          {subtitle && <p className="text-sm text-muted-foreground mb-3 text-center">{subtitle}</p>}
+        </div>
         
         <div className="mb-4">
           {originalPrice && (
@@ -249,6 +258,12 @@ const PricingPlan: React.FC = () => {
           <h2 className="text-3xl font-bold text-center mb-10">
             {t('pricing.ecaAssisted.title', 'eCA Assisted Plans')}
           </h2>
+
+          {/* Quick Navigation Section - New Additions */}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-2">Quick Navigation</h2>
+            <p className="text-muted-foreground">Choose the perfect plan for your tax filing needs</p>
+          </div>
 
           {isEcaPlanOpen && (
             <div className="overflow-x-auto bg-card shadow-md rounded-lg border border-border">

@@ -1,8 +1,10 @@
 import React from 'react';
-import { useAuth } from '@/context/AuthContext'; // Assuming AuthContext provides user info
+import { Link } from 'wouter'; // For navigation links
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Link } from 'wouter'; // For navigation links
+import { useAuth } from '@/context/AuthContext'; // Assuming AuthContext provides user info
+
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth(); // Get user from AuthContext

@@ -1,7 +1,7 @@
+import { Loader2, RefreshCw, Database, Table as TableIcon, FileText } from "lucide-react";
 import React, { useState, useEffect } from "react";
-import { useAdminGuard } from "@/hooks/useAdminGuard";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
+import { Link } from "wouter";
+
 import { Button } from "@/components/ui/button";
 import { 
   Card,
@@ -10,14 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -34,10 +27,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, RefreshCw, Database, Table as TableIcon, FileText } from "lucide-react";
-import { Link } from "wouter";
+import { useToast } from "@/hooks/use-toast";
+import { useAdminGuard } from "@/hooks/useAdminGuard";
+
 
 interface TableInfo {
   table_name: string;

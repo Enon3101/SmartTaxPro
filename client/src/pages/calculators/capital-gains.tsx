@@ -1,15 +1,18 @@
+import { motion } from 'framer-motion';
+import { BarChart2, Calculator, CalendarDays, ArrowLeft } from "lucide-react";
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Link } from 'wouter';
+
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+// RadioGroup and RadioGroupItem removed as they are unused
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import { BarChart2, Calculator, CalendarDays } from "lucide-react";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // TabsContent removed
 import { formatCurrency } from "@/lib/taxCalculations";
 
 // Define types for tax rate configurations
@@ -95,7 +98,13 @@ const incomeTaxSlabs = [
 ];
 
 // Surcharge slabs
-const surchargeSlab = [
+interface TaxSlab {
+  min: number;
+  max: number;
+  rate: number;
+}
+
+const surchargeSlab: TaxSlab[] = [
   { min: 0, max: 5000000, rate: 0 },
   { min: 5000000, max: 10000000, rate: 10 },
   { min: 10000000, max: 20000000, rate: 15 },
@@ -155,7 +164,7 @@ const CapitalGainsCalculator = () => {
   };
   
   // Calculate tax from slabs
-  const calculateTaxFromSlabs = (income: number, slabs: any[]) => {
+  const calculateTaxFromSlabs = (income: number, slabs: TaxSlab[]) => {
     let tax = 0;
     for (const slab of slabs) {
       if (income > slab.min) {
@@ -323,26 +332,51 @@ const CapitalGainsCalculator = () => {
   return (
     <div className="container mx-auto px-4 sm:px-6 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Capital Gains Calculator</h1>
-        <p className="text-muted-foreground">
-          Calculate your short-term and long-term capital gains tax on various assets
-        </p>
+        <Button asChild variant="ghost" size="sm" className="mb-4">
+          <Link href="/calculators">
+            <ArrowLeft className="mr-1 h-4 w-4" /> Back to Calculators
+          </Link>
+        </Button>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2">
+            <BarChart2 className="h-7 w-7 text-primary" />
+            Capital Gains Calculator
+          </h1>
+          <p className="text-muted-foreground">
+            Calculate your short-term and long-term capital gains tax on various assets
+          </p>
+        </motion.div>
       </div>
       
       <Tabs defaultValue="equity" value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 mb-6">
-          <TabsTrigger value="equity">Equity</TabsTrigger>
-          <TabsTrigger value="debt">Debt</TabsTrigger>
-          <TabsTrigger value="property">Property</TabsTrigger>
-          <TabsTrigger value="gold">Gold</TabsTrigger>
-        </TabsList>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <TabsList className="grid w-full grid-cols-4 mb-6">
+            <TabsTrigger value="equity">Equity</TabsTrigger>
+            <TabsTrigger value="debt">Debt</TabsTrigger>
+            <TabsTrigger value="property">Property</TabsTrigger>
+            <TabsTrigger value="gold">Gold</TabsTrigger>
+          </TabsList>
+        </motion.div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1 space-y-6">
+          <motion.div
+            className="lg:col-span-1 space-y-6"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center text-xl">
-                  <BarChart2 className="mr-2 h-5 w-5" />
+                  <BarChart2 className="mr-2 h-5 w-5 text-primary" />
                   {assetLabels[activeTab as keyof typeof assetLabels]} Details
                 </CardTitle>
               </CardHeader>
@@ -457,9 +491,14 @@ const CapitalGainsCalculator = () => {
                 </div>
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
           
-          <div className="lg:col-span-2 space-y-6">
+          <motion.div
+            className="lg:col-span-2 space-y-6"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
             {isCalculated && (
               <>
                 <Card className="bg-muted/50 border-primary border shadow-sm">
@@ -496,11 +535,11 @@ const CapitalGainsCalculator = () => {
                 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center text-xl">
-                      <Calculator className="mr-2 h-5 w-5" />
-                      Capital Gains Calculation Breakdown
-                    </CardTitle>
-                  </CardHeader>
+                  <CardTitle className="flex items-center text-xl">
+                    <Calculator className="mr-2 h-5 w-5 text-primary" />
+                    Capital Gains Calculation Breakdown
+                  </CardTitle>
+                </CardHeader>
                   <CardContent>
                     <Table>
                       <TableBody>
@@ -607,11 +646,11 @@ const CapitalGainsCalculator = () => {
                 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center text-lg">
-                      <CalendarDays className="mr-2 h-5 w-5" />
-                      Time Period Rules & Tax Rates
-                    </CardTitle>
-                  </CardHeader>
+                  <CardTitle className="flex items-center text-lg">
+                    <CalendarDays className="mr-2 h-5 w-5 text-primary" />
+                    Time Period Rules & Tax Rates
+                  </CardTitle>
+                </CardHeader>
                   <CardContent>
                     <Table>
                       <TableBody>
@@ -723,7 +762,7 @@ const CapitalGainsCalculator = () => {
                 </CardContent>
               </Card>
             )}
-          </div>
+          </motion.div>
         </div>
       </Tabs>
     </div>

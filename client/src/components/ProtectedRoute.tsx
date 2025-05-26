@@ -1,6 +1,7 @@
 import React from 'react';
-import { useAuth } from '@/context/AuthContext';
 import { Redirect, Route, RouteProps as WouterRouteProps, Params } from 'wouter';
+
+import { useAuth } from '@/context/AuthContext';
 
 // Make ProtectedRouteProps generic, extending Wouter's generic RouteProps
 interface ProtectedRouteProps<P extends Params = Params> extends WouterRouteProps<P> {

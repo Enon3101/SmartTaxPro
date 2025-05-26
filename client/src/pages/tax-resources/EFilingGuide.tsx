@@ -27,6 +27,7 @@ import {
   HelpCircle,
   Info,
   Laptop,
+  Lightbulb, // Added Lightbulb
   ListChecks,
   Upload,
   User,
@@ -503,7 +504,7 @@ const EFilingGuide = () => {
                 <CardContent className="space-y-6">
                   <div className="space-y-4">
                     <h3 className="font-medium">Option 1: Filing Online (Java Utility/Excel Utility)</h3>
-                    <ol className="space-y-4 ml-5 list-decimal">
+                      <ol className="space-y-4 ml-5 list-decimal">
                       <li>
                         <div className="font-medium">Login to the Income Tax e-Filing Portal</div>
                         <p className="text-sm text-muted-foreground">Access your account using your PAN and password</p>

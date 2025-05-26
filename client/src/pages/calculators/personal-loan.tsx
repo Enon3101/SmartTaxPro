@@ -1,34 +1,5 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { useMutation } from '@tanstack/react-query';
-import { calculatorClient, PersonalLoanResponse } from '@/lib/calculatorClient';
-
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Slider } from '@/components/ui/slider';
-import { Separator } from '@/components/ui/separator';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { 
   HelpCircle, 
   IndianRupee, 
@@ -39,6 +10,36 @@ import {
   PieChart,
   Wallet
 } from 'lucide-react';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Slider } from '@/components/ui/slider';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { calculatorClient, PersonalLoanResponse } from '@/lib/calculatorClient';
+
 
 // Schema for form validation
 const formSchema = z.object({

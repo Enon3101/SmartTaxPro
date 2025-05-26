@@ -1,13 +1,14 @@
-import { useTheme } from "@/context/ThemeProvider";
-import { Button } from "@/components/ui/button";
 import { Moon, Sun, Laptop } from "lucide-react";
+import { useEffect } from "react";
+
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useEffect } from "react";
+import { useTheme } from "@/context/ThemeProvider";
 
 export function ThemeToggle() {
   const { theme, setTheme, isDark, mounted } = useTheme();

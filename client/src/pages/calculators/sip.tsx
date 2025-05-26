@@ -1,16 +1,7 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { Progress } from "@/components/ui/progress";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp, Calculator, IndianRupee, Clock, BarChart3, PieChart } from "lucide-react";
-import { formatCurrency } from "@/lib/taxCalculations";
-import { formatIndianCurrency } from "@/lib/formatters";
 import { motion } from "framer-motion";
+import { TrendingUp, Calculator, IndianRupee, Clock, BarChart3, PieChart, ArrowLeft } from "lucide-react";
+import { useState, useEffect } from "react";
+// Moved recharts import before wouter
 import { 
   AreaChart, 
   Area, 
@@ -24,9 +15,22 @@ import {
   ResponsiveContainer,
   PieChart as RechartsPieChart,
   Pie,
-  Cell,
-  Sector
+  Cell
+  // Sector removed as it's unused
 } from "recharts";
+import { Link } from 'wouter'; // wouter import moved after recharts
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+// Progress removed as it's unused
+import { Slider } from "@/components/ui/slider";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { formatIndianCurrency } from "@/lib/formatters";
+import { formatCurrency } from "@/lib/taxCalculations";
+
 
 // Component to show tooltip on hover
 const InfoTooltip = ({ children }: { children: React.ReactNode }) => (
@@ -40,17 +44,24 @@ const InfoTooltip = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
+interface YearlyBreakdownItem {
+  year: number;
+  investedAmount: number;
+  estimatedValue: number;
+  returns: number;
+}
+
 const SipCalculator = () => {
   const [monthlyInvestment, setMonthlyInvestment] = useState<number>(10000);
   const [years, setYears] = useState<number>(10);
   const [expectedReturn, setExpectedReturn] = useState<number>(12);
-  const [isCalculated, setIsCalculated] = useState<boolean>(false);
+  // isCalculated removed as it's unused
   
   // Results
   const [totalInvestment, setTotalInvestment] = useState<number>(0);
   const [estimatedReturns, setEstimatedReturns] = useState<number>(0);
   const [futureValue, setFutureValue] = useState<number>(0);
-  const [yearlyBreakdown, setYearlyBreakdown] = useState<any[]>([]);
+  const [yearlyBreakdown, setYearlyBreakdown] = useState<YearlyBreakdownItem[]>([]);
   
   // Debounce calculation to improve performance
   useEffect(() => {
@@ -123,7 +134,7 @@ const SipCalculator = () => {
     }
     
     setYearlyBreakdown(breakdown);
-    setIsCalculated(true);
+    // setIsCalculated(true); // Removed as isCalculated is unused
   };
   
   // Optimized slider change handler with type safety
@@ -153,18 +164,37 @@ const SipCalculator = () => {
   return (
     <div className="container mx-auto px-4 sm:px-6 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2">SIP Calculator</h1>
-        <p className="text-muted-foreground">
-          Calculate potential returns on your Systematic Investment Plan (SIP) investments
-        </p>
+        <Button asChild variant="ghost" size="sm" className="mb-4">
+          <Link href="/calculators">
+            <ArrowLeft className="mr-1 h-4 w-4" /> Back to Calculators
+          </Link>
+        </Button>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2">
+            <TrendingUp className="h-7 w-7 text-primary" />
+            SIP Calculator
+          </h1>
+          <p className="text-muted-foreground">
+            Calculate potential returns on your Systematic Investment Plan (SIP) investments
+          </p>
+        </motion.div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1 space-y-6">
+        <motion.div
+          className="lg:col-span-1 space-y-6"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center text-xl">
-                <TrendingUp className="mr-2 h-5 w-5" />
+                <TrendingUp className="mr-2 h-5 w-5 text-primary" />
                 SIP Details
               </CardTitle>
             </CardHeader>
@@ -298,13 +328,18 @@ const SipCalculator = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
         
-        <div className="lg:col-span-2 space-y-6">
+        <motion.div
+          className="lg:col-span-2 space-y-6"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.2 }} // Adjusted delay to match parent
           >
             <Card className="bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/30 dark:to-gray-900 border-primary/50 border shadow-md">
               <CardContent className="p-6">
@@ -318,7 +353,7 @@ const SipCalculator = () => {
                     <p className="text-sm">Total Investment</p>
                     <p className="text-2xl font-semibold relative">
                       <span className="absolute -left-4 top-1 text-blue-500/30 text-sm">₹</span>
-                      {formatIndianCurrency(totalInvestment, false)}
+                      {formatIndianCurrency(totalInvestment)}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       ₹{monthlyInvestment.toLocaleString('en-IN')} per month for {years} years
@@ -334,7 +369,7 @@ const SipCalculator = () => {
                     <p className="text-sm">Estimated Returns</p>
                     <p className="text-2xl font-semibold text-primary relative">
                       <span className="absolute -left-4 top-1 text-primary/30 text-sm">₹</span>
-                      {formatIndianCurrency(estimatedReturns, false)}
+                      {formatIndianCurrency(estimatedReturns)}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       At {expectedReturn}% annual returns
@@ -350,7 +385,7 @@ const SipCalculator = () => {
                     <p className="text-sm">Future Value</p>
                     <p className="text-2xl font-semibold relative">
                       <span className="absolute -left-4 top-1 text-green-500/30 text-sm">₹</span>
-                      {formatIndianCurrency(futureValue, false)}
+                      {formatIndianCurrency(futureValue)}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       Total corpus after {years} years
@@ -399,7 +434,7 @@ const SipCalculator = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.3 }} // Adjusted delay
           >
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -543,12 +578,12 @@ const SipCalculator = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <Card className="h-full">
-                <CardHeader className="pb-2">
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }} // Adjusted delay
+          >
+            <Card className="h-full">
+              <CardHeader className="pb-2">
                   <CardTitle className="text-lg flex items-center">
                     <PieChart className="mr-2 h-5 w-5 text-primary" />
                     Investment Breakdown
@@ -596,12 +631,12 @@ const SipCalculator = () => {
             </motion.div>
             
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              <Card className="bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/30 dark:to-gray-900 border-muted h-full">
-                <CardContent className="p-5">
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }} // Adjusted delay
+          >
+            <Card className="bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/30 dark:to-gray-900 border-muted h-full">
+              <CardContent className="p-5">
                   <h3 className="font-semibold mb-3 flex items-center">
                     <Calculator className="mr-2 h-5 w-5 text-primary" />
                     Things to Note
@@ -633,7 +668,7 @@ const SipCalculator = () => {
               </Card>
             </motion.div>
           </div>
-        </div>
+        </motion.div> 
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
+
 import PricingPlan from '@/components/PricingPlan'; // Import the new component
 
 const PricingPage: React.FC = () => {

@@ -22,6 +22,7 @@ import { z } from 'zod';
 
 // Local
 import { User, InsertUser, User as SharedUserType } from '@shared/schema'; // User for type, InsertUser for creation, SharedUserType for global
+
 // import { db } from '../db'; // Will use storage instead of direct db access here
 import { storage } from './storage'; // Use the storage service
 

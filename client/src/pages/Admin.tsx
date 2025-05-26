@@ -1,16 +1,17 @@
+import { Users, FileText, ChevronRight, LogOut, User, Settings, LayoutDashboard, AlertCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'wouter';
-import { Users, FileText, ChevronRight, LogOut, User, Settings, LayoutDashboard, AlertCircle } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
-import { TaxForm, User as UserType } from '@shared/schema';
 import UserProfile from '@/components/UserProfile';
-import { formatDate } from '@/lib/formatters';
+import { useToast } from "@/hooks/use-toast";
 import { useAdminGuard } from '@/hooks/useAdminGuard';
+import { formatDate } from '@/lib/formatters';
+import { apiRequest } from "@/lib/queryClient";
+import { TaxForm, User as UserType } from '@shared/schema';
 
 // User Management Component
 function UserManagement() {

@@ -174,11 +174,11 @@ export const formatIndianCurrency = (
     }
     
     // Convert to fixed decimal places
-    let amountStr = amount.toFixed(decimalPlaces);
+    const amountStr = amount.toFixed(decimalPlaces);
     
     // Split into whole and decimal parts
     const parts = amountStr.split('.');
-    let whole = parts[0];
+    const whole = parts[0];
     const decimal = parts.length > 1 ? parts[1] : '';
     
     // Format according to Indian numbering system

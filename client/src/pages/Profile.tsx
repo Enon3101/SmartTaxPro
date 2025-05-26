@@ -1,11 +1,12 @@
-import React from 'react';
-import UserProfile from '@/components/UserProfile';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '@/context/AuthContext';
 import { useQuery } from '@tanstack/react-query';
-import { useToast } from '@/hooks/use-toast';
+import React from 'react';
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import UserProfile from '@/components/UserProfile';
+import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 const Profile: React.FC = () => {
   const { user, isAuthenticated } = useAuth();

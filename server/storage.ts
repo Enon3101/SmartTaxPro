@@ -8,8 +8,8 @@ import {
   blogPosts, BlogPost, InsertBlogPost
 } from "@shared/schema"; // Now importing explicit types
 
-import { db } from "./db";
 import { hashPassword } from "./auth"; // Import hashPassword
+import { db } from "./db";
 
 
 // Interface for storage operations

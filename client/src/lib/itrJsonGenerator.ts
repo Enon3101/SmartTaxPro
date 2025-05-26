@@ -25,11 +25,11 @@ interface AddressData { // Basic address structure
 }
 
 interface CapitalGainsJSONData { // Simplified structure for JSON output
-  stcgNormalRate?: number;
-  stcg111A?: number;
-  ltcg112?: number;
-  ltcg112A_Equity?: number;
-  ltcgOther?: number;
+  stcgNormalRate: number | string; // Allow string from form
+  stcg111A: number | string;     // Allow string from form
+  ltcg112: number | string;      // Allow string from form
+  ltcg112A_Equity: number | string; // Allow string from form
+  ltcgOther: number | string;    // Allow string from form
 }
 
 interface IncomeDetails {

@@ -1,7 +1,4 @@
-import { useState, useEffect } from "react";
-import { Link } from "wouter";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { motion } from "framer-motion";
 import { 
   FileText, 
   Calculator, 
@@ -20,8 +17,13 @@ import {
   Landmark,
   Wallet
 } from "lucide-react";
+import { useEffect } from "react"; // Removed useState
+import { Link } from "wouter";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePreloadCalculator } from "@/hooks/usePreloadCalculator";
-import { motion } from "framer-motion";
+
 
 const Calculators = () => {
   const { 
@@ -166,26 +168,26 @@ const Calculators = () => {
                       className="flex justify-center mt-2"
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      transition={{ 
-                        type: "spring", 
-                        stiffness: 400, 
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
                         damping: 15,
-                        delay: 0.6 
+                        delay: 0.6 + (index * 0.1)
                       }}
                     >
                       <Link href={calculator.href}>
-                        <div 
+                        <div
                           className="text-primary font-medium hover:underline text-sm flex items-center transition-all duration-300 transform hover:translate-x-1"
                           onMouseEnter={calculator.preloadFn}
                         >
-                          Use Calculator 
+                          Use Calculator
                           <motion.span
                             initial={{ x: -5, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
-                            transition={{ duration: 0.3, delay: 0.8 }}
+                            transition={{ duration: 0.3, delay: 0.8 + (index * 0.1) }}
                           >
-                            <svg 
-                              xmlns="http://www.w3.org/2000/svg" 
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
                               width="16" 
                               height="16" 
                               viewBox="0 0 24 24" 
@@ -275,25 +277,25 @@ const Calculators = () => {
                             className="flex justify-center mt-2"
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            transition={{ 
-                              type: "spring", 
-                              stiffness: 400, 
+                            transition={{
+                              type: "spring",
+                              stiffness: 400,
                               damping: 15,
-                              delay: 0.6 
+                              delay: 0.6 + (index * 0.1)
                             }}
                           >
-                            <div 
+                            <div
                               className="text-primary font-medium hover:underline text-sm flex items-center transition-all duration-300 transform hover:translate-x-1"
                               onMouseEnter={calculator.preloadFn}
                             >
-                              Use Calculator 
+                              Use Calculator
                               <motion.span
                                 initial={{ x: -5, opacity: 0 }}
                                 animate={{ x: 0, opacity: 1 }}
-                                transition={{ duration: 0.3, delay: 0.8 }}
+                                transition={{ duration: 0.3, delay: 0.8 + (index * 0.1) }}
                               >
-                                <svg 
-                                  xmlns="http://www.w3.org/2000/svg" 
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
                                   width="16" 
                                   height="16" 
                                   viewBox="0 0 24 24" 

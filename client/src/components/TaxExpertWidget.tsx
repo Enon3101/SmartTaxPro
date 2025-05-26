@@ -1,9 +1,3 @@
-import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Bot, 
@@ -14,7 +8,14 @@ import {
   X, 
   MessageSquareHeart 
 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "wouter";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 interface Message {
   content: string;

@@ -1,12 +1,3 @@
-import { Link, useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 import {
   FileText,
   Menu,
@@ -23,12 +14,22 @@ import {
   Calendar,
   Bot,
 } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import LoginDialog from "@/components/LoginDialog";
-import { useAuth } from "@/context/AuthContext";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
+import { Link, useLocation } from "wouter";
+
+import LoginDialog from "@/components/LoginDialog";
 import NavDropdown from "@/components/NavDropdown";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useAuth } from "@/context/AuthContext";
 
 const Header = () => {
   const [location] = useLocation();

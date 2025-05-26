@@ -1,16 +1,3 @@
-import React from 'react';
-import { Link, useRoute } from 'wouter';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import {
   AlertCircle,
   ArrowLeft,
@@ -20,6 +7,20 @@ import {
   Info,
   X,
 } from 'lucide-react';
+import React from 'react';
+import { Link, useRoute } from 'wouter';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 // ITR Form data
 const itrForms = {

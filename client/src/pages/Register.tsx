@@ -1,17 +1,20 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react'; // Keep useState for isLoading
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import { useLocation } from 'wouter';
-import { useAuth } from "@/context/AuthContext"; // Import useAuth
-import GoogleLoginButton from '../components/GoogleLoginButton';
+import { z } from 'zod';
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/context/AuthContext"; // Import useAuth
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+
+import GoogleLoginButton from '../components/GoogleLoginButton';
+
 
 // Define Zod schema for the form
 const registerFormSchema = z.object({

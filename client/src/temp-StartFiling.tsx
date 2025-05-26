@@ -1,8 +1,15 @@
 import { useState, useContext, useEffect } from "react";
-import { useLocation } from "wouter";
+// import { useLocation } from "wouter"; // Commented out as useLocation is unused
+
+import {
+  Landmark,
+  ArrowRight, ArrowLeft, Upload, FileText, CheckCircle, PlusCircle, MinusCircle,
+  Home, Briefcase, PiggyBank, CreditCard, FileCheck
+} from 'lucide-react';
+
+import ProgressTracker from "@/components/ProgressTracker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -10,9 +17,16 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select";
-import { X, Plus, BarChart4, Landmark, TrendingUp } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import { TaxDataContext } from "@/context/TaxDataProvider";
+
+import { useToast } from "@/hooks/use-toast";
+
+import { apiRequest } from "@/lib/queryClient";
+// import { formatIndianCurrency } from "@/lib/formatters"; // Commented out as it's unused for now
 
 // Indian PAN card validation utility functions
 // PAN Format: AAAPL1234C
@@ -40,19 +54,11 @@ const PAN_ENTITY_TYPES: Record<string, string> = {
 function validatePAN(pan: string): boolean {
   if (!pan) return false;
   
-  // Remove spaces and convert to uppercase
   pan = pan.replace(/\s/g, '').toUpperCase();
   
-  // PAN should be 10 characters
   if (pan.length !== 10) return false;
-  
-  // First 5 characters should be alphabets
   if (!/^[A-Z]{5}/.test(pan)) return false;
-  
-  // Next 4 characters should be numbers
   if (!/^[A-Z]{5}[0-9]{4}/.test(pan)) return false;
-  
-  // Last character should be an alphabet
   if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(pan)) return false;
   
   return true;
@@ -62,7 +68,6 @@ function validatePAN(pan: string): boolean {
 function getPANEntityType(pan: string): string | null {
   if (!validatePAN(pan)) return null;
   
-  // Entity type is 4th character
   const entityCode = pan.charAt(3);
   return PAN_ENTITY_TYPES[entityCode] || null;
 }
@@ -71,30 +76,8 @@ function getPANEntityType(pan: string): string | null {
 function isIndividualPAN(pan: string): boolean {
   if (!validatePAN(pan)) return false;
   
-  // 'P' entity code represents an individual
   return pan.charAt(3) === 'P';
 }
-
-import { 
-  ArrowRight, 
-  ArrowLeft, 
-  Upload, 
-  FileText, 
-  CheckCircle, 
-  PlusCircle, 
-  MinusCircle,
-  Home, 
-  Briefcase,
-  PiggyBank,
-  CreditCard,
-  Calculator,
-  FileCheck
-} from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { TaxDataContext } from "@/context/TaxDataProvider";
-import ProgressTracker from "@/components/ProgressTracker";
-import { apiRequest } from "@/lib/queryClient";
-import { formatIndianCurrency } from "@/lib/formatters";
 
 // Define step types
 interface Step {
@@ -105,278 +88,270 @@ interface Step {
   active: boolean;
 }
 
+// Define types for income entries to avoid 'any'
+interface SalaryIncomeEntry {
+  id: string;
+  employerName: string;
+  grossSalary: string;
+  standardDeduction: string;
+  section10Exemptions: string;
+  section10ExemptionsList: { type: string, amount: string }[];
+  professionalTax: string;
+  tdsDeducted: string;
+  netSalary: string;
+}
+
+interface HousePropertyIncomeEntry {
+  id: string;
+  propertyType: string;
+  rentalIncome: string;
+  interestPaid: string;
+  propertyTax: string;
+}
+
+interface CapitalGainsIncomeEntry {
+  id: string;
+  shortTerm: string;
+  longTerm: string;
+}
+
+interface BusinessIncomeEntry {
+  id: string;
+  grossReceipts: string;
+  expenses: string;
+  netProfit: string;
+}
+
+interface InterestIncomeEntry {
+  id: string;
+  savingsAccount: string;
+  fixedDeposits: string;
+  other: string;
+}
+
+interface OtherIncomeEntry {
+  id: string;
+  amount: string;
+  description: string;
+}
+
+interface DeductionsEntry {
+  section80C: string;
+  section80D: string;
+  section80TTA: string;
+  section80G: string;
+}
+
+interface FormData {
+  pan: string;
+  name: string;
+  dob: string;
+  email: string;
+  mobile: string;
+  assessmentYear: string;
+  incomeSource: string[];
+  salaryIncome: SalaryIncomeEntry[];
+  housePropertyIncome: HousePropertyIncomeEntry[];
+  capitalGainsIncome: CapitalGainsIncomeEntry[];
+  businessIncome: BusinessIncomeEntry[];
+  interestIncome: InterestIncomeEntry[];
+  otherIncome: OtherIncomeEntry[];
+  deductions: DeductionsEntry;
+  personalInfo?: Record<string, unknown>;
+}
+
+interface DraftSummary {
+  id: string;
+  pan: string;
+  assessmentYear: string;
+  status: string;
+  lastSaved: string;
+  name: string;
+}
+
 const StartFiling = () => {
   const { toast } = useToast();
-  const [, setLocation] = useLocation();
   const {
-    currentStep,
-    setCurrentStep,
-    nextStep: goToNextStep,
-    previousStep: goToPreviousStep,
     updatePersonalInfo,
     taxFormId,
     taxFormData,
-    assessmentYear,
+    assessmentYear, 
     setAssessmentYear,
   } = useContext(TaxDataContext);
   
   const [selectedTab, setSelectedTab] = useState("quick-start");
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(1); 
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({ 
     pan: "",
     name: "",
     dob: "",
     email: "",
     mobile: "",
-    assessmentYear: "2024-25",
-    incomeSource: [] as string[],
-    // Income section details - now as arrays to support multiple income sources
+    assessmentYear: assessmentYear || "2024-25", 
+    incomeSource: [],
     salaryIncome: [{
-      id: "salary-1",
-      employerName: "",
-      grossSalary: "",
-      standardDeduction: "50000",
-      section10Exemptions: "0",
-      section10ExemptionsList: [], // Array to store multiple exemptions
-      professionalTax: "0",
-      tdsDeducted: "",
-      netSalary: ""
+      id: "salary-1", employerName: "", grossSalary: "", standardDeduction: "50000",
+      section10Exemptions: "0", section10ExemptionsList: [],
+      professionalTax: "0", tdsDeducted: "", netSalary: ""
     }],
     housePropertyIncome: [{
-      id: "property-1",
-      propertyType: "self-occupied",
-      rentalIncome: "",
-      interestPaid: "",
-      propertyTax: ""
+      id: "property-1", propertyType: "self-occupied", rentalIncome: "", interestPaid: "", propertyTax: ""
     }],
-    capitalGainsIncome: [{
-      id: "capital-1",
-      shortTerm: "",
-      longTerm: ""
-    }],
-    businessIncome: [{
-      id: "business-1",
-      grossReceipts: "",
-      expenses: "",
-      netProfit: ""
-    }],
-    interestIncome: [{
-      id: "interest-1",
-      savingsAccount: "",
-      fixedDeposits: "",
-      other: ""
-    }],
-    otherIncome: [{
-      id: "other-1",
-      amount: "",
-      description: ""
-    }]
+    capitalGainsIncome: [{ id: "capital-1", shortTerm: "", longTerm: "" }],
+    businessIncome: [{ id: "business-1", grossReceipts: "", expenses: "", netProfit: "" }],
+    interestIncome: [{ id: "interest-1", savingsAccount: "", fixedDeposits: "", other: "" }],
+    otherIncome: [{ id: "other-1", amount: "", description: "" }],
+    deductions: {
+      section80C: "",
+      section80D: "",
+      section80TTA: "",
+      section80G: "",
+    }
   });
   
-  // Fill form with existing data if available
   useEffect(() => {
-    if (taxFormData && taxFormData.personalInfo) {
-      // Ensure all income arrays are properly initialized
-      const updatedFormData = {
-        ...formData,
-        ...taxFormData.personalInfo,
-        assessmentYear: taxFormData.assessmentYear || "2024-25",
-        // Make sure all income types are properly initialized as arrays
-        salaryIncome: Array.isArray(taxFormData.personalInfo.salaryIncome) 
-          ? taxFormData.personalInfo.salaryIncome 
-          : [{
-            id: "salary-1",
-            employerName: "",
-            grossSalary: "",
-            standardDeduction: "50000",
-            section10Exemptions: "0",
-            section10ExemptionsList: [],
-            professionalTax: "0",
-            tdsDeducted: "",
-            netSalary: ""
-          }],
-        housePropertyIncome: Array.isArray(taxFormData.personalInfo.housePropertyIncome) 
-          ? taxFormData.personalInfo.housePropertyIncome 
-          : [{
-            id: "property-1",
-            propertyType: "self-occupied",
-            rentalIncome: "",
-            interestPaid: "",
-            propertyTax: ""
-          }],
-        capitalGainsIncome: Array.isArray(taxFormData.personalInfo.capitalGainsIncome) 
-          ? taxFormData.personalInfo.capitalGainsIncome 
-          : [{
-            id: "capital-1",
-            shortTerm: "",
-            longTerm: ""
-          }],
-        businessIncome: Array.isArray(taxFormData.personalInfo.businessIncome) 
-          ? taxFormData.personalInfo.businessIncome 
-          : [{
-            id: "business-1",
-            grossReceipts: "",
-            expenses: "",
-            netProfit: ""
-          }],
-        interestIncome: Array.isArray(taxFormData.personalInfo.interestIncome) 
-          ? taxFormData.personalInfo.interestIncome 
-          : [{
-            id: "interest-1",
-            savingsAccount: "",
-            fixedDeposits: "",
-            other: ""
-          }],
-        otherIncome: Array.isArray(taxFormData.personalInfo.otherIncome) 
-          ? taxFormData.personalInfo.otherIncome 
-          : [{
-            id: "other-1",
-            amount: "",
-            description: ""
-          }]
-      };
-      
-      setFormData(updatedFormData);
+    const selectedDraftId = localStorage.getItem("selectedDraftId");
+    if (selectedDraftId) {
+      const localDraftsText = localStorage.getItem("taxDrafts"); // This currently stores summaries
+      if (localDraftsText) {
+        const localDraftSummaries: DraftSummary[] = JSON.parse(localDraftsText);
+        // We need to retrieve the FULL formData for the selected draft.
+        // For this mock, we'll assume the full formData was also saved when the draft was created.
+        // Ideally, handleSaveDraft would save the full formData keyed by draftId,
+        // e.g., localStorage.setItem(`draftData-${selectedDraftId}`, JSON.stringify(formData));
+        // For now, let's try to find a summary and then assume we can get full data.
+        
+        // This is a placeholder for fetching the full draft data.
+        // In a real app, you'd fetch from an API or a more structured local store.
+        // We'll simulate loading it if the summary exists.
+        // We'll assume the 'formData' itself was stored with an ID matching selectedDraftId
+        // This part needs to align with how `handleSaveDraft` actually stores the full data.
+        // For the purpose of this mock, let's assume `handleSaveDraft` also stores
+        // the full `formData` under a key like `draftFullData-${draftId}`.
+        
+        const fullDraftDataString = localStorage.getItem(`draftFullData-${selectedDraftId}`);
+        if (fullDraftDataString) {
+          const loadedDraftData: FormData = JSON.parse(fullDraftDataString);
+          
+          setFormData(loadedDraftData);
+          updatePersonalInfo(loadedDraftData); // Update context
+          if (loadedDraftData.assessmentYear) {
+            setAssessmentYear(loadedDraftData.assessmentYear);
+          }
+          // If TaxDataContext needs to be aware of the specific taxFormId for this draft:
+          // This assumes TaxDataContext has a way to set/use this ID.
+          // For example: if (context.setLoadedTaxFormId) context.setLoadedTaxFormId(selectedDraftId);
+          
+          toast({ title: "Draft Loaded", description: `Resumed filing for PAN: ${loadedDraftData.pan}, AY: ${loadedDraftData.assessmentYear}`});
+          localStorage.removeItem("selectedDraftId");
+          return; // Important to prevent overwriting with context data below
+        } catch (e) {
+          console.error("Error parsing full draft data from localStorage:", e);
+          toast({ title: "Error Loading Draft", description: "Could not parse draft data.", variant: "destructive"});
+          localStorage.removeItem("selectedDraftId"); // Clean up
+        }
+      } else {
+        toast({ title: "Error Loading Draft", description: "Full draft data not found in local storage.", variant: "destructive"});
+        localStorage.removeItem("selectedDraftId"); // Clean up
+      }
     }
-  }, [taxFormData]);
+
+    // Original logic to load from context if no specific draft is selected from MyFilings
+    if (taxFormData) {
+      const currentAY = (taxFormData as any).assessmentYear || formData.assessmentYear;
+      const personalInfoData = ((taxFormData as any).personalInfo || {}) as Record<string, unknown>;
+      const deductionsData = ((taxFormData as any).deductions || {}) as Partial<DeductionsEntry>;
+  
+      const updatedFormData: FormData = {
+        ...formData, 
+        ...(personalInfoData as Partial<FormData>), 
+        assessmentYear: currentAY,
+        incomeSource: Array.isArray(personalInfoData.incomeSource) ? personalInfoData.incomeSource as string[] : formData.incomeSource,
+        salaryIncome: Array.isArray(personalInfoData.salaryIncome) && (personalInfoData.salaryIncome as SalaryIncomeEntry[]).length > 0
+          ? personalInfoData.salaryIncome as SalaryIncomeEntry[]
+          : formData.salaryIncome,
+        housePropertyIncome: Array.isArray(personalInfoData.housePropertyIncome) && (personalInfoData.housePropertyIncome as HousePropertyIncomeEntry[]).length > 0
+          ? personalInfoData.housePropertyIncome as HousePropertyIncomeEntry[]
+          : formData.housePropertyIncome,
+        capitalGainsIncome: Array.isArray(personalInfoData.capitalGainsIncome) && (personalInfoData.capitalGainsIncome as CapitalGainsIncomeEntry[]).length > 0
+          ? personalInfoData.capitalGainsIncome as CapitalGainsIncomeEntry[]
+          : formData.capitalGainsIncome,
+        businessIncome: Array.isArray(personalInfoData.businessIncome) && (personalInfoData.businessIncome as BusinessIncomeEntry[]).length > 0
+          ? personalInfoData.businessIncome as BusinessIncomeEntry[]
+          : formData.businessIncome,
+        interestIncome: Array.isArray(personalInfoData.interestIncome) && (personalInfoData.interestIncome as InterestIncomeEntry[]).length > 0
+          ? personalInfoData.interestIncome as InterestIncomeEntry[]
+          : formData.interestIncome,
+        otherIncome: Array.isArray(personalInfoData.otherIncome) && (personalInfoData.otherIncome as OtherIncomeEntry[]).length > 0
+          ? personalInfoData.otherIncome as OtherIncomeEntry[]
+          : formData.otherIncome,
+        deductions: { ...formData.deductions, ...deductionsData }
+      };
+      setFormData(updatedFormData);
+      if (currentAY) setAssessmentYear(currentAY);
+    } else {
+      setFormData(prev => ({...prev, assessmentYear: assessmentYear || "2024-25"}));
+    }
+  }, [taxFormData, assessmentYear, setAssessmentYear, formData]);
   
   const steps: Step[] = [
-    {
-      number: 1,
-      title: "Basic Details",
-      description: "Personal information",
-      completed: activeStep > 1,
-      active: activeStep === 1,
-    },
-    {
-      number: 2,
-      title: "Income Sources",
-      description: "Select income types",
-      completed: activeStep > 2,
-      active: activeStep === 2,
-    },
-    {
-      number: 3,
-      title: "Income Details",
-      description: "Based on selections",
-      completed: activeStep > 3,
-      active: activeStep === 3,
-    },
-    {
-      number: 4,
-      title: "Tax Payments",
-      description: "TDS & advance tax",
-      completed: activeStep > 4,
-      active: activeStep === 4,
-    },
-    {
-      number: 5,
-      title: "Tax Calculation",
-      description: "Refund or tax due",
-      completed: activeStep > 5,
-      active: activeStep === 5,
-    },
-    {
-      number: 6,
-      title: "File Return",
-      description: "Submit your ITR",
-      completed: activeStep > 6,
-      active: activeStep === 6,
-    },
+    { number: 1, title: "Basic Details", description: "Personal information", completed: activeStep > 1, active: activeStep === 1 },
+    { number: 2, title: "Income Sources", description: "Select income types", completed: activeStep > 2, active: activeStep === 2 },
+    { number: 3, title: "Income Details", description: "Based on selections", completed: activeStep > 3, active: activeStep === 3 },
+    { number: 4, title: "Deductions", description: "Chapter VI-A deductions", completed: activeStep > 4, active: activeStep === 4 },
+    { number: 5, title: "Tax Payments", description: "TDS & advance tax", completed: activeStep > 5, active: activeStep === 5 },
+    { number: 6, title: "Tax Calculation", description: "Refund or tax due", completed: activeStep > 6, active: activeStep === 6 },
+    { number: 7, title: "File Return", description: "Submit your ITR", completed: activeStep > 7, active: activeStep === 7 },
   ];
   
-  // Add state for PAN validation
   const [panValidationState, setPanValidationState] = useState({
-    isValid: true,
-    message: "",
-    entityType: "",
-    isIndividual: true
+    isValid: true, message: "", entityType: "", isIndividual: true
   });
 
   const handleInputChange = (name: string, value: string) => {
-    // Special handling for PAN
     if (name === "pan") {
-      // Convert to uppercase and remove spaces
       value = value.replace(/\s/g, '').toUpperCase();
-      
-      // Validate PAN
       const isPanValid = validatePAN(value);
       const entityType = getPANEntityType(value);
-      const isIndividual = isIndividualPAN(value);
-      
-      // Update validation state
+      const isIndividualUser = isIndividualPAN(value);
       setPanValidationState({
         isValid: isPanValid,
-        message: isPanValid 
-          ? (entityType ? `Valid PAN (${entityType})` : "")
-          : (value.length === 10 ? "Invalid PAN format" : value.length > 0 ? "PAN must be 10 characters" : ""),
+        message: isPanValid ? (entityType ? `Valid PAN (${entityType})` : "") : (value.length === 10 ? "Invalid PAN format" : value.length > 0 ? "PAN must be 10 characters" : ""),
         entityType: entityType || "",
-        isIndividual
+        isIndividual: isIndividualUser
       });
-      
-      // If PAN is changed and not an individual, remove salary from income sources
-      if (!isIndividual && value.length === 10) {
-        setFormData(prev => ({
-          ...prev,
-          [name]: value,
-          incomeSource: prev.incomeSource.filter(source => source !== "salary")
-        }));
+      if (!isIndividualUser && value.length === 10) {
+        setFormData(prev => ({ ...prev, [name]: value, incomeSource: prev.incomeSource.filter(source => source !== "salary") }));
         return;
       }
     }
-    
-    // Default handling for all fields
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
   
   const handleCheckboxChange = (source: string) => {
-    setFormData(prev => {
-      const currentSources = [...prev.incomeSource];
-      if (currentSources.includes(source)) {
-        return {
-          ...prev,
-          incomeSource: currentSources.filter(item => item !== source)
-        };
-      } else {
-        return {
-          ...prev,
-          incomeSource: [...currentSources, source]
-        };
-      }
-    });
+    setFormData(prev => ({
+      ...prev,
+      incomeSource: prev.incomeSource.includes(source)
+        ? prev.incomeSource.filter(item => item !== source)
+        : [...prev.incomeSource, source]
+    }));
   };
   
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
-    
     const file = e.target.files[0];
     if (file.size > 5 * 1024 * 1024) {
-      toast({
-        title: "File too large",
-        description: "Please upload a file smaller than 5MB",
-        variant: "destructive",
-      });
+      toast({ title: "File too large", description: "Please upload a file smaller than 5MB", variant: "destructive" });
       return;
     }
-    
-    // Simulate upload progress
     setUploadProgress(0);
     const interval = setInterval(() => {
       setUploadProgress(prev => {
         if (prev === null) return 0;
         if (prev >= 100) {
           clearInterval(interval);
-          
-          toast({
-            title: "File uploaded successfully",
-            description: "Your Form 16 has been processed",
-          });
-          
-          // Reset progress after completing
+          toast({ title: "File uploaded successfully", description: "Your Form 16 has been processed" });
           setTimeout(() => setUploadProgress(null), 1000);
           return 100;
         }
@@ -385,274 +360,213 @@ const StartFiling = () => {
     }, 300);
   };
   
-  const savePersonalInfo = async () => {
+  const savePersonalInfoAndProceed = async () => {
     if (!formData.pan || !formData.name) {
-      toast({
-        title: "Required fields missing",
-        description: "Please fill in all required fields marked with *",
-        variant: "destructive",
-      });
+      toast({ title: "Required fields missing", description: "Please fill in all required fields marked with *", variant: "destructive" });
       return;
     }
-    
     try {
-      updatePersonalInfo(formData);
-      
-      // Save to API
-      await apiRequest(
-        `/api/tax-forms/${taxFormId}/personal-info`,
-        { method: "POST" },
-        formData
-      );
-      
-      toast({
-        title: "Information saved",
-        description: "Your personal information has been saved",
-      });
-      
-      // Move to next step in wizard
-      nextStep();
+      updatePersonalInfo(formData); 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { assessmentYear: ayFromFormData, salaryIncome, housePropertyIncome, capitalGainsIncome, businessIncome, interestIncome, otherIncome, deductions, ...personalInfoOnly } = formData;
+      const personalInfoPayload = { assessmentYear: formData.assessmentYear, ...personalInfoOnly };
+
+
+      if (taxFormId) { 
+        await apiRequest(
+          "POST",
+          `/api/tax-forms/${taxFormId}/personal-info`,
+          {
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(personalInfoPayload)
+          }
+        );
+      } else {
+        const createFormPayload = {
+          assessmentYear: formData.assessmentYear,
+          personalInfo: personalInfoOnly, 
+          incomeSource: formData.incomeSource
+        };
+        const newFormResponse = await apiRequest(
+          'POST',
+          '/api/tax-forms',
+          {
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(createFormPayload)
+          }
+        );
+        const newFormData = await newFormResponse.json();
+        if (newFormData && newFormData.id) {
+          console.log("New form created/updated with ID:", newFormData.id);
+        }
+      }
+      toast({ title: "Information saved", description: "Your personal information has been saved" });
+      setActiveStep(prev => prev + 1); 
     } catch (error) {
       console.error("Error saving personal info:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save your information. Please try again.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Failed to save your information. Please try again.", variant: "destructive" });
     }
   };
 
-  // Function to proceed to the next step in the wizard
-  const nextStep = () => {
-    if (activeStep < steps.length) {
-      // Calculate which step to go to next
-      let nextStepNumber = activeStep + 1;
-      
-      // Skip to step 4 (Tax Payments) if coming from step 3
-      if (activeStep === 3) {
-        nextStepNumber = 4;
-      }
-      
-      setActiveStep(nextStepNumber);
-      
-      // For TaxFiling detailed pages, redirect after income details are collected
-      if (activeStep === 3 && formData.incomeSource.length > 0) {
-        // Save income data to API here
-        try {
-          // For simplicity, use setTimeout to simulate API call
-          setTimeout(() => {
-            toast({
-              title: "Income details saved",
-              description: "Your income details have been saved successfully"
-            });
-          }, 500);
-          
-          // Redirect to tax-filing page with all the detailed forms
-          setLocation("/tax-filing");
-          return;
-        } catch (error) {
-          console.error("Error saving income details:", error);
-          toast({
-            title: "Error",
-            description: "Failed to save income details. Please try again.",
-            variant: "destructive"
-          });
-        }
-      }
-    }
-  };
-  
-  const previousStep = () => {
-    if (activeStep > 1) {
-      // Special handling for step 3
-      if (activeStep === 3) {
-        // Go back to income source selection (step 2)
-        setActiveStep(2);
+  const handleSaveDraft = async () => {
+    try {
+      // Update context (acts as local save)
+      updatePersonalInfo(formData);
+
+      // Determine a unique ID for the draft
+      const draftId = taxFormId || `draft-${Date.now()}`;
+
+      // Mock API call to save the entire formData
+      if (taxFormId) {
+        await apiRequest(
+          "PUT",
+          `/api/tax-forms/${taxFormId}/draft`,
+          {
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+          }
+        );
       } else {
-        setActiveStep(activeStep - 1);
+        // This section would ideally create a new form and get an ID from the backend
+        // For mock purposes, we'll use the generated draftId for localStorage
+        const createFormPayload = {
+          // ... (payload as before, potentially including the draftId or letting backend generate)
+          assessmentYear: formData.assessmentYear,
+          personalInfo: { pan: formData.pan, name: formData.name, dob: formData.dob, email: formData.email, mobile: formData.mobile },
+          incomeSource: formData.incomeSource,
+          salaryIncome: formData.salaryIncome,
+          housePropertyIncome: formData.housePropertyIncome,
+          capitalGainsIncome: formData.capitalGainsIncome,
+          businessIncome: formData.businessIncome,
+          interestIncome: formData.interestIncome,
+          otherIncome: formData.otherIncome,
+          deductions: formData.deductions,
+          status: "DRAFT", // Explicitly set status
+        };
+        // Simulate API call for creation if needed, or assume taxFormId would be set by now
+        console.log("Simulating creation of new draft with payload:", createFormPayload);
+        // const newFormResponse = await apiRequest('POST', '/api/tax-forms', { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(createFormPayload) });
+        // const newSavedFormData = await newFormResponse.json();
+        // if (newSavedFormData && newSavedFormData.id) { console.log("New draft form created/updated with ID:", newSavedFormData.id); }
+      }
+
+      // Save draft summary to localStorage
+      const draftSummary = {
+        id: draftId,
+        pan: formData.pan,
+        assessmentYear: formData.assessmentYear,
+        status: "Draft",
+        lastSaved: new Date().toISOString(),
+        // Potentially add a snippet of data or a name for easier identification
+        name: formData.name || "Unnamed Filing",
+      };
+
+      const drafts: DraftSummary[] = JSON.parse(localStorage.getItem("taxDrafts") || "[]");
+      const existingDraftIndex = drafts.findIndex((d: DraftSummary) => d.id === draftId);
+      if (existingDraftIndex > -1) {
+        drafts[existingDraftIndex] = draftSummary;
+      } else {
+        drafts.push(draftSummary);
+      }
+      localStorage.setItem("taxDrafts", JSON.stringify(drafts));
+      // Also save the full formData keyed by the draftId
+      localStorage.setItem(`draftFullData-${draftId}`, JSON.stringify(formData));
+
+      toast({ title: "Draft Saved", description: "Your progress has been saved." });
+    } catch (error) {
+      console.error("Error saving draft:", error);
+      toast({ title: "Save Failed", description: "Could not save your draft. Please try again.", variant: "destructive" });
+    }
+  };
+
+  const localNextStep = () => {
+    if (activeStep < steps.length) {
+      setActiveStep(prev => prev + 1);
+      if (activeStep === 3 && formData.incomeSource.length > 0) { 
+        // setLocation("/tax-filing"); 
       }
     }
   };
   
-  // Income Details Component for Step 3
+  const localPreviousStep = () => {
+    if (activeStep > 1) {
+      setActiveStep(prev => prev - 1);
+    }
+  };
+  
   const IncomeDetailsStep = () => {
-    // Helper function to update nested state for multiple incomes
-    const updateIncomeField = (sourceType: string, index: number, field: string, value: string) => {
+    const updateIncomeField = <K extends keyof FormData>(
+      sourceType: K,
+      itemIndex: number,
+      field: K extends 'salaryIncome' ? keyof SalaryIncomeEntry :
+             K extends 'housePropertyIncome' ? keyof HousePropertyIncomeEntry :
+             K extends 'capitalGainsIncome' ? keyof CapitalGainsIncomeEntry :
+             K extends 'businessIncome' ? keyof BusinessIncomeEntry :
+             K extends 'interestIncome' ? keyof InterestIncomeEntry :
+             K extends 'otherIncome' ? keyof OtherIncomeEntry :
+             never,
+      value: string
+    ) => {
       setFormData(prev => {
-        const updatedForm = { ...prev };
-        
-        if (sourceType === "salaryIncome") {
-          const updatedSalary = [...prev.salaryIncome];
-          updatedSalary[index] = {
-            ...updatedSalary[index],
-            [field]: value
-          };
-          updatedForm.salaryIncome = updatedSalary;
-        } else if (sourceType === "housePropertyIncome") {
-          const updatedProperty = [...prev.housePropertyIncome];
-          updatedProperty[index] = {
-            ...updatedProperty[index],
-            [field]: value
-          };
-          updatedForm.housePropertyIncome = updatedProperty;
-        } else if (sourceType === "capitalGainsIncome") {
-          const updatedCapital = [...prev.capitalGainsIncome];
-          updatedCapital[index] = {
-            ...updatedCapital[index],
-            [field]: value
-          };
-          updatedForm.capitalGainsIncome = updatedCapital;
-        } else if (sourceType === "businessIncome") {
-          const updatedBusiness = [...prev.businessIncome];
-          updatedBusiness[index] = {
-            ...updatedBusiness[index],
-            [field]: value
-          };
-          updatedForm.businessIncome = updatedBusiness;
-        } else if (sourceType === "interestIncome") {
-          const updatedInterest = [...prev.interestIncome];
-          updatedInterest[index] = {
-            ...updatedInterest[index],
-            [field]: value
-          };
-          updatedForm.interestIncome = updatedInterest;
-        } else if (sourceType === "otherIncome") {
-          const updatedOther = [...prev.otherIncome];
-          updatedOther[index] = {
-            ...updatedOther[index],
-            [field]: value
-          };
-          updatedForm.otherIncome = updatedOther;
-        }
-        
-        return updatedForm;
+        const items = prev[sourceType] as (SalaryIncomeEntry | HousePropertyIncomeEntry | CapitalGainsIncomeEntry | BusinessIncomeEntry | InterestIncomeEntry | OtherIncomeEntry)[];
+        const updatedItems = items.map((item, idx) =>
+          idx === itemIndex ? { ...item, [field as string]: value } : item
+        );
+        return { ...prev, [sourceType]: updatedItems };
       });
     };
     
-    // Function to add a new income entry
-    const addIncomeEntry = (sourceType: string) => {
+    const addIncomeEntry = <K extends keyof FormData>(sourceType: K) => {
       setFormData(prev => {
-        const updatedForm = { ...prev };
+        const currentItems = prev[sourceType] as (SalaryIncomeEntry | HousePropertyIncomeEntry | CapitalGainsIncomeEntry | BusinessIncomeEntry | InterestIncomeEntry | OtherIncomeEntry)[];
+        let newItem: SalaryIncomeEntry | HousePropertyIncomeEntry | CapitalGainsIncomeEntry | BusinessIncomeEntry | InterestIncomeEntry | OtherIncomeEntry;
         
-        if (sourceType === "salaryIncome") {
-          updatedForm.salaryIncome = [
-            ...prev.salaryIncome,
-            {
-              id: `salary-${prev.salaryIncome.length + 1}`,
-              employerName: "",
-              grossSalary: "",
-              standardDeduction: "50000",
-              section10Exemptions: "0",
-              section10ExemptionsList: [],
-              professionalTax: "0",
-              tdsDeducted: "",
-              netSalary: ""
-            }
-          ];
-        } else if (sourceType === "housePropertyIncome") {
-          updatedForm.housePropertyIncome = [
-            ...prev.housePropertyIncome,
-            {
-              id: `property-${prev.housePropertyIncome.length + 1}`,
-              propertyType: "self-occupied",
-              rentalIncome: "",
-              interestPaid: "",
-              propertyTax: ""
-            }
-          ];
-        } else if (sourceType === "capitalGainsIncome") {
-          updatedForm.capitalGainsIncome = [
-            ...prev.capitalGainsIncome,
-            {
-              id: `capital-${prev.capitalGainsIncome.length + 1}`,
-              shortTerm: "",
-              longTerm: ""
-            }
-          ];
-        } else if (sourceType === "businessIncome") {
-          updatedForm.businessIncome = [
-            ...prev.businessIncome,
-            {
-              id: `business-${prev.businessIncome.length + 1}`,
-              grossReceipts: "",
-              expenses: "",
-              netProfit: ""
-            }
-          ];
-        } else if (sourceType === "interestIncome") {
-          updatedForm.interestIncome = [
-            ...prev.interestIncome,
-            {
-              id: `interest-${prev.interestIncome.length + 1}`,
-              savingsAccount: "",
-              fixedDeposits: "",
-              other: ""
-            }
-          ];
-        } else if (sourceType === "otherIncome") {
-          updatedForm.otherIncome = [
-            ...prev.otherIncome,
-            {
-              id: `other-${prev.otherIncome.length + 1}`,
-              amount: "",
-              description: ""
-            }
-          ];
+        switch (sourceType) {
+          case "salaryIncome":
+            newItem = { id: `salary-${currentItems.length + 1}`, employerName: "", grossSalary: "", standardDeduction: "50000", section10Exemptions: "0", section10ExemptionsList: [], professionalTax: "0", tdsDeducted: "", netSalary: "" };
+            break;
+          case "housePropertyIncome":
+            newItem = { id: `property-${currentItems.length + 1}`, propertyType: "self-occupied", rentalIncome: "", interestPaid: "", propertyTax: "" };
+            break;
+          case "capitalGainsIncome":
+            newItem = { id: `capital-${currentItems.length + 1}`, shortTerm: "", longTerm: "" };
+            break;
+          case "businessIncome":
+            newItem = { id: `business-${currentItems.length + 1}`, grossReceipts: "", expenses: "", netProfit: "" };
+            break;
+          case "interestIncome":
+            newItem = { id: `interest-${currentItems.length + 1}`, savingsAccount: "", fixedDeposits: "", other: "" };
+            break;
+          case "otherIncome":
+            newItem = { id: `other-${currentItems.length + 1}`, amount: "", description: "" };
+            break;
+          default:
+            return prev; 
         }
-        
-        return updatedForm;
+        return { ...prev, [sourceType]: [...currentItems, newItem] };
       });
     };
     
-    // Function to remove an income entry
-    const removeIncomeEntry = (sourceType: string, index: number) => {
-      // Don't remove if it's the last entry
+    const removeIncomeEntry = <K extends keyof FormData>(sourceType: K, index: number) => {
       setFormData(prev => {
-        const updatedForm = { ...prev };
-        
-        if (sourceType === "salaryIncome" && prev.salaryIncome.length > 1) {
-          updatedForm.salaryIncome = prev.salaryIncome.filter((_, i) => i !== index);
-        } else if (sourceType === "housePropertyIncome" && prev.housePropertyIncome.length > 1) {
-          updatedForm.housePropertyIncome = prev.housePropertyIncome.filter((_, i) => i !== index);
-        } else if (sourceType === "capitalGainsIncome" && prev.capitalGainsIncome.length > 1) {
-          updatedForm.capitalGainsIncome = prev.capitalGainsIncome.filter((_, i) => i !== index);
-        } else if (sourceType === "businessIncome" && prev.businessIncome.length > 1) {
-          updatedForm.businessIncome = prev.businessIncome.filter((_, i) => i !== index);
-        } else if (sourceType === "interestIncome" && prev.interestIncome.length > 1) {
-          updatedForm.interestIncome = prev.interestIncome.filter((_, i) => i !== index);
-        } else if (sourceType === "otherIncome" && prev.otherIncome.length > 1) {
-          updatedForm.otherIncome = prev.otherIncome.filter((_, i) => i !== index);
-        }
-        
-        return updatedForm;
+        const currentItems = prev[sourceType] as (SalaryIncomeEntry | HousePropertyIncomeEntry | CapitalGainsIncomeEntry | BusinessIncomeEntry | InterestIncomeEntry | OtherIncomeEntry)[];
+        if (currentItems.length <= 1) return prev;
+        return { ...prev, [sourceType]: currentItems.filter((_, i) => i !== index) };
       });
     };
     
-    // Format currency input with Indian numbering system (lakhs, crores)
-    const formatCurrency = (value: string | null | undefined) => {
-      // Handle null/undefined/empty values
-      if (!value) return "";
-      
-      // Extract just the digits
+    const formatCurrency = (value: string | null | undefined): string => {
+      if (value === null || value === undefined || value.trim() === "") return "";
       const numericValue = value.replace(/[^\d]/g, "");
       if (!numericValue) return "";
-      
       try {
-        // First group: last 3 digits (thousands)
-        // Following groups: 2 digits each (lakhs, crores)
-        // Format example: 1,23,45,678
-        if (numericValue.length <= 3) {
-          return numericValue;
-        }
-        
+        if (numericValue.length <= 3) return numericValue;
         const lastThree = numericValue.substring(numericValue.length - 3);
         const remainingDigits = numericValue.substring(0, numericValue.length - 3);
-        const formatted = remainingDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + lastThree;
-        
-        return formatted;
-      } catch (error) {
-        console.error("Error formatting currency:", error);
-        return numericValue; // Return unformatted but valid value in case of error
+        return remainingDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + lastThree;
+      } catch (e: any) {
+        console.error("Error formatting currency:", e);
+        return numericValue; // Fallback to unformatted numeric string on error
       }
     };
     
@@ -664,788 +578,264 @@ const StartFiling = () => {
           </div>
         ) : (
           <>
-            {/* Salary Income - Now with multiple entries */}
-            {formData.incomeSource.includes("salary") && (
-              <div className="p-6 bg-white border rounded-lg">
+            {formData.incomeSource.includes("salary") && formData.salaryIncome.map((salary, index) => (
+              <div key={salary.id} className="p-6 bg-white border rounded-lg">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-lg font-medium flex items-center">
                     <Briefcase className="h-5 w-5 text-blue-500 mr-2" />
-                    Salary Income
+                    Salary Income {formData.salaryIncome.length > 1 ? `#${index + 1}` : ''}
                   </h3>
-                  
-                  {/* Add another salary source button */}
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => addIncomeEntry("salaryIncome")}
-                    className="text-xs flex items-center"
-                  >
-                    <PlusCircle className="h-3.5 w-3.5 mr-1" />
-                    Add Another Employer
-                  </Button>
-                </div>
-                
-                {/* For each salary entry, show a set of fields */}
-                {formData.salaryIncome.map((salary, index) => (
-                  <div key={salary.id} className="mb-6 last:mb-0 border-t pt-4 first:border-t-0 first:pt-0">
-                    {/* Show income number and delete button if there are multiple */}
+                  <div className="flex items-center gap-2">
+                    {index === formData.salaryIncome.length - 1 && (
+                       <Button type="button" variant="outline" size="sm" onClick={() => addIncomeEntry("salaryIncome")} className="text-xs flex items-center">
+                         <PlusCircle className="h-3.5 w-3.5 mr-1" /> Add Employer
+                       </Button>
+                    )}
                     {formData.salaryIncome.length > 1 && (
-                      <div className="flex justify-between items-center mb-3">
-                        <span className="text-sm font-medium text-gray-500">
-                          Employer #{index + 1}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeIncomeEntry("salaryIncome", index)}
-                          className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
-                          disabled={formData.salaryIncome.length <= 1}
-                        >
-                          <MinusCircle className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
+                      <Button type="button" variant="ghost" size="icon" onClick={() => removeIncomeEntry("salaryIncome", index)} className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50">
+                        <MinusCircle className="h-3.5 w-3.5" />
+                      </Button>
                     )}
-                    
-                    {/* Single-line salary entry layout */}
-                    <div className="space-y-4">
-                      {/* Employer Name */}
-                      <div className="space-y-2">
-                        <Label htmlFor={`employerName-${index}`}>Employer Name</Label>
-                        <Input
-                          id={`employerName-${index}`}
-                          value={salary.employerName}
-                          onChange={(e) => updateIncomeField("salaryIncome", index, "employerName", e.target.value)}
-                        />
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor={`employerName-${salary.id}`}>Employer Name</Label>
+                    <Input id={`employerName-${salary.id}`} value={salary.employerName} onChange={(e) => updateIncomeField("salaryIncome", index, "employerName", e.target.value)} />
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor={`grossSalary-${salary.id}`}>Gross Salary</Label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <Input id={`grossSalary-${salary.id}`} className="pl-7" value={salary.grossSalary} onChange={(e) => updateIncomeField("salaryIncome", index, "grossSalary", formatCurrency(e.target.value))} />
                       </div>
-                      
-                      {/* Salary details in single-line format with headings in first column */}
-                      <div className="space-y-3 border rounded-md p-4">
-                        {/* Row 1: Gross Salary */}
-                        <div className="grid grid-cols-12 gap-4 items-center">
-                          <div className="col-span-4 font-medium">1. Gross Salary</div>
-                          <div className="col-span-8 relative">
-                          <Label htmlFor={`grossSalary-${index}`}>1. Gross Salary</Label>
-                          <div className="relative">
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                            <Input
-                              id={`grossSalary-${index}`}
-                              className="pl-7"
-                              value={salary.grossSalary}
-                              onChange={(e) => {
-                                // Store the original cursor position
-                                const cursorPosition = e.target.selectionStart;
-                                
-                                // Format the value
-                                const value = formatCurrency(e.target.value);
-                                updateIncomeField("salaryIncome", index, "grossSalary", value);
-                                
-                                // Calculate net salary
-                                const gross = parseFloat((value || "0").replace(/,/g, '')) || 0;
-                                const stdDeduction = parseFloat((salary.standardDeduction || "0").replace(/,/g, '')) || 0;
-                                const section10 = parseFloat((salary.section10Exemptions || "0").replace(/,/g, '')) || 0;
-                                const profTax = parseFloat((salary.professionalTax || "0").replace(/,/g, '')) || 0;
-                                const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
-                                updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
-                                
-                                // Set cursor position in the next render cycle
-                                setTimeout(() => {
-                                  if (e.target && typeof cursorPosition === 'number') {
-                                    e.target.setSelectionRange(cursorPosition, cursorPosition);
-                                  }
-                                }, 0);
-                              }}
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor={`standardDeduction-${index}`}>2. Standard Deduction</Label>
-                          <div className="relative">
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                            <Input
-                              id={`standardDeduction-${index}`}
-                              className="pl-7"
-                              value={salary.standardDeduction}
-                              onChange={(e) => {
-                                // Store the original cursor position
-                                const cursorPosition = e.target.selectionStart;
-                                
-                                // Format the value
-                                const value = formatCurrency(e.target.value);
-                                updateIncomeField("salaryIncome", index, "standardDeduction", value);
-                                
-                                // Calculate net salary
-                                const gross = parseFloat((salary.grossSalary || "0").replace(/,/g, '')) || 0;
-                                const stdDeduction = parseFloat((value || "0").replace(/,/g, '')) || 0;
-                                const section10 = parseFloat((salary.section10Exemptions || "0").replace(/,/g, '')) || 0;
-                                const profTax = parseFloat((salary.professionalTax || "0").replace(/,/g, '')) || 0;
-                                const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
-                                updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
-                                
-                                // Set cursor position in the next render cycle
-                                setTimeout(() => {
-                                  if (e.target && typeof cursorPosition === 'number') {
-                                    e.target.setSelectionRange(cursorPosition, cursorPosition);
-                                  }
-                                }, 0);
-                              }}
-                            />
-                          </div>
-                          <p className="text-xs text-gray-500">Under Section 16(ia)</p>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor={`section10-${index}`}>Section 10 Exemptions</Label>
-                          <div className="relative">
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                            <Input
-                              id={`section10-${index}`}
-                              className="pl-7"
-                              value={salary.section10Exemptions}
-                              onChange={(e) => {
-                                // Store the original cursor position
-                                const cursorPosition = e.target.selectionStart;
-                                
-                                // Format the value
-                                const value = formatCurrency(e.target.value);
-                                updateIncomeField("salaryIncome", index, "section10Exemptions", value);
-                                
-                                // Calculate net salary
-                                const gross = parseFloat((salary.grossSalary || "0").replace(/,/g, '')) || 0;
-                                const stdDeduction = parseFloat((salary.standardDeduction || "0").replace(/,/g, '')) || 0;
-                                const section10 = parseFloat((value || "0").replace(/,/g, '')) || 0;
-                                const profTax = parseFloat((salary.professionalTax || "0").replace(/,/g, '')) || 0;
-                                const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
-                                updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
-                                
-                                // Set cursor position in the next render cycle
-                                setTimeout(() => {
-                                  if (e.target && typeof cursorPosition === 'number') {
-                                    e.target.setSelectionRange(cursorPosition, cursorPosition);
-                                  }
-                                }, 0);
-                              }}
-                            />
-                          </div>
-                          <Select 
-                            onValueChange={(value) => console.log(`Selected exemption: ${value}`)}
-                          >
-                            <SelectTrigger className="w-full text-xs">
-                              <SelectValue placeholder="Select exemption type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="hra">HRA</SelectItem>
-                              <SelectItem value="lta">LTA</SelectItem>
-                              <SelectItem value="transport">Transport Allowance</SelectItem>
-                              <SelectItem value="medical">Medical Reimbursement</SelectItem>
-                              <SelectItem value="special">Special Allowance</SelectItem>
-                              <SelectItem value="other">Other Exemptions</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      
-                      {/* Professional Tax and TDS in one row */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor={`professionalTax-${index}`}>Professional Tax</Label>
-                          <div className="relative">
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                            <Input
-                              id={`professionalTax-${index}`}
-                              className="pl-7"
-                              value={salary.professionalTax}
-                              onChange={(e) => {
-                                // Store the original cursor position
-                                const cursorPosition = e.target.selectionStart;
-                                
-                                // Format the value
-                                const value = formatCurrency(e.target.value);
-                                updateIncomeField("salaryIncome", index, "professionalTax", value);
-                                
-                                // Calculate net salary
-                                const gross = parseFloat((salary.grossSalary || "0").replace(/,/g, '')) || 0;
-                                const stdDeduction = parseFloat((salary.standardDeduction || "0").replace(/,/g, '')) || 0;
-                                const section10 = parseFloat((salary.section10Exemptions || "0").replace(/,/g, '')) || 0;
-                                const profTax = parseFloat((value || "0").replace(/,/g, '')) || 0;
-                                const netSalary = Math.max(0, gross - stdDeduction - section10 - profTax);
-                                updateIncomeField("salaryIncome", index, "netSalary", formatCurrency(netSalary.toString()));
-                                
-                                // Set cursor position in the next render cycle
-                                setTimeout(() => {
-                                  if (e.target && typeof cursorPosition === 'number') {
-                                    e.target.setSelectionRange(cursorPosition, cursorPosition);
-                                  }
-                                }, 0);
-                              }}
-                            />
-                          </div>
-                          <p className="text-xs text-gray-500">Under Section 16(iii)</p>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor={`tdsDeducted-${index}`}>TDS Deducted</Label>
-                          <div className="relative">
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                            <Input
-                              id={`tdsDeducted-${index}`}
-                              className="pl-7"
-                              value={salary.tdsDeducted}
-                              onChange={(e) => updateIncomeField("salaryIncome", index, "tdsDeducted", formatCurrency(e.target.value))}
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor={`netSalary-${index}`}>Net Taxable Salary</Label>
-                          <div className="relative bg-gray-50">
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                            <Input
-                              id={`netSalary-${index}`}
-                              className="pl-7 bg-gray-50 border-gray-300"
-                              value={salary.netSalary}
-                              readOnly
-                            />
-                          </div>
-                          <p className="text-xs text-gray-500">Auto-calculated</p>
-                        </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor={`tdsDeducted-${salary.id}`}>TDS Deducted</Label>
+                       <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <Input id={`tdsDeducted-${salary.id}`} className="pl-7" value={salary.tdsDeducted} onChange={(e) => updateIncomeField("salaryIncome", index, "tdsDeducted", formatCurrency(e.target.value))} />
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-            
-            {/* House Property Income - Now with multiple entries */}
-            {formData.incomeSource.includes("house-property") && (
-              <div className="p-6 bg-white border rounded-lg">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-medium flex items-center">
-                    <Home className="h-5 w-5 text-green-500 mr-2" />
-                    House Property Income
-                  </h3>
-                  
-                  {/* Add another property button */}
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => addIncomeEntry("housePropertyIncome")}
-                    className="text-xs flex items-center"
-                  >
-                    <PlusCircle className="h-3.5 w-3.5 mr-1" />
-                    Add Another Property
-                  </Button>
                 </div>
-                
-                {/* For each property entry, show a set of fields */}
-                {formData.housePropertyIncome.map((property, index) => (
-                  <div key={property.id} className="mb-6 last:mb-0 border-t pt-4 first:border-t-0 first:pt-0">
-                    {/* Show property number and delete button if there are multiple */}
-                    {formData.housePropertyIncome.length > 1 && (
-                      <div className="flex justify-between items-center mb-3">
-                        <span className="text-sm font-medium text-gray-500">
-                          Property #{index + 1}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeIncomeEntry("housePropertyIncome", index)}
-                          className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
-                          disabled={formData.housePropertyIncome.length <= 1}
-                        >
-                          <MinusCircle className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
-                    )}
-                    
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor={`propertyType-${index}`}>Property Type</Label>
-                        <Select 
-                          value={property.propertyType} 
-                          onValueChange={(value) => updateIncomeField("housePropertyIncome", index, "propertyType", value)}
-                        >
-                          <SelectTrigger id={`propertyType-${index}`}>
-                            <SelectValue placeholder="Select Property Type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="self-occupied">Self Occupied</SelectItem>
-                            <SelectItem value="let-out">Let Out</SelectItem>
-                            <SelectItem value="deemed-let-out">Deemed Let Out</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      {property.propertyType !== "self-occupied" && (
-                        <div className="space-y-2">
-                          <Label htmlFor={`rentalIncome-${index}`}>Annual Rental Income</Label>
-                          <div className="relative">
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                            <Input
-                              id={`rentalIncome-${index}`}
-                              className="pl-7"
-                              value={property.rentalIncome}
-                              onChange={(e) => updateIncomeField("housePropertyIncome", index, "rentalIncome", formatCurrency(e.target.value))}
-                            />
-                          </div>
-                        </div>
-                      )}
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor={`interestPaid-${index}`}>Interest Paid on Housing Loan</Label>
-                        <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                          <Input
-                            id={`interestPaid-${index}`}
-                            className="pl-7"
-                            value={property.interestPaid}
-                            onChange={(e) => updateIncomeField("housePropertyIncome", index, "interestPaid", formatCurrency(e.target.value))}
-                          />
-                        </div>
-                      </div>
-                      
-                      {property.propertyType !== "self-occupied" && (
-                        <div className="space-y-2">
-                          <Label htmlFor={`propertyTax-${index}`}>Municipal/Property Tax Paid</Label>
-                          <div className="relative">
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                            <Input
-                              id={`propertyTax-${index}`}
-                              className="pl-7"
-                              value={property.propertyTax}
-                              onChange={(e) => updateIncomeField("housePropertyIncome", index, "propertyTax", formatCurrency(e.target.value))}
-                            />
-                          </div>
-                        </div>
-                      )}
+              </div>
+            ))}
+            {formData.incomeSource.includes("house-property") && formData.housePropertyIncome.map((property, index) => (
+              <div key={property.id} className="p-6 bg-white border rounded-lg">
+                 <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-medium flex items-center">
+                        <Home className="h-5 w-5 text-green-500 mr-2" />
+                        House Property Income {formData.housePropertyIncome.length > 1 ? `#${index + 1}`: ''}
+                    </h3>
+                    <div className="flex items-center gap-2">
+                        {index === formData.housePropertyIncome.length -1 && (
+                            <Button type="button" variant="outline" size="sm" onClick={() => addIncomeEntry("housePropertyIncome")} className="text-xs flex items-center">
+                                <PlusCircle className="h-3.5 w-3.5 mr-1" /> Add Property
+                            </Button>
+                        )}
+                        {formData.housePropertyIncome.length > 1 && (
+                             <Button type="button" variant="ghost" size="icon" onClick={() => removeIncomeEntry("housePropertyIncome", index)} className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50">
+                                <MinusCircle className="h-3.5 w-3.5" />
+                            </Button>
+                        )}
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {/* Capital Gains Income - Now with multiple entries */}
-            {formData.incomeSource.includes("capital-gains") && (
-              <div className="p-6 bg-white border rounded-lg">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-medium flex items-center">
-                    <PiggyBank className="h-5 w-5 text-purple-500 mr-2" />
-                    Capital Gains
-                  </h3>
-                  
-                  {/* Add another capital gain source button */}
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => addIncomeEntry("capitalGainsIncome")}
-                    className="text-xs flex items-center"
-                  >
-                    <PlusCircle className="h-3.5 w-3.5 mr-1" />
-                    Add Another Asset
-                  </Button>
                 </div>
-                
-                {/* For each capital gain entry, show a set of fields */}
-                {formData.capitalGainsIncome.map((capitalGain, index) => (
-                  <div key={capitalGain.id} className="mb-6 last:mb-0 border-t pt-4 first:border-t-0 first:pt-0">
-                    {/* Show capital gain number and delete button if there are multiple */}
-                    {formData.capitalGainsIncome.length > 1 && (
-                      <div className="flex justify-between items-center mb-3">
-                        <span className="text-sm font-medium text-gray-500">
-                          Asset #{index + 1}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeIncomeEntry("capitalGainsIncome", index)}
-                          className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
-                          disabled={formData.capitalGainsIncome.length <= 1}
-                        >
-                          <MinusCircle className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
-                    )}
-                    
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor={`shortTerm-${index}`}>Short Term Capital Gains</Label>
-                        <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                          <Input
-                            id={`shortTerm-${index}`}
-                            className="pl-7"
-                            value={capitalGain.shortTerm}
-                            onChange={(e) => updateIncomeField("capitalGainsIncome", index, "shortTerm", formatCurrency(e.target.value))}
-                          />
-                        </div>
-                        <p className="text-xs text-gray-500">Held for less than 12 months (24 months for property)</p>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`longTerm-${index}`}>Long Term Capital Gains</Label>
-                        <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                          <Input
-                            id={`longTerm-${index}`}
-                            className="pl-7"
-                            value={capitalGain.longTerm}
-                            onChange={(e) => updateIncomeField("capitalGainsIncome", index, "longTerm", formatCurrency(e.target.value))}
-                          />
-                        </div>
-                        <p className="text-xs text-gray-500">Held for more than 12 months (24 months for property)</p>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor={`propertyType-${property.id}`}>Property Type</Label>
+                    <Select value={property.propertyType} onValueChange={(value) => updateIncomeField("housePropertyIncome", index, "propertyType", value)}>
+                      <SelectTrigger id={`propertyType-${property.id}`}><SelectValue placeholder="Select Type" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="self-occupied">Self Occupied</SelectItem>
+                        <SelectItem value="let-out">Let Out</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {property.propertyType === 'let-out' && (
+                    <div className="space-y-2">
+                      <Label htmlFor={`rentalIncome-${property.id}`}>Annual Rental Income</Label>
+                      <div className="relative">
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                        <Input id={`rentalIncome-${property.id}`} className="pl-7" value={property.rentalIncome} onChange={(e) => updateIncomeField("housePropertyIncome", index, "rentalIncome", formatCurrency(e.target.value))} />
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {/* Business Income - Now with multiple entries */}
-            {formData.incomeSource.includes("business") && (
-              <div className="p-6 bg-white border rounded-lg">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-medium flex items-center">
-                    <Briefcase className="h-5 w-5 text-orange-500 mr-2" />
-                    Business/Profession Income
-                  </h3>
-                  
-                  {/* Add another business source button */}
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => addIncomeEntry("businessIncome")}
-                    className="text-xs flex items-center"
-                  >
-                    <PlusCircle className="h-3.5 w-3.5 mr-1" />
-                    Add Another Business
-                  </Button>
-                </div>
-                
-                {/* For each business entry, show a set of fields */}
-                {formData.businessIncome.map((business, index) => (
-                  <div key={business.id} className="mb-6 last:mb-0 border-t pt-4 first:border-t-0 first:pt-0">
-                    {/* Show business number and delete button if there are multiple */}
-                    {formData.businessIncome.length > 1 && (
-                      <div className="flex justify-between items-center mb-3">
-                        <span className="text-sm font-medium text-gray-500">
-                          Business #{index + 1}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeIncomeEntry("businessIncome", index)}
-                          className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
-                          disabled={formData.businessIncome.length <= 1}
-                        >
-                          <MinusCircle className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
-                    )}
-                    
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor={`grossReceipts-${index}`}>Gross Receipts/Turnover</Label>
-                        <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                          <Input
-                            id={`grossReceipts-${index}`}
-                            className="pl-7"
-                            value={business.grossReceipts}
-                            onChange={(e) => updateIncomeField("businessIncome", index, "grossReceipts", formatCurrency(e.target.value))}
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`expenses-${index}`}>Total Expenses</Label>
-                        <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                          <Input
-                            id={`expenses-${index}`}
-                            className="pl-7"
-                            value={business.expenses}
-                            onChange={(e) => updateIncomeField("businessIncome", index, "expenses", formatCurrency(e.target.value))}
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`netProfit-${index}`}>Net Profit</Label>
-                        <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                          <Input
-                            id={`netProfit-${index}`}
-                            className="pl-7"
-                            value={business.netProfit}
-                            onChange={(e) => updateIncomeField("businessIncome", index, "netProfit", formatCurrency(e.target.value))}
-                          />
-                        </div>
-                      </div>
+                  )}
+                  <div className="space-y-2">
+                    <Label htmlFor={`interestPaid-${property.id}`}>Interest on Housing Loan</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input id={`interestPaid-${property.id}`} className="pl-7" value={property.interestPaid} onChange={(e) => updateIncomeField("housePropertyIncome", index, "interestPaid", formatCurrency(e.target.value))} />
                     </div>
                   </div>
-                ))}
+                </div>
               </div>
-            )}
-            
-            {/* Interest Income - Now with multiple entries */}
-            {formData.incomeSource.includes("interest") && (
-              <div className="p-6 bg-white border rounded-lg">
+            ))}
+            {formData.incomeSource.includes("interest") && formData.interestIncome.map((interest, index) => (
+              <div key={interest.id} className="p-6 bg-white border rounded-lg">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-lg font-medium flex items-center">
-                    <CreditCard className="h-5 w-5 text-pink-500 mr-2" />
-                    Interest Income
+                    <Landmark className="h-5 w-5 text-teal-500 mr-2" />
+                    Interest Income {formData.interestIncome.length > 1 ? `#${index + 1}` : ''}
                   </h3>
-                  
-                  {/* Add another interest source button */}
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => addIncomeEntry("interestIncome")}
-                    className="text-xs flex items-center"
-                  >
-                    <PlusCircle className="h-3.5 w-3.5 mr-1" />
-                    Add Another Source
-                  </Button>
-                </div>
-                
-                {/* For each interest income entry, show a set of fields */}
-                {formData.interestIncome.map((interest, index) => (
-                  <div key={interest.id} className="mb-6 last:mb-0 border-t pt-4 first:border-t-0 first:pt-0">
-                    {/* Show source number and delete button if there are multiple */}
+                  <div className="flex items-center gap-2">
+                    {index === formData.interestIncome.length - 1 && (
+                       <Button type="button" variant="outline" size="sm" onClick={() => addIncomeEntry("interestIncome")} className="text-xs flex items-center">
+                         <PlusCircle className="h-3.5 w-3.5 mr-1" /> Add Interest Source
+                       </Button>
+                    )}
                     {formData.interestIncome.length > 1 && (
-                      <div className="flex justify-between items-center mb-3">
-                        <span className="text-sm font-medium text-gray-500">
-                          Interest Source #{index + 1}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeIncomeEntry("interestIncome", index)}
-                          className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
-                          disabled={formData.interestIncome.length <= 1}
-                        >
-                          <MinusCircle className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
+                      <Button type="button" variant="ghost" size="icon" onClick={() => removeIncomeEntry("interestIncome", index)} className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50">
+                        <MinusCircle className="h-3.5 w-3.5" />
+                      </Button>
                     )}
-                    
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor={`savingsAccount-${index}`}>Savings Account Interest</Label>
-                        <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                          <Input
-                            id={`savingsAccount-${index}`}
-                            className="pl-7"
-                            value={interest.savingsAccount}
-                            onChange={(e) => updateIncomeField("interestIncome", index, "savingsAccount", formatCurrency(e.target.value))}
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`fixedDeposits-${index}`}>Fixed Deposits Interest</Label>
-                        <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                          <Input
-                            id={`fixedDeposits-${index}`}
-                            className="pl-7"
-                            value={interest.fixedDeposits}
-                            onChange={(e) => updateIncomeField("interestIncome", index, "fixedDeposits", formatCurrency(e.target.value))}
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`otherInterest-${index}`}>Other Interest Income</Label>
-                        <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                          <Input
-                            id={`otherInterest-${index}`}
-                            className="pl-7"
-                            value={interest.other}
-                            onChange={(e) => updateIncomeField("interestIncome", index, "other", formatCurrency(e.target.value))}
-                          />
-                        </div>
-                      </div>
-                    </div>
                   </div>
-                ))}
-              </div>
-            )}
-            
-            {/* Other Income - Now with multiple entries */}
-            {formData.incomeSource.includes("other") && (
-              <div className="p-6 bg-white border rounded-lg">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-medium flex items-center">
-                    <PlusCircle className="h-5 w-5 text-gray-500 mr-2" />
-                    Other Income
-                  </h3>
-                  
-                  {/* Add another other income source button */}
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => addIncomeEntry("otherIncome")}
-                    className="text-xs flex items-center"
-                  >
-                    <PlusCircle className="h-3.5 w-3.5 mr-1" />
-                    Add Another Income
-                  </Button>
                 </div>
-                
-                {/* For each other income entry, show a set of fields */}
-                {formData.otherIncome.map((other, index) => (
-                  <div key={other.id} className="mb-6 last:mb-0 border-t pt-4 first:border-t-0 first:pt-0">
-                    {/* Show source number and delete button if there are multiple */}
-                    {formData.otherIncome.length > 1 && (
-                      <div className="flex justify-between items-center mb-3">
-                        <span className="text-sm font-medium text-gray-500">
-                          Other Income #{index + 1}
-                        </span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeIncomeEntry("otherIncome", index)}
-                          className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
-                          disabled={formData.otherIncome.length <= 1}
-                        >
-                          <MinusCircle className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
-                    )}
-                    
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor={`otherAmount-${index}`}>Amount</Label>
-                        <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
-                          <Input
-                            id={`otherAmount-${index}`}
-                            className="pl-7"
-                            value={other.amount}
-                            onChange={(e) => updateIncomeField("otherIncome", index, "amount", formatCurrency(e.target.value))}
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor={`otherDescription-${index}`}>Description</Label>
-                        <Input
-                          id={`otherDescription-${index}`}
-                          value={other.description}
-                          onChange={(e) => updateIncomeField("otherIncome", index, "description", e.target.value)}
-                          placeholder="e.g., Dividends, Lottery, Gifts, Royalties"
-                        />
-                      </div>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor={`savingsAccount-${interest.id}`}>Savings Account Interest</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input id={`savingsAccount-${interest.id}`} className="pl-7" value={interest.savingsAccount} onChange={(e) => updateIncomeField("interestIncome", index, "savingsAccount", formatCurrency(e.target.value))} />
                     </div>
                   </div>
-                ))}
+                  <div className="space-y-2">
+                    <Label htmlFor={`fixedDeposits-${interest.id}`}>Fixed Deposits Interest</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input id={`fixedDeposits-${interest.id}`} className="pl-7" value={interest.fixedDeposits} onChange={(e) => updateIncomeField("interestIncome", index, "fixedDeposits", formatCurrency(e.target.value))} />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`otherInterest-${interest.id}`}>Other Interest</Label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                      <Input id={`otherInterest-${interest.id}`} className="pl-7" value={interest.other} onChange={(e) => updateIncomeField("interestIncome", index, "other", formatCurrency(e.target.value))} />
+                    </div>
+                  </div>
+                </div>
               </div>
-            )}
+            ))}
+            {formData.incomeSource.filter(src => !["salary", "house-property", "interest"].includes(src)).map(src => (
+              <div key={src} className="p-6 bg-white border rounded-lg">
+                  <h3 className="text-lg font-medium">Details for {src.replace('-', ' ')}</h3>
+                  <p className="text-sm text-gray-500">Fields for this section will be added here.</p>
+              </div>
+            ))}
           </>
         )}
+        <div className="flex justify-start mt-6">
+          <Button variant="outline" onClick={handleSaveDraft}>Save Draft</Button>
+        </div>
+      </div>
+    );
+  };
+
+  const DeductionsStep = () => {
+    const formatCurrency = (value: string | null | undefined): string => { 
+      if (value === null || value === undefined || value.trim() === "") return "";
+      const numericValue = value.replace(/[^\d]/g, "");
+      if (!numericValue) return "";
+      try {
+        if (numericValue.length <= 3) return numericValue;
+        const lastThree = numericValue.substring(numericValue.length - 3);
+        const remainingDigits = numericValue.substring(0, numericValue.length - 3);
+        return remainingDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + lastThree;
+      } catch (error) {
+        console.error("Error formatting currency:", error);
+        return numericValue; 
+      }
+    };
+
+    const handleDeductionChange = (field: keyof typeof formData.deductions, value: string) => {
+      setFormData(prev => ({
+        ...prev,
+        deductions: {
+          ...prev.deductions,
+          [field]: formatCurrency(value) 
+        }
+      }));
+    };
+
+    return (
+      <div className="space-y-8">
+        <div className="p-6 bg-white border rounded-lg">
+          <h3 className="text-lg font-medium mb-4">Chapter VI-A Deductions</h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="section80C">Section 80C (e.g., LIC, PPF, ELSS)</Label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                <Input id="section80C" className="pl-7" value={formData.deductions.section80C} onChange={(e) => handleDeductionChange("section80C", e.target.value)} placeholder="Max 1,50,000" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="section80D">Section 80D (Medical Insurance)</Label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                <Input id="section80D" className="pl-7" value={formData.deductions.section80D} onChange={(e) => handleDeductionChange("section80D", e.target.value)} placeholder="Enter amount" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="section80TTA">Section 80TTA (Interest on Savings Account)</Label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                <Input id="section80TTA" className="pl-7" value={formData.deductions.section80TTA} onChange={(e) => handleDeductionChange("section80TTA", e.target.value)} placeholder="Max 10,000" />
+              </div>
+            </div>
+             <div className="space-y-2">
+              <Label htmlFor="section80G">Section 80G (Donations)</Label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₹</span>
+                <Input id="section80G" className="pl-7" value={formData.deductions.section80G} onChange={(e) => handleDeductionChange("section80G", e.target.value)} placeholder="Enter amount" />
+              </div>
+            </div>
+          </div>
+          <p className="mt-6 text-sm text-gray-500">More deduction fields will be added here. This is a basic set for ITR-1.</p>
+        </div>
+        <div className="flex justify-start mt-6">
+          <Button variant="outline" onClick={handleSaveDraft}>Save Draft</Button>
+        </div>
+        <div className="flex justify-start mt-6">
+          <Button variant="outline" onClick={handleSaveDraft}>Save Draft</Button>
+        </div>
+        <div className="flex justify-start mt-6">
+          <Button variant="outline" onClick={handleSaveDraft} className="mr-auto">Save Draft</Button>
+        </div>
       </div>
     );
   };
   
-  // Income Sources Selection Component for Step 2
   const IncomeSourcesStep = () => {
-    // Filter out salary option for non-individual PAN types
     const isIndividual = panValidationState.isIndividual;
-    
     const allIncomeSources = [
-      { 
-        id: "salary", 
-        label: "Salary/Pension", 
-        icon: <Briefcase className="h-5 w-5 text-blue-500" />,
-        description: "Income from employment or pension",
-        examples: "Form 16, salary slips, pension statements",
-        individualOnly: true // Only individuals can have salary income
-      },
-      { 
-        id: "house-property", 
-        label: "House Property", 
-        icon: <Home className="h-5 w-5 text-green-500" />,
-        description: "Rental income or home loan interest",
-        examples: "Rent receipts, home loan statements",
-        individualOnly: false
-      },
-      { 
-        id: "capital-gains", 
-        label: "Capital Gains", 
-        icon: <PiggyBank className="h-5 w-5 text-purple-500" />,
-        description: "Profit from sale of investments",
-        examples: "Shares, property, mutual funds, crypto",
-        individualOnly: false
-      },
-      { 
-        id: "business", 
-        label: "Business/Profession", 
-        icon: <Briefcase className="h-5 w-5 text-orange-500" />,
-        description: "Income from business activities",
-        examples: "Freelance work, consultancy, small business",
-        individualOnly: false
-      },
-      { 
-        id: "interest", 
-        label: "Interest Income", 
-        icon: <CreditCard className="h-5 w-5 text-pink-500" />,
-        description: "Bank deposits, bonds, etc.",
-        examples: "Savings account, FDs, RDs, bonds",
-        individualOnly: false
-      },
-      { 
-        id: "other", 
-        label: "Other Sources", 
-        icon: <PlusCircle className="h-5 w-5 text-gray-500" />,
-        description: "Dividends, lottery, gifts, etc.",
-        examples: "Stock dividends, lottery winnings, gifts",
-        individualOnly: false
-      },
+      { id: "salary", label: "Salary/Pension", icon: <Briefcase className="h-5 w-5 text-blue-500" />, description: "Income from employment or pension", examples: "Form 16, salary slips", individualOnly: true },
+      { id: "house-property", label: "House Property", icon: <Home className="h-5 w-5 text-green-500" />, description: "Rental income or home loan interest", examples: "Rent receipts, loan statements", individualOnly: false },
+      { id: "capital-gains", label: "Capital Gains", icon: <PiggyBank className="h-5 w-5 text-purple-500" />, description: "Profit from sale of investments", examples: "Shares, property, mutual funds", individualOnly: false },
+      { id: "business", label: "Business/Profession", icon: <Briefcase className="h-5 w-5 text-orange-500" />, description: "Income from business activities", examples: "Freelance, consultancy", individualOnly: false },
+      { id: "interest", label: "Interest Income", icon: <CreditCard className="h-5 w-5 text-pink-500" />, description: "Bank deposits, bonds, etc.", examples: "Savings A/C, FDs, RDs", individualOnly: false },
+      { id: "other", label: "Other Sources", icon: <PlusCircle className="h-5 w-5 text-gray-500" />, description: "Dividends, lottery, gifts, etc.", examples: "Dividends, lottery winnings", individualOnly: false },
     ];
-    
-    // Filter sources based on PAN type
-    const filteredSources = allIncomeSources.filter(source => 
-      !source.individualOnly || (source.individualOnly && isIndividual)
-    );
-    
+    const filteredSources = allIncomeSources.filter(s => !s.individualOnly || isIndividual);
+
     return (
       <div className="space-y-6">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredSources.map(source => (
-            <Card 
-              key={source.id} 
-              className={`cursor-pointer hover:border-blue-300 transition-all ${
-                formData.incomeSource.includes(source.id) ? 'border-blue-500 bg-blue-50' : ''
-              }`}
-              onClick={() => handleCheckboxChange(source.id)}
-            >
+            <Card key={source.id} className={`cursor-pointer hover:border-blue-300 transition-all ${formData.incomeSource.includes(source.id) ? 'border-blue-500 bg-blue-50' : ''}`} onClick={() => handleCheckboxChange(source.id)}>
               <CardContent className="p-6">
                 <div className="flex items-start space-x-4">
-                  <div className="shrink-0 mt-1">
-                    {source.icon}
-                  </div>
+                  <div className="shrink-0 mt-1">{source.icon}</div>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <h3 className="font-medium">{source.label}</h3>
                       <div className="h-5 w-5 rounded-full border border-gray-300 flex items-center justify-center bg-white">
-                        {formData.incomeSource.includes(source.id) && (
-                          <CheckCircle className="h-4 w-4 text-blue-500" />
-                        )}
+                        {formData.incomeSource.includes(source.id) && <CheckCircle className="h-4 w-4 text-blue-500" />}
                       </div>
                     </div>
                     <p className="text-sm text-gray-500 mt-1">{source.description}</p>
-                    <div className="mt-2 text-xs text-gray-400 italic">
-                      Examples: {source.examples}
-                    </div>
+                    <div className="mt-2 text-xs text-gray-400 italic">Examples: {source.examples}</div>
                   </div>
                 </div>
               </CardContent>
@@ -1454,9 +844,79 @@ const StartFiling = () => {
         </div>
         <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
           <h3 className="text-sm font-medium text-blue-800 mb-2">Selection Guidance</h3>
-          <p className="text-sm text-blue-700">
-            Select all the sources from which you earned income during the financial year.
-            This helps us determine which ITR form is appropriate for your filing.
+          <p className="text-sm text-blue-700">Select all sources from which you earned income. This helps determine the appropriate ITR form.</p>
+        </div>
+      </div>
+    );
+  };
+
+  const TaxCalculationStep = () => {
+    // Mock data for display
+    const mockCalculations = {
+      totalIncome: "12,50,000",
+      totalDeductions: "1,75,000",
+      taxableIncome: "10,75,000",
+      taxBeforeCess: "1,32,500",
+      healthAndEducationCess: "5,300",
+      totalTaxLiability: "1,37,800",
+      tdsPaid: "1,40,000", 
+      advanceTaxPaid: "0", 
+      netPayableOrRefund: "-2,200", 
+    };
+
+    const isRefund = parseFloat(mockCalculations.netPayableOrRefund.replace(/,/g, '')) < 0;
+    const amountClass = isRefund ? "text-green-600 font-semibold" : "text-red-600 font-semibold";
+
+    return (
+      <div className="space-y-6">
+        <div className="p-6 bg-white border rounded-lg">
+          <h3 className="text-xl font-semibold mb-6 text-center text-blue-700">Your Tax Computation Summary (Mock)</h3>
+          
+          <div className="grid md:grid-cols-2 gap-x-8 gap-y-4 text-sm">
+            <div className="flex justify-between py-2 border-b">
+              <span className="text-gray-600">Total Gross Income:</span>
+              <span className="font-medium">₹ {mockCalculations.totalIncome}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b">
+              <span className="text-gray-600">Total Deductions (Chapter VI-A):</span>
+              <span className="font-medium">₹ {mockCalculations.totalDeductions}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b">
+              <span className="text-gray-600">Taxable Income:</span>
+              <span className="font-medium">₹ {mockCalculations.taxableIncome}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b">
+              <span className="text-gray-600">Income Tax (Before Cess):</span>
+              <span className="font-medium">₹ {mockCalculations.taxBeforeCess}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b">
+              <span className="text-gray-600">Health & Education Cess (4%):</span>
+              <span className="font-medium">₹ {mockCalculations.healthAndEducationCess}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b font-semibold text-blue-600">
+              <span>Total Tax Liability:</span>
+              <span>₹ {mockCalculations.totalTaxLiability}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b">
+              <span className="text-gray-600">TDS Paid:</span>
+              <span className="font-medium">₹ {mockCalculations.tdsPaid}</span>
+            </div>
+            <div className="flex justify-between py-2 border-b">
+              <span className="text-gray-600">Advance Tax Paid:</span>
+              <span className="font-medium">₹ {mockCalculations.advanceTaxPaid}</span>
+            </div>
+          </div>
+
+          <div className={`mt-6 p-4 rounded-lg text-center ${isRefund ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+            <p className="text-lg">
+              {isRefund ? "Net Refund Due:" : "Net Tax Payable:"}
+              <span className={`ml-2 ${amountClass}`}>
+                ₹ {isRefund ? mockCalculations.netPayableOrRefund.substring(1) : mockCalculations.netPayableOrRefund}
+              </span>
+            </p>
+          </div>
+          <p className="mt-4 text-xs text-gray-500 text-center">
+            *This is a mock calculation based on the data provided. Actual calculation may vary.
           </p>
         </div>
       </div>
@@ -1483,9 +943,7 @@ const StartFiling = () => {
                   <span className="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm">1</span>
                   Basic Information
                 </CardTitle>
-                <CardDescription>
-                  Enter your personal details to begin your tax filing process
-                </CardDescription>
+                <CardDescription>Enter your personal details to begin your tax filing process</CardDescription>
               </CardHeader>
               <CardContent>
                 <Tabs value={selectedTab} onValueChange={setSelectedTab} className="mt-2">
@@ -1493,70 +951,35 @@ const StartFiling = () => {
                     <TabsTrigger value="quick-start">Quick Start</TabsTrigger>
                     <TabsTrigger value="upload-form16">Upload Form 16</TabsTrigger>
                   </TabsList>
-                  
                   <TabsContent value="quick-start">
                     <div className="grid gap-6">
                       <div className="grid md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="pan">PAN Number <span className="text-red-500">*</span></Label>
-                          <Input 
-                            id="pan" 
-                            type="text" 
-                            placeholder="e.g., ABCDE1234F"
-                            value={formData.pan} 
-                            onChange={(e) => handleInputChange("pan", e.target.value)} 
-                            className={
-                              formData.pan && !panValidationState.isValid ? "border-red-500" : 
-                              formData.pan && panValidationState.isValid ? "border-green-500" : ""
-                            }
-                          />
+                          <Input id="pan" type="text" placeholder="e.g., ABCDE1234F" value={formData.pan} onChange={(e) => handleInputChange("pan", e.target.value)} className={formData.pan && !panValidationState.isValid ? "border-red-500" : formData.pan && panValidationState.isValid ? "border-green-500" : ""} />
                           {formData.pan && (
                             <div className={`text-xs mt-1 ${panValidationState.isValid ? 'text-green-600' : 'text-red-600'}`}>
                               {panValidationState.message}
                               {panValidationState.isValid && panValidationState.entityType && !panValidationState.isIndividual && (
-                                <div className="mt-1 text-amber-600 font-medium">
-                                  Note: Salary income option will not be available for non-individual PAN
-                                </div>
+                                <div className="mt-1 text-amber-600 font-medium">Note: Salary income option will not be available for non-individual PAN</div>
                               )}
                             </div>
                           )}
                         </div>
-                        
                         <div className="space-y-2">
                           <Label htmlFor="name">Full Name <span className="text-red-500">*</span></Label>
-                          <Input 
-                            id="name" 
-                            type="text" 
-                            placeholder="As per PAN card"
-                            value={formData.name} 
-                            onChange={(e) => handleInputChange("name", e.target.value)} 
-                          />
+                          <Input id="name" type="text" placeholder="As per PAN card" value={formData.name} onChange={(e) => handleInputChange("name", e.target.value)} />
                         </div>
                       </div>
-                      
                       <div className="grid md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="dob">Date of Birth</Label>
-                          <Input 
-                            id="dob" 
-                            type="date" 
-                            value={formData.dob} 
-                            onChange={(e) => handleInputChange("dob", e.target.value)} 
-                          />
+                          <Input id="dob" type="date" value={formData.dob} onChange={(e) => handleInputChange("dob", e.target.value)} />
                         </div>
-                        
                         <div className="space-y-2">
                           <Label htmlFor="assessmentYear">Assessment Year <span className="text-red-500">*</span></Label>
-                          <Select 
-                            value={formData.assessmentYear} 
-                            onValueChange={(value) => {
-                              handleInputChange("assessmentYear", value);
-                              setAssessmentYear(value);
-                            }}
-                          >
-                            <SelectTrigger id="assessmentYear">
-                              <SelectValue placeholder="Select Assessment Year" />
-                            </SelectTrigger>
+                          <Select value={formData.assessmentYear} onValueChange={(value) => { handleInputChange("assessmentYear", value); setAssessmentYear(value); }}>
+                            <SelectTrigger id="assessmentYear"><SelectValue placeholder="Select Assessment Year" /></SelectTrigger>
                             <SelectContent>
                               <SelectItem value="2024-25">2024-25</SelectItem>
                               <SelectItem value="2023-24">2023-24</SelectItem>
@@ -1566,107 +989,42 @@ const StartFiling = () => {
                           </Select>
                         </div>
                       </div>
-                      
                       <div className="grid md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="email">Email Address</Label>
-                          <Input 
-                            id="email" 
-                            type="email" 
-                            placeholder="your@email.com" 
-                            value={formData.email} 
-                            onChange={(e) => handleInputChange("email", e.target.value)} 
-                          />
+                          <Input id="email" type="email" placeholder="your@email.com" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} />
                         </div>
-                        
                         <div className="space-y-2">
                           <Label htmlFor="mobile">Mobile Number</Label>
-                          <Input 
-                            id="mobile" 
-                            type="tel" 
-                            placeholder="10-digit mobile number" 
-                            value={formData.mobile} 
-                            onChange={(e) => handleInputChange("mobile", e.target.value)} 
-                          />
+                          <Input id="mobile" type="tel" placeholder="10-digit mobile number" value={formData.mobile} onChange={(e) => handleInputChange("mobile", e.target.value)} />
                         </div>
                       </div>
-                      
-                      <Button 
-                        className="w-full md:w-auto md:ml-auto bg-blue-500 hover:bg-blue-600"
-                        onClick={savePersonalInfo}
-                      >
+                      <Button className="w-full md:w-auto md:ml-auto bg-blue-500 hover:bg-blue-600" onClick={savePersonalInfoAndProceed}>
                         Continue to Income Sources <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </div>
                   </TabsContent>
-                  
                   <TabsContent value="upload-form16">
                     <div className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50 mb-6">
                       <FileText className="h-10 w-10 text-gray-400 mb-4" />
                       <h3 className="text-lg font-medium mb-1">Upload Form 16</h3>
-                      <p className="text-sm text-gray-500 text-center mb-4 max-w-xs">
-                        Drag and drop your Form 16 PDF here, or click to browse files
-                      </p>
-                      
+                      <p className="text-sm text-gray-500 text-center mb-4 max-w-xs">Drag and drop your Form 16 PDF here, or click to browse files</p>
                       <div className="relative">
-                        <input
-                          type="file"
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                          accept=".pdf"
-                          onChange={handleFileUpload}
-                        />
-                        <Button variant="outline" className="relative">
-                          <Upload className="mr-2 h-4 w-4" />
-                          Browse Files
-                        </Button>
+                        <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".pdf" onChange={handleFileUpload} />
+                        <Button variant="outline" className="relative"><Upload className="mr-2 h-4 w-4" /> Browse Files</Button>
                       </div>
-                      
                       {uploadProgress !== null && (
                         <div className="w-full max-w-xs mt-4">
-                          <div className="text-sm text-gray-500 flex justify-between mb-1">
-                            <span>Uploading...</span>
-                            <span>{uploadProgress}%</span>
-                          </div>
-                          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-blue-500 rounded-full"
-                              style={{ width: `${uploadProgress}%` }}
-                            ></div>
-                          </div>
+                          <div className="text-sm text-gray-500 flex justify-between mb-1"><span>Uploading...</span><span>{uploadProgress}%</span></div>
+                          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden"><div className="h-full bg-blue-500 rounded-full" style={{ width: `${uploadProgress}%` }}></div></div>
                         </div>
                       )}
                     </div>
-                    
                     <div className="space-y-4">
-                      <div className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-500 mr-3 shrink-0 mt-0.5" />
-                        <div>
-                          <h4 className="font-medium">Automatic Data Extraction</h4>
-                          <p className="text-sm text-gray-500">We'll automatically extract data from your Form 16</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-500 mr-3 shrink-0 mt-0.5" />
-                        <div>
-                          <h4 className="font-medium">Pre-Fill Your Return</h4>
-                          <p className="text-sm text-gray-500">Your income and TDS details will be pre-filled</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-start">
-                        <CheckCircle className="h-5 w-5 text-green-500 mr-3 shrink-0 mt-0.5" />
-                        <div>
-                          <h4 className="font-medium">Fast Processing</h4>
-                          <p className="text-sm text-gray-500">Complete your tax filing in minutes</p>
-                        </div>
-                      </div>
-                      
-                      <Button 
-                        className="w-full md:w-auto md:ml-auto mt-6 bg-blue-500 hover:bg-blue-600"
-                        onClick={nextStep}
-                        disabled={uploadProgress !== null && uploadProgress < 100}
-                      >
+                      <div className="flex items-start"><CheckCircle className="h-5 w-5 text-green-500 mr-3 shrink-0 mt-0.5" /><div><h4 className="font-medium">Automatic Data Extraction</h4><p className="text-sm text-gray-500">We'll automatically extract data from your Form 16</p></div></div>
+                      <div className="flex items-start"><CheckCircle className="h-5 w-5 text-green-500 mr-3 shrink-0 mt-0.5" /><div><h4 className="font-medium">Pre-Fill Your Return</h4><p className="text-sm text-gray-500">Your income and TDS details will be pre-filled</p></div></div>
+                      <div className="flex items-start"><CheckCircle className="h-5 w-5 text-green-500 mr-3 shrink-0 mt-0.5" /><div><h4 className="font-medium">Fast Processing</h4><p className="text-sm text-gray-500">Complete your tax filing in minutes</p></div></div>
+                      <Button className="w-full md:w-auto md:ml-auto mt-6 bg-blue-500 hover:bg-blue-600" onClick={localNextStep} disabled={uploadProgress !== null && uploadProgress < 100}>
                         Continue <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </div>
@@ -1675,7 +1033,6 @@ const StartFiling = () => {
               </CardContent>
             </Card>
           )}
-          
           {activeStep === 2 && (
             <Card>
               <CardHeader>
@@ -1683,39 +1040,17 @@ const StartFiling = () => {
                   <span className="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm">2</span>
                   Select Your Income Sources
                 </CardTitle>
-                <CardDescription>
-                  Choose all sources from which you earned income during FY {
-                    (() => {
-                      const yearEnd = formData.assessmentYear.split('-')[0];
-                      const yearStart = Number(yearEnd) - 1;
-                      return `${yearStart}-${yearEnd}`;
-                    })()
-                  }
-                </CardDescription>
+                <CardDescription>Choose all sources from which you earned income during FY {(() => { const yearEnd = formData.assessmentYear.split('-')[0]; const yearStart = Number(yearEnd) - 1; return `${yearStart}-${yearEnd}`; })()}</CardDescription>
               </CardHeader>
               <CardContent>
                 <IncomeSourcesStep />
-                
                 <div className="flex justify-between mt-8">
-                  <Button
-                    variant="outline"
-                    onClick={previousStep}
-                  >
-                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
-                  </Button>
-                  
-                  <Button
-                    className="bg-blue-500 hover:bg-blue-600"
-                    onClick={nextStep}
-                    disabled={formData.incomeSource.length === 0}
-                  >
-                    Continue to Income Details <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
+                  <Button variant="outline" onClick={localPreviousStep}><ArrowLeft className="mr-2 h-4 w-4" /> Back</Button>
+                  <Button className="bg-blue-500 hover:bg-blue-600" onClick={localNextStep} disabled={formData.incomeSource.length === 0}>Continue to Income Details <ArrowRight className="ml-2 h-4 w-4" /></Button>
                 </div>
               </CardContent>
             </Card>
           )}
-          
           {activeStep === 3 && (
             <Card>
               <CardHeader>
@@ -1723,27 +1058,73 @@ const StartFiling = () => {
                   <span className="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm">3</span>
                   Income Details
                 </CardTitle>
-                <CardDescription>
-                  Enter information for each of your selected income sources
-                </CardDescription>
+                <CardDescription>Enter information for each of your selected income sources</CardDescription>
               </CardHeader>
               <CardContent>
                 <IncomeDetailsStep />
-                
                 <div className="flex justify-between mt-8">
-                  <Button
-                    variant="outline"
-                    onClick={previousStep}
-                  >
-                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
-                  </Button>
-                  
-                  <Button
-                    className="bg-blue-500 hover:bg-blue-600"
-                    onClick={nextStep}
-                  >
-                    Continue to Tax Payments <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
+                  <Button variant="outline" onClick={localPreviousStep}><ArrowLeft className="mr-2 h-4 w-4" /> Back</Button>
+                  <Button className="bg-blue-500 hover:bg-blue-600" onClick={localNextStep}>Continue to Deductions <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {activeStep === 4 && ( 
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center">
+                  <span className="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm">4</span>
+                  Deductions (Chapter VI-A)
+                </CardTitle>
+                <CardDescription>Enter your eligible deductions to reduce taxable income</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <DeductionsStep />
+                <div className="flex justify-between mt-8">
+                  <Button variant="outline" onClick={localPreviousStep}><ArrowLeft className="mr-2 h-4 w-4" /> Back</Button>
+                  <Button className="bg-blue-500 hover:bg-blue-600" onClick={localNextStep}>Continue to Tax Payments <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+           {activeStep === 5 && (
+            <Card>
+              <CardHeader><CardTitle>Step 5: Tax Payments (Placeholder)</CardTitle></CardHeader>
+              <CardContent>
+                <p>UI for Tax Payments will be built here.</p>
+                <div className="flex justify-between mt-8">
+                  <Button variant="outline" onClick={localPreviousStep}><ArrowLeft className="mr-2 h-4 w-4" /> Back</Button>
+                  <Button className="bg-blue-500 hover:bg-blue-600" onClick={localNextStep}>Continue to Tax Calculation <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+           {activeStep === 6 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center">
+                  <span className="bg-blue-100 text-blue-800 w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm">6</span>
+                  Tax Calculation
+                </CardTitle>
+                <CardDescription>Review your mock tax computation below.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <TaxCalculationStep />
+                <div className="flex justify-between mt-8">
+                  <Button variant="outline" onClick={localPreviousStep}><ArrowLeft className="mr-2 h-4 w-4" /> Back</Button>
+                  <Button className="bg-blue-500 hover:bg-blue-600" onClick={localNextStep}>Continue to File Return <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+           {activeStep === 7 && (
+            <Card>
+              <CardHeader><CardTitle>Step 7: File Return (Placeholder)</CardTitle></CardHeader>
+              <CardContent>
+                <p>UI for Filing Return will be built here.</p>
+                 <div className="flex justify-between mt-8">
+                  <Button variant="outline" onClick={localPreviousStep}><ArrowLeft className="mr-2 h-4 w-4" /> Back</Button>
+                  <Button className="bg-green-500 hover:bg-green-600 text-white" onClick={() => alert("Return Filing Mocked!")}>File Return (Mock) <FileCheck className="ml-2 h-4 w-4" /></Button>
                 </div>
               </CardContent>
             </Card>
