@@ -248,6 +248,13 @@ const Calculators = () => {
                   href: "/calculators/ppf"
                 },
                 {
+                  title: "NPS Calculator",
+                  description: "Estimate your National Pension System corpus and monthly pension.",
+                  icon: <PiggyBank className="text-primary h-16 w-16" />, // Re-using PiggyBank or choose another
+                  href: "/calculators/nps"
+                  // preloadFn: undefined // Add preload if needed
+                },
+                {
                   title: "View All Calculators",
                   description: "Explore our complete range of financial and tax calculators",
                   icon: <Calculator className="text-primary h-16 w-16 opacity-60" />,

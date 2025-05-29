@@ -213,51 +213,43 @@ const StartFiling = () => {
   useEffect(() => {
     const selectedDraftId = localStorage.getItem("selectedDraftId");
     if (selectedDraftId) {
-      const localDraftsText = localStorage.getItem("taxDrafts"); // This currently stores summaries
-      if (localDraftsText) {
-        const localDraftSummaries: DraftSummary[] = JSON.parse(localDraftsText);
-        // We need to retrieve the FULL formData for the selected draft.
-        // For this mock, we'll assume the full formData was also saved when the draft was created.
-        // Ideally, handleSaveDraft would save the full formData keyed by draftId,
-        // e.g., localStorage.setItem(`draftData-${selectedDraftId}`, JSON.stringify(formData));
-        // For now, let's try to find a summary and then assume we can get full data.
-        
-        // This is a placeholder for fetching the full draft data.
-        // In a real app, you'd fetch from an API or a more structured local store.
-        // We'll simulate loading it if the summary exists.
-        // We'll assume the 'formData' itself was stored with an ID matching selectedDraftId
-        // This part needs to align with how `handleSaveDraft` actually stores the full data.
-        // For the purpose of this mock, let's assume `handleSaveDraft` also stores
-        // the full `formData` under a key like `draftFullData-${draftId}`.
-        
-        const fullDraftDataString = localStorage.getItem(`draftFullData-${selectedDraftId}`);
-        if (fullDraftDataString) {
-          const loadedDraftData: FormData = JSON.parse(fullDraftDataString);
-          
-          setFormData(loadedDraftData);
-          updatePersonalInfo(loadedDraftData); // Update context
-          if (loadedDraftData.assessmentYear) {
-            setAssessmentYear(loadedDraftData.assessmentYear);
-          }
-          // If TaxDataContext needs to be aware of the specific taxFormId for this draft:
-          // This assumes TaxDataContext has a way to set/use this ID.
-          // For example: if (context.setLoadedTaxFormId) context.setLoadedTaxFormId(selectedDraftId);
-          
-          toast({ title: "Draft Loaded", description: `Resumed filing for PAN: ${loadedDraftData.pan}, AY: ${loadedDraftData.assessmentYear}`});
-          localStorage.removeItem("selectedDraftId");
-          return; // Important to prevent overwriting with context data below
-        } catch (e) {
-          console.error("Error parsing full draft data from localStorage:", e);
-          toast({ title: "Error Loading Draft", description: "Could not parse draft data.", variant: "destructive"});
-          localStorage.removeItem("selectedDraftId"); // Clean up
-        }
+      const localDraftsText = localStorage.getItem("taxDrafts");
+      if (!localDraftsText) {
+        toast({ title: "Error Loading Draft", description: "Draft summaries not found in local storage.", variant: "destructive" });
+        localStorage.removeItem("selectedDraftId");
       } else {
-        toast({ title: "Error Loading Draft", description: "Full draft data not found in local storage.", variant: "destructive"});
-        localStorage.removeItem("selectedDraftId"); // Clean up
+        try {
+          // const localDraftSummaries: DraftSummary[] = JSON.parse(localDraftsText); // Not strictly needed if we directly fetch full data
+          const fullDraftDataString = localStorage.getItem(`draftFullData-${selectedDraftId}`);
+          if (!fullDraftDataString) {
+            toast({ title: "Error Loading Draft", description: "Draft data is incomplete. Full details not found.", variant: "destructive" });
+            localStorage.removeItem("selectedDraftId");
+          } else {
+            try {
+              const loadedDraftData: FormData = JSON.parse(fullDraftDataString);
+              setFormData(loadedDraftData);
+              updatePersonalInfo(loadedDraftData);
+              if (loadedDraftData.assessmentYear) {
+                setAssessmentYear(loadedDraftData.assessmentYear);
+              }
+              toast({ title: "Draft Loaded", description: `Resumed filing for PAN: ${loadedDraftData.pan}, AY: ${loadedDraftData.assessmentYear}` });
+              localStorage.removeItem("selectedDraftId");
+              return; // Exit early after successful draft load
+            } catch (parseError) {
+              console.error("Error parsing full draft data from localStorage:", parseError);
+              toast({ title: "Error Loading Draft", description: "Could not parse draft data.", variant: "destructive" });
+              localStorage.removeItem("selectedDraftId");
+            }
+          }
+        } catch (summaryParseError) {
+          console.error("Error parsing localDraftsText (summaries) from localStorage:", summaryParseError);
+          toast({ title: "Error Loading Draft", description: "Could not parse draft summaries.", variant: "destructive" });
+          localStorage.removeItem("selectedDraftId");
+        }
       }
     }
 
-    // Original logic to load from context if no specific draft is selected from MyFilings
+    // Fallback to context if no draft was loaded or if selectedDraftId was not present
     if (taxFormData) {
       const currentAY = (taxFormData as any).assessmentYear || formData.assessmentYear;
       const personalInfoData = ((taxFormData as any).personalInfo || {}) as Record<string, unknown>;
@@ -293,7 +285,7 @@ const StartFiling = () => {
     } else {
       setFormData(prev => ({...prev, assessmentYear: assessmentYear || "2024-25"}));
     }
-  }, [taxFormData, assessmentYear, setAssessmentYear, formData]);
+  }, [taxFormData, assessmentYear, setAssessmentYear, formData]); // Added formData back
   
   const steps: Step[] = [
     { number: 1, title: "Basic Details", description: "Personal information", completed: activeStep > 1, active: activeStep === 1 },

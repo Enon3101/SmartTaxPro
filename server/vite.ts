@@ -3,8 +3,8 @@ import { type Server } from "http";
 import path from "path";
 
 import express, { type Express } from "express";
-import { nanoid } from "nanoid";
-import { createServer as createViteServer, createLogger, type ServerOptions } from "vite";
+// import { nanoid } from "nanoid"; // Unused
+import { createServer as createViteServer, type ServerOptions } from "vite"; // Removed createLogger
 
 
 import viteConfig from "../vite.config";
@@ -17,8 +17,12 @@ export async function setupVite(app: Express, server: Server) {
     allowedHosts: true,
   };
 
+  const clientRoot = path.resolve(import.meta.dirname, '..', 'client');
+  logger.info(`Vite client root configured to: ${clientRoot}`);
+
   const vite = await createViteServer({
     ...viteConfig,
+    root: clientRoot, // Explicitly set the root
     configFile: false,
     customLogger: { // Use the shared logger, map methods if necessary or use Pino's structure
       info: (msg, options) => logger.info({ ...options, vite: true }, msg),
@@ -31,32 +35,36 @@ export async function setupVite(app: Express, server: Server) {
       clearScreen: () => {}, // Vite expects this, can be a no-op
       hasWarned: false, // Vite expects this
       warnOnce: (msg, options) => logger.warn({ ...options, vite: true, once: true }, msg), // Add warnOnce
-      hasErrorLogged: (_err) => false, // Add hasErrorLogged, assuming simple state
+      hasErrorLogged: () => false, // _err removed
     },
     server: serverOptions,
     appType: "custom",
   });
 
-  app.use(vite.middlewares);
+  app.use(vite.middlewares); // Vite handles its own asset serving
+
+  // Fallback for SPA client-side routing. Should only serve index.html for navigation requests.
   app.use("*", async (req, res, next) => {
-    const url = req.originalUrl;
-
-    try {
-      const clientTemplate = path.resolve(
-        import.meta.dirname,
-        "..",
-        "client",
-        "index.html",
-      );
-
-      // always reload the index.html file from disk incase it changes
-      const template = await fs.promises.readFile(clientTemplate, "utf-8");
-      // Removed manual cache busting with nanoid for main.tsx
-      const page = await vite.transformIndexHtml(url, template);
-      res.status(200).set({ "Content-Type": "text/html" }).end(page);
-    } catch (e) {
-      vite.ssrFixStacktrace(e as Error);
-      next(e);
+    // Only handle GET requests that are likely for SPA navigation
+    // (not API calls, not direct asset requests with extensions)
+    if (req.method === 'GET' && !req.url.startsWith('/api') && !req.url.includes('.')) {
+      const url = req.originalUrl;
+      try {
+        const clientTemplate = path.resolve(
+          import.meta.dirname, // server/
+          "..",                // project root
+          "client",            // client/
+          "index.html",
+        );
+        const template = await fs.promises.readFile(clientTemplate, "utf-8");
+        const page = await vite.transformIndexHtml(url, template);
+        res.status(200).set({ "Content-Type": "text/html" }).end(page);
+      } catch (e) {
+        vite.ssrFixStacktrace(e as Error);
+        next(e); // Pass error to Express error handler
+      }
+    } else {
+      next(); // Pass to next middleware (which might be a 404)
     }
   });
 }

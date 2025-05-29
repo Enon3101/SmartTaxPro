@@ -17,7 +17,8 @@ import {
   Receipt,
   Folder,
   Building2,
-  IdCard
+  IdCard,
+  BookOpenCheck 
 } from "lucide-react";
 import React, { useState } from "react";
 import { Link } from "wouter";
@@ -56,6 +57,10 @@ import {
   // superSeniorCitizenSlabs // Removed unused import
 } from "@/data/taxSlabs";
 import { formatIndianCurrency } from "@/lib/formatters";
+// import BasicsOfIncomeTaxGuide from "@/pages/tax-resources/guides/BasicsOfIncomeTaxGuide"; // Removed unused import
+import IncomeAndDeductionsGuide from "@/pages/tax-resources/guides/IncomeAndDeductionsGuide";
+import ITRFilingProcessGuide from "@/pages/tax-resources/guides/ITRFilingProcessGuide";
+import PostFilingEssentialsGuide from "@/pages/tax-resources/guides/PostFilingEssentialsGuide";
 
 interface TaxSlab {
   incomeFrom: number;
@@ -507,6 +512,44 @@ const TaxResources = () => {
               </Card>
             </AccordionContent>
           </AccordionItem>
+
+          <AccordionItem value="tax-guide">
+            <AccordionTrigger className="text-base font-medium">
+              <BookOpenCheck className="mr-2 h-5 w-5" /> Tax Guide
+            </AccordionTrigger>
+            <AccordionContent>
+              <Card>
+                <CardContent className="pt-6">
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="basics-of-income-tax">
+                      <AccordionTrigger>Basics of Income Tax</AccordionTrigger>
+                      <AccordionContent>
+                        <p className="text-red-500 font-bold text-lg p-4">DEBUG MESSAGE: Mobile View - Basics of Income Tax Accordion Content</p>
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="income-and-deductions">
+                      <AccordionTrigger>Understanding Your Income & Deductions</AccordionTrigger>
+                      <AccordionContent>
+                        <IncomeAndDeductionsGuide />
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="itr-filing-process">
+                      <AccordionTrigger>The ITR Filing Process</AccordionTrigger>
+                      <AccordionContent>
+                        <ITRFilingProcessGuide />
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="post-filing-essentials">
+                      <AccordionTrigger>Post-Filing Essentials</AccordionTrigger>
+                      <AccordionContent>
+                        <PostFilingEssentialsGuide />
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </CardContent>
+              </Card>
+            </AccordionContent>
+          </AccordionItem>
         </Accordion>
       </div>
 
@@ -517,6 +560,7 @@ const TaxResources = () => {
             <TabsTrigger value="govt-websites">Government Websites</TabsTrigger>
             <TabsTrigger value="tax-slabs">Tax Slabs</TabsTrigger>
             <TabsTrigger value="tax-deadlines">Tax Deadlines</TabsTrigger>
+            <TabsTrigger value="tax-guide">Tax Guide</TabsTrigger>
           </TabsList>
           
           {/* Government Websites Tab */}
@@ -780,6 +824,40 @@ const TaxResources = () => {
                     </Card>
                   ))}
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Tax Guide Tab */}
+          <TabsContent value="tax-guide">
+            <Card>
+              <CardContent className="pt-6">
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="basics-of-income-tax">
+                    <AccordionTrigger>Basics of Income Tax</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-red-500 font-bold text-lg p-4">DEBUG MESSAGE: Desktop View - Basics of Income Tax Accordion Content</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="income-and-deductions">
+                    <AccordionTrigger>Understanding Your Income & Deductions</AccordionTrigger>
+                    <AccordionContent>
+                      <IncomeAndDeductionsGuide />
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="itr-filing-process">
+                    <AccordionTrigger>The ITR Filing Process</AccordionTrigger>
+                    <AccordionContent>
+                      <ITRFilingProcessGuide />
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="post-filing-essentials">
+                    <AccordionTrigger>Post-Filing Essentials</AccordionTrigger>
+                    <AccordionContent>
+                      <PostFilingEssentialsGuide />
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </CardContent>
             </Card>
           </TabsContent>

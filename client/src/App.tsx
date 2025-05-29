@@ -88,6 +88,13 @@ const PersonalLoanCalculator = lazy(() => {
   ]).then(([moduleExports]) => moduleExports);
 });
 
+const LapCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/lap"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
 // Tax calculators with better prefetching
 const TaxRegimeCalculator = lazy(() => {
   // Add a small delay to give browser time to prioritize current page rendering
@@ -210,6 +217,13 @@ const GratuityCalculator = lazy(() => {
 const PFCalculator = lazy(() => {
   return Promise.all([
     import("@/pages/calculators/pf"),
+    new Promise((resolve) => setTimeout(resolve, 300)),
+  ]).then(([moduleExports]) => moduleExports);
+});
+
+const NPSCalculator = lazy(() => {
+  return Promise.all([
+    import("@/pages/calculators/nps"),
     new Promise((resolve) => setTimeout(resolve, 300)),
   ]).then(([moduleExports]) => moduleExports);
 });
@@ -430,13 +444,24 @@ function Router() {
           <PersonalLoanCalculator />
         </Suspense>
       </Route>
-
+      <Route path="/calculators/lap">
+        <Suspense fallback={<PageLoading />}>
+          <LapCalculator />
+        </Suspense>
+      </Route>
+    
       <Route path="/calculators/gst">
         <Suspense fallback={<PageLoading />}>
           <GstCalculator />
         </Suspense>
       </Route>
-
+    
+      <Route path="/calculators/nps">
+        <Suspense fallback={<PageLoading />}>
+          <NPSCalculator />
+        </Suspense>
+      </Route>
+    
       <Route component={NotFound} />
     </Switch>
   );

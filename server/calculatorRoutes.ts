@@ -274,4 +274,89 @@ router.post('/tax', /* authenticateToken, */ (req: Request, res: Response) => {
   }
 });
 
+// Personal Loan Calculator Schemas
+const PersonalLoanRequestSchema = z.object({
+  principal: z.number().min(1000, "Principal must be at least 1000"),
+  interestRate: z.number().min(0.1, "Interest rate must be at least 0.1%").max(100, "Interest rate cannot exceed 100%"),
+  tenureYears: z.number().min(0.1, "Tenure must be at least ~1 month").max(30, "Tenure cannot exceed 30 years"),
+});
+
+const PersonalLoanResponseSchema = z.object({
+  monthlyEmi: z.number(),
+  totalAmount: z.number(),
+  totalInterest: z.number(),
+  principal: z.number(),
+  tenureYears: z.number(),
+  interestRate: z.number(),
+  loanType: z.string().default("Personal Loan"),
+  additionalInfo: z.object({
+    processingFee: z.number().default(0), // Example, can be calculated or fixed
+    prePaymentPenalty: z.number().default(0), // Example
+  }),
+});
+
+// Personal Loan Calculation Logic
+const calculatePersonalLoan = (
+  data: z.infer<typeof PersonalLoanRequestSchema>
+): z.infer<typeof PersonalLoanResponseSchema> => {
+  const { principal, interestRate, tenureYears } = data;
+
+  const monthlyInterestRate = interestRate / 12 / 100;
+  const numberOfMonths = tenureYears * 12;
+
+  if (principal <= 0 || monthlyInterestRate <= 0 || numberOfMonths <= 0) {
+    // Or throw an error, depending on how strict validation should be
+    return {
+      monthlyEmi: 0,
+      totalAmount: principal,
+      totalInterest: 0,
+      principal,
+      tenureYears,
+      interestRate,
+      loanType: "Personal Loan",
+      additionalInfo: { processingFee: 0, prePaymentPenalty: 0 },
+    };
+  }
+  
+  const emi =
+    (principal * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfMonths)) /
+    (Math.pow(1 + monthlyInterestRate, numberOfMonths) - 1);
+
+  const monthlyEmi = parseFloat(emi.toFixed(2));
+  const totalAmount = parseFloat((monthlyEmi * numberOfMonths).toFixed(2));
+  const totalInterest = parseFloat((totalAmount - principal).toFixed(2));
+
+  // Example: Calculate a processing fee (e.g., 1% of principal)
+  const processingFee = parseFloat((principal * 0.01).toFixed(2));
+
+
+  return {
+    monthlyEmi,
+    totalAmount,
+    totalInterest,
+    principal,
+    tenureYears,
+    interestRate,
+    loanType: "Personal Loan",
+    additionalInfo: {
+      processingFee,
+      prePaymentPenalty: 0, // Assuming no pre-payment penalty for this example
+    },
+  };
+};
+
+router.post('/personal-loan', (req: Request, res: Response) => {
+  try {
+    const validatedData = PersonalLoanRequestSchema.parse(req.body);
+    const result = calculatePersonalLoan(validatedData);
+    res.json(result);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ errors: error.errors });
+    }
+    console.error("Personal loan calculation error:", error);
+    res.status(500).json({ message: "Internal server error during personal loan calculation." });
+  }
+});
+
 export default router;

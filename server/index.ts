@@ -1,7 +1,8 @@
 import 'dotenv/config';
+
 import fs from 'fs';
 import path from 'path';
-
+import compression from 'compression'; // Moved import to the top
 import express, { type Request, Response, NextFunction } from "express";
 import passport from 'passport'; // Import Passport
 import pinoHttp from 'pino-http';
@@ -39,11 +40,14 @@ app.use(httpLogger);
 // Initialize Passport
 app.use(passport.initialize());
 
+// Add after helmet middleware
+app.use(compression());
+
 (async () => {
   const server = await registerRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
+  app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+    const status = (err as any).status || (err as any).statusCode || 500;
     
     // SECURITY: Don't expose detailed error messages in production (Req E)
     const isProduction = process.env.NODE_ENV === 'production';
@@ -77,7 +81,7 @@ app.use(passport.initialize());
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   // CLINE: Attempting to change port to 3000 and remove reusePort due to ENOTSUP error
-  const port = 3000;
+  const port = 3002; // Changed port from 3001 to 3002 due to EADDRINUSE
   server.listen({
     port,
     host: "0.0.0.0",
