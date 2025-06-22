@@ -2,6 +2,8 @@ import { Users, FileText, ChevronRight, LogOut, User, Settings, LayoutDashboard,
 import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'wouter';
 
+import AdminTaxFormDocuments from '@/components/AdminTaxFormDocuments';
+import ReportsSection from '@/components/ReportsSection';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -357,20 +359,6 @@ function TaxFormManagement() {
               </div>
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground">Status</h3>
-                <span className={`px-2 py-1 rounded-full text-xs ${
-                  form.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                  form.status === 'filed' ? 'bg-blue-100 text-blue-800' : 
-                  'bg-yellow-100 text-yellow-800'
-                }`}>
-                  {form.status}
-                </span>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground">Created At</h3>
-                <p>{formatDate(form.createdAt || new Date())}</p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground">Last Updated</h3>
                 <p>{formatDate(form.updatedAt || new Date())}</p>
               </div>
               <div>
@@ -864,7 +852,7 @@ export default function Admin() {
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
           <div className="block md:hidden p-2 border-b">
-            <TabsList className="w-full grid grid-cols-5">
+            <TabsList className="w-full grid grid-cols-6">
               <TabsTrigger value="dashboard" className="flex-1">
                 <LayoutDashboard className="mr-2 h-4 w-4" />
                 Dashboard
@@ -876,6 +864,10 @@ export default function Admin() {
               <TabsTrigger value="tax-forms" className="flex-1">
                 <FileText className="mr-2 h-4 w-4" />
                 Forms
+              </TabsTrigger>
+              <TabsTrigger value="reports" className="flex-1">
+                <FileText className="mr-2 h-4 w-4" />
+                Reports
               </TabsTrigger>
               <TabsTrigger value="blogs" className="flex-1">
                 <FileText className="mr-2 h-4 w-4" />
@@ -901,6 +893,10 @@ export default function Admin() {
               <TaxFormManagement />
             </TabsContent>
             
+            <TabsContent value="reports">
+              <ReportsSection />
+            </TabsContent>
+
             <TabsContent value="blogs">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
