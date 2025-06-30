@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 
 interface GoogleAuthContextType {
   isInitialized: boolean;
@@ -23,7 +23,7 @@ const GoogleAuthProvider: React.FC<GoogleAuthProviderProps> = ({ children }) => 
   
   useEffect(() => {
     // First try to get VITE_GOOGLE_CLIENT_ID from environment
-    let googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     
     // If that's not available, fetch it from the server which has access to the regular environment variables
     if (!googleClientId) {

@@ -1,7 +1,4 @@
-import { useState, useEffect } from "react";
-import { Link } from "wouter";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { motion } from "framer-motion";
 import { 
   FileText, 
   Calculator, 
@@ -9,6 +6,7 @@ import {
   DollarSign,
   Home,
   BarChart3,
+  // FileText, // Added for GST Calculator - This was the duplicate
   Calendar,
   Coins,
   PiggyBank,
@@ -19,8 +17,13 @@ import {
   Landmark,
   Wallet
 } from "lucide-react";
+import { useEffect } from "react"; // Removed useState
+import { Link } from "wouter";
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePreloadCalculator } from "@/hooks/usePreloadCalculator";
-import { motion } from "framer-motion";
+
 
 const Calculators = () => {
   const { 
@@ -136,6 +139,13 @@ const Calculators = () => {
                   description: "Calculate your gratuity amount based on your salary and years of service.",
                   icon: <PiggyBank className="text-primary h-16 w-16" />,
                   href: "/calculators/gratuity"
+                },
+                {
+                  title: "GST Calculator",
+                  description: "Calculate Goods and Services Tax (GST) amount based on price and GST rate.",
+                  icon: <FileText className="text-primary h-16 w-16" />,
+                  href: "/calculators/gst"
+                  // preloadFn: undefined, // No preload function for this new calculator yet
                 }
               ].map((calculator, index) => (
                 <motion.div
@@ -158,26 +168,26 @@ const Calculators = () => {
                       className="flex justify-center mt-2"
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      transition={{ 
-                        type: "spring", 
-                        stiffness: 400, 
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
                         damping: 15,
-                        delay: 0.6 
+                        delay: 0.6 + (index * 0.1)
                       }}
                     >
                       <Link href={calculator.href}>
-                        <div 
+                        <div
                           className="text-primary font-medium hover:underline text-sm flex items-center transition-all duration-300 transform hover:translate-x-1"
                           onMouseEnter={calculator.preloadFn}
                         >
-                          Use Calculator 
+                          Use Calculator
                           <motion.span
                             initial={{ x: -5, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
-                            transition={{ duration: 0.3, delay: 0.8 }}
+                            transition={{ duration: 0.3, delay: 0.8 + (index * 0.1) }}
                           >
-                            <svg 
-                              xmlns="http://www.w3.org/2000/svg" 
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
                               width="16" 
                               height="16" 
                               viewBox="0 0 24 24" 
@@ -238,6 +248,13 @@ const Calculators = () => {
                   href: "/calculators/ppf"
                 },
                 {
+                  title: "NPS Calculator",
+                  description: "Estimate your National Pension System corpus and monthly pension.",
+                  icon: <PiggyBank className="text-primary h-16 w-16" />, // Re-using PiggyBank or choose another
+                  href: "/calculators/nps"
+                  // preloadFn: undefined // Add preload if needed
+                },
+                {
                   title: "View All Calculators",
                   description: "Explore our complete range of financial and tax calculators",
                   icon: <Calculator className="text-primary h-16 w-16 opacity-60" />,
@@ -267,25 +284,25 @@ const Calculators = () => {
                             className="flex justify-center mt-2"
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            transition={{ 
-                              type: "spring", 
-                              stiffness: 400, 
+                            transition={{
+                              type: "spring",
+                              stiffness: 400,
                               damping: 15,
-                              delay: 0.6 
+                              delay: 0.6 + (index * 0.1)
                             }}
                           >
-                            <div 
+                            <div
                               className="text-primary font-medium hover:underline text-sm flex items-center transition-all duration-300 transform hover:translate-x-1"
                               onMouseEnter={calculator.preloadFn}
                             >
-                              Use Calculator 
+                              Use Calculator
                               <motion.span
                                 initial={{ x: -5, opacity: 0 }}
                                 animate={{ x: 0, opacity: 1 }}
-                                transition={{ duration: 0.3, delay: 0.8 }}
+                                transition={{ duration: 0.3, delay: 0.8 + (index * 0.1) }}
                               >
-                                <svg 
-                                  xmlns="http://www.w3.org/2000/svg" 
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
                                   width="16" 
                                   height="16" 
                                   viewBox="0 0 24 24" 

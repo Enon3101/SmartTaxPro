@@ -1,14 +1,12 @@
-import { useState } from "react";
-import ProgressTracker from "./ProgressTracker";
-import TaxSummaryCard from "./TaxSummaryCard";
-import HelpResourcesCard from "./HelpResourcesCard";
-import { TaxTipSidebar } from "./TaxTipSidebar";
-import { useTaxFiling } from "@/hooks/useTaxFiling";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { ChevronLeft, ChevronRight, Plus, HelpCircle } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link } from "wouter";
 import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -25,6 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -32,13 +31,19 @@ import {
   SelectTrigger, 
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight, Plus, HelpCircle } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import FileUpload from "./FileUpload";
-import { Link } from "wouter";
+
+
+
 import { toast } from "@/hooks/use-toast";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useTaxFiling } from "@/hooks/useTaxFiling";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import FileUpload from "./FileUpload";
+
+import HelpResourcesCard from "./HelpResourcesCard";
+import ProgressTracker from "./ProgressTracker";
+import TaxSummaryCard from "./TaxSummaryCard";
+import { TaxTipSidebar } from "./TaxTipSidebar";
 
 // Define the schema for Form 16 (Indian salary income)
 const form16Schema = z.object({

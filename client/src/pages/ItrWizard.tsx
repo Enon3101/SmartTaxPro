@@ -1,15 +1,17 @@
+import { ArrowLeft, ArrowRight, Briefcase, Building, Calculator, Home, LineChart, PiggyBank } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { ArrowLeft, ArrowRight, Briefcase, Building, Calculator, Home, LineChart, PiggyBank } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+import { DynamicForm } from '@/components/ItrWizard/DynamicForm';
 import { IncomeTile } from '@/components/ItrWizard/IncomeTile';
 import { StepIndicator } from '@/components/ItrWizard/StepIndicator';
-import { DynamicForm } from '@/components/ItrWizard/DynamicForm';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useItrWizard } from '@/context/ItrWizardContext';
-import { getITRDescription } from '../utils/itrSelector';
 import { getAllCompulsoryFields, getCompulsoryFields } from '@/utils/compulsoryFieldsLoader';
+
+import { getITRDescription } from '../utils/itrSelector';
 
 // Define wizard steps
 const wizardSteps = [

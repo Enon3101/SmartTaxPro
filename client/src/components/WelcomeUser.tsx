@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 import { 
   FileText, 
   User, 
@@ -11,9 +9,13 @@ import {
   Briefcase,
   ChevronRight
 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { motion } from "framer-motion";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+
 
 interface WelcomeUserProps {
   user: {

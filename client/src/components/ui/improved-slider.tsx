@@ -1,4 +1,5 @@
 import React from "react";
+
 import { Slider, SliderProps } from "@/components/ui/slider";
 
 export interface ImprovedSliderProps extends SliderProps {

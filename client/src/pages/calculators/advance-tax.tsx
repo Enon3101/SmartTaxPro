@@ -1,29 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { motion } from 'framer-motion';
 import { 
   Calendar, 
   ChevronRight, 
@@ -32,8 +7,37 @@ import {
   FileText, 
   HelpCircle, 
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  ArrowLeft
 } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Link } from 'wouter';
+
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table";
 import { formatIndianCurrency } from "@/lib/formatters";
 
 // Advance tax due dates for individuals
@@ -150,12 +154,19 @@ const AdvanceTaxCalculator = () => {
       // For each installment, the amount shown is the additional amount for that quarter
       let additionalAmount = amount;
       if (data.installment !== "First Installment") {
-        const prevInstallment = advanceTaxDueDates.find(
-          d => d.percentage === data.percentage - 30 // 15 -> 45 -> 75 -> 100
-        );
-        if (prevInstallment) {
-          const prevAmount = Math.round((advanceTax * prevInstallment.percentage) / 100);
-          additionalAmount = amount - prevAmount;
+        // const prevInstallment = advanceTaxDueDates.find( // prevInstallment is unused
+        //   (d, i) => i > 0 && advanceTaxDueDates[i-1].percentage < data.percentage && d.percentage === data.percentage
+        // );
+
+        // A bit complex logic to find the immediately preceding installment's cumulative percentage
+        let prevCumulativePercentage = 0;
+        if (data.percentage === 45) prevCumulativePercentage = 15;
+        else if (data.percentage === 75) prevCumulativePercentage = 45;
+        else if (data.percentage === 100) prevCumulativePercentage = 75;
+
+        if (prevCumulativePercentage > 0) {
+            const prevAmount = Math.round((advanceTax * prevCumulativePercentage) / 100);
+            additionalAmount = amount - prevAmount;
         }
       }
       
@@ -183,16 +194,34 @@ const AdvanceTaxCalculator = () => {
   
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl md:text-3xl font-bold mb-2 flex items-center">
-        <Calendar className="mr-2 h-6 w-6 md:h-8 md:w-8" /> 
-        Advance Tax Calculator
-      </h1>
-      <p className="text-sm md:text-base text-muted-foreground mb-6 md:mb-8">
-        Calculate your quarterly advance tax installments for Financial Year 2023-24
-      </p>
+      <div className="mb-8">
+        <Button asChild variant="ghost" size="sm" className="mb-4">
+          <Link href="/calculators">
+            <ArrowLeft className="mr-1 h-4 w-4" /> Back to Calculators
+          </Link>
+        </Button>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-2xl md:text-3xl font-bold mb-2 flex items-center gap-2">
+            <Calendar className="h-7 w-7 text-primary" /> 
+            Advance Tax Calculator
+          </h1>
+          <p className="text-sm md:text-base text-muted-foreground">
+            Calculate your quarterly advance tax installments for Financial Year 2023-24
+          </p>
+        </motion.div>
+      </div>
       
       <div className="grid md:grid-cols-12 gap-6">
-        <div className="md:col-span-7">
+        <motion.div
+          className="md:col-span-7 space-y-6"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
           <Card>
             <CardHeader>
               <CardTitle>Estimated Income & Tax Details</CardTitle>
@@ -292,7 +321,7 @@ const AdvanceTaxCalculator = () => {
             </CardContent>
           </Card>
           
-          <Card className="mt-6">
+          <Card>
             <CardHeader>
               <CardTitle>Advance Tax Schedule</CardTitle>
               <CardDescription>
@@ -341,9 +370,14 @@ const AdvanceTaxCalculator = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
         
-        <div className="md:col-span-5">
+        <motion.div
+          className="md:col-span-5"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <Card className="sticky top-8">
             <CardHeader>
               <CardTitle>Advance Tax Summary</CardTitle>
@@ -435,7 +469,7 @@ const AdvanceTaxCalculator = () => {
               </Accordion>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
+import { CheckCircle, Download, FileText, Home, Printer } from "lucide-react";
 import { useLocation } from "wouter";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Download, FileText, Home, Printer } from "lucide-react";
 
 export default function FilingComplete() {
   const [location, setLocation] = useLocation();

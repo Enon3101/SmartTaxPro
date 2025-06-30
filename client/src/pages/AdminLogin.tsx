@@ -1,11 +1,12 @@
+import { Shield, User } from "lucide-react";
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, User } from "lucide-react";
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
@@ -53,6 +54,26 @@ export default function AdminLogin() {
       setLocation("/admin");
     } catch (error) {
       console.error("Auto login error:", error);
+      if (error instanceof TypeError && error.message === "Failed to fetch") {
+        console.error("Detailed Fetch Error: This usually means the server is not reachable or a CORS issue is preventing the request. Check if the server is running and the endpoint /api/auth/dev-admin-login is correct.");
+        toast({
+          title: "Auto Login Failed",
+          description: "Could not connect to the server. Please ensure the server is running.",
+          variant: "destructive",
+        });
+      } else if (error instanceof Error) {
+         toast({
+          title: "Auto Login Error",
+          description: error.message || "An unexpected error occurred during auto-login.",
+          variant: "destructive",
+        });
+      } else {
+         toast({
+          title: "Auto Login Error",
+          description: "An unknown error occurred.",
+          variant: "destructive",
+        });
+      }
       setIsLoading(false);
     }
   };

@@ -1,22 +1,25 @@
-import { ReactNode, createContext, useEffect, useState } from "react";
-import { calculateTaxSummary } from "@/lib/taxCalculations";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
 import { nanoid } from "nanoid";
-import { 
+import { ReactNode, createContext, useEffect, useState } from "react";
+
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import { calculateTaxSummary } from "@/lib/taxCalculations";
+import {
   TaxFormData,
   IncomeData,
-  CapitalGainsEntry,
-  SalaryEntry,
-  HousePropertyEntry,
-  BusinessIncomeEntry,
-  InterestIncomeEntry,
-  OtherIncomeEntry,
   Deductions80C,
   Deductions80D,
   OtherDeductions,
-  TaxesPaid
+  TaxesPaid,
+  // CapitalGainsEntry, // Not directly used in this file's props/state after correction
+  // SalaryEntry, // Not directly used
+  // HousePropertyEntry, // Not directly used
+  // BusinessIncomeEntry, // Not directly used
+  // InterestIncomeEntry, // Not directly used
+  // OtherIncomeEntry, // Not directly used
 } from "@/lib/taxInterfaces";
+
+import { useAuth } from "./AuthContext";
 
 interface TaxDataContextType {
   currentStep: number;
@@ -26,13 +29,13 @@ interface TaxDataContextType {
   taxFormId: string;
   taxSummary: ReturnType<typeof calculateTaxSummary>;
   taxFormData: TaxFormData | null;
-  updatePersonalInfo: (data: any) => void;
+  updatePersonalInfo: (data: any) => void; // personalInfo is 'any' in TaxFormData
   updateFormType: (formType: string) => void;
-  updateIncome: (data: any) => void;
-  updateDeductions80C: (data: any) => void;
-  updateDeductions80D: (data: any) => void;
-  updateOtherDeductions: (data: any) => void;
-  updateTaxPaid: (data: any) => void;
+  updateIncome: (data: Partial<IncomeData>) => void;
+  updateDeductions80C: (data: Partial<Deductions80C>) => void;
+  updateDeductions80D: (data: Partial<Deductions80D>) => void;
+  updateOtherDeductions: (data: Partial<OtherDeductions>) => void;
+  updateTaxPaid: (data: Partial<TaxesPaid>) => void;
   isLoading: boolean;
   assessmentYear: string;
   setAssessmentYear: (year: string) => void;
@@ -80,10 +83,11 @@ export const TaxDataContext = createContext<TaxDataContextType>({
 });
 
 export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth(); // Get auth state
   const [currentStep, setCurrentStep] = useState(1);
   const [taxFormId, setTaxFormId] = useState("");
   const [taxFormData, setTaxFormData] = useState<TaxFormData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Loading state for tax data
   const [assessmentYear, setAssessmentYear] = useState("2024-25");
   const { toast } = useToast();
 
@@ -98,79 +102,36 @@ export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
   );
 
   useEffect(() => {
-    const initializeTaxForm = async () => {
-      try {
-        // Check if we have a tax form ID in localStorage
-        const storedTaxFormId = localStorage.getItem("taxFormId");
-        
-        if (storedTaxFormId) {
-          // If we have an ID, try to fetch the form data
-          try {
-            const response = await fetch(`/api/tax-forms/${storedTaxFormId}`, {
-              credentials: "include",
-            });
-            
-            if (response.ok) {
-              const data = await response.json();
-              setTaxFormId(storedTaxFormId);
-              setTaxFormData(data);
-              
-              // Set the current step based on progress
-              if (data.status === "completed") {
-                setCurrentStep(5); // Review & File
-              } else if (data.taxPaid) {
-                setCurrentStep(4); // Tax Paid
-              } else if (data.deductions80C || data.deductions80D || data.otherDeductions) {
-                setCurrentStep(3); // Deductions
-              } else if (data.incomeData) {
-                setCurrentStep(2); // Income
-              } else {
-                setCurrentStep(1); // Personal Info
-              }
-
-              if (data.assessmentYear) {
-                setAssessmentYear(data.assessmentYear);
-              }
-            } else {
-              // If the form doesn't exist, create a new one
-              createNewTaxForm();
-            }
-          } catch (error) {
-            console.error("Error fetching tax form:", error);
-            createNewTaxForm();
-          }
-        } else {
-          // If no ID in storage, create a new tax form
-          createNewTaxForm();
-        }
-      } catch (error) {
-        console.error("Error initializing tax form:", error);
-        toast({
-          title: "Error",
-          description: "Failed to initialize tax form. Please try again.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     const createNewTaxForm = async () => {
+      // This function should only be called if the user is authenticated
+      if (!isAuthenticated) {
+        console.warn("Attempted to create new tax form while unauthenticated.");
+        setIsLoading(false); // Ensure loading state is cleared
+        return;
+      }
       try {
-        // Generate a new ID
         const newTaxFormId = nanoid();
-        
-        // Create a new tax form on the server
-        const data = await apiRequest(
-          "/api/tax-forms", 
-          { method: "POST" },
+        const response = await apiRequest(
+          "POST",
+          "/api/tax-forms",
           {
-            id: newTaxFormId,
-            status: "in_progress",
-            assessmentYear: assessmentYear,
-            formType: "ITR-1"
+            body: JSON.stringify({
+              id: newTaxFormId,
+              status: "in_progress",
+              assessmentYear: assessmentYear, // Use current state assessmentYear
+              formType: "ITR-1"
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
         );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to create tax form: ${response.status} ${errorText}`);
+        }
+        const data = await response.json();
         
         setTaxFormId(newTaxFormId);
         setTaxFormData(data);
@@ -184,9 +145,76 @@ export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
         });
       }
     };
+    
+    const initializeTaxForm = async () => {
+      if (!isAuthenticated) {
+        // If user is not authenticated, don't attempt to load or create form.
+        // Set loading to false and ensure taxFormData is null.
+        setTaxFormData(null);
+        setTaxFormId("");
+        setIsLoading(false);
+        return;
+      }
 
-    initializeTaxForm();
-  }, []);
+      setIsLoading(true);
+      try {
+        const storedTaxFormId = localStorage.getItem("taxFormId");
+        
+        if (storedTaxFormId) {
+          try {
+            // apiRequest will include auth token if available
+            const response = await apiRequest("GET", `/api/tax-forms/${storedTaxFormId}`);
+            
+            if (response.ok) {
+              const data = await response.json();
+              setTaxFormId(storedTaxFormId);
+              setTaxFormData(data);
+              if (data.assessmentYear) {
+                setAssessmentYear(data.assessmentYear);
+              }
+              // Determine current step based on fetched data
+              if (data.status === "completed") setCurrentStep(5);
+              else if (data.taxPaid) setCurrentStep(4);
+              else if (data.deductions80C || data.deductions80D || data.otherDeductions) setCurrentStep(3);
+              else if (data.incomeData) setCurrentStep(2);
+              else setCurrentStep(1);
+            } else if (response.status === 404 || response.status === 401 || response.status === 403) {
+              // Form not found on server, or not authorized, or token invalid
+              localStorage.removeItem("taxFormId"); // Clear invalid ID
+              await createNewTaxForm(); // Create a new one if authenticated
+            } else {
+              // Other server error
+              const errorText = await response.text();
+              throw new Error(`Failed to fetch tax form: ${response.status} ${errorText}`);
+            }
+          } catch (error) {
+            console.error("Error fetching or processing existing tax form:", error);
+            localStorage.removeItem("taxFormId"); // Clear potentially problematic ID
+            await createNewTaxForm(); // Attempt to create a new one if authenticated
+          }
+        } else {
+          await createNewTaxForm(); // No stored ID, create new if authenticated
+        }
+      } catch (error) {
+        console.error("Error initializing tax form:", error);
+        toast({
+          title: "Error",
+          description: "Failed to initialize tax form. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (!isAuthLoading) { // Only proceed if auth status is resolved
+      initializeTaxForm();
+    } else {
+      // Auth is still loading, keep TaxDataProvider's isLoading true
+      setIsLoading(true);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, isAuthLoading, assessmentYear]); // Add assessmentYear to dependencies if createNew uses it
 
   const nextStep = () => {
     if (currentStep < 6) {
@@ -200,32 +228,32 @@ export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const updatePersonalInfo = (data: any) => {
-    setTaxFormData((prev) => prev ? { ...prev, personalInfo: data } : null);
+  const updatePersonalInfo = (data: any) => { // personalInfo is 'any' in TaxFormData
+    setTaxFormData((prev) => prev ? { ...prev, personalInfo: { ...(prev.personalInfo || {}), ...data } } : null);
   };
 
   const updateFormType = (formType: string) => {
     setTaxFormData((prev) => prev ? { ...prev, formType } : null);
   };
 
-  const updateIncome = (data: any) => {
-    setTaxFormData((prev) => prev ? { ...prev, incomeData: data } : null);
+  const updateIncome = (data: Partial<IncomeData>) => {
+    setTaxFormData((prev) => prev ? { ...prev, incomeData: { ...(prev.incomeData || {}), ...data } as IncomeData } : null);
   };
 
-  const updateDeductions80C = (data: any) => {
-    setTaxFormData((prev) => prev ? { ...prev, deductions80C: data } : null);
+  const updateDeductions80C = (data: Partial<Deductions80C>) => {
+    setTaxFormData((prev) => prev ? { ...prev, deductions80C: { ...(prev.deductions80C || {}), ...data } as Deductions80C } : null);
   };
 
-  const updateDeductions80D = (data: any) => {
-    setTaxFormData((prev) => prev ? { ...prev, deductions80D: data } : null);
+  const updateDeductions80D = (data: Partial<Deductions80D>) => {
+    setTaxFormData((prev) => prev ? { ...prev, deductions80D: { ...(prev.deductions80D || {}), ...data } as Deductions80D } : null);
   };
 
-  const updateOtherDeductions = (data: any) => {
-    setTaxFormData((prev) => prev ? { ...prev, otherDeductions: data } : null);
+  const updateOtherDeductions = (data: Partial<OtherDeductions>) => {
+    setTaxFormData((prev) => prev ? { ...prev, otherDeductions: { ...(prev.otherDeductions || {}), ...data } as OtherDeductions } : null);
   };
 
-  const updateTaxPaid = (data: any) => {
-    setTaxFormData((prev) => prev ? { ...prev, taxPaid: data } : null);
+  const updateTaxPaid = (data: Partial<TaxesPaid>) => {
+    setTaxFormData((prev) => prev ? { ...prev, taxPaid: { ...(prev.taxPaid || {}), ...data } as TaxesPaid } : null);
   };
 
   return (

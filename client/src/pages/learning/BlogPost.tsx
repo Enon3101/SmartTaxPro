@@ -1,8 +1,9 @@
-import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, Calendar, User, Clock, Tag } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useParams, useLocation } from "wouter";
+
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import blogContents from "@/data/blogContent";

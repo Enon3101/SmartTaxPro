@@ -6,16 +6,24 @@ export function ScrollToTop() {
   const [location] = useLocation();
   
   useEffect(() => {
-    // Scroll to top when location changes
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'auto' // Using 'auto' instead of 'smooth' for immediate effect
-    });
-    
-    // Alternative method to ensure scrolling works in all browsers
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    const doScroll = () => {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'auto'
+      });
+      // Fallbacks
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    };
+
+    // Delay scroll until the next animation frame,
+    // allowing the browser a bit more time to render the new page layout.
+    const frameId = requestAnimationFrame(doScroll);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+    };
   }, [location]);
   
   return null; // This component doesn't render anything

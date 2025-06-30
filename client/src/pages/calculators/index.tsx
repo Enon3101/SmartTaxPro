@@ -1,8 +1,9 @@
+import { Calculator, Home, Car, IndianRupee, Percent, Calendar, History, PiggyBank } from 'lucide-react';
 import React from 'react';
 import { Link } from 'wouter';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+
 import { Button } from '@/components/ui/button';
-import { Calculator, Home, Car, IndianRupee, Percent, Calendar, History, PiggyBank } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 const CalculatorsPage = () => {
   const calculatorCategories = [

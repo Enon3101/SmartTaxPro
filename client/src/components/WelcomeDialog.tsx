@@ -1,14 +1,4 @@
-import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 import { 
   FileText, 
   User, 
@@ -17,7 +7,18 @@ import {
   FileQuestion, 
   ChevronRight 
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface WelcomeDialogProps {
   user: {

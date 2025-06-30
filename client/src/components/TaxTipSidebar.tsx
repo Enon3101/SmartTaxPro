@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Lightbulb, TrendingUp, HandCoins, Bookmark, Gift, Award, RefreshCw } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { Lightbulb, TrendingUp, HandCoins, Bookmark, Gift, Award, RefreshCw } from "lucide-react";
+import { useState, useEffect } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+
 
 // Array of tax tips for Indian taxpayers
 const taxTips = [

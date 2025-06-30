@@ -1,16 +1,4 @@
-import React from 'react';
-import { Link } from 'wouter';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Calculator, Calendar } from "lucide-react";
 import {
   AlertCircle,
   ArrowRight,
@@ -22,6 +10,20 @@ import {
   UserCheck,
   Users2,
 } from 'lucide-react';
+import React from 'react';
+import { Link } from 'wouter';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const ITRFormsGuidePage = () => {
   return (
@@ -331,7 +333,7 @@ const ITRFormsGuidePage = () => {
             <div>
               <h3 className="font-medium text-amber-800 mb-1">Important Note</h3>
               <p className="text-sm text-amber-700">
-                Filing the correct ITR form is crucial. Using an incorrect form may result in a defective return notice from the Income Tax Department. If you're unsure which form to use, consult our Tax Expert or use our ITR Wizard to determine the correct form based on your income sources.
+                Filing the correct ITR form is crucial. Using an incorrect form may result in a defective return notice from the Income Tax Department. If you&amp;apos;re unsure which form to use, consult our Tax Expert or use our ITR Wizard to determine the correct form based on your income sources.
               </p>
             </div>
           </div>
@@ -457,7 +459,7 @@ const ITRFormsGuidePage = () => {
                   <h3 className="font-medium">Business Owners and Professionals</h3>
                   <ul className="ml-6 space-y-1 text-sm list-disc">
                     <li>If you have income from business or profession with proper books of accounts: <span className="font-medium text-primary">ITR-3</span></li>
-                    <li>If you're eligible for presumptive taxation under sections 44AD, 44ADA, or 44AE with total income up to ₹50 lakhs: <span className="font-medium text-primary">ITR-4</span></li>
+                    <li>If you&amp;apos;re eligible for presumptive taxation under sections 44AD, 44ADA, or 44AE with total income up to ₹50 lakhs: <span className="font-medium text-primary">ITR-4</span></li>
                   </ul>
                 </div>
                 

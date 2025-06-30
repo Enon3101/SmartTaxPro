@@ -1,7 +1,8 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+
 import WelcomeUser from "@/components/WelcomeUser";
+import { apiRequest } from "@/lib/queryClient";
 
 interface User {
   id: number;
@@ -12,11 +13,17 @@ interface User {
   lastName?: string;
 }
 
+interface AuthResponseData {
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+}
+
 interface AuthContextType {
   user: User | null;
-  isLoading: boolean;
+  isLoading: boolean; // This will reflect session validation loading
   isAuthenticated: boolean;
-  login: (userData: User) => void;
+  login: (authData: AuthResponseData) => void; // Updated signature
   logout: () => void;
   showWelcome: boolean;
   setShowWelcome: (show: boolean) => void;
@@ -35,60 +42,114 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [showWelcome, setShowWelcome] = useState(false);
-  
-  // Try to get stored user from localStorage on initial load
+  const [authToken, setAuthToken] = useState<string | null>(localStorage.getItem("authToken"));
+
+  // Effect to update authToken state if localStorage changes (e.g. from another tab, though less common for auth tokens)
   useEffect(() => {
+    const handleStorageChange = () => {
+      setAuthToken(localStorage.getItem("authToken"));
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+  
+  // Try to load user from localStorage on initial mount if authToken exists
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
     const storedUser = localStorage.getItem("taxUser");
-    if (storedUser) {
+    if (token && storedUser) {
       try {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
+        const parsedUser = JSON.parse(storedUser) as User;
+        // Basic validation
+        if (parsedUser && parsedUser.id && parsedUser.username && parsedUser.role) {
+          setUser(parsedUser);
+          setAuthToken(token);
+        } else {
+          // Invalid stored user, clear everything
+          localStorage.removeItem("taxUser");
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("refreshToken");
+          setAuthToken(null);
+        }
       } catch (error) {
-        console.error("Error parsing stored user:", error);
+        console.error("Error parsing stored user on initial load:", error);
         localStorage.removeItem("taxUser");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("refreshToken");
+        setAuthToken(null);
       }
     }
   }, []);
-  
-  interface UserResponse {
-    id: number;
-    username: string;
-    phone?: string;
-    role: string;
-  }
 
-  // Validate the user session if we have a stored user
-  const { isLoading } = useQuery({
-    queryKey: ["user", user?.id],
-    queryFn: async () => {
-      if (!user?.id) return null;
-      return apiRequest<UserResponse>("GET", `/api/auth/me?userId=${user.id}`);
-    },
-    enabled: !!user?.id,
-    retry: false,
-    onSuccess: (data: UserResponse | null) => {
-      if (data) {
-        // Update user data
-        setUser(data);
+  // Validate the user session with the server if an auth token exists
+  const { 
+    data: sessionUser, 
+    isLoading, 
+    isError, 
+    error: sessionError, 
+    isSuccess 
+  } = useQuery<User | null, Error, User | null, [string]>({ // Updated types
+    queryKey: ["currentUser"], // Simpler key, re-fetches if queryClient invalidates it
+    queryFn: async (): Promise<User | null> => {
+      const currentToken = localStorage.getItem("authToken"); // Get fresh token
+      if (!currentToken) return null;
+
+      // apiRequest should be configured to automatically send the authToken
+      // If not, headers must be set manually here.
+      const response = await apiRequest("GET", "/api/auth/user"); // No userId needed
+      
+      if (!response.ok) {
+        // If token is invalid (e.g. expired, server returns 401), this will throw
+        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(errorData.message || `User validation failed: ${response.status}`);
       }
+      
+      const data: User = await response.json();
+      return data;
     },
-    onError: () => {
-      // If validation fails, log out
-      logout();
+    enabled: !!authToken, // Query enabled only if authToken exists
+    retry: (failureCount, error) => {
+      // Don't retry on 401/403 errors, as token is likely invalid
+      if (error.message.includes("401") || error.message.includes("403")) {
+        return false;
+      }
+      return failureCount < 2; // Retry other errors (e.g. network) twice
     },
-  } as any);
+  });
 
-  const login = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem("taxUser", JSON.stringify(userData));
-    // Show welcome screen on successful login
+  useEffect(() => {
+    if (isSuccess && sessionUser) {
+      setUser(sessionUser); // Update user with fresh data from server
+      localStorage.setItem("taxUser", JSON.stringify(sessionUser)); // Keep localStorage in sync
+    }
+  }, [isSuccess, sessionUser]);
+
+  useEffect(() => {
+    if (isError) {
+      console.error("Session validation error:", sessionError?.message);
+      logout(); // If session validation fails (e.g. token expired), log out
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isError, sessionError]); // logout is stable
+
+  const login = (authData: AuthResponseData) => {
+    setUser(authData.user);
+    localStorage.setItem("taxUser", JSON.stringify(authData.user));
+    localStorage.setItem("authToken", authData.accessToken);
+    localStorage.setItem("refreshToken", authData.refreshToken);
+    setAuthToken(authData.accessToken); // Update state for query re-trigger
     setShowWelcome(true);
   };
 
   const logout = () => {
     setUser(null);
-    setShowWelcome(false);
     localStorage.removeItem("taxUser");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("refreshToken");
+    setAuthToken(null); // Update state for query re-trigger
+    setShowWelcome(false);
+    // Optionally, redirect to login page or home page
+    // window.location.href = '/login'; // Or use wouter's setLocation
   };
 
   return (

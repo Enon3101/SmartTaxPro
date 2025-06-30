@@ -1,29 +1,27 @@
-import { useState, useEffect } from "react";
-import { Link, useParams, useLocation } from "wouter";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
-import { 
-  ArrowLeft, 
-  Plus, 
-  Pencil, 
-  Trash2, 
-  Check, 
-  X, 
-  Upload, 
-  Eye, 
-  Save, 
+import {
+  ArrowLeft,
   Calendar,
-  Clock 
-} from "lucide-react";
-// Use the admin guard hook for authentication
+  Check,
+  Eye,
+  Pencil,
+  Plus,
+  Save,
+  Trash2,
+} from "lucide-react"; // Sorted imports
+import { useEffect, useState } from "react"; // Sorted imports
+import { Link, useLocation } from "wouter";
+
+import TiptapEditor from "@/components/RichTextEditor";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import { useAdminGuard } from '@/hooks/useAdminGuard';
 
 // Sample blog post data (to be replaced with API call)
@@ -114,20 +112,161 @@ interface BlogAdminProps {
   id?: string;
 }
 
+interface BlogPostFormState {
+  title: string;
+  slug: string;
+  summary: string;
+  content: string;
+  category: string;
+  tags: string[]; // Ensure this is string[]
+  readTime: number;
+  published: boolean;
+  featuredImage: string;
+  authorId?: number; // Made optional as it's set by server
+  authorName?: string; // Made optional, for display, not submission
+}
+
 // Component to manage blog posts
 const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
   const isAdmin = useAdminGuard();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
-  const [posts, setPosts] = useState(blogPostsData);
+  const [posts, setPosts] = useState(blogPostsData); // This state holds the full post structure from sample data
   const [tabValue, setTabValue] = useState(mode === "create" ? "new" : mode === "edit" ? "edit" : "published");
   const [deletePostId, setDeletePostId] = useState<number | null>(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+
+  const initialFormState: BlogPostFormState = {
+    title: "",
+    slug: "",
+    summary: "",
+    content: "", 
+    category: categoryOptions[0] || "",
+    tags: [], 
+    readTime: 5,
+    published: false,
+    featuredImage: "", 
+    authorId: 1, 
+    authorName: "Admin", 
+  };
+
+  const [currentPostData, setCurrentPostData] = useState<BlogPostFormState>(initialFormState);
   
-  // If in edit mode, find the post by id
-  const editingPost = mode === "edit" && id ? 
+  // If in edit mode, find the post by id and set form data
+  const editingPost = mode === "edit" && id ?
     posts.find(post => post.id === Number(id)) : null;
+
+  useEffect(() => {
+    if (mode === "edit" && editingPost) {
+      setCurrentPostData({
+        title: editingPost.title || "",
+        slug: editingPost.slug || "",
+        summary: editingPost.summary || "",
+        content: editingPost.content || "",
+        category: editingPost.category || categoryOptions[0] || "",
+        tags: Array.isArray(editingPost.tags) ? editingPost.tags : [], // Ensure tags is an array
+        readTime: editingPost.readTime || 5,
+        published: editingPost.published || false,
+        featuredImage: editingPost.featuredImage || "",
+        authorId: editingPost.authorId || 1,
+        authorName: editingPost.authorName || "Admin",
+      });
+    } else if (mode === "create") {
+      setCurrentPostData(initialFormState);
+    }
+  }, [mode, id, editingPost, posts]); 
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setCurrentPostData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSwitchChange = (checked: boolean) => {
+    setCurrentPostData(prev => ({ ...prev, published: checked }));
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setCurrentPostData(prev => ({ ...prev, category: value }));
+  };
+  
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Simple comma-separated tags for now
+    setCurrentPostData(prev => ({ ...prev, tags: e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag) }));
+  };
+
+  const handleContentChange = (newContent: string) => {
+    setCurrentPostData(prev => ({ ...prev, content: newContent }));
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const url = mode === "create" ? "/api/blog-posts/admin" : `/api/blog-posts/admin/${id}`;
+    const method = mode === "create" ? "POST" : "PUT";
+
+    // Ensure tags are an array of strings, even if input was empty
+    // Server expects tags as a comma-separated string or null
+    const tagsAsString = currentPostData.tags.length > 0 ? currentPostData.tags.join(',') : null;
+
+    // authorId and authorName should not be sent; server sets authorId.
+    // Prefix with _ to indicate they are intentionally unused after destructuring.
+    const { authorId: _authorId, authorName: _authorName, ...payloadToSend } = currentPostData;
+
+    const postPayload = {
+      ...payloadToSend,
+      tags: tagsAsString, 
+      readTime: Number(currentPostData.readTime) || 0,
+    };
+    
+    try {
+      const response = await fetchWithAdminAuth(url, {
+        method: method,
+        body: JSON.stringify(postPayload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: `Failed to ${mode === "create" ? "create" : "update"} post` }));
+        throw new Error(errorData.message);
+      }
+
+      const savedPostData = await response.json();
+      
+      // The API returns the full post object including authorId and potentially joined authorName.
+      // We need to ensure our local 'posts' state matches this structure.
+      // For now, assume savedPostData has a compatible structure or adapt as needed.
+      const newOrUpdatedPostForState = {
+        ...initialFormState, // Start with a base structure
+        ...savedPostData, // Overlay with API response
+        tags: Array.isArray(savedPostData.tags) ? savedPostData.tags : (typeof savedPostData.tags === 'string' ? savedPostData.tags.split(',').map((t:string) => t.trim()) : []),
+        // Ensure authorName is present if needed for display, API might not return it.
+        authorName: savedPostData.authorName || currentPostData.authorName || "Admin", 
+      };
+
+
+      toast({
+        title: `Post ${mode === "create" ? "Created" : "Updated"}`,
+        description: `"${newOrUpdatedPostForState.title}" has been successfully saved.`,
+      });
+
+      if (mode === "create") {
+        // Add the new post to the local state
+        // Ensure the structure matches what the list expects (e.g., if it needs authorName)
+        setPosts(prevPosts => [newOrUpdatedPostForState, ...prevPosts]);
+      } else {
+        // Update the existing post in the local state
+        setPosts(prevPosts => prevPosts.map(p => (p.id === newOrUpdatedPostForState.id ? newOrUpdatedPostForState : p)));
+      }
+      setLocation("/admin/blog"); 
+    } catch (error) {
+      console.error(`Error ${mode === "create" ? "creating" : "updating"} post:`, error);
+      toast({
+        title: `Error ${mode === "create" ? "Creating" : "Updating"} Post`,
+        description: error instanceof Error ? error.message : "An unknown error occurred.",
+        variant: "destructive",
+      });
+    }
+  };
   
   // Use admin tokens for all fetch requests
   const fetchWithAdminAuth = async (url: string, options: RequestInit = {}) => {
@@ -168,13 +307,18 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
   // Fetch posts from API
   useEffect(() => {
     const loadPosts = async () => {
-      if (isAdmin) {
+      if (isAdmin) { // This check is good
         try {
-          const response = await fetchWithAdminAuth('/api/admin/blog-posts');
-          if (!response.ok) throw new Error('Failed to fetch blog posts');
+          // Fetch all posts (published and drafts) for admin view
+          const response = await fetchWithAdminAuth('/api/blog-posts/admin'); 
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: 'Failed to fetch blog posts' }));
+            throw new Error(errorData.message);
+          }
           
           const data = await response.json();
-          setPosts(data.posts || blogPostsData);
+          // The API /api/blog-posts/admin returns an array of posts directly
+          setPosts(Array.isArray(data) ? data : blogPostsData); 
         } catch (error) {
           console.error('Error loading blog posts:', error);
           toast({
@@ -210,11 +354,35 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
   };
   
   // Handle delete post
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (deletePostId) {
-      setPosts(posts.filter(post => post.id !== deletePostId));
-      setConfirmDeleteOpen(false);
-      setDeletePostId(null);
+      try {
+        const response = await fetchWithAdminAuth(`/api/blog-posts/admin/${deletePostId}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok && response.status !== 204) { // Check for non-OK and not 204
+            const errorData = await response.json().catch(() => ({ message: 'Failed to delete post' }));
+            throw new Error(errorData.message);
+        }
+        // If response.ok or response.status is 204, deletion was successful
+
+        setPosts(prevPosts => prevPosts.filter(post => post.id !== deletePostId));
+        toast({
+          title: "Post Deleted",
+          description: "The blog post has been successfully deleted.",
+        });
+      } catch (error) {
+        console.error("Error deleting post:", error);
+        toast({
+          title: "Error Deleting Post",
+          description: error instanceof Error ? error.message : "An unknown error occurred.",
+          variant: "destructive",
+        });
+      } finally {
+        setConfirmDeleteOpen(false);
+        setDeletePostId(null);
+      }
     }
   };
   
@@ -249,7 +417,177 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
       </div>
     );
   }
+
+  if (mode === "create" || mode === "edit") {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Button variant="outline" size="sm" onClick={() => setLocation("/admin/blog")} className="mb-6">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Blog List
+        </Button>
+        <Card>
+          <CardHeader>
+            <CardTitle>{mode === "create" ? "Create New Blog Post" : "Edit Blog Post"}</CardTitle>
+            <CardDescription>
+              {mode === "create" ? "Fill in the details for your new blog post." : `Editing: ${editingPost?.title || 'post'}`}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleFormSubmit} className="space-y-6">
+              <div>
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  id="title"
+                  name="title"
+                  value={currentPostData.title}
+                  onChange={handleInputChange}
+                  placeholder="Enter blog post title"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="slug">Slug</Label>
+                <Input
+                  id="slug"
+                  name="slug"
+                  value={currentPostData.slug}
+                  onChange={handleInputChange}
+                  placeholder="e.g., my-awesome-post"
+                  required
+                />
+                 <p className="text-xs text-muted-foreground mt-1">
+                    Tip: A good slug is short, descriptive, and uses hyphens. Example: `understanding-tax-brackets`
+                  </p>
+              </div>
+              <div>
+                <Label htmlFor="summary">Summary</Label>
+                <Textarea
+                  id="summary"
+                  name="summary"
+                  value={currentPostData.summary}
+                  onChange={handleInputChange}
+                  placeholder="Write a short summary of the post (1-2 sentences)"
+                  rows={3}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="content">Content</Label>
+                <TiptapEditor
+                  content={currentPostData.content}
+                  onChange={handleContentChange}
+                  className="mt-1" // Add any specific styling needed for the container
+                />
+                 {/* The Textarea is now replaced by TiptapEditor */}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label htmlFor="category">Category</Label>
+                  <Select value={currentPostData.category} onValueChange={handleCategoryChange}>
+                    <SelectTrigger id="category">
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categoryOptions.map(option => (
+                        <SelectItem key={option} value={option}>{option}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="readTime">Read Time (minutes)</Label>
+                  <Input
+                    id="readTime"
+                    name="readTime"
+                    type="number"
+                    value={currentPostData.readTime}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 5"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="tags">Tags (comma-separated)</Label>
+                <Input
+                  id="tags"
+                  name="tags"
+                  value={currentPostData.tags.join(', ')}
+                  onChange={handleTagsChange}
+                  placeholder="e.g., tax, finance, guide"
+                />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="published"
+                  checked={currentPostData.published}
+                  onCheckedChange={handleSwitchChange}
+                />
+                <Label htmlFor="published">Published</Label>
+              </div>
+
+              <div>
+                <Label htmlFor="featuredImage">Featured Image</Label>
+                <Input
+                  id="featuredImage"
+                  name="featuredImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const file = e.target.files[0];
+                      const formData = new FormData();
+                      formData.append("image", file); // "image" should match the fieldName in handleFileUpload
+
+                      try {
+                        // Assuming fetchWithAdminAuth handles admin token
+                        const response = await fetchWithAdminAuth("/api/admin/upload-image", {
+                          method: "POST",
+                          body: formData,
+                          // Content-Type is set automatically by browser for FormData
+                        });
+                        if (!response.ok) {
+                          const errorData = await response.json();
+                          throw new Error(errorData.message || "Image upload failed");
+                        }
+                        const result = await response.json();
+                        setCurrentPostData(prev => ({ ...prev, featuredImage: result.imageUrl }));
+                        toast({ title: "Image Uploaded", description: "Featured image updated." });
+                      } catch (error) {
+                        console.error("Error uploading featured image:", error);
+                        toast({
+                          title: "Image Upload Failed",
+                          description: error instanceof Error ? error.message : "Could not upload image.",
+                          variant: "destructive",
+                        });
+                      }
+                    }
+                  }}
+                />
+                {currentPostData.featuredImage && (
+                  <div className="mt-2">
+                    <img src={currentPostData.featuredImage} alt="Featured preview" className="max-h-40 rounded-md border" />
+                    <p className="text-xs text-muted-foreground mt-1">Current image: {currentPostData.featuredImage}</p>
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex justify-end space-x-3 pt-4">
+                <Button type="button" variant="outline" onClick={() => setLocation("/admin/blog")}>
+                  Cancel
+                </Button>
+                <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                  <Save className="mr-2 h-4 w-4" />
+                  {mode === "create" ? "Save Post" : "Update Post"}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
   
+  // Original list view rendering
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
@@ -288,7 +626,7 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
       </div>
       
       {/* Tabs - Published vs Drafts */}
-      <Tabs defaultValue="published" className="w-full mb-6" onValueChange={setTabValue}>
+      <Tabs defaultValue={tabValue} className="w-full mb-6" onValueChange={setTabValue}> {/* Use tabValue here */}
         <TabsList className="grid w-full grid-cols-2 max-w-md">
           <TabsTrigger value="published">Published ({posts.filter(p => p.published).length})</TabsTrigger>
           <TabsTrigger value="drafts">Drafts ({posts.filter(p => !p.published).length})</TabsTrigger>
@@ -306,8 +644,8 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center">
                         <span className={`inline-flex items-center px-2 py-1 text-xs rounded-full ${
-                          post.published 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                          post.published
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                             : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
                         }`}>
                           {post.published ? (
@@ -353,13 +691,13 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
                       </Link>
                     </Button>
                     <Button asChild variant="outline" size="sm" className="w-full">
-                      <Link href={`/learning/blog/${post.slug}`}>
+                      <Link href={`/learning/blog/${post.slug}`}> {/* Corrected path for viewing post */}
                         <Eye className="h-4 w-4 mr-2" /> View
                       </Link>
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
+                    <Button
+                      variant="outline"
+                      size="sm"
                       className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
                       onClick={() => {
                         setDeletePostId(post.id);
@@ -382,14 +720,14 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
             </div>
             <h3 className="text-lg font-medium mb-2">No posts found</h3>
             <p className="text-muted-foreground text-sm mb-4">
-              {searchTerm 
+              {searchTerm
                 ? "No posts match your search criteria. Try adjusting your search terms."
                 : `No ${tabValue === "published" ? "published posts" : "drafts"} available.`
               }
             </p>
             {searchTerm && (
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setSearchTerm("")}
               >
                 Clear Search
@@ -412,8 +750,8 @@ const BlogAdmin = ({ mode = "list", id }: BlogAdminProps) => {
             <Button variant="outline" onClick={() => setConfirmDeleteOpen(false)}>
               Cancel
             </Button>
-            <Button 
-              variant="destructive" 
+            <Button
+              variant="destructive"
               onClick={handleDeleteConfirm}
             >
               Delete

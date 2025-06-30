@@ -1,12 +1,3 @@
-import { Link, useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
 import {
   FileText,
   Menu,
@@ -20,15 +11,25 @@ import {
   Phone,
   DollarSign,
   FileSearch,
-  Calendar,
+  // Calendar, // Removed unused import
   Bot,
 } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import LoginDialog from "@/components/LoginDialog";
-import { useAuth } from "@/context/AuthContext";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useEffect, useState } from "react";
+import { Link, useLocation } from "wouter";
+
+import LoginDialog from "@/components/LoginDialog";
 import NavDropdown from "@/components/NavDropdown";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useAuth } from "@/context/AuthContext";
 
 const Header = () => {
   const [location] = useLocation();
@@ -84,6 +85,7 @@ const Header = () => {
             { name: "TDS Calculator", path: "/calculators/tds" },
             { name: "Capital Gains Tax", path: "/calculators/capital-gains" },
             { name: "Take-home Salary Calculator", path: "/calculators/take-home-salary" },
+            { name: "Gratuity Calculator", path: "/calculators/gratuity" },
             { name: "GST Calculator", path: "/calculators/gst" }
           ]
         },
@@ -94,20 +96,18 @@ const Header = () => {
             { name: "FD Maturity Calculator", path: "/calculators/fd" },
             { name: "PPF Calculator", path: "/calculators/ppf" },
             { name: "NPS Pension Calculator", path: "/calculators/nps" },
-            { name: "Lumpsum MF Calculator", path: "/calculators/lumpsum" },
             { name: "Compound Interest", path: "/calculators/compound-interest" }
           ]
         },
         {
-          category: "Loan & Retirement",
+          category: "Loan",
           items: [
             { name: "Loan EMI Calculator", path: "/calculators/loan-emi" },
             { name: "Home Loan EMI", path: "/calculators/home-loan" },
             { name: "Car Loan EMI", path: "/calculators/car-loan" },
             { name: "Personal Loan EMI", path: "/calculators/personal-loan" },
             { name: "Loan Against Property", path: "/calculators/lap" },
-            { name: "Retirement Corpus Planner", path: "/calculators/retirement" },
-            { name: "Gratuity Calculator", path: "/calculators/gratuity" }
+            { name: "Retirement Corpus Planner", path: "/calculators/retirement" }
           ]
         }
       ]
@@ -347,7 +347,7 @@ const Header = () => {
                     </Link>
                     <div 
                       className="flex items-center gap-2 p-3 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer min-h-12"
-                      onClick={(e) => {
+                      onClick={() => {
                         logout();
                         document.body.click();
                       }}

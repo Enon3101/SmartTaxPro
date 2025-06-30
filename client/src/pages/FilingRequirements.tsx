@@ -1,8 +1,9 @@
 import { ArrowLeftIcon, ExternalLinkIcon, AlertTriangleIcon, CheckCircleIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { Link } from "wouter";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const FilingRequirements = () => {
   const [activeTab, setActiveTab] = useState<'requirements' | 'penalties'>('requirements');

@@ -1,14 +1,17 @@
+import { motion } from 'framer-motion';
+import { Home, Calculator, ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Link } from 'wouter';
+
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
-import { Progress } from "@/components/ui/progress";
-import { Home, Calculator } from "lucide-react";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/taxCalculations";
 
 const HraCalculator = () => {
@@ -113,18 +116,37 @@ const HraCalculator = () => {
   return (
     <div className="container mx-auto px-4 sm:px-6 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2">HRA Exemption Calculator</h1>
-        <p className="text-muted-foreground">
-          Calculate your House Rent Allowance (HRA) tax exemption under Section 10(13A) of the Income Tax Act
-        </p>
+        <Button asChild variant="ghost" size="sm" className="mb-4">
+          <Link href="/calculators">
+            <ArrowLeft className="mr-1 h-4 w-4" /> Back to Calculators
+          </Link>
+        </Button>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2">
+            <Home className="h-7 w-7 text-primary" />
+            HRA Exemption Calculator
+          </h1>
+          <p className="text-muted-foreground">
+            Calculate your House Rent Allowance (HRA) tax exemption under Section 10(13A) of the Income Tax Act
+          </p>
+        </motion.div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1 space-y-6">
+        <motion.div
+          className="lg:col-span-1 space-y-6"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center text-xl">
-                <Home className="mr-2 h-5 w-5" />
+                <Home className="mr-2 h-5 w-5 text-primary" />
                 Input Details
               </CardTitle>
             </CardHeader>
@@ -202,9 +224,14 @@ const HraCalculator = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
         
-        <div className="lg:col-span-2 space-y-6">
+        <motion.div
+          className="lg:col-span-2 space-y-6"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           {isCalculated && (
             <>
               <Card className="bg-muted/50 border-primary border shadow-sm">
@@ -229,26 +256,26 @@ const HraCalculator = () => {
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm mb-1">Total HRA Received</p>
-                        <p className="text-xl font-semibold">{displayValue(actualHra)}</p>
+                        <p className="text-sm text-muted-foreground">Total HRA Received</p>
+                        <p className="text-xl font-bold mt-1">{displayValue(actualHra)}</p>
                       </div>
                       <div>
-                        <p className="text-sm mb-1">Eligible HRA Exemption</p>
-                        <p className="text-xl font-semibold text-primary">{displayValue(finalExemption)}</p>
+                        <p className="text-sm text-muted-foreground">Eligible HRA Exemption</p>
+                        <p className="text-xl font-bold text-primary mt-1">{displayValue(finalExemption)}</p>
                       </div>
                     </div>
                     
                     <div>
-                      <p className="text-sm mb-1">Exemption Utilization</p>
-                      <Progress value={(finalExemption / actualHra) * 100} className="h-3" />
-                      <p className="text-xs mt-1 text-right">
-                        {Math.round((finalExemption / actualHra) * 100)}% of HRA is exempt from tax
+                      <p className="text-sm text-muted-foreground mb-1">Exemption Utilization</p>
+                      <Progress value={actualHra > 0 ? (finalExemption / actualHra) * 100 : 0} className="h-3" />
+                      <p className="text-xs mt-1 text-right text-muted-foreground">
+                        {actualHra > 0 ? Math.round((finalExemption / actualHra) * 100) : 0}% of HRA is exempt from tax
                       </p>
                     </div>
                     
                     <div>
-                      <p className="text-sm mb-1">Taxable HRA</p>
-                      <p className="text-lg">{displayValue(taxableHra)}</p>
+                      <p className="text-sm text-muted-foreground">Taxable HRA</p>
+                      <p className="text-lg font-semibold">{displayValue(taxableHra)}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -257,7 +284,7 @@ const HraCalculator = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center text-xl">
-                    <Calculator className="mr-2 h-5 w-5" />
+                    <Calculator className="mr-2 h-5 w-5 text-primary" />
                     Calculation Breakdown
                   </CardTitle>
                 </CardHeader>
@@ -376,7 +403,7 @@ const HraCalculator = () => {
               </CardContent>
             </Card>
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

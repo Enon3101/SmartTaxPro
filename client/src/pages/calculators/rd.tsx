@@ -1,30 +1,3 @@
-import React, { useState, useEffect } from "react";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { 
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Slider } from "@/components/ui/slider";
 import { 
   ArrowUpDown, 
   Building, 
@@ -35,6 +8,34 @@ import {
   AlertCircle,
   Calculator
 } from "lucide-react";
+import React, { useState, useEffect } from "react";
+
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Slider } from "@/components/ui/slider";
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table";
 import { formatIndianCurrency } from "@/lib/formatters";
 
 // Calculate RD maturity amount
@@ -60,8 +61,8 @@ const calculateRD = (
   const monthlyRate = effectiveInterestRate / 12 / 100;
   
   let maturityAmount = 0;
-  let totalDeposit = monthlyDeposit * tenureMonths;
-  let quarterlyDetails = [];
+  const totalDeposit = monthlyDeposit * tenureMonths;
+  const quarterlyDetails = [];
 
   // Calculating Quarterly Details
   for (let quarter = 1; quarter <= Math.ceil(tenureMonths / 3); quarter++) {

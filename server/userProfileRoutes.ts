@@ -1,23 +1,14 @@
-import { Router, Request } from 'express';
-import { storage } from "./storage";
-import { authenticate } from "./auth";
-import { UserRole } from "./auth";
+import { Router } from 'express';
+import passport from "passport";
 
-// Extended Express Request with authenticated user
-interface AuthenticatedRequest extends Request {
-  user?: {
-    sub: string | number;
-    role: string;
-    type: string;
-    iat: number;
-  };
-}
+import { UserRole, AuthenticatedRequest } from "./auth"; // Import AuthenticatedRequest
+import { storage } from "./storage";
 
 // Create a router for user profile routes
 const userProfileRouter = Router();
 
 // Get specific user by ID (admin or self only)
-userProfileRouter.get("/:id", authenticate, async (req: AuthenticatedRequest, res) => {
+userProfileRouter.get("/:id", passport.authenticate('jwt', { session: false }), async (req: AuthenticatedRequest, res) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -47,7 +38,7 @@ userProfileRouter.get("/:id", authenticate, async (req: AuthenticatedRequest, re
     }
     
     // SECURITY: Don't return the password hash (Req E)
-    const { password: _, ...userWithoutPassword } = user;
+    const { passwordHash: _, ...userWithoutPassword } = user;
     
     res.status(200).json(userWithoutPassword);
   } catch (error) {
@@ -57,7 +48,7 @@ userProfileRouter.get("/:id", authenticate, async (req: AuthenticatedRequest, re
 });
 
 // Get tax forms for a specific user (admin or self only)
-userProfileRouter.get("/:id/tax-forms", authenticate, async (req: AuthenticatedRequest, res) => {
+userProfileRouter.get("/:id/tax-forms", passport.authenticate('jwt', { session: false }), async (req: AuthenticatedRequest, res) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized" });

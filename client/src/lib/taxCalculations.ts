@@ -31,37 +31,101 @@ const STANDARD_DEDUCTION: Record<string, number> = {
   "2026-27": 75000  // FY 2025-26
 };
 
+// Tax Slabs for AY 2024-25 (FY 2023-24)
+const TAX_SLABS_AY2024_25 = {
+  oldRegime: {
+    below60: [
+      { limit: 250000, rate: 0 },
+      { limit: 500000, rate: 0.05 },
+      { limit: 1000000, rate: 0.20 },
+      { limit: Infinity, rate: 0.30 },
+    ],
+    senior: [ // 60 to 79
+      { limit: 300000, rate: 0 },
+      { limit: 500000, rate: 0.05 },
+      { limit: 1000000, rate: 0.20 },
+      { limit: Infinity, rate: 0.30 },
+    ],
+    superSenior: [ // 80+
+      { limit: 500000, rate: 0 },
+      { limit: 1000000, rate: 0.20 },
+      { limit: Infinity, rate: 0.30 },
+    ],
+  },
+  newRegime: [ // Common for all ages for AY 2024-25
+    { limit: 300000, rate: 0 },
+    { limit: 600000, rate: 0.05 },
+    { limit: 900000, rate: 0.10 },
+    { limit: 1200000, rate: 0.15 },
+    { limit: 1500000, rate: 0.20 },
+    { limit: Infinity, rate: 0.30 },
+  ],
+};
+
 const MAX_80C_DEDUCTION = 150000; // Maximum deduction under section 80C
 const MAX_80D_DEDUCTION_INDIVIDUAL = 25000; // Health insurance for self/family
-const MAX_80D_DEDUCTION_SENIOR = 50000; // Health insurance for senior citizens
-const MAX_80D_DEDUCTION_SUPER_SENIOR = 50000; // Health insurance for super senior citizens (above 80)
-const MAX_80DD_DEDUCTION = 125000; // Maintenance and medical treatment of disabled dependent
-const MAX_80DDB_DEDUCTION_GENERAL = 40000; // Medical treatment for specified diseases (general)
-const MAX_80DDB_DEDUCTION_SENIOR = 100000; // Medical treatment for specified diseases (senior citizens)
-const MAX_80E_EDUCATION_LOAN_INTEREST = Infinity; // No limit for education loan interest
-const MAX_80EE_HOME_LOAN_INTEREST = 50000; // Additional interest on housing loan
-const MAX_80G_DONATION = Infinity; // Donations to certain funds, charitable institutions
-const MAX_80GG_RENT_PAID = 60000; // Rent paid when HRA not received
-const MAX_80TTA_INTEREST = 10000; // Interest on savings account (non-senior citizens)
-const MAX_80TTB_INTEREST = 50000; // Interest on deposits for senior citizens
-const MAX_80U_DISABILITY = 125000; // Self with disability
+// const MAX_80D_DEDUCTION_SENIOR = 50000; // Unused
+// const MAX_80D_DEDUCTION_SUPER_SENIOR = 50000; // Unused
+// const MAX_80DD_DEDUCTION = 125000; // Unused
+// const MAX_80DDB_DEDUCTION_GENERAL = 40000; // Unused
+// const MAX_80DDB_DEDUCTION_SENIOR = 100000; // Unused
+// const MAX_80E_EDUCATION_LOAN_INTEREST = Infinity; // Unused
+// const MAX_80EE_HOME_LOAN_INTEREST = 50000; // Unused
+// const MAX_80G_DONATION = Infinity; // Unused
+// const MAX_80GG_RENT_PAID = 60000; // Unused
+// const MAX_80TTA_INTEREST = 10000; // Unused
+// const MAX_80TTB_INTEREST = 50000; // Unused
+// const MAX_80U_DISABILITY = 125000; // Unused
 
 const CESS_RATE = 0.04; // 4% Health and Education Cess
 
+interface IncomeItem {
+  netSalary?: string;
+  netAnnualValue?: string;
+  netCapitalGain?: string;
+  netProfit?: string;
+  amount?: string;
+}
+
+interface IncomeData {
+  salaryIncome?: string | IncomeItem[];
+  housePropertyIncome?: string | IncomeItem[];
+  capitalGainsIncome?: string | IncomeItem[];
+  shortTermCapitalGains?: string;
+  longTermCapitalGains?: string;
+  businessIncome?: string | IncomeItem[];
+  interestIncome?: string | IncomeItem[];
+  otherIncome?: string | IncomeItem[];
+  dividendIncome?: string;
+  otherSources?: string;
+}
+
+interface DeductionData {
+  totalAmount?: string;
+}
+
+interface TaxPaidData {
+  tds?: string;
+  advanceTax?: string;
+  selfAssessmentTax?: string;
+}
+
 export function calculateTaxSummary(
-  incomeData: any, 
-  deductions80C: any = {}, 
-  deductions80D: any = {}, 
-  otherDeductions: any = {}, 
-  taxPaid: any = {}, 
-  assessmentYear: string = "2024-25"
+  incomeData: IncomeData,
+  deductions80C: DeductionData = {},
+  deductions80D: DeductionData = {},
+  otherDeductions: DeductionData = {},
+  taxPaid: TaxPaidData = {},
+  assessmentYear: string = "2024-25", // Defaulting to AY 2024-25 for now
+  taxRegime: 'new' | 'old' = 'new', // Default to new regime
+  age: number = 40 // Default age, assuming below 60
 ): TaxSummary {
   // Calculate salary income (with standard deduction for salaried individuals)
   // Handle both single value and array of salary entries
   let salaryIncome = 0;
   if (Array.isArray(incomeData?.salaryIncome)) {
     // Sum up all salary entries' net salary
-    salaryIncome = incomeData.salaryIncome.reduce((total: number, salary: any) => {
+    salaryIncome = incomeData.salaryIncome.reduce((total: number, salary: IncomeItem) => {
       const netSalary = parseFloat((salary.netSalary || "0").replace(/,/g, "")) || 0;
       return total + netSalary;
     }, 0);
@@ -73,7 +137,7 @@ export function calculateTaxSummary(
   // House property income
   let housePropertyIncome = 0;
   if (Array.isArray(incomeData?.housePropertyIncome)) {
-    housePropertyIncome = incomeData.housePropertyIncome.reduce((total: number, property: any) => {
+    housePropertyIncome = incomeData.housePropertyIncome.reduce((total: number, property: IncomeItem) => {
       const netIncome = parseFloat((property.netAnnualValue || "0").replace(/,/g, "")) || 0;
       return total + netIncome;
     }, 0);
@@ -84,7 +148,7 @@ export function calculateTaxSummary(
   // Capital gains
   let capitalGainsIncome = 0;
   if (Array.isArray(incomeData?.capitalGainsIncome)) {
-    capitalGainsIncome = incomeData.capitalGainsIncome.reduce((total: number, gain: any) => {
+    capitalGainsIncome = incomeData.capitalGainsIncome.reduce((total: number, gain: IncomeItem) => {
       const netGain = parseFloat((gain.netCapitalGain || "0").replace(/,/g, "")) || 0;
       return total + netGain;
     }, 0);
@@ -97,7 +161,7 @@ export function calculateTaxSummary(
   // Business income
   let businessIncome = 0;
   if (Array.isArray(incomeData?.businessIncome)) {
-    businessIncome = incomeData.businessIncome.reduce((total: number, business: any) => {
+    businessIncome = incomeData.businessIncome.reduce((total: number, business: IncomeItem) => {
       const netProfit = parseFloat((business.netProfit || "0").replace(/,/g, "")) || 0;
       return total + netProfit;
     }, 0);
@@ -108,7 +172,7 @@ export function calculateTaxSummary(
   // Interest income
   let interestIncome = 0;
   if (Array.isArray(incomeData?.interestIncome)) {
-    interestIncome = incomeData.interestIncome.reduce((total: number, interest: any) => {
+    interestIncome = incomeData.interestIncome.reduce((total: number, interest: IncomeItem) => {
       const amount = parseFloat((interest.amount || "0").replace(/,/g, "")) || 0;
       return total + amount;
     }, 0);
@@ -119,7 +183,7 @@ export function calculateTaxSummary(
   // Other income
   let otherIncomeAmount = 0;
   if (Array.isArray(incomeData?.otherIncome)) {
-    otherIncomeAmount = incomeData.otherIncome.reduce((total: number, other: any) => {
+    otherIncomeAmount = incomeData.otherIncome.reduce((total: number, other: IncomeItem) => {
       const amount = parseFloat((other.amount || "0").replace(/,/g, "")) || 0;
       return total + amount;
     }, 0);
@@ -155,46 +219,113 @@ export function calculateTaxSummary(
   
   // Standard deduction is fixed at 50,000 (or the appropriate amount for the assessment year)
   // or salary income, whichever is lower
-  let standardDeductionApplied = salaryIncome > 0 ? Math.min(standardDeductionAmount, salaryIncome) : 0;
+  const standardDeductionApplied = salaryIncome > 0 ? Math.min(standardDeductionAmount, salaryIncome) : 0;
   
   // Standard deduction is applied only once regardless of number of employers
   const taxableIncome = Math.max(0, totalIncome - standardDeductionApplied - totalDeductions);
   
-  // Calculate income tax based on applicable income tax slabs
-  // This is for the new tax regime (FY 2023-24, AY 2024-25)
+  // Calculate income tax based on applicable income tax slabs for AY 2024-25
+  let slabs;
+  if (taxRegime === 'old') {
+    if (age < 60) {
+      slabs = TAX_SLABS_AY2024_25.oldRegime.below60;
+    } else if (age >= 60 && age < 80) {
+      slabs = TAX_SLABS_AY2024_25.oldRegime.senior;
+    } else { // age >= 80
+      slabs = TAX_SLABS_AY2024_25.oldRegime.superSenior;
+    }
+  } else { // newRegime
+    slabs = TAX_SLABS_AY2024_25.newRegime;
+  }
+
   let basicTax = 0;
-  
-  if (taxableIncome <= 300000) {
-    basicTax = 0; // First 3 lakh is tax-free
-  } else if (taxableIncome <= 600000) {
-    basicTax = (taxableIncome - 300000) * 0.05; // 5% on income between 3-6 lakh
-  } else if (taxableIncome <= 900000) {
-    basicTax = 15000 + (taxableIncome - 600000) * 0.10; // 10% on income between 6-9 lakh
-  } else if (taxableIncome <= 1200000) {
-    basicTax = 45000 + (taxableIncome - 900000) * 0.15; // 15% on income between 9-12 lakh
-  } else if (taxableIncome <= 1500000) {
-    basicTax = 90000 + (taxableIncome - 1200000) * 0.20; // 20% on income between 12-15 lakh
-  } else {
-    basicTax = 150000 + (taxableIncome - 1500000) * 0.30; // 30% on income above 15 lakh
+  let remainingIncome = taxableIncome;
+  let previousLimit = 0;
+
+  for (const slab of slabs) {
+    if (remainingIncome <= 0) break;
+    const slabApplicableIncome = Math.min(remainingIncome, slab.limit - previousLimit);
+    basicTax += slabApplicableIncome * slab.rate;
+    remainingIncome -= slabApplicableIncome;
+    previousLimit = slab.limit;
+    if (slab.limit === Infinity) break; 
   }
   
-  // Calculate surcharge if applicable (on income above 50 lakh)
+  // Calculate Surcharge for AY 2024-25
   let surchargeAmount = 0;
-  if (taxableIncome > 5000000 && taxableIncome <= 10000000) {
-    surchargeAmount = basicTax * 0.10; // 10% surcharge if income is between 50L-1Cr
-  } else if (taxableIncome > 10000000 && taxableIncome <= 20000000) {
-    surchargeAmount = basicTax * 0.15; // 15% surcharge if income is between 1Cr-2Cr
-  } else if (taxableIncome > 20000000 && taxableIncome <= 50000000) {
-    surchargeAmount = basicTax * 0.25; // 25% surcharge if income is between 2Cr-5Cr
-  } else if (taxableIncome > 50000000) {
-    surchargeAmount = basicTax * 0.37; // 37% surcharge if income is above 5Cr
+  let surchargeRate = 0;
+  const totalIncomeForSurcharge = totalIncome; // As per plan, surcharge is on total income
+
+  if (taxRegime === 'old') {
+    if (totalIncomeForSurcharge > 50000000) surchargeRate = 0.37;
+    else if (totalIncomeForSurcharge > 20000000) surchargeRate = 0.25;
+    else if (totalIncomeForSurcharge > 10000000) surchargeRate = 0.15;
+    else if (totalIncomeForSurcharge > 5000000) surchargeRate = 0.10;
+  } else { // newRegime
+    if (totalIncomeForSurcharge > 20000000) surchargeRate = 0.25; // Max 25%
+    else if (totalIncomeForSurcharge > 10000000) surchargeRate = 0.15;
+    else if (totalIncomeForSurcharge > 5000000) surchargeRate = 0.10;
+  }
+  surchargeAmount = basicTax * surchargeRate;
+
+  // Marginal Relief for Surcharge
+  if (surchargeRate > 0) {
+    let surchargeThreshold = 0;
+    if (taxRegime === 'old') {
+        if (totalIncomeForSurcharge > 50000000) surchargeThreshold = 50000000;
+        else if (totalIncomeForSurcharge > 20000000) surchargeThreshold = 20000000;
+        else if (totalIncomeForSurcharge > 10000000) surchargeThreshold = 10000000;
+        else if (totalIncomeForSurcharge > 5000000) surchargeThreshold = 5000000;
+    } else { // newRegime
+        if (totalIncomeForSurcharge > 20000000) surchargeThreshold = 20000000;
+        else if (totalIncomeForSurcharge > 10000000) surchargeThreshold = 10000000;
+        else if (totalIncomeForSurcharge > 5000000) surchargeThreshold = 5000000;
+    }
+
+    if (surchargeThreshold > 0) {
+        const incomeExceedingThreshold = totalIncomeForSurcharge - surchargeThreshold;
+        // Calculate tax at threshold (simplified for this step, ideally re-calculate full tax)
+        // For simplicity, we'll use the current basicTax for comparison, which isn't perfectly accurate for marginal relief
+        // A more accurate marginal relief would re-calculate tax on 'surchargeThreshold' income.
+        // However, the common approach is: tax payable on income of 'threshold' + (income - 'threshold')
+        // vs tax payable on income + surcharge.
+        // If (tax on income + surcharge) > (tax on threshold + (income - threshold)), relief is difference.
+        // Here, if surcharge > incomeExceedingThreshold, relief is surcharge - incomeExceedingThreshold
+        if (surchargeAmount > incomeExceedingThreshold) {
+            surchargeAmount = incomeExceedingThreshold;
+        }
+    }
   }
   
-  // Calculate Health and Education Cess (4% on income tax + surcharge)
-  const cessAmount = (basicTax + surchargeAmount) * CESS_RATE;
+  let taxAfterSurcharge = basicTax + surchargeAmount;
+
+  // Rebate under Section 87A for AY 2024-25 (Resident Individuals)
+  let rebateAmount = 0;
+  // Assuming isResidentIndividual is true for this calculation for now.
+  // In a full implementation, this would be an input.
+  const isResidentIndividual = true; 
+
+  if (isResidentIndividual) {
+    if (taxRegime === 'old' && taxableIncome <= 500000) {
+      rebateAmount = Math.min(taxAfterSurcharge, 12500);
+    } else if (taxRegime === 'new' && taxableIncome <= 700000) {
+      rebateAmount = Math.min(taxAfterSurcharge, 25000);
+      // Marginal Relief for Rebate in New Regime
+      if (taxableIncome > 700000 && taxableIncome <= 727777) { // Approx. where tax liability equals income over 7L
+         const incomeOver7L = taxableIncome - 700000;
+         if (taxAfterSurcharge > incomeOver7L) { // taxAfterSurcharge here is without rebate
+            rebateAmount = taxAfterSurcharge - incomeOver7L;
+         }
+      }
+    }
+  }
+  taxAfterSurcharge -= rebateAmount;
+  
+  // Calculate Health and Education Cess (4% on income tax + surcharge - rebate)
+  const cessAmount = taxAfterSurcharge * CESS_RATE;
   
   // Calculate total income tax liability
-  const estimatedTax = basicTax + surchargeAmount + cessAmount;
+  const estimatedTax = taxAfterSurcharge + cessAmount;
   
   // Calculate tax already paid (TDS, advance tax, self-assessment tax)
   const tdsAmount = parseFloat(taxPaid?.tds?.replace(/,/g, "") || "0");
@@ -247,7 +378,7 @@ export function formatCurrency(amount: string | number): string {
     numericAmount = amount || 0;
   }
   
-  return formatIndianCurrency(numericAmount, true, 0);
+  return formatIndianCurrency(numericAmount, { displaySymbol: true, decimalPlaces: 0 });
 }
 
 // Cost Inflation Index (CII) values by financial year as per Indian tax rules

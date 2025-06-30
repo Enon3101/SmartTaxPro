@@ -1,37 +1,3 @@
-import { useState, useEffect } from 'react';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from '@/components/ui/select';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs';
-import { 
-  Table, 
-  TableBody, 
-  TableCaption, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import {
   Calculator,
   ArrowRight,
@@ -43,6 +9,45 @@ import {
   ChevronRight,
   ArrowUpRightFromCircle
 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link } from 'wouter';
+
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { 
+  Table, 
+  TableBody, 
+  TableCaption, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from '@/components/ui/table';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { 
   getTaxSlabsByYear, 
   calculateTax, 
@@ -51,10 +56,6 @@ import {
 } from '@/data/taxSlabs';
 import { useToast } from '@/hooks/use-toast';
 import { formatIndianCurrency } from '@/lib/formatters';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Link } from 'wouter';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Income Sources Type
 type IncomeSource = {
@@ -156,7 +157,7 @@ const IncomeTaxCalculator = () => {
   
   // Calculate taxable income
   const calculateTaxableIncome = () => {
-    let taxable = totalIncome;
+    const taxable = totalIncome;
     
     // Get standard deduction limit based on assessment year
     const standardDeductionLimit = assessmentYear === '2026-27' ? 75000 : 50000;

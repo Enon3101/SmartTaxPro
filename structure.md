@@ -1,0 +1,204 @@
+# Project File Structure
+
+- .env
+- .eslintrc.json
+- .gitignore
+- .prettierrc.json
+- codebase_review_plan.md
+- components.json
+- docker-compose.yml
+- download_logos.sh
+- drizzle.config.ts
+- error_log_itrfiling.txt
+- existingplan.md
+- find-orphaned-documents.ts
+- generated-icon.png
+- package-lock.json
+- package.json
+- plan.md
+- plan.txt
+- postcss.config.js
+- SEOpane.txt
+- server-check.js
+- setup-admin.js
+- tailwind.config.ts
+- tsconfig.json
+- vite.config.ts
+- attached_assets/
+  - content-1746370282192.md
+  - Pasted--ROLE-You-are-a-senior-full-stack-security-engineer-coaching-me-on-this-specific-Replit-project--1747236688274.txt
+  - Pasted-Below-is-a-fully-sequenced-mobile-first-modernization-blueprint-you-can-follow-line-by-line-inside--1747203629946.txt
+  - Pasted-Below-is-a-hands-on-cookbook-that-walks-you-from-an-empty-Replit-workspace-all-the-way-to-a-workin-1747205536664.txt
+- client/
+  - index.html
+  - public/
+    - robots.txt
+    - sitemap.xml
+    - company-logos-new/
+      - airtel.png
+      - hdfc.png
+      - icici.png
+      - infosys.png
+      - itc.png
+      - reliance.png
+      - sbi.png
+      - tcs.png
+      - wipro.png
+    - locales/
+      - en/
+        - translation.json
+      - hi/
+        - translation.json
+  - src/
+    - App.tsx
+    - i18n.ts
+    - index.css
+    - main.tsx
+    - temp-StartFiling.tsx
+    - vite-env.d.ts
+    - assets/
+      - company-logos/
+        - Adani_Green_Energy_logo.svg
+        - airtel.svg
+        - amul.svg
+        - Asian_Paints_Logo.svg
+        - bajaj-finserv.svg
+        - BalajiWafersLogo.svg
+        - DLF_logo.svg
+        - dunzo.svg
+        - Godrej_Logo.svg
+        - hero.svg
+        - hindustan-unilever.svg
+        - Indiabulls_Home_Loans_Logo.svg
+        - ITC_Limited_Logo.svg
+        - Justdial_Logo.svg
+    - components/
+      - BottomNav.tsx
+      - ExperienceHighlights.tsx
+      - FileUpload.tsx
+      - Footer.tsx
+      - GoogleAuthCheck.tsx
+      - GoogleAuthProvider.tsx
+      - GoogleLoginButton.tsx
+      - GstCalculator.tsx
+      - Header.tsx
+      - HelpResourcesCard.tsx
+      - ItrFormsGuide.tsx
+      - LoginDialog.tsx
+      - LoginDialog.tsx.fixed
+      - NavDropdown.tsx
+      - PageHeader.tsx
+      - PricingPlan.tsx
+      - ProgressTracker.tsx
+      - ProtectedRoute.tsx
+      - RichTextEditor.tsx
+      - SalaryLayout.tsx
+      - SalarySection.tsx
+      - ScrollToTop.tsx
+      - TaxComputationDocument.tsx
+      - TaxExpertWidget.tsx
+      - TaxFilingWizard.tsx
+      - TaxSummaryCard.tsx
+      - TaxTipSidebar.tsx
+      - ThemeToggle.tsx
+      - TrustedBySection.tsx
+      - UserProfile.tsx
+      - WelcomeDialog.tsx
+      - WelcomeUser.tsx
+      - ItrWizard/
+      - ui/
+    - context/
+      - AuthContext.tsx
+      - ItrWizardContext.tsx
+      - TaxDataProvider.tsx
+      - ThemeProvider.tsx
+    - data/
+      - blogContent.ts
+      - compulsoryFields.json
+      - formRules.json
+      - govtResources.ts
+      - taxDeadlines.ts
+      - taxSlabs.ts
+    - hooks/
+      - use-mobile.tsx
+      - use-toast.ts
+      - useAdminGuard.ts
+      - useGoogleAuth.ts
+      - usePreloadCalculator.ts
+      - useTaxFiling.ts
+    - lib/
+      - calculatorClient.ts
+      - formatters.ts
+      - itrJsonGenerator.ts
+      - queryClient.ts
+      - taxCalculations.ts
+      - taxInterfaces.ts
+      - utils.ts
+      - validation.ts
+    - pages/
+      - Admin.tsx
+      - AdminLogin.tsx
+      - BlogAdmin.tsx
+      - BlogPost.tsx
+      - Calculators.tsx
+      - Dashboard.tsx
+      - DatabaseEditor.tsx
+      - DocumentVault.tsx
+      - FilingComplete.tsx
+      - FilingRequirements.tsx
+      - Home.tsx
+      - HomeSimplified.tsx
+      - ItrFiling.tsx
+      - ITRFormsGuidePage.tsx
+      - ItrWizard.tsx
+      - LearningResources.tsx
+      - Login.tsx
+      - MyFilings.tsx
+      - not-found.tsx
+      - Payment.tsx
+      - Pricing.tsx
+      - Profile.tsx
+      - Register.tsx
+      - StartFiling.tsx
+      - Support.tsx
+      - TaxExpert.tsx
+      - TaxFiling.tsx
+      - TaxResources.tsx
+      - calculators/
+      - learning/
+      - tax-resources/
+    - utils/
+      - compulsoryFieldsLoader.ts
+      - itrSelector.d.ts
+      - itrSelector.js
+- migrations/
+  - 0000_mean_sharon_ventura.sql
+  - meta/
+    - _journal.json
+    - 0000_snapshot.json
+- scripts/
+  - seedTaxGuides.ts
+  - plan-md-utility/
+    - fileChecker.ts
+    - index.ts
+- server/
+  - auth.ts
+  - blogRoutes.ts
+  - calculatorRoutes.ts
+  - calculatorRoutesFixed.ts
+  - db.ts
+  - fileUpload.ts
+  - googleAuth.ts
+  - index.ts
+  - logger.ts
+  - routes.ts
+  - securityMiddleware.ts
+  - simplified-auth.ts
+  - storage.ts
+  - userProfileRoutes.ts
+  - vite.ts
+- shared/
+  - schema.ts
+- uploads/
+
+(File list truncated in original tool output)

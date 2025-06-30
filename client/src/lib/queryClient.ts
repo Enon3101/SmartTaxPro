@@ -1,7 +1,7 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 // Simple memory cache to avoid repeated identical API calls
-const apiCache = new Map<string, { data: any, timestamp: number }>();
+const apiCache = new Map<string, { data: unknown, timestamp: number }>(); // Changed any to unknown
 const CACHE_TTL = 60000; // 1 minute cache TTL for API requests
 const MAX_CACHE_SIZE = 50; // Maximum number of cached requests
 
@@ -32,13 +32,13 @@ function cleanupCache() {
   }
 }
 
-export async function apiRequest<T = any>(
+export async function apiRequest( // Removed unused generic <T = any>
   method: string,
   url: string,
   options?: RequestInit,
 ): Promise<Response> {
   // Only cache GET requests
-  if (method === 'GET' && !options?.body) {
+  if (method === 'GET' && !options?.body) { // Ensure options is checked before accessing body
     const cacheKey = generateCacheKey(url, method, undefined);
     const cachedResponse = apiCache.get(cacheKey);
     
@@ -51,17 +51,24 @@ export async function apiRequest<T = any>(
     }
   }
   
+  const token = localStorage.getItem("authToken");
+  const authHeaders: HeadersInit = {};
+  if (token) {
+    authHeaders['Authorization'] = `Bearer ${token}`;
+  }
+
   const res = await fetch(url, {
     ...options,
     method,
     headers: {
       ...options?.headers,
+      ...authHeaders, // Add Authorization header if token exists
     },
-    credentials: "include",
+    // credentials: "include", // Typically not needed if using Bearer token auth; keep if also using cookies for other things
   });
 
   // Cache successful GET responses
-  if (method === 'GET' && res.ok && !options?.body) {
+  if (method === 'GET' && res.ok && !options?.body) { // Ensure options is checked
     try {
       const clonedRes = res.clone();
       const responseData = await clonedRes.json();

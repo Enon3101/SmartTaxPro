@@ -1,4 +1,6 @@
+import { X, Plus, MinusCircle } from 'lucide-react';
 import React from 'react';
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
-import { X, Plus, MinusCircle } from 'lucide-react';
 import { formatIndianCurrency } from "@/lib/formatters";
 
 interface SectionExemption {
