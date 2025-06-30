@@ -1,28 +1,30 @@
-import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 
-import PricingPlan from '@/components/PricingPlan'; // Import the new component
+import PricingPlan from '@/components/PricingPlan';
 
-const PricingPage: React.FC = () => {
+const PricingPage = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="bg-background min-h-screen">
+    <>
       <Helmet>
-        <title>{t('pricingPage.title', 'Our Pricing Plans - SmartTaxPro')}</title>
+        <title>Pricing Plans - SmartTaxPro | Transparent Tax Filing Solutions</title>
         <meta 
           name="description" 
-          content={t('pricingPage.description', 'Explore SmartTaxPro’s transparent pricing plans. Choose the best ITR filing plan that suits your needs, from DIY to expert-assisted services.')} 
+          content="Explore SmartTaxPro's transparent pricing plans. Choose from DIY filing to expert-assisted services. Get maximum refund with our intelligent tax engine." 
         />
-        {/* Add other relevant meta tags like OG, Twitter cards if needed */}
+        <meta name="keywords" content="ITR filing pricing, tax filing cost, income tax return price, eCA assisted filing" />
+        <meta property="og:title" content="Pricing Plans - SmartTaxPro" />
+        <meta property="og:description" content="Transparent pricing for all your tax filing needs. From free basic filing to expert-assisted services." />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Pricing Plans - SmartTaxPro" />
+        <meta name="twitter:description" content="Transparent pricing for all your tax filing needs." />
       </Helmet>
       
-      {/* You can add a PageHeader component here if you have one, similar to other pages */}
-      {/* For example: <PageHeader title={t('pricingPage.header', 'Our Pricing Plans')} subtitle={t('pricingPage.subheader', 'Find the perfect plan for your tax filing needs.')} /> */}
-
-      <PricingPlan /> 
-    </div>
+      <PricingPlan />
+    </>
   );
 };
 

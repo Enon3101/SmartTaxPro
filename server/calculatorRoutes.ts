@@ -1,5 +1,7 @@
 import express, { Request, Response } from 'express';
 import { z } from 'zod';
+
+import { calculateTaxSummary } from '../shared/tax-calculations';
 // import { authenticateToken } from './auth'; // Will add authentication later
 
 const router = express.Router();
@@ -28,7 +30,6 @@ const TaxCalculationInputSchema = z.object({
   }),
   deductions: z.object({
     chapterVIA: z.object({
-      section80C: z.number().min(0).default(0), // Max 1.5L combined with 80CCC, 80CCD(1)
       section80CCC: z.number().min(0).default(0), // Pension funds
       section80CCD1: z.number().min(0).default(0), // NPS employee contribution
       section80CCD1B: z.number().min(0).default(0), // Additional NPS contribution (max 50k)
@@ -59,211 +60,57 @@ const TaxCalculationInputSchema = z.object({
   // We might need FY later if AY is not enough to determine slabs
 });
 
-// Define Zod schema for tax calculation output
-const TaxCalculationOutputSchema = z.object({
-  grossTotalIncome: z.number(),
-  totalDeductions: z.number(),
-  netTaxableIncome: z.number(),
-  taxBeforeCess: z.number(),
-  healthAndEducationCess: z.number(),
-  totalTaxLiability: z.number(),
-  relief87A: z.number().optional(),
-  surcharge: z.number().optional(),
-  breakdown: z.object({
-    incomeTax: z.any(), // Could be an object with slab-wise calculation
-    capitalGainsTax: z.any().optional(),
-  }).optional(),
-  message: z.string().optional(),
-});
-
-// FY 2024-25 (AY 2025-26) Old Tax Regime Slabs for Individuals < 60 years
-const oldRegimeSlabs_Individual_FY2024_25 = [
-  { limit: 250000, rate: 0 },
-  { limit: 500000, rate: 0.05 },
-  { limit: 1000000, rate: 0.20 },
-  { limit: Infinity, rate: 0.30 },
-];
-
-// FY 2024-25 (AY 2025-26) New Tax Regime Slabs (Default) - Sec 115BAC
-const newRegimeSlabs_FY2024_25 = [
-  { limit: 300000, rate: 0 },
-  { limit: 600000, rate: 0.05 },
-  { limit: 900000, rate: 0.10 },
-  { limit: 1200000, rate: 0.15 },
-  { limit: 1500000, rate: 0.20 },
-  { limit: Infinity, rate: 0.30 },
-];
-
-
-const calculateTaxLiability = (
-  data: z.infer<typeof TaxCalculationInputSchema>
-): z.infer<typeof TaxCalculationOutputSchema> => {
-  const { incomeSources, deductions, personalDetails, taxRegime } = data;
-  const isSeniorCitizen = personalDetails.age !== undefined && personalDetails.age >= 60;
-  // const isSuperSeniorCitizen = personalDetails.age !== undefined && personalDetails.age >= 80; // TODO: Use for super senior citizen slab adjustments
-
-  // 1. Calculate Gross Total Income (GTI)
-  let grossTotalIncome = 0;
-  grossTotalIncome += incomeSources.salary || 0;
-  grossTotalIncome += incomeSources.housePropertyIncome || 0; 
-  // Add all capital gains to GTI. Specific tax rates will be applied later.
-  grossTotalIncome += (incomeSources.capitalGains?.stcgNormalRate || 0) +
-                      (incomeSources.capitalGains?.stcg111A || 0) +
-                      (incomeSources.capitalGains?.ltcg112 || 0) +
-                      (incomeSources.capitalGains?.ltcg112A_Equity || 0) +
-                      (incomeSources.capitalGains?.ltcgOther || 0);
-  grossTotalIncome += incomeSources.businessProfessionIncome || 0; 
-  grossTotalIncome += incomeSources.otherSourcesIncome || 0;
-  // agriculturalIncome is generally exempt up to a certain limit or if total income is low.
-  // For simplicity, not including it in taxable income directly here, but it can affect slab rates.
-
-  // 2. Calculate Total Deductions
-  let totalDeductions = 0;
-  let calculatedStandardDeduction = 0;
-
-  if (taxRegime === 'old') {
-    // Standard Deduction (for salaried and pensioners)
-    if (incomeSources.salary > 0) {
-      calculatedStandardDeduction = Math.min(incomeSources.salary, 50000);
-      totalDeductions += calculatedStandardDeduction;
-    }
-    totalDeductions += Math.min(deductions.otherDeductions.professionalTax || 0, 2500); // Max Rs. 2,500
-
-    // Chapter VI-A Deductions
-    const section80CLimit = 150000;
-    const section80CActual = (deductions.chapterVIA.section80C || 0) +
-                             (deductions.chapterVIA.section80CCC || 0) +
-                             (deductions.chapterVIA.section80CCD1 || 0);
-    totalDeductions += Math.min(section80CActual, section80CLimit);
-    totalDeductions += Math.min(deductions.chapterVIA.section80CCD1B || 0, 50000); // Additional NPS
-    // Add other Chapter VI-A deductions with their respective limits
-    totalDeductions += deductions.chapterVIA.section80D || 0; // Needs more logic for age based limits
-    totalDeductions += deductions.chapterVIA.section80TTA || 0; // Max 10k for non-seniors
-    if (isSeniorCitizen) {
-      totalDeductions += Math.min(deductions.chapterVIA.section80TTB || 0, 50000);
-    }
-     // Home Loan Interest on self-occupied property (Sec 24(b)) - part of housePropertyIncome calculation usually
-     // but if provided separately as deduction under otherDeductions.homeLoanInterest for old regime
-    totalDeductions += Math.min(deductions.otherDeductions.homeLoanInterest || 0, 200000);
-
-
-  } else { // New Regime (FY 2024-25 / AY 2025-26)
-    // Standard Deduction is available in the new regime from FY 2023-24
-    if (incomeSources.salary > 0) {
-      calculatedStandardDeduction = Math.min(incomeSources.salary, 50000);
-      totalDeductions += calculatedStandardDeduction;
-    }
-    // Employer's contribution to NPS (Sec 80CCD(2)) is allowed
-    totalDeductions += deductions.chapterVIA.section80CCD2 || 0;
-    // Deduction for family pension (Sec 57(iia)) - 1/3rd of pension or 15,000, whichever is less.
-    // This would typically be part of 'otherSourcesIncome' calculation.
-  }
-
-  // 3. Calculate Net Taxable Income (NTI)
-  const netTaxableIncome = Math.max(0, grossTotalIncome - totalDeductions);
-
-  // 4. Calculate Tax on NTI (excluding special rate incomes)
-  let incomeTaxOnNormalIncome = 0;
-  
-  // Calculate taxes on special rate incomes first
-  const stcg111A_Income = incomeSources.capitalGains?.stcg111A || 0;
-  const taxOnSTCG111A = stcg111A_Income * 0.15;
-
-  const ltcg112A_Equity_Income = incomeSources.capitalGains?.ltcg112A_Equity || 0;
-  const taxableLTCG112A = Math.max(0, ltcg112A_Equity_Income - 100000); // Exemption of 1 Lakh
-  const taxOnLTCG112A = taxableLTCG112A * 0.10;
-
-  const ltcg112_Income = incomeSources.capitalGains?.ltcg112 || 0;
-  // TODO: Indexation for LTCG 112 needs to be applied before this step if input is sale consideration & cost.
-  // Assuming ltcg112_Income is the indexed gain.
-  const taxOnLTCG112 = ltcg112_Income * 0.20;
-  
-  // Income to be taxed at normal slab rates
-  // NTI - (STCG 111A + LTCG 112A (full amount before exemption) + LTCG 112)
-  // stcgNormalRate is already part of normal income.
-  let remainingNti = netTaxableIncome - stcg111A_Income - ltcg112A_Equity_Income - ltcg112_Income;
-  remainingNti = Math.max(0, remainingNti); // Ensure it's not negative
-
-  const slabs = taxRegime === 'new' ? newRegimeSlabs_FY2024_25 : oldRegimeSlabs_Individual_FY2024_25;
-  // TODO: Adjust slabs for senior and super senior citizens in old regime
-  // For old regime:
-  // Senior Citizen (60-80 yrs): Basic exemption Rs. 3,00,000
-  // Super Senior Citizen (>80 yrs): Basic exemption Rs. 5,00,000
-
-  let slabBasedTax = 0;
-  let previousLimit = 0;
-  for (const slab of slabs) {
-    if (remainingNti > previousLimit) {
-      const taxableInSlab = Math.min(remainingNti, slab.limit) - previousLimit;
-      slabBasedTax += taxableInSlab * slab.rate;
-      previousLimit = slab.limit;
-    } else {
-      break;
-    }
-  }
-  incomeTaxOnNormalIncome = slabBasedTax;
-
-  let taxBeforeCess = incomeTaxOnNormalIncome + taxOnSTCG111A + taxOnLTCG112A + taxOnLTCG112;
-  // Note: taxOnLTCG112 is added here. Other special rates (e.g. ltcgOther) would also be added.
-
-  // 5. Rebate under Section 87A
-  // Rebate is on total tax liability before cess, but NTI should not exceed the threshold.
-  // The rebate calculation should consider if the NTI (after all deductions) is within the limit.
-  let relief87A = 0;
-  if (taxRegime === 'new' && netTaxableIncome <= 700000) {
-    relief87A = Math.min(taxBeforeCess, 25000); // Max rebate is 25k if NTI <= 7L
-  } else if (taxRegime === 'old' && netTaxableIncome <= 500000) {
-    relief87A = Math.min(taxBeforeCess, 12500); // Max rebate is 12.5k if NTI <= 5L
-  }
-  taxBeforeCess = Math.max(0, taxBeforeCess - relief87A);
-
-  // 6. Surcharge (simplified)
-  let surcharge = 0;
-  if (netTaxableIncome > 5000000 && netTaxableIncome <= 10000000) { // 50 Lakh to 1 Cr
-    surcharge = taxBeforeCess * 0.10;
-  } else if (netTaxableIncome > 10000000 && netTaxableIncome <= 20000000) { // 1 Cr to 2 Cr
-    surcharge = taxBeforeCess * 0.15;
-  } else if (netTaxableIncome > 20000000 && netTaxableIncome <= 50000000) { // 2 Cr to 5 Cr
-    surcharge = taxBeforeCess * 0.25;
-  } else if (netTaxableIncome > 50000000) { // Above 5 Cr
-    surcharge = taxBeforeCess * 0.37;
-  }
-  // Note: Surcharge rates on STCG (111A) and LTCG (112A) are capped at 15% if applicable. This needs more detailed handling.
-  
-  taxBeforeCess += surcharge;
-
-  // 7. Health and Education Cess
-  const healthAndEducationCess = taxBeforeCess * 0.04;
-
-  // 8. Total Tax Liability
-  const totalTaxLiability = taxBeforeCess + healthAndEducationCess;
-
-  return {
-    grossTotalIncome,
-    totalDeductions,
-    netTaxableIncome,
-    taxBeforeCess: taxBeforeCess, // This is tax after surcharge but before cess in this context
-    healthAndEducationCess,
-    totalTaxLiability: Math.round(totalTaxLiability), // Round to nearest rupee
-    relief87A: relief87A > 0 ? relief87A : undefined,
-    surcharge: surcharge > 0 ? surcharge : undefined,
-    message: `Tax calculated for AY ${personalDetails.assessmentYear} under ${taxRegime} regime. This is a simplified calculation.`,
-    breakdown: { 
-      incomeTax: {
-        slabBasedTax: Math.round(incomeTaxOnNormalIncome),
-        stcg111aTax: Math.round(taxOnSTCG111A),
-        ltcg112aTax: Math.round(taxOnLTCG112A),
-        ltcg112Tax: Math.round(taxOnLTCG112),
-      },
-      // capitalGainsTax: could be a sum or more detailed object later
-    }
-  };
-};
-
 router.post('/tax', /* authenticateToken, */ (req: Request, res: Response) => {
   try {
     const validatedData = TaxCalculationInputSchema.parse(req.body);
-    const result = calculateTaxLiability(validatedData);
+
+    const incomeData = {
+      salaryIncome: validatedData.incomeSources.salary.toString(),
+      housePropertyIncome: validatedData.incomeSources.housePropertyIncome.toString(),
+      capitalGainsIncome: (
+        (validatedData.incomeSources.capitalGains?.stcgNormalRate || 0) +
+        (validatedData.incomeSources.capitalGains?.stcg111A || 0) +
+        (validatedData.incomeSources.capitalGains?.ltcg112 || 0) +
+        (validatedData.incomeSources.capitalGains?.ltcg112A_Equity || 0) +
+        (validatedData.incomeSources.capitalGains?.ltcgOther || 0)
+      ).toString(),
+      businessIncome: validatedData.incomeSources.businessProfessionIncome.toString(),
+      otherSourcesIncome: validatedData.incomeSources.otherSourcesIncome.toString(),
+    };
+
+    const deductions80C = {
+      totalAmount: (
+        (validatedData.deductions.chapterVIA?.section80C || 0) +
+        (validatedData.deductions.chapterVIA?.section80CCC || 0) +
+        (validatedData.deductions.chapterVIA?.section80CCD1 || 0)
+      ).toString(),
+    };
+
+    const deductions80D = {
+      totalAmount: (validatedData.deductions.chapterVIA?.section80D || 0).toString(),
+    };
+
+    const otherDeductions = {
+      totalAmount: "0", // Simplified for now
+    };
+
+    const taxPaid = {
+      tds: "0",
+      advanceTax: "0",
+      selfAssessmentTax: "0",
+    };
+
+    const result = calculateTaxSummary(
+      incomeData,
+      deductions80C,
+      deductions80D,
+      otherDeductions,
+      taxPaid,
+      validatedData.personalDetails.assessmentYear,
+      validatedData.taxRegime,
+      validatedData.personalDetails.age
+    );
+
     res.json(result);
   } catch (error) {
     if (error instanceof z.ZodError) {

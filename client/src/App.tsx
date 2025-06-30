@@ -20,7 +20,7 @@ import DatabaseEditor from "@/pages/DatabaseEditor";
 import DocumentVault from "@/pages/DocumentVault"; // Import DocumentVault page
 import FilingComplete from "@/pages/FilingComplete";
 import FilingRequirements from "@/pages/FilingRequirements";
-import Home from "@/pages/HomeSimplified";
+import Home from "@/pages/Home";
 import ItrFiling from "@/pages/ItrFiling";
 import ItrWizard from "@/pages/ItrWizard";
 import BlogListPage from "@/pages/learning/BlogListPage";
@@ -265,7 +265,11 @@ const ListBlogAdminPage: React.FC<RouteComponentProps<DefaultParams>> = () => {
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      <Route path="/">
+  <Suspense fallback={<PageLoading />}>
+    <Home />
+  </Suspense>
+</Route>
       <Route path="/tax-filing" component={TaxFiling} />
       <Route path="/file-taxes" component={TaxFiling} />
       <Route path="/itr-forms-guide">
@@ -458,18 +462,17 @@ function Router() {
       </Route>
     
       <Route path="/calculators/nps">
-        <Suspense fallback={<PageLoading />}>
-          <NPSCalculator />
-        </Suspense>
-      </Route>
-    
-      <Route path="/tax-form/:id">
-        <Suspense fallback={<PageLoading />}>
-          <TaxFormDetails />
-        </Suspense>
-      </Route>
-      <Route component={NotFound} />
-    </Switch>
+  <Suspense fallback={<PageLoading />}>
+    <NPSCalculator />
+  </Suspense>
+</Route>
+<Route path="/tax-form/:id">
+  <Suspense fallback={<PageLoading />}>
+    <TaxFormDetails />
+  </Suspense>
+</Route>
+<Route component={NotFound} />
+</Switch>
   );
 }
 

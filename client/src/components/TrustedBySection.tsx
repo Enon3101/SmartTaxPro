@@ -1,127 +1,244 @@
-// Modern company logos carousel component
+// Modern company logos carousel component with employee testimonials
 
-// Import SVG logos from the directory
-import adaniGreenEnergyLogo from '@/assets/company-logos/Adani_Green_Energy_logo.svg';
-import airtelLogo from '@/assets/company-logos/airtel.svg';
-import amulLogo from '@/assets/company-logos/amul.svg';
-import asianPaintsLogo from '@/assets/company-logos/Asian_Paints_Logo.svg';
-import bajajFinservLogo from '@/assets/company-logos/bajaj-finserv.svg';
-import balajiWafersLogo from '@/assets/company-logos/BalajiWafersLogo.svg';
-import dlfLogo from '@/assets/company-logos/DLF_logo.svg';
-import dunzoLogo from '@/assets/company-logos/dunzo.svg';
-import godrejLogo from '@/assets/company-logos/Godrej_Logo.svg';
-import heroLogo from '@/assets/company-logos/hero.svg';
-import hindustanUnileverLogo from '@/assets/company-logos/hindustan-unilever.svg';
-import indiabullsHomeLoansLogo from '@/assets/company-logos/Indiabulls_Home_Loans_Logo.svg';
-import itcLimitedLogo from '@/assets/company-logos/ITC_Limited_Logo.svg';
-import justdialLogo from '@/assets/company-logos/Justdial_Logo.svg';
-import mahindraLogo from '@/assets/company-logos/mahindra.svg';
-import olaCabsLogo from '@/assets/company-logos/Ola_Cabs_logo.svg';
-import paytmLogo from '@/assets/company-logos/Paytm_Logo_(standalone).svg';
-import phonepeLogo from '@/assets/company-logos/phonepe.svg';
-import raymondLogo from '@/assets/company-logos/Raymond_logo.svg';
-import snapdealLogo from '@/assets/company-logos/Snapdeal_branding_logo.svg';
-import tSeriesLogo from '@/assets/company-logos/T-series-logo.svg';
-import tanishqLogo from '@/assets/company-logos/Tanishq_Logo.svg';
-import tataLogo from '@/assets/company-logos/tata.svg';
-import tata1mgLogo from '@/assets/company-logos/TATA_1mg_Logo.svg'; // Using one of the TATA_1mg logos
-import tataConsultancyServicesOldLogo from '@/assets/company-logos/Tata_Consultancy_Services_old_logo.svg';
-import tataSteelLogo from '@/assets/company-logos/Tata_Steel_Logo.svg';
-import videoconLogo from '@/assets/company-logos/Videocon_logo.svg';
-import wiproPrimaryLogoColorRGB from '@/assets/company-logos/Wipro_Primary_Logo_Color_RGB.svg';
-import zohoLogo from '@/assets/company-logos/ZOHO.svg';
-import zomatoLogo from '@/assets/company-logos/Zomato_Logo.svg';
+import { motion, useAnimation } from 'framer-motion';
+import { Star, Building2, Users } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 
-
-// Helper function to derive display name from filename
-const formatName = (filename: string): string => {
-  const name = filename
-    .replace(/\.svg$/, '') // Remove .svg extension
-    .replace(/_logo$/i, '') // Remove common '_logo' suffix
-    .replace(/_Logo$/i, '') // Remove common '_Logo' suffix
-    .replace(/_Primary_Logo_Color_RGB$/i, '') // Remove specific suffix for Wipro
-    .replace(/_branding_logo$/i, '') // Remove specific suffix for Snapdeal
-    .replace(/_old_logo$/i, '') // Remove specific suffix for TCS
-    .replace(/_\(standalone\)$/i, '') // Remove specific suffix for Paytm
-    .replace(/_\(1\)$/i, '') // Remove (1) suffix
-    .replace(/_/g, ' ') // Replace underscores with spaces
-    .replace(/-/g, ' ') // Replace hyphens with spaces
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-  if (name === 'tata') return 'Tata Group'; // Handle generic 'tata.svg'
-  return name;
-};
+// Employee testimonials from top companies
+const employeeTestimonials = [
+  {
+    id: 1,
+    company: "Tata Consultancy Services",
+    logo: "/company-logos-new/Tata_Consultancy_Services_old_logo.svg",
+    employee: "Rajesh Kumar",
+    position: "Senior Software Engineer",
+    testimonial: "SmartTaxPro streamlined our entire team's tax filing process. The bulk Form-16 upload feature saved us countless hours during tax season.",
+    rating: 5,
+    employeesCount: "500+ employees"
+  },
+  {
+    id: 2,
+    company: "Wipro",
+    logo: "/company-logos-new/Wipro_Primary_Logo_Color_RGB.svg",
+    employee: "Priya Sharma",
+    position: "HR Manager",
+    testimonial: "As an HR manager, I appreciate how SmartTaxPro handles complex tax scenarios. Our employees love the intuitive interface and quick refund processing.",
+    rating: 5,
+    employeesCount: "300+ employees"
+  },
+  {
+    id: 3,
+    company: "Infosys",
+    logo: "/company-logos-new/infosys.png",
+    employee: "Amit Patel",
+    position: "Project Manager",
+    testimonial: "The AI-powered deduction finder helped me discover tax benefits I never knew existed. SmartTaxPro truly maximizes your refund potential.",
+    rating: 5,
+    employeesCount: "400+ employees"
+  },
+  {
+    id: 4,
+    company: "Hindustan Unilever",
+    logo: "/company-logos-new/hindustan-unilever.svg",
+    employee: "Sunita Reddy",
+    position: "Finance Director",
+    testimonial: "Our finance team recommends SmartTaxPro to all employees. The accuracy and compliance features give us complete peace of mind.",
+    rating: 5,
+    employeesCount: "250+ employees"
+  },
+  {
+    id: 5,
+    company: "ITC Limited",
+    logo: "/company-logos-new/ITC_Limited_Logo.svg",
+    employee: "Vikram Singh",
+    position: "Senior Analyst",
+    testimonial: "Filing taxes used to be a nightmare. SmartTaxPro made it so simple that I completed my return in just 15 minutes. Highly recommended!",
+    rating: 5,
+    employeesCount: "200+ employees"
+  },
+  {
+    id: 6,
+    company: "Mahindra",
+    logo: "/company-logos-new/mahindra.svg",
+    employee: "Neha Gupta",
+    position: "Operations Manager",
+    testimonial: "The step-by-step guidance is perfect for first-time filers. SmartTaxPro explains everything in simple terms and ensures accuracy.",
+    rating: 5,
+    employeesCount: "350+ employees"
+  },
+  {
+    id: 7,
+    company: "Asian Paints",
+    logo: "/company-logos-new/Asian_Paints_Logo.svg",
+    employee: "Arun Kumar",
+    position: "Sales Executive",
+    testimonial: "I was worried about my capital gains calculations. SmartTaxPro handled everything perfectly and I got my maximum refund.",
+    rating: 5,
+    employeesCount: "180+ employees"
+  },
+  {
+    id: 8,
+    company: "Bajaj Finserv",
+    logo: "/company-logos-new/bajaj-finserv.svg",
+    employee: "Meera Desai",
+    position: "Product Manager",
+    testimonial: "The customer support is exceptional. They helped me understand complex tax scenarios and ensured I claimed all eligible deductions.",
+    rating: 5,
+    employeesCount: "220+ employees"
+  }
+];
 
 const TrustedBySection = () => {
-  const rawCompanies = [
-    { name: formatName('Adani_Green_Energy_logo.svg'), logo: adaniGreenEnergyLogo },
-    { name: formatName('airtel.svg'), logo: airtelLogo },
-    { name: formatName('amul.svg'), logo: amulLogo },
-    { name: formatName('Asian_Paints_Logo.svg'), logo: asianPaintsLogo },
-    { name: formatName('bajaj-finserv.svg'), logo: bajajFinservLogo },
-    { name: formatName('BalajiWafersLogo.svg'), logo: balajiWafersLogo },
-    { name: formatName('DLF_logo.svg'), logo: dlfLogo },
-    { name: formatName('dunzo.svg'), logo: dunzoLogo },
-    { name: formatName('Godrej_Logo.svg'), logo: godrejLogo },
-    { name: formatName('hero.svg'), logo: heroLogo },
-    { name: formatName('hindustan-unilever.svg'), logo: hindustanUnileverLogo },
-    { name: formatName('Indiabulls_Home_Loans_Logo.svg'), logo: indiabullsHomeLoansLogo },
-    { name: formatName('ITC_Limited_Logo.svg'), logo: itcLimitedLogo },
-    { name: formatName('Justdial_Logo.svg'), logo: justdialLogo },
-    { name: formatName('mahindra.svg'), logo: mahindraLogo },
-    { name: formatName('Ola_Cabs_logo.svg'), logo: olaCabsLogo },
-    { name: formatName('Paytm_Logo_(standalone).svg'), logo: paytmLogo },
-    { name: formatName('phonepe.svg'), logo: phonepeLogo },
-    { name: formatName('Raymond_logo.svg'), logo: raymondLogo },
-    { name: formatName('Snapdeal_branding_logo.svg'), logo: snapdealLogo },
-    { name: formatName('T-series-logo.svg'), logo: tSeriesLogo },
-    { name: formatName('Tanishq_Logo.svg'), logo: tanishqLogo },
-    { name: formatName('TATA_1mg_Logo.svg'), logo: tata1mgLogo },
-    { name: formatName('Tata_Consultancy_Services_old_logo.svg'), logo: tataConsultancyServicesOldLogo },
-    { name: formatName('Tata_Steel_Logo.svg'), logo: tataSteelLogo },
-    { name: formatName('tata.svg'), logo: tataLogo },
-    { name: formatName('Videocon_logo.svg'), logo: videoconLogo },
-    { name: formatName('Wipro_Primary_Logo_Color_RGB.svg'), logo: wiproPrimaryLogoColorRGB },
-    { name: formatName('ZOHO.svg'), logo: zohoLogo },
-    { name: formatName('Zomato_Logo.svg'), logo: zomatoLogo },
-  ];
+  const controls = useAnimation();
+  const sliderRef = useRef<HTMLDivElement>(null);
 
-  // Duplicate the list to ensure continuous scrolling
-  const companies = [...rawCompanies, ...rawCompanies.slice(0, 15)]; // Adjust slice as needed for smooth scroll
+  // Function to render star rating
+  const renderStars = (rating: number) => {
+    return Array(5)
+      .fill(0)
+      .map((_, i) => (
+        <Star
+          key={i}
+          className={`h-4 w-4 ${i < rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+          strokeWidth={i < rating ? 2 : 1}
+        />
+      ));
+  };
+
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    const scrollWidth = slider.scrollWidth;
+    const duration = 50; // seconds per full scroll
+
+    controls.start({
+      x: -scrollWidth / 2,
+      transition: { duration, ease: 'linear', repeat: Infinity }
+    });
+  }, [controls]);
 
   return (
-    <section className="py-10 bg-primary/5 border-y border-border">
+    <section className="py-16 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-8">
-          <h3 className="text-2xl font-semibold text-gray-800 mb-2">As Trusted By</h3>
-          <p className="text-muted-foreground text-sm max-w-lg mx-auto">
-            Leading Indian companies trust us for their employee's tax filing needs
-          </p>
+        <div className="text-center mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="flex items-center justify-center mb-4"
+          >
+            <Building2 className="h-8 w-8 text-blue-600 mr-3" />
+            <h2 className="text-3xl font-bold text-gray-800">
+              Trusted by Employees from Top Companies
+            </h2>
+          </motion.div>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-muted-foreground max-w-2xl mx-auto text-lg"
+          >
+            See what employees from leading Indian companies say about their SmartTaxPro experience
+          </motion.p>
         </div>
         
-        <div className="company-carousel">
-          <div className="carousel-track">
-            {companies.map((company, index) => (
-              <div key={index} className="carousel-item">
-                <div className="carousel-logo-container">
-                  <img 
-                    src={company.logo}
-                    alt={`${company.name} logo`}
-                    className="carousel-logo"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(company.name)}&background=0D8ABC&color=fff`;
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
+        <div className="relative">
+          <div 
+            ref={sliderRef}
+            className="overflow-hidden py-4"
+          >
+            <motion.div 
+              className="flex gap-6 w-max"
+              animate={controls}
+            >
+              {[...employeeTestimonials, ...employeeTestimonials].map((testimonial, index) => (
+                <motion.div
+                  key={`${testimonial.id}-${index}`}
+                  className="w-96 flex-shrink-0 bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.3, delay: (index % 8) * 0.1 }}
+                >
+                  {/* Company Logo and Info */}
+                  <div className="flex items-center mb-4 pb-4 border-b border-gray-100">
+                    <div className="w-12 h-12 bg-gray-50 rounded-lg flex items-center justify-center mr-4">
+                      <img
+                        src={testimonial.logo}
+                        alt={`${testimonial.company} logo`}
+                        className="object-contain h-8 w-8"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(testimonial.company)}&background=0D8ABC&color=fff`;
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900 text-sm">{testimonial.company}</h4>
+                      <div className="flex items-center text-xs text-gray-500">
+                        <Users className="h-3 w-3 mr-1" />
+                        {testimonial.employeesCount}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Rating */}
+                  <div className="flex mb-3">
+                    {renderStars(testimonial.rating)}
+                  </div>
+
+                  {/* Testimonial Text */}
+                  <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+                    "{testimonial.testimonial}"
+                  </p>
+
+                  {/* Employee Info */}
+                  <div className="flex items-center">
+                    <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium mr-3 text-sm">
+                      {testimonial.employee.charAt(0)}
+                    </div>
+                    <div>
+                      <h5 className="font-medium text-gray-900 text-sm">{testimonial.employee}</h5>
+                      <p className="text-xs text-gray-500">{testimonial.position}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
+          
+          {/* Gradient fades */}
+          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-blue-50 to-transparent z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-blue-50 to-transparent z-10" />
         </div>
+
+        {/* Stats Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8"
+        >
+          <div className="text-center">
+            <div className="text-3xl font-bold text-blue-600 mb-2">2000+</div>
+            <div className="text-gray-600">Companies Trust Us</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-blue-600 mb-2">50,000+</div>
+            <div className="text-gray-600">Employees Served</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-blue-600 mb-2">4.8★</div>
+            <div className="text-gray-600">Average Rating</div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
 };
 
-export default TrustedBySection;
+export default TrustedBySection; 

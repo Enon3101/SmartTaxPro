@@ -29,6 +29,7 @@ import {
 } from "./auth"; 
 import blogRouter from "./blogRoutes"; 
 import calculatorRouter from "./calculatorRoutes"; // Updated to use the new calculatorRoutes.ts
+import fileManagementRouter from "./fileManagementRoutes";
 import { db } from "./db"; 
 import { handleFileUpload, serveSecureFile, generatePresignedUrl } from "./fileUpload";
 import { verifyGoogleToken, processGoogleLogin } from "./googleAuth"; 
@@ -67,6 +68,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   apiRouter.use("/calculators", calculatorRouter);
   apiRouter.use("/blog-posts", blogRouter); // Public blog routes
+  apiRouter.use("/v1/files", fileManagementRouter); // File management routes
 
   // Tax Forms API
 

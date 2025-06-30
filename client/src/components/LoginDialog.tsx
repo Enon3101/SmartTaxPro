@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { FiPhone, FiLogIn, FiArrowLeft, FiCheck } from "react-icons/fi";
+import { FiPhone, FiLogIn, FiArrowLeft, FiCheck, FiUser, FiLock } from "react-icons/fi";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
-
 
 import GoogleLoginButton from "./GoogleLoginButton";
 
@@ -333,10 +332,7 @@ export default function LoginDialog({
                   </Label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                      </svg>
+                      <FiUser className="h-4 w-4" />
                     </div>
                     <Input
                       id="adminUsername"
@@ -355,10 +351,7 @@ export default function LoginDialog({
                   </Label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                      </svg>
+                      <FiLock className="h-4 w-4" />
                     </div>
                     <Input
                       id="adminPassword"
@@ -376,16 +369,20 @@ export default function LoginDialog({
               <div className="mt-6 space-y-3">
                 <Button 
                   type="submit" 
+                  disabled={adminLoginMutation.isPending}
                   className="w-full bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white shadow-md transition-all duration-200 transform hover:scale-[1.01] py-6"
                 >
-                  <div className="flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                      <polyline points="10 17 15 12 10 7"></polyline>
-                      <line x1="15" y1="12" x2="3" y2="12"></line>
-                    </svg>
-                    <span>Login as Admin</span>
-                  </div>
+                  {adminLoginMutation.isPending ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <span>Logging in...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2">
+                      <FiLogIn className="h-5 w-5" />
+                      <span>Login as Admin</span>
+                    </div>
+                  )}
                 </Button>
                 
                 <Button 
@@ -411,10 +408,7 @@ export default function LoginDialog({
                   </Label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                      </svg>
+                      <FiUser className="h-4 w-4" />
                     </div>
                     <Input
                       id="username"
@@ -433,10 +427,7 @@ export default function LoginDialog({
                   </Label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-muted-foreground">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                      </svg>
+                      <FiLock className="h-4 w-4" />
                     </div>
                     <Input
                       id="password"
@@ -464,11 +455,7 @@ export default function LoginDialog({
                     </div>
                   ) : (
                     <div className="flex items-center justify-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                        <polyline points="10 17 15 12 10 7"></polyline>
-                        <line x1="15" y1="12" x2="3" y2="12"></line>
-                      </svg>
+                      <FiLogIn className="h-5 w-5" />
                       <span>Login</span>
                     </div>
                   )}
@@ -488,7 +475,7 @@ export default function LoginDialog({
               </div>
             </form>
           ) : step === "phone" ? (
-            // Phone Form
+            // Phone Form - FIXED VERSION
             <form onSubmit={handleSendOtp}>
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -505,11 +492,16 @@ export default function LoginDialog({
                         type="tel"
                         value={phone}
                         onChange={(e) => {
+                          // Allow only digits and limit to 10 characters
                           const value = e.target.value.replace(/\D/g, '').substring(0, 10);
                           setPhone(value);
                         }}
-                        className="rounded-l-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="10-digit mobile number"
+                        className="rounded-l-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-foreground"
+                        style={{ 
+                          color: 'inherit',
+                          backgroundColor: 'transparent'
+                        }}
+                        placeholder="Enter 10-digit number"
                         autoComplete="tel"
                         maxLength={10}
                         pattern="[6-9][0-9]{9}"
@@ -525,6 +517,11 @@ export default function LoginDialog({
                     {phone && !phone.match(/^[6-9]\d{9}$/) && phone.length === 10 && (
                       <div className="text-xs text-red-600 mt-1">
                         Indian mobile numbers should start with 6, 7, 8, or 9
+                      </div>
+                    )}
+                    {phone && phone.length > 0 && (
+                      <div className="text-xs text-green-600 mt-1">
+                        Number entered: {phone}
                       </div>
                     )}
                   </div>
@@ -544,7 +541,7 @@ export default function LoginDialog({
                     ) : (
                       <div className="flex items-center justify-center gap-2">
                         <FiPhone className="h-5 w-5" />
-                        <span>Continue with Mobile</span>
+                        <span>Send OTP to Mobile</span>
                       </div>
                     )}
                   </Button>
@@ -561,7 +558,7 @@ export default function LoginDialog({
                 </div>
                 
                 <div className="space-y-3">
-                  {/* Username/Password Login */}
+                  {/* Username/Password Login - FIXED BUTTON TEXT */}
                   <Button
                     type="button"
                     variant="outline"
@@ -569,11 +566,8 @@ export default function LoginDialog({
                     onClick={() => setStep("credentials")}
                   >
                     <div className="flex items-center justify-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                      </svg>
-                      <span>Continue with Username</span>
+                      <FiUser className="h-4 w-4" />
+                      <span>Username & Password</span>
                     </div>
                   </Button>
                   
@@ -592,27 +586,29 @@ export default function LoginDialog({
                   />
                   
                   {/* Admin Login (Development only) */}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full border-dashed"
-                    onClick={handleAdminLoginClick}
-                  >
-                    <div className="flex items-center justify-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                      </svg>
-                      <span>Admin Login (Dev Only)</span>
-                    </div>
-                  </Button>
+                  {process.env.NODE_ENV === 'development' && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full border-dashed text-gray-600"
+                      onClick={handleAdminLoginClick}
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="9" cy="7" r="4"></circle>
+                          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>Developer Access</span>
+                      </div>
+                    </Button>
+                  )}
                 </div>
               </div>
             </form>
           ) : (
-            // OTP Form
+            // OTP Form - ENHANCED VERSION
             <form onSubmit={handleVerifyOtp}>
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -624,16 +620,28 @@ export default function LoginDialog({
                     type="text"
                     value={otp}
                     onChange={(e) => {
+                      // Allow only digits and limit to 6 characters
                       const value = e.target.value.replace(/\D/g, '').substring(0, 6);
                       setOtp(value);
                     }}
-                    className="text-center text-xl tracking-widest font-medium"
+                    className="text-center text-2xl tracking-[0.5em] font-bold text-foreground bg-background"
+                    style={{ 
+                      color: 'inherit',
+                      backgroundColor: 'transparent',
+                      letterSpacing: '0.5em'
+                    }}
                     placeholder="000000"
                     required
                     maxLength={6}
                     inputMode="numeric"
                     autoFocus
+                    autoComplete="one-time-code"
                   />
+                  {otp && otp.length > 0 && (
+                    <div className="text-xs text-green-600 mt-1 text-center">
+                      {otp.length}/6 digits entered
+                    </div>
+                  )}
                 </div>
                 
                 <div className="mt-6 space-y-3">
@@ -658,16 +666,16 @@ export default function LoginDialog({
                   <div className="flex justify-between items-center text-sm">
                     <button 
                       type="button" 
-                      className="text-blue-600 hover:text-blue-700 hover:underline"
+                      className="text-blue-600 hover:text-blue-700 hover:underline transition-colors"
                       onClick={() => setStep("phone")}
                     >
-                      Use different number
+                      ← Change number
                     </button>
                     
                     <button 
                       type="button" 
                       disabled={sendOtpMutation.isPending}
-                      className="text-blue-600 hover:text-blue-700 hover:underline disabled:opacity-50" 
+                      className="text-blue-600 hover:text-blue-700 hover:underline disabled:opacity-50 transition-colors" 
                       onClick={() => sendOtpMutation.mutate()}
                     >
                       {sendOtpMutation.isPending ? "Sending..." : "Resend OTP"}

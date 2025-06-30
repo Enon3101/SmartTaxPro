@@ -145,3 +145,15 @@ const TestimonialCarousel = () => {
                   ))}
                 </div>
                 <p className="text-gray-700 italic">
+                  "{testimonial.text}"
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default TestimonialCarousel;

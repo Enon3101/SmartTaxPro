@@ -1,10 +1,13 @@
 import { 
-  Coins, ArrowRight, FileText, Copy, Briefcase, TrendingUp, Globe, Search, CheckCircle, Circle, ChevronUp, ChevronDown 
+  Coins, ArrowRight, FileText, Copy, Briefcase, TrendingUp, Globe, Search, CheckCircle, Circle, ChevronUp, ChevronDown, Star, Shield, Zap, Users
 } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface PlanCardProps {
   title: string;
@@ -12,7 +15,8 @@ interface PlanCardProps {
   price: string;
   originalPrice?: string;
   isFree?: boolean;
-  isPopular?: boolean; // For a potential "Popular" badge later
+  isPopular?: boolean;
+  features?: string[];
   buttonText?: string;
   onClick?: () => void;
 }
@@ -23,50 +27,84 @@ const PlanCard: React.FC<PlanCardProps> = ({
   price,
   originalPrice,
   isFree,
+  isPopular,
+  features = [],
   buttonText,
   onClick,
 }) => {
   const { t } = useTranslation();
+  
   return (
-    <div className="bg-card p-6 rounded-lg shadow-sm border border-border flex flex-col justify-between h-full">
-      <div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+      className="relative"
+    >
+      {isPopular && (
+        <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">
+          Most Popular
+        </Badge>
+      )}
+      <Card className={`h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-2 ${
+        isPopular ? 'ring-2 ring-purple-500 shadow-lg' : 'hover:ring-2 hover:ring-blue-500'
+      }`}>
+        <CardHeader className="text-center pb-4">
         {isFree && (
-          <div className="mb-2 flex justify-center">
-            <span className="inline-block bg-green-500 text-white text-xs font-semibold px-2.5 py-0.5 rounded-full">
-              {t('pricing.free')}
-            </span>
-          </div>
-        )}
-        <div className="flex flex-col items-center">
-          {item.icon && (
-            <div className="mb-4">
-              {React.cloneElement(item.icon as React.ReactElement, {
-                className: "h-12 w-12 text-primary/80"
-              })}
-            </div>
+            <Badge variant="secondary" className="w-fit mx-auto mb-2 bg-green-100 text-green-700 border-green-200">
+              {t('pricing.free', 'Free')}
+            </Badge>
           )}
-          <h3 className="text-xl font-bold mb-1 text-center">{title}</h3>
-          {subtitle && <p className="text-sm text-muted-foreground mb-3 text-center">{subtitle}</p>}
-        </div>
-        
-        <div className="mb-4">
+          <h3 className="text-xl font-bold text-gray-900">{title}</h3>
+          {subtitle && (
+            <p className="text-sm text-gray-600 mt-1">{subtitle}</p>
+          )}
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="text-center mb-6">
           {originalPrice && (
-            <span className="text-sm text-muted-foreground line-through mr-2">
+              <span className="text-sm text-gray-500 line-through mr-2">
               ₹{originalPrice}
             </span>
           )}
-          <span className={`text-3xl font-bold ${isFree ? 'text-green-500' : 'text-primary'}`}>
+            <div className="flex items-baseline justify-center">
+              <span className={`text-4xl font-bold ${isFree ? 'text-green-600' : 'text-blue-600'}`}>
             {isFree ? price : `₹${price}`}
           </span>
-          {!isFree && <span className="text-sm text-muted-foreground ml-1">+ {t('pricing.taxes')}</span>}
+              {!isFree && (
+                <span className="text-sm text-gray-500 ml-1">+ taxes</span>
+              )}
         </div>
       </div>
+          
+          {features.length > 0 && (
+            <ul className="space-y-2 mb-6">
+              {features.map((feature, index) => (
+                <li key={index} className="flex items-center text-sm text-gray-600">
+                  <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          )}
+          
       {buttonText && onClick && (
-        <Button onClick={onClick} className="w-full mt-4 bg-blue-500 hover:bg-blue-600">
+            <Button 
+              onClick={onClick} 
+              className={`w-full ${
+                isPopular 
+                  ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600' 
+                  : 'bg-blue-600 hover:bg-blue-700'
+              } text-white font-medium`}
+            >
           {buttonText}
+              <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       )}
-    </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 };
 
@@ -74,293 +112,337 @@ const PricingPlan: React.FC = () => {
   const { t } = useTranslation();
   const [isEcaPlanOpen, setIsEcaPlanOpen] = useState(true);
 
-  // Data for "File ITR Yourself" plans
+  // Modern File ITR Yourself plans
   const fileYourselfPlans: PlanCardProps[] = [
     {
-      title: t('pricing.fileYourself.income0to10k.title', 'Income 0 - 10K'),
-      price: t('pricing.free', 'Free'),
+      title: "Basic",
+      subtitle: "Income 0 - 10K",
+      price: "Free",
       isFree: true,
-      // No button for free plan as per image, button is separate below
+      features: [
+        "Simple ITR filing",
+        "Basic deductions",
+        "Email support",
+        "Standard processing"
+      ],
+      buttonText: "Start Free",
+      onClick: () => console.log("Start free filing")
     },
     {
-      title: t('pricing.fileYourself.basic.title', 'Basic'),
-      subtitle: t('pricing.fileYourself.basic.subtitle', 'Income 10K - 1L'),
-      originalPrice: '99',
-      price: '49',
+      title: "Standard",
+      subtitle: "Income 10K - 1L",
+      originalPrice: "99",
+      price: "49",
+      features: [
+        "All Basic features",
+        "Advanced deductions",
+        "Priority support",
+        "Faster processing",
+        "Document storage"
+      ],
+      buttonText: "Choose Plan",
+      onClick: () => console.log("Choose standard plan")
     },
     {
-      title: t('pricing.fileYourself.standard.title', 'Standard'),
-      subtitle: t('pricing.fileYourself.standard.subtitle', 'Income 1L - 5L'),
-      originalPrice: '449',
-      price: '382',
+      title: "Premium",
+      subtitle: "Income 1L - 5L",
+      originalPrice: "449",
+      price: "382",
+      isPopular: true,
+      features: [
+        "All Standard features",
+        "Expert consultation",
+        "24/7 support",
+        "Instant processing",
+        "Advanced analytics",
+        "Tax optimization"
+      ],
+      buttonText: "Choose Plan",
+      onClick: () => console.log("Choose premium plan")
     },
     {
-      title: t('pricing.fileYourself.premium.title', 'Premium'),
-      subtitle: t('pricing.fileYourself.premium.subtitle', 'Income 10L+'),
-      originalPrice: '1499',
-      price: '1274',
-    },
+      title: "Enterprise",
+      subtitle: "Income 10L+",
+      originalPrice: "1499",
+      price: "1274",
+      features: [
+        "All Premium features",
+        "Dedicated expert",
+        "Custom solutions",
+        "Priority filing",
+        "Compliance guarantee",
+        "Year-round support"
+      ],
+      buttonText: "Contact Sales",
+      onClick: () => console.log("Contact sales")
+    }
   ];
 
-  // --- eCA Assisted Plans Data ---
-  interface EcaFeature {
-    name: string;
-    isHeader?: boolean; // Added for category headers
-    [planKey: string]: boolean | string | undefined; 
-  }
-
-  interface EcaPlan {
-    key: string;
-    icon: React.ElementType;
-    name: string;
-    description: string[]; // Changed to string array for multi-line
-    basePrice: string;
-    price: string;
-  }
-
-  const ecaPlans: EcaPlan[] = [
+  // eCA Assisted Plans
+  const ecaPlans = [
     { 
       key: 'standard', 
       icon: FileText,
-      name: t('pricing.ecaAssisted.standard.name', 'eCA Assisted - Standard'),
-      description: [
-        t('pricing.ecaAssisted.standard.descLine1', 'Salary (1 employer)'),
-        t('pricing.ecaAssisted.standard.descLine2', 'Single House Property'),
-        t('pricing.ecaAssisted.standard.descLine3', 'Other Sources Income')
-      ],
+      name: 'Standard',
+      description: 'Salary (1 employer) + Single House Property',
       basePrice: '1499',
-      price: '1274'
+      price: '1274',
+      features: ['Salary Income', 'Single House Property', 'Other Sources', 'Basic Support']
     },
     {
       key: 'multipleForm16',
       icon: Copy,
-      name: t('pricing.ecaAssisted.multipleForm16.name', 'eCA Assisted - Multiple Form 16'),
-      description: [
-        t('pricing.ecaAssisted.multipleForm16.descLine1', 'All Standard features'),
-        t('pricing.ecaAssisted.multipleForm16.descLine2', '+ Salary (Multiple employers)')
-      ],
+      name: 'Multiple Form 16',
+      description: 'Multiple employers + All Standard features',
       basePrice: '1999',
-      price: '1699'
+      price: '1699',
+      features: ['Multiple Employers', 'All Standard features', 'Priority Support']
     },
     {
       key: 'businessIncome',
       icon: Briefcase,
-      name: t('pricing.ecaAssisted.businessIncome.name', 'eCA Assisted - Business Income'),
-      description: [
-        t('pricing.ecaAssisted.businessIncome.descLine1', 'All Multiple Form 16 features'),
-        t('pricing.ecaAssisted.businessIncome.descLine2', '+ Multiple House Properties'),
-        t('pricing.ecaAssisted.businessIncome.descLine3', '+ Income u/s 44AD/44ADA')
-      ],
+      name: 'Business Income',
+      description: 'Business income + Multiple properties',
       basePrice: '3124',
-      price: '2655'
+      price: '2655',
+      features: ['Business Income', 'Multiple Properties', 'Section 44AD/44ADA', 'Expert Support']
     },
     {
       key: 'capitalGain',
       icon: TrendingUp,
-      name: t('pricing.ecaAssisted.capitalGain.name', 'eCA Assisted - Capital Gain'),
-      description: [
-        t('pricing.ecaAssisted.capitalGain.descLine1', 'All Business Income features'),
-        t('pricing.ecaAssisted.capitalGain.descLine2', '+ Capital Gains'),
-        t('pricing.ecaAssisted.capitalGain.descLine3', '+ Relief u/s 89')
-      ],
+      name: 'Capital Gains',
+      description: 'Capital gains + All Business features',
       basePrice: '4999',
-      price: '4249'
+      price: '4249',
+      features: ['Capital Gains', 'Crypto Assets', 'Relief u/s 89', 'Premium Support']
     },
     {
       key: 'nri',
       icon: Globe,
-      name: t('pricing.ecaAssisted.nri.name', 'eCA Assisted - NRI'),
-      description: [
-        t('pricing.ecaAssisted.nri.descLine1', 'Max tax benefit'),
-        t('pricing.ecaAssisted.nri.descLine2', 'on Indian income (NRI)')
-      ],
+      name: 'NRI',
+      description: 'NRI tax optimization',
       basePrice: '9374',
-      price: '7968'
+      price: '7968',
+      features: ['NRI Specific', 'Foreign Assets', 'DTAA Benefits', 'Dedicated Expert']
     },
     {
       key: 'foreign',
-      icon: Search, // Combined with Globe contextually
-      name: t('pricing.ecaAssisted.foreign.name', 'eCA Assisted - Foreign'),
-      description: [
-        t('pricing.ecaAssisted.foreign.descLine1', 'All Foreign Income'),
-        t('pricing.ecaAssisted.foreign.descLine2', 'Max benefit under DTAA')
-      ],
+      icon: Search,
+      name: 'Foreign Income',
+      description: 'Complete foreign income handling',
       basePrice: '12499',
-      price: '10624'
-    },
+      price: '10624',
+      features: ['Foreign Income', 'Form 67', 'FTC Optimization', '24/7 Expert Support']
+    }
   ];
-
-  const ecaFeatures: EcaFeature[] = [
-    // Category: Income Types
-    { name: t('pricing.featureCategories.incomeTypes', 'Income Types & Sources'), isHeader: true },
-    { name: t('pricing.features.salaryIncome.title', 'Salary Income (Overall)'), standard: true, multipleForm16: true, businessIncome: true, capitalGain: true, nri: true, foreign: true },
-    { name: t('pricing.features.salaryIncome.oneEmployer', '1. One employer'), standard: true, multipleForm16: false, businessIncome: false, capitalGain: false, nri: true, foreign: true },
-    { name: t('pricing.features.salaryIncome.multipleEmployers', '2. More than one employer'), standard: false, multipleForm16: true, businessIncome: true, capitalGain: true, nri: true, foreign: true },
-    { name: t('pricing.features.houseProperty.title', 'House Property Income (Overall)'), standard: true, multipleForm16: true, businessIncome: true, capitalGain: true, nri: true, foreign: true },
-    { name: t('pricing.features.houseProperty.singleHouse', '1. Single House'), standard: true, multipleForm16: true, businessIncome: false, capitalGain: false, nri: true, foreign: true },
-    { name: t('pricing.features.houseProperty.multipleHouses', '2. Multiple House'), standard: false, multipleForm16: false, businessIncome: true, capitalGain: true, nri: true, foreign: true },
-    { name: t('pricing.features.interestOtherSources', 'Interest & Other Sources Income'), standard: true, multipleForm16: true, businessIncome: true, capitalGain: true, nri: true, foreign: true },
-    { name: t('pricing.features.capitalGains', 'Capital Gains'), standard: false, multipleForm16: false, businessIncome: false, capitalGain: true, nri: true, foreign: true },
-    { name: t('pricing.features.digitalVirtualAssets', 'Digital Virtual Assets (cryptocurrencies)'), standard: false, multipleForm16: false, businessIncome: false, capitalGain: true, nri: true, foreign: true },
-    { name: t('pricing.features.section44AD', 'Section 44 AD/44ADA Income (Presumptive)'), standard: false, multipleForm16: false, businessIncome: true, capitalGain: true, nri: false, foreign: false },
-    
-    // Category: Foreign & NRI Specific
-    { name: t('pricing.featureCategories.foreignNri', 'Foreign Income & NRI Specifics'), isHeader: true },
-    { name: t('pricing.features.foreignIncome', 'Foreign income reporting'), standard: false, multipleForm16: false, businessIncome: false, capitalGain: false, nri: false, foreign: true },
-    { name: t('pricing.features.faSchedule', 'FA schedule (Foreign Assets)'), standard: false, multipleForm16: false, businessIncome: false, capitalGain: false, nri: true, foreign: true },
-    { name: t('pricing.features.foreignTaxCredit', 'Foreign Tax Credit (FTC)'), standard: false, multipleForm16: false, businessIncome: false, capitalGain: false, nri: false, foreign: true },
-    { name: t('pricing.features.form67', 'Form 67 for FTC'), standard: false, multipleForm16: false, businessIncome: false, capitalGain: false, nri: false, foreign: true },
-    { name: t('pricing.features.nonResident', 'Non-resident specific calculations'), standard: false, multipleForm16: false, businessIncome: false, capitalGain: false, nri: true, foreign: true },
-
-    // Category: Filing Assistance & Features
-    { name: t('pricing.featureCategories.filingAssistance', 'Filing Assistance & General Features'), isHeader: true },
-    { name: t('pricing.features.easyITRPreparation', 'Easy ITR preparation & e-filing'), standard: true, multipleForm16: true, businessIncome: true, capitalGain: true, nri: true, foreign: true },
-    { name: t('pricing.features.suggestionTaxDeductions', 'Suggestion to maximise tax deductions'), standard: true, multipleForm16: true, businessIncome: true, capitalGain: true, nri: true, foreign: true },
-    { name: t('pricing.features.examinationPreviousITR', 'Examination of previous year ITR'), standard: false, multipleForm16: false, businessIncome: true, capitalGain: true, nri: true, foreign: true },
-    { name: t('pricing.features.dataImport26AS', '26AS Data Import'), standard: true, multipleForm16: true, businessIncome: true, capitalGain: true, nri: true, foreign: true },
-    { name: t('pricing.features.taxPaymentAssistance', 'Tax Payment Assistance'), standard: true, multipleForm16: true, businessIncome: true, capitalGain: true, nri: true, foreign: true },
-    { name: t('pricing.features.expandedSelfHelp', 'Expanded set of self-help tools'), standard: true, multipleForm16: true, businessIncome: true, capitalGain: true, nri: true, foreign: true },
-  ];
-  // --- End eCA Assisted Plans Data ---
 
   return (
-    <section className="py-12 bg-background">
-      <div className="container mx-auto px-4">
-        {/* File ITR Yourself Section */}
-        <div className="mb-16">
-          <div className="flex flex-col items-center text-center mb-4">
-            {/* Using Coins as a placeholder, you might want a more specific icon */}
-            <Coins className="h-10 w-10 text-blue-500 mb-2" /> 
-            <div>
-              <h2 className="text-3xl font-bold">
-                {t('pricing.fileYourself.title', 'File ITR Yourself')}
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto"> {/* Added max-w-2xl and mx-auto for better centering of long text */}
-                {t('pricing.fileYourself.description', 'Includes income from Salary, House Property, Capital Gain/Loss, Mutual Funds, Properties, Presumptive Tax u/s 44AD & 44ADA, and Other Sources.')}
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+      {/* Hero Section */}
+      <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Coins className="h-16 w-16 mx-auto mb-6 text-yellow-300" />
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Transparent Pricing Plans
+            </h1>
+            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+              Choose the perfect plan for your tax filing needs. From simple DIY filing to expert-assisted services.
+            </p>
+          </motion.div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* File ITR Yourself Section */}
+      <section className="py-16">
+      <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <div className="flex items-center justify-center mb-4">
+              <Zap className="h-8 w-8 text-blue-600 mr-3" />
+              <h2 className="text-3xl font-bold text-gray-900">
+                File ITR Yourself
+              </h2>
+            </div>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Complete your tax filing independently with our intuitive platform. 
+              Includes all income types: Salary, House Property, Capital Gains, Business Income, and more.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             {fileYourselfPlans.map((plan, index) => (
               <PlanCard key={index} {...plan} />
             ))}
           </div>
-          <div className="text-center">
-            <Button size="lg" className="bg-green-500 hover:bg-green-600 text-white">
-              {t('pricing.startFilingNow', 'Start Filing Now')} <ArrowRight className="ml-2 h-5 w-5" />
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-center"
+          >
+            <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg">
+              Start Filing Now <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-          </div>
+          </motion.div>
         </div>
+      </section>
 
         {/* eCA Assisted Plans Section */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-10">
-            {t('pricing.ecaAssisted.title', 'eCA Assisted Plans')}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <div className="flex items-center justify-center mb-4">
+              <Users className="h-8 w-8 text-purple-600 mr-3" />
+              <h2 className="text-3xl font-bold text-gray-900">
+                Expert-Assisted Plans
           </h2>
-
-          {/* Quick Navigation Section - New Additions */}
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-2">Quick Navigation</h2>
-            <p className="text-muted-foreground">Choose the perfect plan for your tax filing needs</p>
           </div>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Get professional assistance from certified tax experts. 
+              Perfect for complex tax scenarios and maximum optimization.
+            </p>
+          </motion.div>
 
-          {isEcaPlanOpen && (
-            <div className="overflow-x-auto bg-card shadow-md rounded-lg border border-border">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-muted/50">
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider sticky left-0 bg-muted/50 z-10 min-w-[200px] md:min-w-[250px]">
-                      {t('pricing.features.title', 'Features')}
-                    </th>
-                    {ecaPlans.map((plan) => (
-                      <th key={plan.key} scope="col" className="px-6 py-4 text-center min-w-[160px] align-top">
-                        <div className="flex flex-col h-full text-center min-h-[450px]"> {/* Flexbox container with min-height */}
-                          <plan.icon className="h-8 w-8 text-blue-500 mb-2 mx-auto" />
-                          <h4 className="text-sm font-semibold text-foreground mb-1">{plan.name}</h4>
-                          <div className="text-xs text-muted-foreground mb-2 w-full px-1 flex-grow self-start min-h-[48px]"> {/* Description with flex-grow */}
-                            {plan.description.map((line, idx) => (
-                              <React.Fragment key={idx}>
-                                {line}
-                                {idx < plan.description.length - 1 && <br />}
-                              </React.Fragment>
-                            ))}
-                          </div>
-                          <div className="w-full pt-2 mt-auto"> {/* Price/button block, WITH mt-auto */}
-                            <p className="text-xs text-muted-foreground line-through">₹{plan.basePrice}</p>
-                            <div className="mb-2">
-                              <span className="text-lg font-bold text-primary">₹{plan.price}</span>
-                              <span className="text-xs text-muted-foreground ml-1">+ {t('pricing.taxes', 'Taxes')}</span>
-                            </div>
-                            <Button size="sm" className="w-full bg-blue-500 hover:bg-blue-600 text-xs">
-                              {t('pricing.fileNow', 'File Now')}
-                            </Button>
-                          </div>
-                        </div>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {ecaFeatures.map((feature, featureIndex) => {
-                    if (feature.isHeader) {
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {ecaPlans.map((plan, index) => {
+              const IconComponent = plan.icon;
                       return (
-                        <tr key={`header-${featureIndex}`} className="bg-muted/70 dark:bg-muted/40">
-                          <td 
-                            colSpan={ecaPlans.length + 1} 
-                            className="px-4 py-2 text-sm font-semibold text-foreground text-left sticky left-0 z-10 bg-muted/70 dark:bg-muted/40"
-                          >
-                            {feature.name}
-                          </td>
-                        </tr>
-                      );
-                    }
-                    // Indent sub-features visually
-                    const isSubFeature = feature.name.match(/^\d\.\s/);
-                    const featureNameCellStyle = isSubFeature 
-                      ? "pl-10 pr-6 py-3" // More padding for sub-features
-                      : "px-6 py-3";
-
-                    return (
-                      <tr key={featureIndex} className={isSubFeature ? "bg-background dark:bg-gray-800" : "bg-card hover:bg-muted/30 dark:hover:bg-gray-700/30"}>
-                        <td className={`whitespace-nowrap text-sm font-medium text-foreground sticky left-0 z-10 ${isSubFeature ? "bg-background dark:bg-gray-800" : "bg-card group-hover:bg-muted/30 dark:group-hover:bg-gray-700/30"} ${featureNameCellStyle}`}>
-                          {isSubFeature ? feature.name.substring(feature.name.indexOf(' ') + 1) : feature.name}
-                        </td>
-                        {ecaPlans.map((plan) => (
-                          <td key={`${plan.key}-${featureIndex}`} className="px-6 py-4 whitespace-nowrap text-sm text-center">
-                            {feature[plan.key] ? (
-                              <CheckCircle className="h-5 w-5 text-green-500 mx-auto" />
-                            ) : (
-                              <Circle className="h-5 w-5 text-gray-300 dark:text-gray-600 mx-auto" />
-                            )}
-                          </td>
+                <motion.div
+                  key={plan.key}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                >
+                  <Card className="h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+                    <CardHeader className="text-center">
+                      <IconComponent className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                      <p className="text-sm text-gray-600">{plan.description}</p>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center mb-6">
+                        <span className="text-sm text-gray-500 line-through">₹{plan.basePrice}</span>
+                        <div className="text-3xl font-bold text-blue-600">₹{plan.price}</div>
+                        <span className="text-sm text-gray-500">+ taxes</span>
+                      </div>
+                      
+                      <ul className="space-y-2 mb-6">
+                        {plan.features.map((feature, idx) => (
+                          <li key={idx} className="flex items-center text-sm text-gray-600">
+                            <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                            {feature}
+                          </li>
                         ))}
-                      </tr>
+                      </ul>
+                      
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                        Choose Plan <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
                     );
                   })}
-                </tbody>
-              </table>
-            </div>
-          )}
-          <div className="mt-6 text-center">
-            <Button
-              variant="outline"
-              onClick={() => setIsEcaPlanOpen(!isEcaPlanOpen)}
-              className="text-blue-600 border-blue-600 hover:bg-blue-50 hover:text-blue-700"
-            >
-              {isEcaPlanOpen ? t('pricing.closePlan', 'Close Pricing Plan') : t('pricing.viewPlan', 'View Full Pricing Plan')}
-              {isEcaPlanOpen ? <ChevronUp className="ml-2 h-4 w-4" /> : <ChevronDown className="ml-2 h-4 w-4" />}
-            </Button>
           </div>
-           <p className="text-center text-xs text-muted-foreground mt-4">
-            {t('pricing.securityExpertise', 'Security & Expertise is built into everything we do Happy Filing!')}
-          </p>
-          <p className="text-center text-xs text-muted-foreground">
-            {t('pricing.welcomeOffer', 'Discounted prices are a part of Welcome Offer, available only for a limited period of time.')}
-          </p>
+            </div>
+      </section>
+
+      {/* Features & Benefits Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Why Choose SmartTaxPro?
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Built with security, expertise, and user experience in mind
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: Shield,
+                title: "100% Secure",
+                description: "Bank-level encryption and security protocols to protect your sensitive data"
+              },
+              {
+                icon: Star,
+                title: "Expert Support",
+                description: "Get help from certified tax professionals whenever you need assistance"
+              },
+              {
+                icon: Zap,
+                title: "Fast & Easy",
+                description: "Complete your filing in minutes with our intuitive step-by-step process"
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="bg-white p-8 rounded-xl shadow-lg">
+                  <feature.icon className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl font-bold mb-4">
+              Ready to File Your Taxes?
+            </h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              Join thousands of satisfied customers who trust SmartTaxPro for their tax filing needs
+            </p>
+            <Button size="lg" variant="secondary" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg">
+              Get Started Today <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </motion.div>
       </div>
     </section>
+    </div>
   );
 };
 
