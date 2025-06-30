@@ -1,79 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'wouter';
+import FileUpload from '@/components/FileUpload';
 
-// Mock implementations for missing dependencies
-const useAuth = () => ({
-  user: { id: '1', name: 'Test User' } // Mock user
-});
+// Auth hook (replace with your real auth logic)
+const useAuth = () => {
+  // TODO: Replace with real authentication logic
+  const userStr = localStorage.getItem('user');
+  return {
+    user: userStr ? JSON.parse(userStr) : null,
+  };
+};
 
-const apiRequest = async (method: string, url: string, options?: RequestInit) => { // Typed options
-  console.log(`Mock API: ${method} ${url}`, options);
-  const urlParts = url.split('/');
-  // Check if filingId can be extracted from URL
-  const filingIdFromUrl = (urlParts.length > 3 && urlParts[1] === 'api' && urlParts[2] === 'tax-forms' && urlParts[3] !== '') ? urlParts[3] : null;
-
-  if (method === 'GET' && url.includes('/api/tax-forms/') && filingIdFromUrl) {
-    return {
-      ok: true,
-      json: async (): Promise<Record<string, any>> => ({ // More specific return type
-        id: filingIdFromUrl,
-        formType: 'ITR-1',
-        assessmentYear: '2025-26',
-        status: 'draft',
-        personalInfo: JSON.stringify({
-          pan: 'ABCDE1234F', firstName: 'John', middleName: '', lastName: 'Doe', dob: '1990-01-01',
-          aadhaarNumber: '123456789012', mobile: '9876543210', email: 'john.doe@example.com',
-          address: { flatNo: '1', premises: 'Apt', street: 'Main St', areaLocality: 'Area', townCityDistrict: 'City', state: 'State', country: 'India', pinCode: '123456' }
-        }),
-        incomeData: JSON.stringify({
-          salary: '500000', housePropertyIncome: '0', otherSourcesIncome: '5000',
-          capitalGains: { stcgNormalRate: '100', stcg111A: '0', ltcg112: '0', ltcg112A_Equity: '0', ltcgOther: '0' }
-        }),
-        deductions80c: JSON.stringify({ section80C: '150000' }),
-        deductions80d: JSON.stringify({ section80D: '25000' }),
-        otherDeductions: JSON.stringify({ section80TTA: '10000' })
-      })
-    };
+// Real API request helper
+const apiRequest = async (method: string, url: string, options?: RequestInit) => {
+  const config: RequestInit = {
+    method,
+    credentials: 'include', // send cookies if needed
+    ...options,
+  };
+  try {
+    const response = await fetch(url, config);
+    return response;
+  } catch (err) {
+    throw new Error('Network error or server unavailable');
   }
-  
-  if (method === 'POST' && url === '/api/tax-forms') {
-    return {
-      ok: true,
-      json: async (): Promise<Record<string, any>> => ({ // More specific return type
-        id: 'new-mock-filing-' + Date.now(),
-        formType: 'ITR-1',
-        assessmentYear: '2025-26',
-        status: 'draft'
-      })
-    };
-  }
-
-  if (method === 'POST' && url.includes('/api/tax-forms/')) {
-    let bodyData: { status?: string } = {};
-    if (options?.body && typeof options.body === 'string') {
-      try {
-        bodyData = JSON.parse(options.body);
-      } catch (e) {
-        console.error("Failed to parse options.body", e);
-      }
-    }
-    return {
-      ok: true,
-      json: async (): Promise<Record<string, any>> => ({ // More specific return type
-        success: true,
-        message: 'Data saved/submitted successfully (mock)',
-        status: bodyData.status || 'updated'
-      })
-    };
-  }
-  
-  return { 
-    ok: true, 
-    json: async (): Promise<Record<string, any>> => ({ // More specific return type
-      message: 'Default mock response for unhandled API call',
-      id: null, personalInfo: null, incomeData: null, status: 'unknown'
-    }) 
-  }; 
 };
 
 const generateItr1Json = (formData: Itr1FormData): Record<string, any> => {
@@ -322,60 +272,70 @@ const ItrFiling: React.FC = () => {
   };
 
   const handleSaveDraft = async () => {
-    if (!currentFilingId || !user) {
-      setError("No active filing to save or user not authenticated.");
-      return;
-    }
-    
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const promises = [
-        apiRequest('POST', `/api/tax-forms/${currentFilingId}/personal-info`, {
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData.personalInfo),
-        }),
-        apiRequest('POST', `/api/tax-forms/${currentFilingId}/income`, {
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData.incomeDetails),
-        }),
-      ];
-
-      const responses = await Promise.all(promises);
-      
-      for (const response of responses) {
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ message: 'Save failed for a section' })) as { message?: string };
-          throw new Error(errorData.message || `Failed to save a section`);
-        }
+  if (!currentFilingId || !user) {
+    setError("No active filing to save or user not authenticated.");
+    return;
+  }
+  setLoading(true);
+  setError(null);
+  try {
+    // Save all filing sections
+    const savePersonal = apiRequest('POST', `/api/tax-forms/${currentFilingId}/personal-info`, {
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData.personalInfo),
+    });
+    const saveIncome = apiRequest('POST', `/api/tax-forms/${currentFilingId}/income`, {
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData.incomeDetails),
+    });
+    const saveDeductions = apiRequest('POST', `/api/tax-forms/${currentFilingId}/deductions-80c`, {
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData.deductions.chapterVIA),
+    });
+    const responses = await Promise.all([savePersonal, saveIncome, saveDeductions]);
+    for (const response of responses) {
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Save failed for a section' })) as { message?: string };
+        throw new Error(errorData.message || `Failed to save a section`);
       }
-      
-      alert("Draft saved successfully!");
-    } catch (err) {
-      console.error("Error saving draft:", err);
-      setError(err instanceof Error ? err.message : "Failed to save draft.");
-    } finally {
-      setLoading(false);
     }
-  };
+    alert("Draft saved successfully!");
+  } catch (err) {
+    console.error("Error saving draft:", err);
+    setError(err instanceof Error ? err.message : "Failed to save draft.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleSubmitReturn = async () => {
-    if (!currentFilingId || !user) {
-      setError("No active filing to submit or user not authenticated.");
-      return;
-    }
-    
+  if (!currentFilingId || !user) {
+    setError("No active filing to submit or user not authenticated.");
+    return;
+  }
+  setLoading(true);
+  setError(null);
+  try {
+    // Save draft before submitting
     await handleSaveDraft();
-    
-    try {
-      const mockAckNumber = `ACK-${Date.now()}-${currentFilingId.substring(0, 6)}`;
-      alert(`Return submitted successfully! Mock Acknowledgment No: ${mockAckNumber}`);
-    } catch (err) {
-      console.error("Error submitting return:", err);
-      setError(err instanceof Error ? err.message : "Failed to submit return.");
+    // Submit the return (update status)
+    const resp = await apiRequest('POST', `/api/tax-forms/${currentFilingId}/status`, {
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'submitted' }),
+    });
+    if (!resp.ok) {
+      const errorData = await resp.json().catch(() => ({ message: 'Failed to submit return' })) as { message?: string };
+      throw new Error(errorData.message || 'Failed to submit return');
     }
-  };
+    const data = await resp.json();
+    alert(`Return submitted successfully! Acknowledgment: ${data.acknowledgmentNo || currentFilingId}`);
+  } catch (err) {
+    console.error("Error submitting return:", err);
+    setError(err instanceof Error ? err.message : "Failed to submit return.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleDownloadJson = () => {
     if (!formData || !currentFilingId) {
@@ -463,7 +423,28 @@ const ItrFiling: React.FC = () => {
           </div>
         </section>
 
-        {/* Income Details Section */}
+        {/* Document Upload Section */}
+        <section className="p-6 border rounded-lg shadow-md bg-white">
+          <h2 className="text-xl font-semibold mb-4">Upload Required Documents</h2>
+          <p className="mb-4 text-sm text-muted-foreground">
+            Please upload your latest <strong>Bank Statement</strong> and any other supporting documents (Form 16, investment proofs, etc.). Our tax experts will review your documents and contact you to help file your return. You will receive updates by email/SMS.
+          </p>
+          {currentFilingId && (
+            <>
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-2">Bank Statement</label>
+                <FileUpload taxFormId={currentFilingId} documentType="Bank Statement" />
+              </div>
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-2">Other Documents</label>
+                <FileUpload taxFormId={currentFilingId} documentType="Other" />
+              </div>
+            </>
+          )}
+        </section>
+
+        {/* (Income, Deductions, and Calculation sections are hidden for now) */}
+        {/*
         <section className="p-6 border rounded-lg shadow-md bg-white">
           <h2 className="text-xl font-semibold mb-4">Part B: Income Details</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -530,67 +511,16 @@ const ItrFiling: React.FC = () => {
           </div>
         </section>
 
-        {/* Deductions Section */}
+        {/* Deductions and calculation buttons are hidden for now */}
+        {/*
         <section className="p-6 border rounded-lg shadow-md bg-white">
-          <h2 className="text-xl font-semibold mb-4">Part C: Deductions (Chapter VI-A)</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="section80C" className="block text-sm font-medium text-gray-700">
-                Section 80C (e.g., LIC, PPF, EPF, NSC, ELSS, Tuition Fees)
-              </label>
-              <input 
-                type="number" 
-                name="section80C" 
-                id="section80C" 
-                value={formData.deductions.chapterVIA.section80C} 
-                onChange={(e) => handleInputChange('deductions', 'chapterVIA.section80C', e.target.value)} 
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
-                placeholder="Max 1,50,000 (aggregate)" 
-              />
-            </div>
-            <div>
-              <label htmlFor="section80D" className="block text-sm font-medium text-gray-700">
-                Section 80D (Medical Insurance Premium)
-              </label>
-              <input 
-                type="number" 
-                name="section80D" 
-                id="section80D" 
-                value={formData.deductions.chapterVIA.section80D} 
-                onChange={(e) => handleInputChange('deductions', 'chapterVIA.section80D', e.target.value)} 
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
-                placeholder="Enter amount" 
-              />
-            </div>
-          </div>
+          ...
         </section>
 
         <div className="mt-8 flex justify-end space-x-3">
-          <button
-            type="button"
-            onClick={handleSaveDraft}
-            disabled={loading || !currentFilingId}
-            className="px-6 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 disabled:opacity-50"
-          >
-            {loading ? 'Saving...' : 'Save Draft'}
-          </button>
-          <button
-            type="button"
-            onClick={handleSubmitReturn}
-            disabled={loading || !currentFilingId}
-            className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
-          >
-            {loading ? 'Submitting...' : 'Submit Return (Mock)'}
-          </button>
-          <button
-            type="button"
-            onClick={handleDownloadJson}
-            disabled={!currentFilingId || loading}
-            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-          >
-            Download ITR JSON
-          </button>
+          ...
         </div>
+        */}
       </form>
     </div>
   );

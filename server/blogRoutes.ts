@@ -7,6 +7,9 @@ import { z } from 'zod';
 import { UserRole, authorizeRole, AuthenticatedRequest } from './auth'; 
 import { storage } from './storage'; 
 import { insertBlogPostSchema } from '../shared/schema'; 
+import fs from 'fs';
+import path from 'path';
+import { handleFileUpload, generatePresignedUrl } from './fileUpload';
 
 const router = Router();
 
@@ -22,6 +25,77 @@ const slugParamSchema = z.object({
 const idParamSchema = z.object({
   id: z.coerce.number().int().positive("ID must be a positive integer"),
 });
+
+// --- Admin Blog Image Upload Endpoint ---
+/**
+ * POST /api/admin/blog/upload-image
+ * Allows admin to upload an image for use in blog posts.
+ * Returns a secure URL to the uploaded image.
+ * Only accessible to authenticated admins.
+ *
+ * Request: multipart/form-data with field 'image'
+ * Response: { url: string }
+ */
+router.post(
+  '/admin/blog/upload-image',
+  authenticateJwt,
+  authorizeRole(UserRole.ADMIN),
+  // Custom middleware to store in uploads/blog-images
+  (req, res, next) => {
+    // Patch multer's destination to uploads/blog-images
+    const blogImagesDir = path.join(process.cwd(), 'uploads', 'blog-images');
+    if (!fs.existsSync(blogImagesDir)) {
+      fs.mkdirSync(blogImagesDir, { recursive: true });
+    }
+    // Patch req for multer
+    req.blogImagesDir = blogImagesDir;
+    next();
+  },
+  // Use handleFileUpload for images
+  (req, res, next) => {
+    // Patch multer diskStorage to use blog-images dir
+    const multer = require('multer');
+    const storage = multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, req.blogImagesDir || path.join(process.cwd(), 'uploads', 'blog-images'));
+      },
+      filename: (req, file, cb) => {
+        const pathMod = require('path');
+        const { nanoid } = require('nanoid');
+        const fileExt = pathMod.extname(file.originalname);
+        const randomName = nanoid(24);
+        cb(null, `${randomName}${fileExt}`);
+      }
+    });
+    const upload = multer({
+      storage,
+      fileFilter: (req, file, cb) => {
+        const allowed = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!allowed.includes(file.mimetype)) {
+          return cb(new Error('Only image files are allowed.'));
+        }
+        cb(null, true);
+      },
+      limits: { fileSize: 5 * 1024 * 1024 }
+    }).single('image');
+    upload(req, res, function (err) {
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+      next();
+    });
+  },
+  async (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image uploaded' });
+    }
+    // Optionally scan for malware here if needed
+    const imagePath = req.file.path;
+    // Return a secure URL
+    const url = generatePresignedUrl(imagePath, 60); // 60 min expiry for admin
+    res.status(201).json({ url });
+  }
+);
 
 // GET /api/blog - List all PUBLISHED blog posts (public)
 router.get('/', async (req, res, next) => {

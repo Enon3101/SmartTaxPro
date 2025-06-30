@@ -27,6 +27,7 @@ import BlogListPage from "@/pages/learning/BlogListPage";
 import Login from "@/pages/Login";
 import MyFilings from "@/pages/MyFilings"; // Import MyFilings page
 import NotFound from "@/pages/not-found";
+import TaxFormDetails from "@/pages/TaxFormDetails";
 import Payment from "@/pages/Payment";
 import Pricing from "@/pages/Pricing";
 import Profile from "@/pages/Profile";
@@ -462,6 +463,11 @@ function Router() {
         </Suspense>
       </Route>
     
+      <Route path="/tax-form/:id">
+        <Suspense fallback={<PageLoading />}>
+          <TaxFormDetails />
+        </Suspense>
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );
