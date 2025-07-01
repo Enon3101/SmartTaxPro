@@ -673,8 +673,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!db) {
         return res.status(503).json({ message: "Database service unavailable" });
       }
-      // const { eq: drizzleEq } = await import("drizzle-orm"); // eq is already imported at the top
       const userId = Number(req.params.id);
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID format" });
+      }
       await db.delete(usersTable).where(drizzleEq(usersTable.id, userId));
       res.status(204).send();
     } catch (error: unknown) { 
@@ -748,7 +750,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   adminRouter.get("/blog-posts/:id", async (req, res) => {
     try {
-      const post = await storage.getBlogPostById(Number(req.params.id));
+      const id = Number(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid blog post ID format" });
+      }
+      const post = await storage.getBlogPostById(id);
       if (!post) {
         return res.status(404).json({ message: "Blog post not found" });
       }
@@ -788,6 +794,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   adminRouter.put("/blog-posts/:id", async (req, res) => {
     try {
       const id = Number(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid blog post ID format" });
+      }
       const { title, slug, summary, content, authorId, featuredImage, category, tags, readTime, published } = req.body;
       const existingPost = await storage.getBlogPostById(id);
       if (!existingPost) {
@@ -824,6 +833,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   adminRouter.delete("/blog-posts/:id", async (req, res) => {
     try {
       const id = Number(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid blog post ID format" });
+      }
       const existingPost = await storage.getBlogPostById(id);
       if (!existingPost) {
         return res.status(404).json({ message: "Blog post not found" });
@@ -1031,11 +1043,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const pageSize = parseInt(req.query.pageSize as string) || 20;
       const offset = (page - 1) * pageSize;
       const sTableName = tableName.replace(/[^a-zA-Z0-9_]/g, '');
-      const rawDataQueryString = `SELECT * FROM "${sTableName}" LIMIT ${Number(pageSize)} OFFSET ${Number(offset)}`;
-      const dataResult = await db!.execute(sql.raw(rawDataQueryString));
-      const rawCountQueryString = `SELECT COUNT(*) FROM "${sTableName}"`;
-      const countResult = await db!.execute(sql.raw(rawCountQueryString));
-      const totalCount = parseInt((countResult.rows[0] as { count?: string | number })?.count?.toString() || "0"); // Ensure count is string before parseInt
+      
+      // Use parameterized queries instead of string concatenation
+      const dataResult = await db!.execute(
+        sql`SELECT * FROM ${sql.identifier(sTableName)} LIMIT ${pageSize} OFFSET ${offset}`
+      );
+      
+      const countResult = await db!.execute(
+        sql`SELECT COUNT(*) as count FROM ${sql.identifier(sTableName)}`
+      );
+      
+      const totalCount = parseInt((countResult.rows[0] as { count?: string | number })?.count?.toString() || "0");
       const totalPages = Math.ceil(totalCount / pageSize);
       res.json({ data: dataResult.rows, pagination: { page, pageSize, totalCount, totalPages } });
     } catch (error: unknown) {

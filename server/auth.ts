@@ -40,7 +40,9 @@ declare global {
 }
 
 // SECURITY: Secure JWT settings (Req D)
-const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex');
+// WARNING: JWT_SECRET must be set via environment variable in production
+// Using a static fallback secret in development to ensure token persistence
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-only-secret-change-this-in-production';
 const JWT_EXPIRY = '15m'; // 15 minutes max expiry (Req D)
 const JWT_REFRESH_EXPIRY = '7d'; // 7 days for refresh tokens
 
