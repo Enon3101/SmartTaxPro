@@ -1,0 +1,177 @@
+SmartTaxPro Codebase Structure and Page Hierarchy
+==================================================
+
+This document outlines the structure of the main pages in `client/src/pages`, explains the purpose of each, and provides suggestions for improvement. Pages are grouped by user flow and feature area.
+
+---
+
+# 1. Home & Entry Points
+
+- **Home.tsx / HomeSimplified.tsx / Home.clean.tsx / Home.tsx.new**
+  - **Purpose:** Main landing pages. `Home.tsx` is the primary, featuring a hero section, call-to-actions, and announcements. Others are variants or legacy.
+  - **Improvement:** Remove unused variants to avoid confusion. Consolidate into a single, well-tested Home page.
+
+- **not-found.tsx**
+  - **Purpose:** 404 error page for undefined routes.
+  - **Improvement:** Add navigation options to guide users back to main flows.
+
+---
+
+# 2. User Authentication & Profile
+
+- **Login.tsx / Register.tsx**
+  - **Purpose:** User login and registration forms, with validation and feedback.
+  - **Improvement:** Add social login options and better error handling.
+
+- **Profile.tsx**
+  - **Purpose:** User profile, filing history, and document management tabs.
+  - **Improvement:** Allow profile editing and add more document actions.
+
+---
+
+# 3. Tax Filing Flow
+
+- **StartFiling.tsx**
+  - **Purpose:** Main wizard for starting and progressing through a tax filing. Handles personal info, income, deductions, etc.
+  - **Improvement:** Split into smaller components for maintainability. Add autosave and better step navigation.
+
+- **ItrWizard.tsx / ItrFiling.tsx / TaxFiling.tsx**
+  - **Purpose:** Step-by-step wizards for ITR filing. `TaxFiling.tsx` is a wrapper for the main wizard component.
+  - **Improvement:** Unify wizard logic and avoid duplicate flows.
+
+- **FilingRequirements.tsx**
+  - **Purpose:** Explains who needs to file and penalties for non-filing.
+  - **Improvement:** Add interactive eligibility checker.
+
+- **FilingComplete.tsx**
+  - **Purpose:** Success/acknowledgment page after filing.
+  - **Improvement:** Add next steps and links to download/print documents.
+
+- **MyFilings.tsx**
+  - **Purpose:** List of all user filings (API and local drafts).
+  - **Improvement:** Add search/filter and better status indicators.
+
+- **DocumentVault.tsx**
+  - **Purpose:** Upload and manage documents for a filing.
+  - **Improvement:** Add preview, delete, and categorization features.
+
+- **TaxFormDetails.tsx**
+  - **Purpose:** Shows details of a specific tax form/filing.
+  - **Improvement:** Add edit and export options.
+
+---
+
+# 4. Calculators
+
+- **Calculators.tsx**
+  - **Purpose:** Hub page listing all calculators (tax, financial, etc.).
+  - **Improvement:** Add search and highlight most-used calculators.
+
+- **calculators/** (subfolder)
+  - **Purpose:** Each file is a specific calculator (e.g., `income-tax.tsx`, `sip.tsx`, `capital-gains.tsx`).
+  - **Improvement:** Standardize UI/UX and add explanations/tooltips for each calculator.
+
+- **QuickFiling.tsx**
+  - **Purpose:** Streamlined, minimal ITR filing for simple cases.
+  - **Improvement:** Clarify difference from main filing flow and link to full wizard if needed.
+
+---
+
+# 5. Tax Resources & Guides
+
+- **TaxResources.tsx**
+  - **Purpose:** Central hub for tax slabs, deadlines, and official resources.
+  - **Improvement:** Add more visual aids and calculators.
+
+- **tax-resources/** (subfolder)
+  - **TaxSlabs.tsx, TaxDeductions.tsx, ITRFormDetails.tsx, HowToFileITROnline2023_24.tsx, EFilingGuide.tsx, DueDates.tsx**
+    - **Purpose:** In-depth guides and reference pages for tax rules, forms, and deadlines.
+    - **Improvement:** Add summary tables and interactive elements.
+  - **guides/** (subfolder)
+    - **BasicsOfIncomeTaxGuide.tsx, IncomeAndDeductionsGuide.tsx, ITRFilingProcessGuide.tsx, PostFilingEssentialsGuide.tsx**
+      - **Purpose:** Step-by-step educational guides.
+      - **Improvement:** Add progress tracking and quizzes.
+
+- **ITRFormsGuidePage.tsx**
+  - **Purpose:** Explains all ITR forms, with comparison and eligibility.
+  - **Improvement:** Add a form selector tool.
+
+---
+
+# 6. Learning & Blog
+
+- **LearningResources.tsx**
+  - **Purpose:** Hub for blog posts, guides, and learning materials.
+  - **Improvement:** Add filtering by topic and author.
+
+- **BlogPost.tsx**
+  - **Purpose:** Renders a single blog post with reading progress and sharing.
+  - **Improvement:** Add related articles and comments.
+
+- **learning/** (subfolder)
+  - **BlogListPage.tsx:** Blog index with search and category filter.
+  - **BlogPostPage.tsx:** Renders a single blog post (API-driven).
+  - **BlogPost.tsx:** (duplicate name) Renders a blog post (API-driven, similar to above).
+  - **Improvement:** Remove redundancy, unify blog post rendering.
+
+---
+
+# 7. Admin & Management
+
+- **Admin.tsx**
+  - **Purpose:** Main admin panel with tabs for user management, tax forms, and reports.
+  - **Improvement:** Modularize into subpages/components.
+
+- **AdminDashboard.tsx**
+  - **Purpose:** Admin overview with stats and recent activity.
+  - **Improvement:** Add real-time updates and export options.
+
+- **AdminLogin.tsx**
+  - **Purpose:** Admin authentication page.
+  - **Improvement:** Add 2FA and better error feedback.
+
+- **AdminUserManagement.tsx**
+  - **Purpose:** Manage users, roles, and statuses.
+  - **Improvement:** Add bulk actions and advanced filters.
+
+- **BlogAdmin.tsx**
+  - **Purpose:** Admin interface for managing blog posts.
+  - **Improvement:** Add preview and scheduling features.
+
+- **DatabaseEditor.tsx**
+  - **Purpose:** Admin tool for direct DB access and queries.
+  - **Improvement:** Add audit logging and restrict dangerous queries.
+
+---
+
+# 8. Miscellaneous
+
+- **Dashboard.tsx**
+  - **Purpose:** User dashboard with filing status, quick actions, and tips.
+  - **Improvement:** Add more personalized insights.
+
+- **UserDashboard.tsx**
+  - **Purpose:** (Very large file) User dashboard with tabs, stats, and progress.
+  - **Improvement:** Split into smaller components, optimize performance.
+
+- **Support.tsx**
+  - **Purpose:** Support center with FAQ, contact form, and live chat.
+  - **Improvement:** Add ticket tracking and chat history.
+
+- **TaxExpert.tsx**
+  - **Purpose:** Chatbot interface for tax questions.
+  - **Improvement:** Add context memory and escalation to human experts.
+
+---
+
+# General Suggestions
+- **Reduce Redundancy:** Remove duplicate/legacy files (e.g., Home, BlogPost variants).
+- **Componentization:** Split large pages (e.g., StartFiling, UserDashboard) into smaller, reusable components.
+- **Navigation:** Ensure all pages are accessible from main navigation and have clear back/next actions.
+- **Consistency:** Standardize UI/UX across calculators, guides, and admin tools.
+- **Performance:** Optimize large files and add code-splitting for faster load times.
+- **Accessibility:** Ensure all forms and flows are accessible (labels, keyboard nav, ARIA roles).
+
+---
+
+This structure should help new developers and contributors quickly understand the codebase and identify areas for improvement. 

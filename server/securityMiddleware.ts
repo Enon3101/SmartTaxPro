@@ -1,3 +1,4 @@
+/**
  * Enhanced rate limiting with sliding window
  */
 export const createRateLimiter = (options: {

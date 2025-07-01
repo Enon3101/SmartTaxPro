@@ -44,6 +44,7 @@ import HelpResourcesCard from "./HelpResourcesCard";
 import ProgressTracker from "./ProgressTracker";
 import TaxSummaryCard from "./TaxSummaryCard";
 import { TaxTipSidebar } from "./TaxTipSidebar";
+import { StepIndicator } from "./ItrWizard/StepIndicator";
 
 // Define the schema for Form 16 (Indian salary income)
 const form16Schema = z.object({
@@ -99,6 +100,7 @@ type IncomeFormValues = z.infer<typeof incomeFormSchema>;
 const TaxFilingWizard = () => {
   const { 
     currentStep, 
+    setCurrentStep,
     updateIncome, 
     nextStep, 
     previousStep, 
@@ -206,42 +208,13 @@ const TaxFilingWizard = () => {
     saveMutation.mutate(formattedData);
   };
 
+  // Define your steps array for the wizard
   const steps = [
-    {
-      number: 1,
-      title: "Personal Info",
-      description: "About you",
-      completed: currentStep > 1,
-      active: currentStep === 1,
-    },
-    {
-      number: 2,
-      title: "Income Sources",
-      description: "From all sources",
-      completed: currentStep > 2,
-      active: currentStep === 2,
-    },
-    {
-      number: 3,
-      title: "Deductions",
-      description: "Section 80C & 80D",
-      completed: currentStep > 3,
-      active: currentStep === 3,
-    },
-    {
-      number: 4,
-      title: "Tax Paid",
-      description: "TDS & Advance Tax",
-      completed: currentStep > 4,
-      active: currentStep === 4,
-    },
-    {
-      number: 5,
-      title: "Review & Submit",
-      description: "File your ITR",
-      completed: currentStep > 5,
-      active: currentStep === 5,
-    },
+    { number: 1, title: "Personal Info", description: "Enter your details" },
+    { number: 2, title: "Income", description: "Add your income" },
+    { number: 3, title: "Deductions", description: "Claim deductions" },
+    { number: 4, title: "Tax Paid", description: "Enter taxes paid" },
+    { number: 5, title: "Review", description: "Review & submit" },
   ];
 
   if (isLoading) {
@@ -266,7 +239,11 @@ const TaxFilingWizard = () => {
         </p>
       </div>
 
-      <ProgressTracker steps={steps} />
+      <StepIndicator
+        steps={steps}
+        currentStep={currentStep}
+        onStepClick={(stepNumber) => setCurrentStep(stepNumber)}
+      />
 
       <div className="grid md:grid-cols-3 gap-6 mt-8">
         {/* Main Content */}

@@ -20,6 +20,7 @@ import {
 } from "@/lib/taxInterfaces";
 
 import { useAuth } from "./AuthContext";
+import { saveDraft, listAllDrafts, deleteDraft } from '@/lib/indexedDbDrafts';
 
 interface TaxDataContextType {
   currentStep: number;
@@ -82,6 +83,64 @@ export const TaxDataContext = createContext<TaxDataContextType>({
   setAssessmentYear: () => {},
 });
 
+// Debounce utility
+function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
+  let timer: ReturnType<typeof setTimeout>;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
+
+// Helper functions to ensure all required fields are present
+const getCompleteIncomeData = (data: Partial<IncomeData>): IncomeData => ({
+  salaryIncome: data.salaryIncome ?? [],
+  housePropertyIncome: data.housePropertyIncome ?? [],
+  capitalGainsIncome: data.capitalGainsIncome ?? [],
+  businessIncome: data.businessIncome ?? [],
+  interestIncome: data.interestIncome ?? [],
+  otherIncome: data.otherIncome ?? [],
+});
+const getCompleteDeductions80C = (data: Partial<Deductions80C>): Deductions80C => ({
+  ppf: data.ppf ?? '',
+  elss: data.elss ?? '',
+  lifeInsurance: data.lifeInsurance ?? '',
+  houseLoanPrincipal: data.houseLoanPrincipal ?? '',
+  sukanya: data.sukanya ?? '',
+  nsc: data.nsc ?? '',
+  fixedDeposit: data.fixedDeposit ?? '',
+  epf: data.epf ?? '',
+  nps: data.nps ?? '',
+  tuitionFees: data.tuitionFees ?? '',
+  totalAmount: data.totalAmount ?? '',
+});
+const getCompleteDeductions80D = (data: Partial<Deductions80D>): Deductions80D => ({
+  selfAndFamilyMedicalInsurance: data.selfAndFamilyMedicalInsurance ?? '',
+  parentsMedicalInsurance: data.parentsMedicalInsurance ?? '',
+  selfAndFamilyMedicalExpenditure: data.selfAndFamilyMedicalExpenditure ?? '',
+  parentsMedicalExpenditure: data.parentsMedicalExpenditure ?? '',
+  preventiveHealthCheckup: data.preventiveHealthCheckup ?? '',
+  totalAmount: data.totalAmount ?? '',
+});
+const getCompleteOtherDeductions = (data: Partial<OtherDeductions>): OtherDeductions => ({
+  section80E: data.section80E ?? '',
+  section80G: data.section80G ?? '',
+  section80GG: data.section80GG ?? '',
+  section80TTA: data.section80TTA ?? '',
+  section80TTB: data.section80TTB ?? '',
+  section80CCD: data.section80CCD ?? '',
+  section80DDB: data.section80DDB ?? '',
+  section80U: data.section80U ?? '',
+  totalAmount: data.totalAmount ?? '',
+});
+const getCompleteTaxesPaid = (data: Partial<TaxesPaid>): TaxesPaid => ({
+  tdsFromSalary: data.tdsFromSalary ?? '',
+  tdsFromOtherIncome: data.tdsFromOtherIncome ?? '',
+  advanceTaxPaid: data.advanceTaxPaid ?? '',
+  selfAssessmentTaxPaid: data.selfAssessmentTaxPaid ?? '',
+  totalTaxesPaid: data.totalTaxesPaid ?? '',
+});
+
 export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth(); // Get auth state
   const [currentStep, setCurrentStep] = useState(1);
@@ -90,16 +149,94 @@ export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true); // Loading state for tax data
   const [assessmentYear, setAssessmentYear] = useState("2024-25");
   const { toast } = useToast();
+  const [isSyncingDrafts, setIsSyncingDrafts] = useState(false);
 
   // Calculate the tax summary based on the current form data
   const taxSummary = calculateTaxSummary(
-    taxFormData?.incomeData,
-    taxFormData?.deductions80C,
-    taxFormData?.deductions80D,
-    taxFormData?.otherDeductions,
-    taxFormData?.taxPaid,
+    taxFormData?.incomeData ?? {
+      salaryIncome: [],
+      housePropertyIncome: [],
+      capitalGainsIncome: [],
+      businessIncome: [],
+      interestIncome: [],
+      otherIncome: [],
+    },
+    taxFormData?.deductions80C ?? { ppf: '', elss: '', lifeInsurance: '', houseLoanPrincipal: '', sukanya: '', nsc: '', fixedDeposit: '', epf: '', nps: '', tuitionFees: '', totalAmount: '' },
+    taxFormData?.deductions80D ?? { selfAndFamilyMedicalInsurance: '', parentsMedicalInsurance: '', selfAndFamilyMedicalExpenditure: '', parentsMedicalExpenditure: '', preventiveHealthCheckup: '', totalAmount: '' },
+    taxFormData?.otherDeductions ?? { section80E: '', section80G: '', section80GG: '', section80TTA: '', section80TTB: '', section80CCD: '', section80DDB: '', section80U: '', totalAmount: '' },
+    taxFormData?.taxPaid ?? { tdsFromSalary: '', tdsFromOtherIncome: '', advanceTaxPaid: '', selfAssessmentTaxPaid: '', totalTaxesPaid: '' },
     assessmentYear // Use the selected assessment year for calculation
   );
+
+  const patchTaxForm = async (fields: Partial<TaxFormData>) => {
+    if (!taxFormId) return;
+    try {
+      const response = await apiRequest(
+        "PATCH",
+        `/api/tax-forms/${taxFormId}`,
+        {
+          body: JSON.stringify(fields),
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+      if (!response.ok) throw new Error('Failed to autosave');
+      toast({ title: 'Autosaved', description: 'Your changes have been saved.' });
+    } catch (e) {
+      toast({ title: 'Autosave failed', description: (e as Error).message, variant: 'destructive' });
+    }
+  };
+  const debouncedPatch = debounce(patchTaxForm, 1000);
+
+  // Helper to sync all drafts to server
+  const syncDraftsToServer = async () => {
+    setIsSyncingDrafts(true);
+    try {
+      const drafts = await listAllDrafts();
+      for (const { key, data } of drafts) {
+        if (!taxFormId || key !== taxFormId) continue;
+        try {
+          const response = await apiRequest(
+            "PATCH",
+            `/api/tax-forms/${taxFormId}`,
+            {
+              body: JSON.stringify(data),
+              headers: { 'Content-Type': 'application/json' },
+            }
+          );
+          if (response.ok) {
+            await deleteDraft(key);
+          }
+        } catch (e) {
+          // If sync fails, keep draft for next attempt
+        }
+      }
+      toast({ title: 'Drafts synced', description: 'Offline changes have been saved to the server.' });
+    } finally {
+      setIsSyncingDrafts(false);
+    }
+  };
+
+  // On app load and when coming online, sync drafts
+  useEffect(() => {
+    if (navigator.onLine) {
+      syncDraftsToServer();
+    }
+    const handleOnline = () => syncDraftsToServer();
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taxFormId]);
+
+  // Helper to save to IndexedDB and optionally sync
+  const saveAndSync = async (fields: Partial<TaxFormData>) => {
+    if (!taxFormId) return;
+    await saveDraft(taxFormId, fields);
+    if (navigator.onLine) {
+      patchTaxForm(fields);
+    } else {
+      toast({ title: 'Saved offline', description: 'Your changes will sync when you are back online.' });
+    }
+  };
 
   useEffect(() => {
     const createNewTaxForm = async () => {
@@ -188,12 +325,15 @@ export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
               throw new Error(`Failed to fetch tax form: ${response.status} ${errorText}`);
             }
           } catch (error) {
-            console.error("Error fetching or processing existing tax form:", error);
-            localStorage.removeItem("taxFormId"); // Clear potentially problematic ID
-            await createNewTaxForm(); // Attempt to create a new one if authenticated
+            console.error("Error initializing tax form:", error);
+            toast({
+              title: "Error",
+              description: "Failed to initialize tax form. Please try again.",
+              variant: "destructive",
+            });
           }
         } else {
-          await createNewTaxForm(); // No stored ID, create new if authenticated
+          await createNewTaxForm();
         }
       } catch (error) {
         console.error("Error initializing tax form:", error);
@@ -202,58 +342,39 @@ export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
           description: "Failed to initialize tax form. Please try again.",
           variant: "destructive",
         });
-      } finally {
-        setIsLoading(false);
       }
     };
+    
+    initializeTaxForm();
+  }, [isAuthenticated, isAuthLoading, toast, assessmentYear]);
 
-    if (!isAuthLoading) { // Only proceed if auth status is resolved
-      initializeTaxForm();
-    } else {
-      // Auth is still loading, keep TaxDataProvider's isLoading true
-      setIsLoading(true);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated, isAuthLoading, assessmentYear]); // Add assessmentYear to dependencies if createNew uses it
-
-  const nextStep = () => {
-    if (currentStep < 6) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const previousStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const updatePersonalInfo = (data: any) => { // personalInfo is 'any' in TaxFormData
+  const updatePersonalInfo = (data: any) => {
     setTaxFormData((prev) => prev ? { ...prev, personalInfo: { ...(prev.personalInfo || {}), ...data } } : null);
+    saveAndSync({ personalInfo: data });
   };
-
   const updateFormType = (formType: string) => {
     setTaxFormData((prev) => prev ? { ...prev, formType } : null);
+    saveAndSync({ formType });
   };
-
   const updateIncome = (data: Partial<IncomeData>) => {
-    setTaxFormData((prev) => prev ? { ...prev, incomeData: { ...(prev.incomeData || {}), ...data } as IncomeData } : null);
+    setTaxFormData((prev) => prev ? { ...prev, incomeData: getCompleteIncomeData({ ...(prev.incomeData || {}), ...data }) } : null);
+    saveAndSync({ incomeData: getCompleteIncomeData(data) });
   };
-
   const updateDeductions80C = (data: Partial<Deductions80C>) => {
-    setTaxFormData((prev) => prev ? { ...prev, deductions80C: { ...(prev.deductions80C || {}), ...data } as Deductions80C } : null);
+    setTaxFormData((prev) => prev ? { ...prev, deductions80C: getCompleteDeductions80C({ ...(prev.deductions80C || {}), ...data }) } : null);
+    saveAndSync({ deductions80C: getCompleteDeductions80C(data) });
   };
-
   const updateDeductions80D = (data: Partial<Deductions80D>) => {
-    setTaxFormData((prev) => prev ? { ...prev, deductions80D: { ...(prev.deductions80D || {}), ...data } as Deductions80D } : null);
+    setTaxFormData((prev) => prev ? { ...prev, deductions80D: getCompleteDeductions80D({ ...(prev.deductions80D || {}), ...data }) } : null);
+    saveAndSync({ deductions80D: getCompleteDeductions80D(data) });
   };
-
   const updateOtherDeductions = (data: Partial<OtherDeductions>) => {
-    setTaxFormData((prev) => prev ? { ...prev, otherDeductions: { ...(prev.otherDeductions || {}), ...data } as OtherDeductions } : null);
+    setTaxFormData((prev) => prev ? { ...prev, otherDeductions: getCompleteOtherDeductions({ ...(prev.otherDeductions || {}), ...data }) } : null);
+    saveAndSync({ otherDeductions: getCompleteOtherDeductions(data) });
   };
-
   const updateTaxPaid = (data: Partial<TaxesPaid>) => {
-    setTaxFormData((prev) => prev ? { ...prev, taxPaid: { ...(prev.taxPaid || {}), ...data } as TaxesPaid } : null);
+    setTaxFormData((prev) => prev ? { ...prev, taxPaid: getCompleteTaxesPaid({ ...(prev.taxPaid || {}), ...data }) } : null);
+    saveAndSync({ taxPaid: getCompleteTaxesPaid(data) });
   };
 
   return (
@@ -261,8 +382,8 @@ export const TaxDataProvider = ({ children }: { children: ReactNode }) => {
       value={{
         currentStep,
         setCurrentStep,
-        nextStep,
-        previousStep,
+        nextStep: () => {},
+        previousStep: () => {},
         taxFormId,
         taxSummary,
         taxFormData,
