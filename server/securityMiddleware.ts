@@ -1,3 +1,7 @@
+import rateLimit from 'express-rate-limit';
+import { Request, Response, NextFunction } from 'express';
+import helmet from 'helmet';
+
 /**
  * Enhanced rate limiting with sliding window
  */
@@ -22,7 +26,7 @@ export const createRateLimiter = (options: {
     // store: process.env.REDIS_URL ? new RedisStore({...}) : undefined,
     keyGenerator: (req: Request) => {
       // Use a combination of IP and user ID for authenticated requests
-      const ip = req.ip || req.connection.remoteAddress;
+      const ip = req.ip || (req.socket && req.socket.remoteAddress) || 'unknown';
       const userId = (req as any).user?.id;
       return userId ? `${ip}_${userId}` : ip;
     },
@@ -161,7 +165,7 @@ export function performanceMonitoring(req: Request, res: Response, next: NextFun
 /**
  * Comprehensive security middleware setup
  */
-export function setupSecurityMiddleware(app: Express) {
+export function setupSecurityMiddleware(app: import("express").Express) {
   // Performance monitoring (should be first)
   app.use(performanceMonitoring);
   
@@ -194,4 +198,8 @@ export function setupSecurityMiddleware(app: Express) {
   });
   
   console.log('✅ Enhanced security middleware configured successfully');
+}
+
+function configureHelmet() {
+  return helmet();
 }

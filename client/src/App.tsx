@@ -11,32 +11,32 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 import TaxExpertWidget from "@/components/TaxExpertWidget";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Admin from "@/pages/Admin";
-import AdminLogin from "@/pages/AdminLogin";
-import BlogAdmin from "@/pages/BlogAdmin";
-import Calculators from "@/pages/Calculators";
-import Dashboard from "@/pages/Dashboard";
-import DatabaseEditor from "@/pages/DatabaseEditor";
-import DocumentVault from "@/pages/DocumentVault"; // Import DocumentVault page
-import FilingComplete from "@/pages/FilingComplete";
-import FilingRequirements from "@/pages/FilingRequirements";
-import Home from "@/pages/Home";
-import ItrFiling from "@/pages/ItrFiling";
-import ItrWizard from "@/pages/ItrWizard";
-import BlogListPage from "@/pages/learning/BlogListPage";
-import Login from "@/pages/Login";
-import MyFilings from "@/pages/MyFilings"; // Import MyFilings page
-import NotFound from "@/pages/not-found";
-import TaxFormDetails from "@/pages/TaxFormDetails";
-import Payment from "@/pages/Payment";
-import Pricing from "@/pages/Pricing";
-import Profile from "@/pages/Profile";
-import Register from "@/pages/Register";
-import StartFiling from "@/pages/StartFiling";
-import Support from "@/pages/Support";
-import TaxExpert from "@/pages/TaxExpert";
-import TaxFiling from "@/pages/TaxFiling";
-import TaxResources from "@/pages/TaxResources";
+import Admin from "@/pages/admin.page";
+import AdminLogin from "@/pages/admin-login.page";
+import BlogAdmin from "@/pages/blog-admin.page";
+import Calculators from "@/pages/calculators.page";
+import Dashboard from "@/pages/dashboard.page";
+import DatabaseEditor from "@/pages/database-editor.page";
+import DocumentVault from "@/pages/document-vault.page";
+import FilingComplete from "@/pages/filing-complete.page";
+import FilingRequirements from "@/pages/filing-requirements.page";
+import Home from "@/pages/home.page";
+import ItrFiling from "@/pages/itr-filing.page";
+import ItrWizard from "@/pages/itr-wizard.page";
+import BlogListPage from "@/pages/learning/blog-list.page";
+import Login from "@/pages/login.page";
+import MyFilings from "@/pages/my-filings.page";
+import NotFound from "@/pages/not-found.page";
+import TaxFormDetails from "@/pages/tax-form-details.page";
+import Payment from "@/pages/payment.page";
+import Pricing from "@/pages/pricing.page";
+import Profile from "@/pages/profile.page";
+import Register from "@/pages/register.page";
+import StartFiling from "@/pages/start-filing.page";
+import Support from "@/pages/support.page";
+import TaxExpert from "@/pages/tax-expert.page";
+import TaxFiling from "@/pages/tax-filing.page";
+import TaxResources from "@/pages/tax-resources.page";
 // Import for the new AY 2023-24 Guide
 const HowToFileITROnline2023_24 = lazy(() => {
   return Promise.all([
@@ -56,8 +56,8 @@ import { queryClient } from "./lib/queryClient";
 // import BlogPost from "@/pages/BlogPost"; // Unused import
 
 // Lazy load calculator pages with improved loading
-const CalculatorsIndex = lazy(() => import("@/pages/Calculators")); // Changed to uppercase 'C'
-const LearningBlogPost = lazy(() => import("@/pages/learning/BlogPostPage")); // Updated path
+const CalculatorsIndex = lazy(() => import("@/pages/calculators.page"));
+const LearningBlogPost = lazy(() => import("@/pages/blog-post.page"));
 
 // Take Home Salary Calculator
 const TakeHomeSalaryCalculator = lazy(() => {
@@ -188,7 +188,7 @@ const IncomeTaxCalculator = lazy(() => {
 // ITR Form Guides
 const ITRFormsGuidePage = lazy(() => {
   return Promise.all([
-    import("@/pages/ITRFormsGuidePage"),
+    import("@/pages/itr-forms-guide.page"),
     new Promise((resolve) => setTimeout(resolve, 300)),
   ]).then(([moduleExports]) => moduleExports);
 });

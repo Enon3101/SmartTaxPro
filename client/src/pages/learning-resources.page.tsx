@@ -791,6 +791,12 @@ const LearningResources = () => {
           )}
         </TabsContent>
 
+        <TabsContent value="tax-guide">
+          <div className="py-16 text-center">
+            <span className="text-lg font-semibold text-muted-foreground">Tax Guide Coming Soon</span>
+          </div>
+        </TabsContent>
+
       </Tabs>
       
       {/* Featured Resources */}
