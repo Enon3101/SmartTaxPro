@@ -19,14 +19,14 @@ import { nanoid } from 'nanoid';
 import { validateInput, fileUploadSchema } from '../client/src/lib/validation';
 
 // Define allowed file types and maximum sizes
-const ALLOWED_FILE_TYPES = {
+const ALLOWED_FILE_TYPES: Record<string, string[]> = {
   'image': ['image/jpeg', 'image/png', 'image/gif'],
   'document': ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
   'spreadsheet': ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
   'text': ['text/plain', 'text/csv'],
 };
 
-const MAX_FILE_SIZE = {
+const MAX_FILE_SIZE: Record<string, number> = {
   'image': 5 * 1024 * 1024, // 5MB
   'document': 10 * 1024 * 1024, // 10MB
   'spreadsheet': 10 * 1024 * 1024, // 10MB

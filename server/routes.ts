@@ -31,7 +31,7 @@ import blogRouter from "./blogRoutes";
 import calculatorRouter from "./calculatorRoutes"; // Updated to use the new calculatorRoutes.ts
 import fileManagementRouter from "./fileManagementRoutes";
 import { db } from "./db"; 
-import { handleFileUpload, serveSecureFile, generatePresignedUrl } from "./fileUpload";
+import { serveSecureFile, generatePresignedUrl } from "./secureFile";
 import { verifyGoogleToken, processGoogleLogin } from "./googleAuth"; 
 import { storage } from "./storage"; 
 import userProfileRouter from "./userProfileRoutes";
@@ -40,9 +40,15 @@ import {
   textInputSchema, 
   sanitizeHtml,
 } from "../client/src/lib/validation";
+import multer from "multer";
+import { fileManagerService } from "./services/FileManagerService";
+import { FileUploadRequest } from "../lib/types/file-management";
 
 // Upload folder is now configured in the fileUpload.ts module
 const uploadDir = path.resolve(process.cwd(), "uploads");
+
+// Multer instance using memory storage – used for consolidated uploads
+const memoryUpload = multer({ storage: multer.memoryStorage() });
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Create a router for API routes
@@ -259,7 +265,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     "/tax-forms/:id/documents", 
     passport.authenticate('jwt', { session: false }), // Use Passport JWT auth
     authorize("upload_documents"), 
-    ...handleFileUpload("file", "document"), 
+    memoryUpload.single('file'), 
     async (req: AuthenticatedRequest, res) => {
       try {
         if (!req.file) {
@@ -282,14 +288,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (req.user && taxForm.userId !== req.user.sub) {
           return res.status(403).json({ message: "You don't have permission to add documents to this tax form" });
         }
-        const { filename, originalname, mimetype, size } = req.file;
-        const secureUrl = generatePresignedUrl(`/uploads/${filename}`, 60);
+        // Upload file through FileManagerService
+        const uploadRequest: FileUploadRequest = {
+          file: req.file.buffer,
+          originalName: req.file.originalname,
+          category: 'TAX_DOCUMENT',
+          parentEntityType: 'TAX_FORM',
+          parentEntityId: req.params.id,
+          metadata: undefined,
+          tags: undefined,
+          isPublic: false,
+          accessLevel: 'private',
+          storageProvider: undefined,
+        } as any;
+
+        const uploadResult = await fileManagerService.uploadFile(uploadRequest, req.user ? Number(req.user.sub) : 0);
+
+        const secureUrl = generatePresignedUrl(uploadResult.filePath, 60);
+
         const documentData = {
           id: nanoid(),
           taxFormId: req.params.id,
-          name: sanitizeHtml(originalname),
-          type: mimetype,
-          size: size,
+          name: sanitizeHtml(req.file.originalname),
+          type: req.file.mimetype,
+          size: req.file.size,
           documentType: documentTypeValidation.data,
           url: secureUrl,
         };
@@ -339,7 +361,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  apiRouter.get("/files/:filename", serveSecureFile);
+  // Encode path after /files/, use wildcard route
+  apiRouter.get('/files/:encodedPath(*)', serveSecureFile);
   
   // Authentication endpoints
   const authRouter = express.Router(); 
@@ -849,18 +872,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       next();
     },
-    ...handleFileUpload("image", "image"), // Changed "blog-images" to "image"
+    memoryUpload.single('image'),
     async (req: AuthenticatedRequest, res) => {
       try {
         if (!req.file) {
           return res.status(400).json({ message: "No file uploaded" });
         }
-        // The handleFileUpload middleware should have saved the file.
-        // It adds req.file.filename (the new unique name).
-        // We construct the URL based on how files are served.
-        // Currently, all uploads go to 'uploads/'. If subfolders are needed, fileUpload.ts storage destination needs an update.
-        const fileUrl = `/uploads/${req.file.filename}`; // Path will be relative to 'uploads/'
-        res.status(201).json({ imageUrl: fileUrl });
+        const uploadRequest: FileUploadRequest = {
+          file: req.file.buffer,
+          originalName: req.file.originalname,
+          category: 'BLOG_IMAGE',
+          parentEntityType: 'BLOG',
+          parentEntityId: nanoid(),
+          isPublic: true,
+          accessLevel: 'public',
+          storageProvider: undefined,
+        } as any;
+
+        const uploadResult = await fileManagerService.uploadFile(uploadRequest, req.user ? Number(req.user.sub) : 0);
+        const imageUrl = uploadResult.cdnUrl || generatePresignedUrl(uploadResult.filePath, 60);
+        res.status(201).json({ imageUrl });
       } catch (error) {
         console.error("Error uploading image:", error);
         const message = error instanceof Error ? error.message : "Failed to upload image";

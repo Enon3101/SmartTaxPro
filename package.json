@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development tsx server/index.ts",
+    "cleanup": "tsx server/jobs/cleanupExpiredUploads.ts",
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc",
@@ -12,7 +13,8 @@
     "lint": "eslint . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write .",
     "generate:sitemap": "tsx scripts/generateSitemap.ts",
-    "build:seo": "npm run generate:sitemap && npm run build"
+    "build:seo": "npm run generate:sitemap && npm run build",
+    "otel:dev": "cross-env NODE_OPTIONS=--require=./server/otel NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=development tsx server/index.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -112,7 +114,13 @@
     "wouter": "^3.3.5",
     "ws": "^8.18.0",
     "zod": "^3.24.2",
-    "zod-validation-error": "^3.4.0"
+    "zod-validation-error": "^3.4.0",
+    "@aws-sdk/client-s3": "^3.562.0",
+    "@aws-sdk/s3-request-presigner": "^3.562.0",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-node": "^0.49.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.49.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.49.0"
   },
   "devDependencies": {
     "@replit/vite-plugin-cartographer": "^0.1.2",

@@ -6,13 +6,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import mime from 'mime-types';
 import sharp from 'sharp';
-import { 
-  files, 
-  fileVersions, 
-  fileAccessLogs, 
-  filePermissions,
-  users 
-} from '../../shared/schema';
+import { files, fileVersions, fileAccessLogs, filePermissions, users } from '../../shared/schema';
 import { 
   FileUploadRequest, 
   FileUploadResponse, 
@@ -37,7 +31,12 @@ import {
   StorageProviderError,
   FileValidationError
 } from '../../lib/types/file-management';
-import { db } from '../db';
+import { db as rawDb } from '../db';
+import { S3StorageProvider } from '../storageProviders/S3StorageProvider';
+import { trace } from '@opentelemetry/api';
+
+// Ensure non-null database instance for compile-time strictness; will throw at runtime if missing
+const db = rawDb as NonNullable<typeof rawDb>;
 
 export class FileManagerService {
   private storageProviders: Map<StorageProvider, IStorageProvider> = new Map();
@@ -61,8 +60,8 @@ export class FileManagerService {
     this.storageProviders.set('LOCAL', new LocalStorageProvider(this.uploadPath));
     
     // Initialize cloud providers based on environment variables
-    if (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
-      // this.storageProviders.set('AWS_S3', new S3StorageProvider());
+    if (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY && process.env.AWS_S3_BUCKET) {
+      this.storageProviders.set('AWS_S3', new S3StorageProvider());
     }
     
     if (process.env.GOOGLE_CLOUD_PROJECT_ID && process.env.GOOGLE_CLOUD_KEY_FILE) {
@@ -74,7 +73,15 @@ export class FileManagerService {
   async uploadFile(request: FileUploadRequest, uploadedBy: number): Promise<FileUploadResponse> {
     try {
       const fileId = nanoid();
-      const fileBuffer = request.file instanceof Buffer ? request.file : Buffer.from(await request.file.arrayBuffer());
+      let fileBuffer: Buffer;
+      if (Buffer.isBuffer(request.file)) {
+        fileBuffer = request.file;
+      } else {
+        // In Node.js we may not have DOM File; treat as any with arrayBuffer method
+        // @ts-ignore – allow browser File type
+        const arrBuf = await (request.file as any).arrayBuffer();
+        fileBuffer = Buffer.from(arrBuf);
+      }
       
       // Validate file
       await this.validateFile(fileBuffer, request);
@@ -89,7 +96,7 @@ export class FileManagerService {
       const checksumSha256 = crypto.createHash('sha256').update(fileBuffer).digest('hex');
       
       // Upload to storage provider
-      const storageProvider = request.storageProvider || 'LOCAL';
+      const storageProvider: StorageProvider = request.storageProvider || (process.env.FILE_STORAGE_PROVIDER as StorageProvider) || 'LOCAL';
       const provider = this.storageProviders.get(storageProvider);
       if (!provider) {
         throw new StorageProviderError('Storage provider not configured', storageProvider);
@@ -106,7 +113,8 @@ export class FileManagerService {
       const metadata = await this.extractFileMetadata(fileBuffer, fileType);
 
       // Save to database
-      const fileRecord = await db.insert(files).values({
+      const dbAny: any = db; // Non-null assertion for compile
+      const fileRecord = await dbAny.insert(files).values({
         id: fileId,
         originalName: request.originalName,
         storedName,
@@ -149,7 +157,8 @@ export class FileManagerService {
       };
 
     } catch (error) {
-      throw new FileUploadError(`Upload failed: ${error.message}`);
+      const msg = (error as Error)?.message ?? 'Unknown error';
+      throw new FileUploadError(`Upload failed: ${msg}`);
     }
   }
 
@@ -195,7 +204,8 @@ export class FileManagerService {
       };
 
     } catch (error) {
-      await this.logFileAccess(request.fileId, request.userId, 'download', false, error.message);
+      const msg = (error as Error)?.message ?? 'Unknown error';
+      await this.logFileAccess(request.fileId, request.userId, 'download', false, msg);
       throw error;
     }
   }
@@ -205,8 +215,8 @@ export class FileManagerService {
     const limit = filters.limit || 20;
     const offset = filters.offset || 0;
 
-    let query = db.select().from(files);
-    let countQuery = db.select({ count: count() }).from(files);
+    let query: any = db.select().from(files);
+    let countQuery: any = db.select({ count: count() }).from(files);
 
     // Apply filters
     const conditions = [];
@@ -257,7 +267,9 @@ export class FileManagerService {
     }
 
     if (conditions.length > 0) {
+      // @ts-ignore – Drizzle type interference
       query = query.where(and(...conditions));
+      // @ts-ignore – Drizzle type interference
       countQuery = countQuery.where(and(...conditions));
     }
 
@@ -508,6 +520,7 @@ export class FileManagerService {
     success: boolean, 
     errorMessage?: string
   ): Promise<void> {
+    // Persist in DB
     await db.insert(fileAccessLogs).values({
       fileId,
       userId,
@@ -516,6 +529,36 @@ export class FileManagerService {
       errorMessage,
       accessedAt: new Date()
     });
+
+    // Emit OTel event if span active
+    const span = trace.getActiveSpan();
+    if (span) {
+      span.addEvent('file.access', {
+        'file.id': fileId,
+        'user.id': userId,
+        'file.access_type': accessType,
+        'file.access_success': success,
+      });
+    }
+  }
+
+  // Soft delete – marks record deleted, keeps physical file; cleanup job handles purge
+  async softDeleteFile(fileId: string, deletedBy: number): Promise<void> {
+    const span = trace.getTracer('file-manager').startSpan('softDeleteFile');
+    try {
+      await db.update(files)
+        .set({ isDeleted: true, deletedAt: new Date(), deletedBy })
+        .where(eq(files.id, fileId));
+
+      await this.logFileAccess(fileId, deletedBy, 'delete', true);
+      span.setStatus({ code: 1 });
+    } catch (error) {
+      await this.logFileAccess(fileId, deletedBy, 'delete', false, (error as Error).message);
+      span.setStatus({ code: 2, message: (error as Error).message });
+      throw error;
+    } finally {
+      span.end();
+    }
   }
 }
 

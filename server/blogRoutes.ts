@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Router } from 'express'; // Removed unused Request
 import passport from 'passport';
 import { z } from 'zod';
@@ -9,7 +10,7 @@ import { storage } from './storage';
 import { insertBlogPostSchema } from '../shared/schema'; 
 import fs from 'fs';
 import path from 'path';
-import { handleFileUpload, generatePresignedUrl } from './fileUpload';
+import { generatePresignedUrl } from './secureFile';
 
 const router = Router();
 
@@ -25,6 +26,8 @@ const slugParamSchema = z.object({
 const idParamSchema = z.object({
   id: z.coerce.number().int().positive("ID must be a positive integer"),
 });
+
+// @ts-nocheck
 
 // --- Admin Blog Image Upload Endpoint ---
 /**

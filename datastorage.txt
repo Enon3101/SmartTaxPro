@@ -1,0 +1,64 @@
+Data Storage & Containerization Improvement Plan - SmartTaxPro
+============================================================
+
+This document captures the agreed-upon roadmap for hardening the data-layer (DB + file/object storage) and Docker infrastructure.  Each numbered task is intended to be applied **in order**; once a task is merged, check it off and proceed to the next.
+
+────────────────────────────────────────────────────────────
+1  Environment & Secrets Management
+   ---------------------------------------------------------
+   • Introduce a project-root `.env` file (never committed) and commit
+     `.env.example` with safe defaults.
+   • All services will load env vars via `dotenv` (for Node) or `env_file`
+     (for Docker Compose).
+   • Remove hard-coded secrets from `docker-compose.yml`.
+
+2  Persistent & Secure File Storage
+   ---------------------------------------------------------
+   • Consolidate on `FileManagerService`; deprecate legacy `fileUpload.ts`.
+   • Mount host path `./uploads` (dev) or named volume `uploads` (prod)
+     into backend container for persistence.
+   • Implement provider selection via `FILE_STORAGE_PROVIDER` env var.
+   • Add AES-256 encryption at rest (generate per-file DEK, KEK stored in KMS).
+   • Integrate ClamAV scan in `scanFile()`.
+
+3  S3 (or GCS) Storage Provider
+   ---------------------------------------------------------
+   • Create `S3StorageProvider` (implements `IStorageProvider`).
+   • Env vars: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`,
+     `AWS_REGION`, `AWS_S3_BUCKET`.
+   • Update provider registry in `FileManagerService`.
+
+4  Database Reliability & Migrations
+   ---------------------------------------------------------
+   • Add an entrypoint script in `server` image to run `drizzle-kit push`.
+   • Move to single connection string `DATABASE_URL` for local & prod.
+   • Enable pg_stat_statements; ship logs to Loki.
+   • Schedule daily pg_dump to S3 via cron side-car.
+
+5  Dockerfile Hardening (backend & frontend)
+   ---------------------------------------------------------
+   • Convert to multi-stage build; final image based on `node:18-slim`.
+   • Add `.dockerignore` to reduce build context.
+   • Create non-root user `app`; set `USER app` for runtime.
+   • Expose healthcheck endpoint (`/health`).
+
+6  Compose Enhancements & Resource Limits
+   ---------------------------------------------------------
+   • Add `healthcheck` sections for backend & frontend.
+   • Use `depends_on: condition: service_healthy`.
+   • Apply CPU/memory limits.
+
+7  Lifecycle & House-Keeping Jobs
+   ---------------------------------------------------------
+   • Add cron job (or bullmq worker) that purges expired files where
+     `expires_at < NOW()` and sets `isDeleted=true`.
+   • Clean orphaned uploads not referenced in DB.
+
+8  Observability & Audit
+   ---------------------------------------------------------
+   • Emit upload/download/delete events to `file_access_logs` table.
+   • Optionally forward to OpenTelemetry collector.
+
+────────────────────────────────────────────────────────────
+NOTE: Keep this file up-to-date; treat it as the single source of truth
+for data-layer evolution. 

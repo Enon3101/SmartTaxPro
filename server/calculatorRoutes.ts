@@ -30,6 +30,7 @@ const TaxCalculationInputSchema = z.object({
   }),
   deductions: z.object({
     chapterVIA: z.object({
+      section80C: z.number().min(0).default(0), // 80C investments (PPF/LIC etc)
       section80CCC: z.number().min(0).default(0), // Pension funds
       section80CCD1: z.number().min(0).default(0), // NPS employee contribution
       section80CCD1B: z.number().min(0).default(0), // Additional NPS contribution (max 50k)

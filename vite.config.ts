@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [
     react({
       // Enable React Fast Refresh
-      fastRefresh: true,
+      // fastRefresh: true,
     }),
   ],
   build: {

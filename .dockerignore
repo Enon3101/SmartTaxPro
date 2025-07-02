@@ -1,5 +1,22 @@
-node_modules
+# Global
+.git
+.gitignore
+Dockerfile
 dist
+uploads
+.env
+.env.*
+node_modules
+coverage
+*.log
+
+# Client & server build artefacts
+client/node_modules
+client/dist
+server/node_modules
+server/dist
+
+node_modules
 .DS_Store
 server/public
 vite.config.ts.*
@@ -7,6 +24,5 @@ vite.config.ts.*
 
 # Added for .dockerignore
 uploads/
-.env
 *.log
 build/

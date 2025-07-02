@@ -102,14 +102,14 @@ export async function processGoogleLogin(googleUserInfo: {
       
       user = await storage.createUser({
         username,
-        email: googleUserInfo.email || undefined,
+        email: googleUserInfo.email ?? '',
         firstName: googleUserInfo.firstName || undefined,
         lastName: googleUserInfo.lastName || undefined,
         role: 'user',
         googleId: googleUserInfo.googleId,
         profileImageUrl: googleUserInfo.profileImageUrl || undefined,
-        mfaEnabled: false,
-        password: undefined // No password for Google-authenticated users
+        passwordHash: '',
+        mfaEnabled: false
       });
     }
     
@@ -117,8 +117,9 @@ export async function processGoogleLogin(googleUserInfo: {
     // This would ideally be in storage.updateLastLogin but not implementing for brevity
     
     // Generate auth tokens
-    const accessToken = generateToken(user, 'access');
-    const refreshToken = generateToken(user, 'refresh');
+    const userPayload = { id: user.id, role: user.role as any };
+    const accessToken = generateToken(userPayload, 'access');
+    const refreshToken = generateToken(userPayload, 'refresh');
     
     return { user, accessToken, refreshToken };
   } catch (error) {

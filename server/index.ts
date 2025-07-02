@@ -1,4 +1,6 @@
 import 'dotenv/config';
+// Initialize OpenTelemetry (must be first)
+import './otel';
 
 import fs from 'fs';
 import path from 'path';
@@ -39,6 +41,11 @@ app.use(httpLogger);
 
 // Initialize Passport
 app.use(passport.initialize());
+
+// Health check route
+app.get('/health', (_req: Request, res: Response) => {
+  res.status(200).json({ status: 'ok' });
+});
 
 // Add after helmet middleware
 app.use(compression());
@@ -81,7 +88,7 @@ app.use(compression());
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   // CLINE: Attempting to change port to 3000 and remove reusePort due to ENOTSUP error
-  const port = 3002; // Changed port from 3001 to 3002 due to EADDRINUSE
+  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
   server.listen({
     port,
     host: "0.0.0.0",
