@@ -41,8 +41,8 @@ export const apiRateLimiter = createRateLimiter({
 });
 
 export const authRateLimiter = createRateLimiter({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // Slightly increased but still secure
+  windowMs: 15 * 60 * 1000, // 15 minutes (shorter window)
+  max: 5, // Much stricter limit for authentication
   message: 'Too many authentication attempts, please try again later.',
   skipSuccessfulRequests: true,
 });
@@ -57,6 +57,19 @@ export const calculatorRateLimiter = createRateLimiter({
   windowMs: 60 * 1000, // 1 minute
   max: 100, // High limit for calculators
   message: 'Too many calculator requests, please slow down.',
+});
+
+// Enhanced rate limiters for sensitive operations
+export const sensitiveDataRateLimiter = createRateLimiter({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 50, // Limited for sensitive operations
+  message: 'Too many requests to sensitive endpoints.',
+});
+
+export const adminRateLimiter = createRateLimiter({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 20, // Very strict for admin operations
+  message: 'Too many admin requests.',
 });
 
 /**
@@ -184,6 +197,11 @@ export function setupSecurityMiddleware(app: import("express").Express) {
   app.use('/api/upload/', uploadRateLimiter);
   app.use('/api/calculator/', calculatorRateLimiter);
   
+  // Enhanced rate limiting for sensitive endpoints
+  app.use('/api/tax-forms/', sensitiveDataRateLimiter);
+  app.use('/api/documents/', sensitiveDataRateLimiter);
+  app.use('/api/admin/', adminRateLimiter);
+  
   // Content type validation for API routes
   app.use('/api/', (req: Request, res: Response, next: NextFunction) => {
     if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
@@ -201,5 +219,29 @@ export function setupSecurityMiddleware(app: import("express").Express) {
 }
 
 function configureHelmet() {
-  return helmet();
+  return helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'"],
+        frameSrc: ["'none'"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+      },
+    },
+    crossOriginEmbedderPolicy: false, // Disable for compatibility
+    hsts: {
+      maxAge: 31536000, // 1 year
+      includeSubDomains: true,
+      preload: true
+    },
+    noSniff: true,
+    xssFilter: true,
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" }
+  });
 }

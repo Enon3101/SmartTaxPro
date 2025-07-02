@@ -8,11 +8,16 @@ import { Request, Response } from 'express';
  * The URL is valid only until `expiresInMinutes` and is signed with HMAC.
  */
 export function generatePresignedUrl(relativeFilePath: string, expiresInMinutes = 10): string {
+  const fileAccessSecret = process.env.FILE_ACCESS_SECRET;
+  if (!fileAccessSecret) {
+    throw new Error('FILE_ACCESS_SECRET environment variable is required');
+  }
+  
   const safePath = path.normalize(relativeFilePath).replace(/^\.?(\\|\/)+/, ''); // prevent traversal
   const expiresAt = Math.floor(Date.now() / 1000) + expiresInMinutes * 60;
   const data = `${safePath}:${expiresAt}`;
   const signature = crypto
-    .createHmac('sha256', process.env.FILE_ACCESS_SECRET || 'default-secret')
+    .createHmac('sha256', fileAccessSecret)
     .update(data)
     .digest('hex');
   return `/files/${encodeURIComponent(safePath)}?signature=${signature}&expires=${expiresAt}`;
@@ -20,9 +25,15 @@ export function generatePresignedUrl(relativeFilePath: string, expiresInMinutes 
 
 export function verifyPresignedUrl(safePath: string, signature: string, expires: number): boolean {
   if (Date.now() / 1000 > expires) return false;
+  
+  const fileAccessSecret = process.env.FILE_ACCESS_SECRET;
+  if (!fileAccessSecret) {
+    return false; // Return false if secret is not configured
+  }
+  
   const data = `${safePath}:${expires}`;
   const expected = crypto
-    .createHmac('sha256', process.env.FILE_ACCESS_SECRET || 'default-secret')
+    .createHmac('sha256', fileAccessSecret)
     .update(data)
     .digest('hex');
   return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));

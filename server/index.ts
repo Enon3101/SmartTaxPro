@@ -5,6 +5,7 @@ import './otel';
 import fs from 'fs';
 import path from 'path';
 import compression from 'compression'; // Moved import to the top
+import cors from 'cors';
 import express, { type Request, Response, NextFunction } from "express";
 import passport from 'passport'; // Import Passport
 import pinoHttp from 'pino-http';
@@ -28,6 +29,33 @@ const app = express();
 
 // Trust proxies for proper client IP detection (needed for rate limiting)
 app.set('trust proxy', 1);
+
+// SECURITY: Configure CORS policy
+const corsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:5000',
+      'https://smarttaxpro.com',
+      'https://app.smarttaxpro.com'
+    ];
+    
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  maxAge: 86400 // 24 hours
+};
+
+app.use(cors(corsOptions));
 
 // Apply security middleware
 setupSecurityMiddleware(app);

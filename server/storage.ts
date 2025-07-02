@@ -20,6 +20,7 @@ export interface IStorage {
   getUserByPhone(phone: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByGoogleId(googleId: string): Promise<User | undefined>;
+  getUsersByRole(role: string): Promise<User[]>;
   createUser(user: InsertUser): Promise<User>;
   updateUserGoogleId(userId: number, googleId: string): Promise<User>;
   
@@ -100,6 +101,14 @@ export class DatabaseStorage implements IStorage {
     if (!googleId) return undefined;
     const [user] = await db!.select().from(users).where(eq(users.googleId, googleId));
     return user || undefined;
+  }
+
+  async getUsersByRole(role: string): Promise<User[]> {
+    this.checkDb();
+    if (!role) return [];
+    // Cast role to the enum type that matches the database schema
+    if (role !== 'user' && role !== 'admin') return [];
+    return db!.select().from(users).where(eq(users.role, role as 'user' | 'admin'));
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
