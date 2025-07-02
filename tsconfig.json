@@ -4,8 +4,7 @@
     "node_modules",
     "build",
     "dist",
-    "**/*.test.ts",
-    "client/src/pages/user-dashboard.page.tsx"
+    "**/*.test.ts"
   ],
   "compilerOptions": {
     "incremental": true,

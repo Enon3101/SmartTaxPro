@@ -33,7 +33,7 @@ import {
 } from '../../lib/types/file-management';
 import { db as rawDb } from '../db';
 import { S3StorageProvider } from '../storageProviders/S3StorageProvider';
-import { trace } from '@opentelemetry/api';
+// import { trace } from '@opentelemetry/api';
 
 // Ensure non-null database instance for compile-time strictness; will throw at runtime if missing
 const db = rawDb as NonNullable<typeof rawDb>;
@@ -531,33 +531,33 @@ export class FileManagerService {
     });
 
     // Emit OTel event if span active
-    const span = trace.getActiveSpan();
-    if (span) {
-      span.addEvent('file.access', {
-        'file.id': fileId,
-        'user.id': userId,
-        'file.access_type': accessType,
-        'file.access_success': success,
-      });
-    }
+    // const span = trace.getActiveSpan();
+    // if (span) {
+    //   span.addEvent('file.access', {
+    //     'file.id': fileId,
+    //     'user.id': userId,
+    //     'file.access_type': accessType,
+    //     'file.access_success': success,
+    //   });
+    // }
   }
 
   // Soft delete – marks record deleted, keeps physical file; cleanup job handles purge
   async softDeleteFile(fileId: string, deletedBy: number): Promise<void> {
-    const span = trace.getTracer('file-manager').startSpan('softDeleteFile');
+    // const span = trace.getTracer('file-manager').startSpan('softDeleteFile');
     try {
       await db.update(files)
         .set({ isDeleted: true, deletedAt: new Date(), deletedBy })
         .where(eq(files.id, fileId));
 
       await this.logFileAccess(fileId, deletedBy, 'delete', true);
-      span.setStatus({ code: 1 });
+      // span.setStatus({ code: 1 });
     } catch (error) {
       await this.logFileAccess(fileId, deletedBy, 'delete', false, (error as Error).message);
-      span.setStatus({ code: 2, message: (error as Error).message });
+      // span.setStatus({ code: 2, message: (error as Error).message });
       throw error;
     } finally {
-      span.end();
+      // span.end();
     }
   }
 }
