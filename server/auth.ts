@@ -40,7 +40,12 @@ declare global {
 }
 
 // SECURITY: Secure JWT settings (Req D)
-const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex');
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required for security. Generate one with: openssl rand -hex 64');
+}
+// Type assertion after validation
+const JWT_SECRET_VALIDATED: string = JWT_SECRET;
 const JWT_EXPIRY = '15m'; // 15 minutes max expiry (Req D)
 const JWT_REFRESH_EXPIRY = '7d'; // 7 days for refresh tokens
 
@@ -363,7 +368,7 @@ export function generateToken(user: { id: string | number; role?: UserRole }, to
   const expiry = tokenType === 'access' ? JWT_EXPIRY : JWT_REFRESH_EXPIRY;
   
   // SECURITY: Sign token with appropriate expiration time (Req D)
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: expiry });
+  return jwt.sign(payload, JWT_SECRET_VALIDATED, { expiresIn: expiry });
 }
 
 /**
@@ -374,7 +379,7 @@ export function verifyToken(token: string): AppJwtPayload | null {
   try {
     // jwt.verify returns JwtPayload from 'jsonwebtoken' which can be string | object
     // We cast to our specific AppJwtPayload
-    return jwt.verify(token, JWT_SECRET) as AppJwtPayload;
+    return jwt.verify(token, JWT_SECRET_VALIDATED) as AppJwtPayload;
   } catch (error) {
     return null;
   }
@@ -419,7 +424,7 @@ passport.use(new LocalStrategy(
 passport.use(new JwtStrategy(
   {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: JWT_SECRET,
+    secretOrKey: JWT_SECRET_VALIDATED,
   },
   async (jwtPayload, done) => {
     try {

@@ -103,10 +103,15 @@ export function generatePresignedUrl(filePath: string, expiresInMinutes = 10): s
   // Compute expiration timestamp
   const expiresAt = Math.floor(Date.now() / 1000) + (expiresInMinutes * 60);
   
-  // Generate signature using HMAC (in production, use a proper signing mechanism)
+  // Generate signature using HMAC with required secret
+  const fileAccessSecret = process.env.FILE_ACCESS_SECRET;
+  if (!fileAccessSecret) {
+    throw new Error('FILE_ACCESS_SECRET environment variable is required');
+  }
+  
   const data = `${filename}:${expiresAt}`;
   const signature = crypto
-    .createHmac('sha256', process.env.FILE_ACCESS_SECRET || 'default-secret')
+    .createHmac('sha256', fileAccessSecret)
     .update(data)
     .digest('hex');
   
@@ -125,9 +130,14 @@ export function verifyPresignedUrl(filename: string, signature: string, expires:
   }
   
   // Recompute signature to verify
+  const fileAccessSecret = process.env.FILE_ACCESS_SECRET;
+  if (!fileAccessSecret) {
+    return false; // Return false if secret is not configured
+  }
+  
   const data = `${filename}:${expires}`;
   const expectedSignature = crypto
-    .createHmac('sha256', process.env.FILE_ACCESS_SECRET || 'default-secret')
+    .createHmac('sha256', fileAccessSecret)
     .update(data)
     .digest('hex');
   
