@@ -193,21 +193,22 @@ const Header = () => {
           : "border-transparent"
       }`}
     >
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div className="container mx-auto px-3 sm:px-4 py-3 flex justify-between items-center">
         <div className="flex items-center">
           <Link href={location.startsWith('/admin') ? '/admin' : '/'}>
-            <div className="flex items-center cursor-pointer min-h-11 min-w-11">
+            <div className="flex items-center cursor-pointer min-h-[44px] min-w-[44px]">
               <div className="bg-primary/10 p-2 rounded-lg mr-2">
                 <FileText className="h-5 w-5 text-primary" />
               </div>
-              <span className="text-primary font-bold text-xl">
+              <span className="text-primary font-bold text-lg sm:text-xl hidden xs:block">
                 {location.startsWith('/admin') ? 'Admin' : 'MyeCA'}<span className="text-secondary">{location.startsWith('/admin') ? 'Panel' : '.in'}</span>
               </span>
             </div>
           </Link>
         </div>
         
-        <div className="hidden md:flex items-center space-x-1 text-sm">
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex items-center space-x-1 text-sm">
           {navItems.map((item, index) => (
             <NavDropdown
               key={index}
@@ -225,33 +226,33 @@ const Header = () => {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="flex items-center gap-2 ml-2 hover:bg-primary/10 hover:text-primary min-h-11"
+                  className="flex items-center gap-2 ml-2 hover:bg-primary/10 hover:text-primary min-h-[44px] px-3"
                 >
                   <Avatar className="h-7 w-7">
                     <AvatarFallback className="bg-primary/90 text-white text-xs">
                       {getInitials(user?.username || "")}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="font-medium">{user?.username}</span>
+                  <span className="font-medium hidden xl:block">{user?.username}</span>
                   <ChevronDown className="h-4 w-4 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 mt-1 p-1.5">
-                <DropdownMenuItem className="cursor-pointer rounded hover:bg-primary/10 focus:bg-primary/10 py-2 min-h-11">
+                <DropdownMenuItem className="cursor-pointer rounded hover:bg-primary/10 focus:bg-primary/10 py-2 min-h-[44px]">
                   <User className="mr-2 h-4 w-4 text-primary" />
                   <span>My Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer rounded hover:bg-primary/10 focus:bg-primary/10 py-2 min-h-11">
+                <DropdownMenuItem className="cursor-pointer rounded hover:bg-primary/10 focus:bg-primary/10 py-2 min-h-[44px]">
                   <FileCheck className="mr-2 h-4 w-4 text-primary" />
                   <span>My Tax Forms</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer rounded hover:bg-primary/10 focus:bg-primary/10 py-2 min-h-11">
+                <DropdownMenuItem className="cursor-pointer rounded hover:bg-primary/10 focus:bg-primary/10 py-2 min-h-[44px]">
                   <Settings className="mr-2 h-4 w-4 text-primary" />
                   <span>Settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="my-1" />
                 <DropdownMenuItem 
-                  className="cursor-pointer rounded text-red-600 hover:bg-red-50 hover:text-red-700 focus:bg-red-50 focus:text-red-700 py-2 min-h-11" 
+                  className="cursor-pointer rounded text-red-600 hover:bg-red-50 hover:text-red-700 focus:bg-red-50 focus:text-red-700 py-2 min-h-[44px]" 
                   onClick={logout}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
@@ -263,27 +264,32 @@ const Header = () => {
             <LoginDialog 
               buttonText="Login / Sign Up" 
               buttonVariant="default" 
-              className="bg-blue-500 hover:bg-blue-600 text-white ml-2 min-h-11" 
+              className="bg-blue-500 hover:bg-blue-600 text-white ml-2 min-h-[44px] px-4" 
             />
           )}
         </div>
         
+        {/* Mobile Menu Button */}
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden min-h-11 min-w-11">
+            <Button variant="ghost" size="icon" className="lg:hidden min-h-[44px] min-w-[44px] p-2">
               <Menu className="h-6 w-6" />
+              <span className="sr-only">Open navigation menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[280px] p-0" 
+          <SheetContent 
+            side="left" 
+            className="w-[320px] sm:w-[350px] p-0" 
             onEscapeKeyDown={() => document.body.click()}
-            onPointerDownOutside={() => document.body.click()}>
-          
+            onPointerDownOutside={() => document.body.click()}
+          >
             <div className="flex flex-col h-full">
+              {/* Header Section */}
               <div className="p-4 border-b border-border">
                 <Link href={location.startsWith('/admin') ? '/admin' : '/'}>
-                  <div className="flex items-center cursor-pointer mb-4 min-h-11" onClick={() => document.body.click()}>
-                    <div className="bg-primary/10 p-2 rounded-lg mr-2">
-                      <FileText className="h-5 w-5 text-primary" />
+                  <div className="flex items-center cursor-pointer mb-4 min-h-[44px]" onClick={() => document.body.click()}>
+                    <div className="bg-primary/10 p-2 rounded-lg mr-3">
+                      <FileText className="h-6 w-6 text-primary" />
                     </div>
                     <span className="text-primary font-bold text-xl">
                       {location.startsWith('/admin') ? 'Admin' : 'MyeCA'}<span className="text-secondary">{location.startsWith('/admin') ? 'Panel' : '.in'}</span>
@@ -291,26 +297,28 @@ const Header = () => {
                   </div>
                 </Link>
               
+                {/* User Profile Section */}
                 {isAuthenticated && (
-                  <div className="flex items-center gap-2 mt-4">
-                    <Avatar className="h-9 w-9">
+                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                    <Avatar className="h-10 w-10">
                       <AvatarFallback className="bg-primary text-white">
                         {getInitials(user?.username || "")}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <span className="font-medium text-sm">{user?.username}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{user?.username}</p>
                       <p className="text-xs text-muted-foreground">Signed in</p>
                     </div>
                   </div>
                 )}
               </div>
               
-              <div className="p-3 flex flex-col gap-1 flex-1">
+              {/* Navigation Section */}
+              <div className="p-3 flex flex-col gap-1 flex-1 overflow-y-auto">
                 {navItems.map((item, index) => (
                   <Link key={index} href={item.path}>
                     <div 
-                      className={`flex items-center gap-2 p-3 rounded-md text-sm font-medium transition-colors min-h-12
+                      className={`flex items-center gap-3 p-4 rounded-lg text-sm font-medium transition-colors min-h-[48px] touch-manipulation
                         ${isActive(item.path) 
                           ? "bg-primary/10 text-primary" 
                           : "hover:bg-muted hover:text-primary text-foreground"
@@ -318,48 +326,49 @@ const Header = () => {
                       onClick={() => document.body.click()}  
                     >
                       {item.icon}
-                      {item.name}
+                      <span className="flex-1">{item.name}</span>
                     </div>
                   </Link>
                 ))}
               </div>
               
+              {/* Footer Section */}
               <div className="p-4 border-t border-border mt-auto">
                 {isAuthenticated ? (
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-2">
                     <Link href="/profile">
                       <div 
-                        className="flex items-center gap-2 p-3 rounded-md text-sm font-medium hover:bg-muted hover:text-primary transition-colors min-h-12"
+                        className="flex items-center gap-3 p-3 rounded-lg text-sm font-medium hover:bg-muted hover:text-primary transition-colors min-h-[48px] touch-manipulation"
                         onClick={() => document.body.click()}
                       >
-                        <User className="h-4 w-4" />
+                        <User className="h-5 w-5" />
                         <span>My Profile</span>
                       </div>
                     </Link>
                     <Link href="/my-forms">
                       <div 
-                        className="flex items-center gap-2 p-3 rounded-md text-sm font-medium hover:bg-muted hover:text-primary transition-colors min-h-12"
+                        className="flex items-center gap-3 p-3 rounded-lg text-sm font-medium hover:bg-muted hover:text-primary transition-colors min-h-[48px] touch-manipulation"
                         onClick={() => document.body.click()}
                       >
-                        <FileCheck className="h-4 w-4" />
+                        <FileCheck className="h-5 w-5" />
                         <span>My Tax Forms</span>
                       </div>
                     </Link>
                     <div 
-                      className="flex items-center gap-2 p-3 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer min-h-12"
+                      className="flex items-center gap-3 p-3 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer min-h-[48px] touch-manipulation"
                       onClick={() => {
                         logout();
                         document.body.click();
                       }}
                     >
-                      <LogOut className="h-4 w-4" />
+                      <LogOut className="h-5 w-5" />
                       <span>Log out</span>
                     </div>
                   </div>
                 ) : (
                   <LoginDialog 
                     buttonText="Login / Sign Up" 
-                    className="w-full bg-blue-500 hover:bg-blue-600 text-white min-h-12" 
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white min-h-[48px] text-base font-medium touch-manipulation" 
                     onOpenChange={(open: boolean) => {
                       if (open) document.body.click();
                     }}

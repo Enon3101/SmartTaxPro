@@ -4,7 +4,21 @@ export default {
   darkMode: ["class"],
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
+    screens: {
+      'xs': '375px',
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+    },
     extend: {
+      spacing: {
+        'safe-bottom': 'env(safe-area-inset-bottom)',
+        'safe-top': 'env(safe-area-inset-top)',
+        'safe-left': 'env(safe-area-inset-left)',
+        'safe-right': 'env(safe-area-inset-right)',
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -79,12 +93,71 @@ export default {
             height: "0",
           },
         },
+        "fade-in-up": {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(10px)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0)",
+          },
+        },
+        "scale-in": {
+          "0%": {
+            opacity: "0",
+            transform: "scale(0.95)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "scale(1)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in-up": "fade-in-up 0.3s ease-out",
+        "scale-in": "scale-in 0.2s ease-out",
+      },
+      fontSize: {
+        'xs': ['0.75rem', { lineHeight: '1rem' }],
+        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
+        'base': ['1rem', { lineHeight: '1.5rem' }],
+        'lg': ['1.125rem', { lineHeight: '1.75rem' }],
+        'xl': ['1.25rem', { lineHeight: '1.75rem' }],
+        '2xl': ['1.5rem', { lineHeight: '2rem' }],
+        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
+        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [
+    require("tailwindcss-animate"), 
+    require("@tailwindcss/typography"),
+    function({ addUtilities }: any) {
+      const newUtilities = {
+        '.touch-manipulation': {
+          'touch-action': 'manipulation',
+        },
+        '.safe-area-inset-bottom': {
+          'padding-bottom': 'env(safe-area-inset-bottom)',
+        },
+        '.safe-area-inset-top': {
+          'padding-top': 'env(safe-area-inset-top)',
+        },
+        '.scrollbar-hide': {
+          '-ms-overflow-style': 'none',
+          'scrollbar-width': 'none',
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+        },
+        '.mobile-tap-highlight-transparent': {
+          '-webkit-tap-highlight-color': 'transparent',
+        },
+      }
+      addUtilities(newUtilities)
+    }
+  ],
 } satisfies Config;

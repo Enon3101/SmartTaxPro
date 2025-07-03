@@ -1,465 +1,147 @@
-import { Facebook, Twitter, Instagram, Linkedin, FileText, ArrowRight, ShieldCheck, Award, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "wouter";
 
-const Footer = () => {
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
-
-  const toggleSection = (section: string) => {
-    if (expandedSection === section) {
-      setExpandedSection(null);
-    } else {
-      setExpandedSection(section);
-    }
-  };
-
+export default function Footer() {
   return (
-    <footer className="bg-background border-t border-border mt-8 sm:pb-0 pb-16">
-      <div className="container mx-auto px-4 py-8 md:py-12">
-        {/* Trust badges section */}
-        <div className="mb-8 md:mb-12 p-4 md:p-6 bg-blue-50 rounded-xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex items-center min-h-12">
-              <div className="bg-white p-3 rounded-full shadow-sm mr-4 flex-shrink-0">
-                <ShieldCheck className="h-5 w-5 md:h-6 md:w-6 text-green-500" />
+    <footer className="bg-gray-900 text-gray-300 mt-auto">
+      <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-8 sm:py-12">
+        {/* Main footer content */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
+          {/* Company Info */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="bg-blue-600 p-2 rounded-lg">
+                <svg className="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M13 2h-2v2h2V2zm0 18h-2v2h2v-2zM4.93 4.93l-1.41 1.41L5.05 7.88l1.41-1.41L4.93 4.93zm14.14 0l-1.54 1.54 1.41 1.41 1.54-1.54-1.41-1.41zM12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/>
+                </svg>
               </div>
               <div>
-                <h4 className="font-semibold text-sm">100% Secure</h4>
-                <p className="text-xs text-muted-foreground">Bank-level encryption</p>
+                <h3 className="text-lg sm:text-xl font-bold text-white">MyeCA.in</h3>
+                <p className="text-sm text-gray-400">Tax Filing Made Easy</p>
               </div>
             </div>
-            <div className="flex items-center min-h-12">
-              <div className="bg-white p-3 rounded-full shadow-sm mr-4 flex-shrink-0">
-                <Award className="h-5 w-5 md:h-6 md:w-6 text-blue-500" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-sm">Authorized by Indian Government</h4>
-                <p className="text-xs text-muted-foreground">Certified e-Filing Partner</p>
-              </div>
+            <p className="text-sm text-gray-400 leading-relaxed">
+              Simplifying tax filing with expert guidance and cutting-edge technology. 
+              File your ITR with confidence and get maximum refunds.
+            </p>
+            
+            {/* Social Links */}
+            <div className="flex gap-3 pt-2">
+              <a href="#" className="p-2 bg-gray-800 rounded-lg hover:bg-blue-600 transition-colors touch-manipulation">
+                <Facebook className="h-5 w-5" />
+                <span className="sr-only">Facebook</span>
+              </a>
+              <a href="#" className="p-2 bg-gray-800 rounded-lg hover:bg-blue-600 transition-colors touch-manipulation">
+                <Twitter className="h-5 w-5" />
+                <span className="sr-only">Twitter</span>
+              </a>
+              <a href="#" className="p-2 bg-gray-800 rounded-lg hover:bg-blue-600 transition-colors touch-manipulation">
+                <Instagram className="h-5 w-5" />
+                <span className="sr-only">Instagram</span>
+              </a>
+              <a href="#" className="p-2 bg-gray-800 rounded-lg hover:bg-blue-600 transition-colors touch-manipulation">
+                <Youtube className="h-5 w-5" />
+                <span className="sr-only">YouTube</span>
+              </a>
             </div>
-            <div className="flex items-center min-h-12">
-              <div className="bg-white p-3 rounded-full shadow-sm mr-4 flex-shrink-0">
-                <FileText className="h-5 w-5 md:h-6 md:w-6 text-orange-500" />
+          </div>
+
+          {/* Quick Links */}
+          <div className="space-y-4">
+            <h4 className="text-base sm:text-lg font-semibold text-white">Quick Links</h4>
+            <nav className="space-y-2">
+              <Link href="/start-filing" className="block text-sm hover:text-blue-400 transition-colors py-1 touch-manipulation">
+                File ITR Online
+              </Link>
+              <Link href="/calculators" className="block text-sm hover:text-blue-400 transition-colors py-1 touch-manipulation">
+                Tax Calculators
+              </Link>
+              <Link href="/tax-resources" className="block text-sm hover:text-blue-400 transition-colors py-1 touch-manipulation">
+                Tax Resources
+              </Link>
+              <Link href="/pricing" className="block text-sm hover:text-blue-400 transition-colors py-1 touch-manipulation">
+                Pricing Plans
+              </Link>
+              <Link href="/support" className="block text-sm hover:text-blue-400 transition-colors py-1 touch-manipulation">
+                Help & Support
+              </Link>
+            </nav>
+          </div>
+
+          {/* Services */}
+          <div className="space-y-4">
+            <h4 className="text-base sm:text-lg font-semibold text-white">Services</h4>
+            <nav className="space-y-2">
+              <Link href="/tax-filing" className="block text-sm hover:text-blue-400 transition-colors py-1 touch-manipulation">
+                ITR Filing
+              </Link>
+              <Link href="/tax-expert" className="block text-sm hover:text-blue-400 transition-colors py-1 touch-manipulation">
+                Tax Expert Consultation
+              </Link>
+              <Link href="/gst-filing" className="block text-sm hover:text-blue-400 transition-colors py-1 touch-manipulation">
+                GST Filing
+              </Link>
+              <Link href="/business-registration" className="block text-sm hover:text-blue-400 transition-colors py-1 touch-manipulation">
+                Business Registration
+              </Link>
+              <Link href="/tax-planning" className="block text-sm hover:text-blue-400 transition-colors py-1 touch-manipulation">
+                Tax Planning
+              </Link>
+            </nav>
+          </div>
+
+          {/* Contact Info */}
+          <div className="space-y-4">
+            <h4 className="text-base sm:text-lg font-semibold text-white">Contact Us</h4>
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <Phone className="h-4 w-4 mt-1 text-blue-400 flex-shrink-0" />
+                <div>
+                  <a href="tel:+911234567890" className="text-sm hover:text-blue-400 transition-colors">
+                    +91 123 456 7890
+                  </a>
+                  <p className="text-xs text-gray-500">Mon-Fri 9AM-6PM</p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-semibold text-sm">4.7/5 Customer Rating</h4>
-                <p className="text-xs text-muted-foreground">Based on 22,500+ reviews</p>
+              
+              <div className="flex items-start gap-3">
+                <Mail className="h-4 w-4 mt-1 text-blue-400 flex-shrink-0" />
+                <a href="mailto:support@myeca.in" className="text-sm hover:text-blue-400 transition-colors">
+                  support@myeca.in
+                </a>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <MapPin className="h-4 w-4 mt-1 text-blue-400 flex-shrink-0" />
+                <address className="text-sm not-italic leading-relaxed">
+                  123 Business District,<br />
+                  Mumbai, Maharashtra 400001
+                </address>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Main footer navigation - Mobile Accordion Style */}
-        <div className="md:hidden">
-          <div className="mb-6">
-            <div className="flex items-center mb-4">
-              <FileText className="h-6 w-6 text-primary mr-2" />
-              <span className="text-primary font-bold text-xl">
-                MyeCA<span className="text-secondary">.in</span>
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground mb-6">
-              Smart, secure, and simple tax filing for everyone in India.
+        {/* Bottom bar */}
+        <div className="border-t border-gray-800 mt-8 pt-6 sm:pt-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-gray-400 text-center sm:text-left">
+              © 2024 MyeCA.in. All rights reserved.
             </p>
-            <div className="flex space-x-4">
-              <a
-                href="#"
-                className="bg-blue-50 hover:bg-blue-100 p-2 rounded-full transition-colors min-h-11 min-w-11 flex items-center justify-center"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-5 w-5 text-blue-600" />
-              </a>
-              <a
-                href="#"
-                className="bg-blue-50 hover:bg-blue-100 p-2 rounded-full transition-colors min-h-11 min-w-11 flex items-center justify-center"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-5 w-5 text-blue-600" />
-              </a>
-              <a
-                href="#"
-                className="bg-blue-50 hover:bg-blue-100 p-2 rounded-full transition-colors min-h-11 min-w-11 flex items-center justify-center"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-5 w-5 text-blue-600" />
-              </a>
-              <a
-                href="#"
-                className="bg-blue-50 hover:bg-blue-100 p-2 rounded-full transition-colors min-h-11 min-w-11 flex items-center justify-center"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5 text-blue-600" />
-              </a>
+            <div className="flex flex-wrap justify-center sm:justify-end gap-4 sm:gap-6">
+              <Link href="/privacy" className="text-sm text-gray-400 hover:text-blue-400 transition-colors touch-manipulation">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="text-sm text-gray-400 hover:text-blue-400 transition-colors touch-manipulation">
+                Terms of Service
+              </Link>
+              <Link href="/disclaimer" className="text-sm text-gray-400 hover:text-blue-400 transition-colors touch-manipulation">
+                Disclaimer
+              </Link>
             </div>
           </div>
-
-          {/* Accordion Sections for Mobile */}
-          <div className="space-y-2 border-t border-border pt-4">
-            <div className="border border-border rounded-md overflow-hidden">
-              <button 
-                onClick={() => toggleSection('services')}
-                className="flex justify-between items-center w-full p-4 text-left min-h-[48px]"
-                aria-expanded={expandedSection === 'services'}
-              >
-                <h3 className="font-semibold text-sm">ITR Services</h3>
-                <ChevronDown className={`h-5 w-5 transition-transform ${expandedSection === 'services' ? 'transform rotate-180' : ''}`} />
-              </button>
-              {expandedSection === 'services' && (
-                <ul className="p-4 pt-0 space-y-3 text-sm">
-                  <li>
-                    <Link href="/start-filing">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>ITR-1 (Sahaj)</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/pricing">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>ITR-2</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/pricing">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>ITR-3</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/pricing">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>ITR-4 (Sugam)</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/pricing">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>CA Assisted Filing</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                </ul>
-              )}
-            </div>
-
-            <div className="border border-border rounded-md overflow-hidden">
-              <button 
-                onClick={() => toggleSection('resources')}
-                className="flex justify-between items-center w-full p-4 text-left min-h-[48px]"
-                aria-expanded={expandedSection === 'resources'}
-              >
-                <h3 className="font-semibold text-sm">Resources</h3>
-                <ChevronDown className={`h-5 w-5 transition-transform ${expandedSection === 'resources' ? 'transform rotate-180' : ''}`} />
-              </button>
-              {expandedSection === 'resources' && (
-                <ul className="p-4 pt-0 space-y-3 text-sm">
-                  <li>
-                    <Link href="/calculators">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>Income Tax Calculator</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/tax-resources">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>Tax Guides</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/tax-resources">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>Income Tax Slabs</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/tax-resources">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>Tax Deadlines</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/support">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>Help Center</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                </ul>
-              )}
-            </div>
-
-            <div className="border border-border rounded-md overflow-hidden">
-              <button 
-                onClick={() => toggleSection('company')}
-                className="flex justify-between items-center w-full p-4 text-left min-h-[48px]"
-                aria-expanded={expandedSection === 'company'}
-              >
-                <h3 className="font-semibold text-sm">Company</h3>
-                <ChevronDown className={`h-5 w-5 transition-transform ${expandedSection === 'company' ? 'transform rotate-180' : ''}`} />
-              </button>
-              {expandedSection === 'company' && (
-                <ul className="p-4 pt-0 space-y-3 text-sm">
-                  <li>
-                    <Link href="/about">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>About Us</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/careers">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>Careers</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/privacy">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>Privacy Policy</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/terms">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>Terms of Service</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/contact">
-                      <div className="text-slate-600 hover:text-primary flex items-center gap-1 group p-2 min-h-[44px]">
-                        <span>Contact Us</span>
-                        <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </Link>
-                  </li>
-                </ul>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Desktop footer navigation */}
-        <div className="hidden md:grid md:grid-cols-4 gap-8">
-          <div>
-            <div className="flex items-center mb-4">
-              <FileText className="h-6 w-6 text-primary mr-2" />
-              <span className="text-primary font-bold text-xl">
-                MyeCA<span className="text-secondary">.in</span>
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground mb-6">
-              Smart, secure, and simple tax filing for everyone in India.
-            </p>
-            <div className="flex space-x-3">
-              <a
-                href="#"
-                className="bg-blue-50 hover:bg-blue-100 p-2 rounded-full transition-colors"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-5 w-5 text-blue-600" />
-              </a>
-              <a
-                href="#"
-                className="bg-blue-50 hover:bg-blue-100 p-2 rounded-full transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-5 w-5 text-blue-600" />
-              </a>
-              <a
-                href="#"
-                className="bg-blue-50 hover:bg-blue-100 p-2 rounded-full transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-5 w-5 text-blue-600" />
-              </a>
-              <a
-                href="#"
-                className="bg-blue-50 hover:bg-blue-100 p-2 rounded-full transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5 text-blue-600" />
-              </a>
-            </div>
-          </div>
-
-          <div>
-            <h3 className="font-semibold mb-4 text-sm text-primary/80 uppercase tracking-wider">ITR Services</h3>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link href="/start-filing">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>ITR-1 (Sahaj)</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/pricing">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>ITR-2</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/pricing">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>ITR-3</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/pricing">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>ITR-4 (Sugam)</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/pricing">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>CA Assisted Filing</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold mb-4 text-sm text-primary/80 uppercase tracking-wider">Resources</h3>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link href="/calculators">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>Income Tax Calculator</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/tax-resources">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>Tax Guides</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/tax-resources">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>Income Tax Slabs</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/tax-resources">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>Tax Deadlines</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/support">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>Help Center</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold mb-4 text-sm text-primary/80 uppercase tracking-wider">Company</h3>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link href="/about">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>About Us</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/careers">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>Careers</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>Privacy Policy</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>Terms of Service</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact">
-                  <div className="text-slate-600 hover:text-primary flex items-center gap-1 group">
-                    <span>Contact Us</span>
-                    <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="border-t border-border mt-8 md:mt-12 pt-6 md:pt-8 text-sm text-muted-foreground">
-          <div className="flex flex-col md:flex-row md:justify-between gap-4">
-            <p>© {new Date().getFullYear()} MyeCA.in. All rights reserved.</p>
-            <p className="flex items-center">
-              <span className="inline-block mr-2 w-2 h-2 bg-green-500 rounded-full"></span>
-              Authorized by Income Tax Department, Government of India
-            </p>
-          </div>
-          <p className="mt-4 text-xs">
-            MyeCA.in is an authorized e-filing intermediary registered with the Income Tax Department, Government of India. This platform provides expert eCA assistance to help taxpayers prepare and file their income tax returns efficiently.
-          </p>
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

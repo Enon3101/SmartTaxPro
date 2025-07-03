@@ -779,19 +779,21 @@ export default function StartFiling() {
   };
   
   return (
-    <div className="container max-w-4xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold text-center mb-2">Start Your Tax Filing</h1>
-      <p className="text-gray-600 text-center mb-8">
-        Assessment Year: {assessmentYear}
-      </p>
+    <div className="container max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8 lg:py-10">
+      <div className="text-center mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-2">Start Your Tax Filing</h1>
+        <p className="text-gray-600 text-sm sm:text-base">
+          Assessment Year: {assessmentYear}
+        </p>
+      </div>
       
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <ProgressTracker steps={steps} />
       </div>
       
-      <Card>
-        <CardHeader>
-          <CardTitle>
+      <Card className="shadow-lg">
+        <CardHeader className="pb-4 sm:pb-6">
+          <CardTitle className="text-lg sm:text-xl">
             {currentStep === 1 && "Basic Information"}
             {currentStep === 2 && "Income Sources"}
             {currentStep === 3 && "Income Details"}
@@ -799,7 +801,7 @@ export default function StartFiling() {
             {currentStep === 5 && "Taxes Paid"}
             {currentStep === 6 && "Review & Submit"}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-sm sm:text-base">
             {currentStep === 1 && "Provide your personal details to get started"}
             {currentStep === 2 && "Select all sources of income that apply to you"}
             {currentStep === 3 && "Enter details for each of your income sources"}
@@ -808,21 +810,23 @@ export default function StartFiling() {
             {currentStep === 6 && "Review your information before final submission"}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 sm:px-6">
           {/* Step 1: Basic Information */}
           {currentStep === 1 && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="fullName" className="text-sm font-medium">Full Name</Label>
                   <Input 
                     id="fullName" 
                     value={formData.fullName}
                     onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                    className="min-h-[48px] text-base"
+                    placeholder="Enter your full name"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="pan">PAN Number</Label>
+                  <Label htmlFor="pan" className="text-sm font-medium">PAN Number</Label>
                   <Input 
                     id="pan" 
                     value={formData.pan}
@@ -830,7 +834,9 @@ export default function StartFiling() {
                       const value = e.target.value.toUpperCase();
                       setFormData({...formData, pan: value});
                     }}
-                    className={formData.pan && !validatePAN(formData.pan) ? "border-red-500" : ""}
+                    className={`min-h-[48px] text-base ${formData.pan && !validatePAN(formData.pan) ? "border-red-500" : ""}`}
+                    placeholder="ABCDE1234F"
+                    maxLength={10}
                   />
                   {formData.pan && !validatePAN(formData.pan) && (
                     <p className="text-red-500 text-xs mt-1">
@@ -845,43 +851,48 @@ export default function StartFiling() {
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
+                  <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
                   <Input 
                     id="email" 
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    className="min-h-[48px] text-base"
+                    placeholder="your.email@example.com"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
+                  <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
                   <Input 
                     id="phone" 
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    className="min-h-[48px] text-base"
+                    placeholder="9876543210"
                   />
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="dob">Date of Birth</Label>
+                  <Label htmlFor="dob" className="text-sm font-medium">Date of Birth</Label>
                   <Input 
                     id="dob" 
                     type="date"
                     value={formData.dob}
                     onChange={(e) => setFormData({...formData, dob: e.target.value})}
+                    className="min-h-[48px] text-base"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="gender">Gender</Label>
+                  <Label htmlFor="gender" className="text-sm font-medium">Gender</Label>
                   <Select 
                     value={formData.gender}
                     onValueChange={(value) => setFormData({...formData, gender: value})}
                   >
-                    <SelectTrigger id="gender">
+                    <SelectTrigger id="gender" className="min-h-[48px]">
                       <SelectValue placeholder="Select Gender" />
                     </SelectTrigger>
                     <SelectContent>
@@ -891,13 +902,13 @@ export default function StartFiling() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="assessmentYear">Assessment Year</Label>
+                <div className="space-y-2 sm:col-span-2 lg:col-span-1">
+                  <Label htmlFor="assessmentYear" className="text-sm font-medium">Assessment Year</Label>
                   <Select 
                     value={assessmentYear}
                     onValueChange={(value) => setAssessmentYear(value)}
                   >
-                    <SelectTrigger id="assessmentYear">
+                    <SelectTrigger id="assessmentYear" className="min-h-[48px]">
                       <SelectValue placeholder="Select Year" />
                     </SelectTrigger>
                     <SelectContent>
@@ -910,37 +921,46 @@ export default function StartFiling() {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="address" className="text-sm font-medium">Address</Label>
                 <Input 
                   id="address" 
                   value={formData.address}
                   onChange={(e) => setFormData({...formData, address: e.target.value})}
+                  className="min-h-[48px] text-base"
+                  placeholder="Enter your complete address"
                 />
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="city">City</Label>
+                  <Label htmlFor="city" className="text-sm font-medium">City</Label>
                   <Input 
                     id="city" 
                     value={formData.city}
                     onChange={(e) => setFormData({...formData, city: e.target.value})}
+                    className="min-h-[48px] text-base"
+                    placeholder="Enter city"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="state">State</Label>
+                  <Label htmlFor="state" className="text-sm font-medium">State</Label>
                   <Input 
                     id="state" 
                     value={formData.state}
                     onChange={(e) => setFormData({...formData, state: e.target.value})}
+                    className="min-h-[48px] text-base"
+                    placeholder="Enter state"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="pincode">PIN Code</Label>
+                <div className="space-y-2 sm:col-span-2 lg:col-span-1">
+                  <Label htmlFor="pincode" className="text-sm font-medium">PIN Code</Label>
                   <Input 
                     id="pincode" 
                     value={formData.pincode}
                     onChange={(e) => setFormData({...formData, pincode: e.target.value})}
+                    className="min-h-[48px] text-base"
+                    placeholder="123456"
+                    maxLength={6}
                   />
                 </div>
               </div>
@@ -949,17 +969,17 @@ export default function StartFiling() {
           
           {/* Step 2: Income Sources */}
           {currentStep === 2 && (
-            <div className="space-y-6">
-              <p className="text-gray-600 mb-4">
+            <div className="space-y-4 sm:space-y-6">
+              <p className="text-gray-600 text-sm sm:text-base mb-4">
                 Select all sources of income that apply to you for the assessment year {assessmentYear}.
               </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 {showSalaryOption && (
                   <div 
-                    className={`border p-4 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-24 flex items-center ${
+                    className={`border p-4 sm:p-6 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-[80px] flex items-center touch-manipulation active:scale-[0.98] ${
                       formData.incomeSource.includes("salary") 
-                        ? "border-blue-500 bg-blue-50" 
+                        ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20" 
                         : "border-gray-200 hover:border-blue-300"
                     }`}
                     onClick={() => {
@@ -969,7 +989,7 @@ export default function StartFiling() {
                       setFormData({...formData, incomeSource: updatedSources});
                     }}
                   >
-                    <div className="relative w-6 h-6 flex-shrink-0 mr-3">
+                    <div className="relative w-6 h-6 flex-shrink-0 mr-4">
                       <input 
                         type="checkbox" 
                         id="income-salary"
@@ -977,26 +997,26 @@ export default function StartFiling() {
                         checked={formData.incomeSource.includes("salary")}
                         onChange={() => {}} // Handled by parent div click
                       />
-                      <div className={`w-5 h-5 border rounded flex items-center justify-center ${
+                      <div className={`w-6 h-6 border-2 rounded flex items-center justify-center ${
                         formData.incomeSource.includes("salary") 
                           ? "border-blue-500 bg-blue-500" 
                           : "border-gray-300"
                       }`}>
                         {formData.incomeSource.includes("salary") && (
-                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                             <polyline points="20 6 9 17 4 12"></polyline>
                           </svg>
                         )}
                       </div>
                     </div>
                     <div className="flex-grow">
-                      <h4 className={`text-base font-medium ${formData.incomeSource.includes("salary") ? "text-blue-700" : "text-gray-800"}`}>
+                      <h4 className={`text-base sm:text-lg font-medium ${formData.incomeSource.includes("salary") ? "text-blue-700" : "text-gray-800"}`}>
                         Salary Income
                       </h4>
                       <p className={`text-sm ${formData.incomeSource.includes("salary") ? "text-blue-600" : "text-gray-500"}`}>Income from employment or pension</p>
                     </div>
-                    <div className={`flex-shrink-0 ml-2 p-2 rounded-full ${formData.incomeSource.includes("salary") ? "bg-blue-100" : "bg-gray-100"}`}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("salary") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <div className={`flex-shrink-0 ml-3 p-3 rounded-full ${formData.incomeSource.includes("salary") ? "bg-blue-100" : "bg-gray-100"}`}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("salary") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                         <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                       </svg>
@@ -1004,10 +1024,11 @@ export default function StartFiling() {
                   </div>
                 )}
                 
+                {/* House Property Income */}
                 <div 
-                  className={`border p-4 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-24 flex items-center ${
+                  className={`border p-4 sm:p-6 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-[80px] flex items-center touch-manipulation active:scale-[0.98] ${
                     formData.incomeSource.includes("house-property") 
-                      ? "border-blue-500 bg-blue-50" 
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20" 
                       : "border-gray-200 hover:border-blue-300"
                   }`}
                   onClick={() => {
@@ -1017,7 +1038,7 @@ export default function StartFiling() {
                     setFormData({...formData, incomeSource: updatedSources});
                   }}
                 >
-                  <div className="relative w-6 h-6 flex-shrink-0 mr-3">
+                  <div className="relative w-6 h-6 flex-shrink-0 mr-4">
                     <input 
                       type="checkbox" 
                       id="income-house-property"
@@ -1025,36 +1046,37 @@ export default function StartFiling() {
                       checked={formData.incomeSource.includes("house-property")}
                       onChange={() => {}} // Handled by parent div click
                     />
-                    <div className={`w-5 h-5 border rounded flex items-center justify-center ${
+                    <div className={`w-6 h-6 border-2 rounded flex items-center justify-center ${
                       formData.incomeSource.includes("house-property") 
                         ? "border-blue-500 bg-blue-500" 
                         : "border-gray-300"
                     }`}>
                       {formData.incomeSource.includes("house-property") && (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                       )}
                     </div>
                   </div>
                   <div className="flex-grow">
-                    <h4 className={`text-base font-medium ${formData.incomeSource.includes("house-property") ? "text-blue-700" : "text-gray-800"}`}>
+                    <h4 className={`text-base sm:text-lg font-medium ${formData.incomeSource.includes("house-property") ? "text-blue-700" : "text-gray-800"}`}>
                       House Property Income
                     </h4>
                     <p className={`text-sm ${formData.incomeSource.includes("house-property") ? "text-blue-600" : "text-gray-500"}`}>Rental income or interest on housing loan</p>
                   </div>
-                  <div className={`flex-shrink-0 ml-2 p-2 rounded-full ${formData.incomeSource.includes("house-property") ? "bg-blue-100" : "bg-gray-100"}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("house-property") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <div className={`flex-shrink-0 ml-3 p-3 rounded-full ${formData.incomeSource.includes("house-property") ? "bg-blue-100" : "bg-gray-100"}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("house-property") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                       <polyline points="9 22 9 12 15 12 15 22"></polyline>
                     </svg>
                   </div>
                 </div>
                 
+                {/* Capital Gains Income */}
                 <div 
-                  className={`border p-4 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-24 flex items-center ${
+                  className={`border p-4 sm:p-6 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-[80px] flex items-center touch-manipulation active:scale-[0.98] ${
                     formData.incomeSource.includes("capital-gains") 
-                      ? "border-blue-500 bg-blue-50" 
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20" 
                       : "border-gray-200 hover:border-blue-300"
                   }`}
                   onClick={() => {
@@ -1064,7 +1086,7 @@ export default function StartFiling() {
                     setFormData({...formData, incomeSource: updatedSources});
                   }}
                 >
-                  <div className="relative w-6 h-6 flex-shrink-0 mr-3">
+                  <div className="relative w-6 h-6 flex-shrink-0 mr-4">
                     <input 
                       type="checkbox" 
                       id="income-capital-gains"
@@ -1072,36 +1094,37 @@ export default function StartFiling() {
                       checked={formData.incomeSource.includes("capital-gains")}
                       onChange={() => {}} // Handled by parent div click
                     />
-                    <div className={`w-5 h-5 border rounded flex items-center justify-center ${
+                    <div className={`w-6 h-6 border-2 rounded flex items-center justify-center ${
                       formData.incomeSource.includes("capital-gains") 
                         ? "border-blue-500 bg-blue-500" 
                         : "border-gray-300"
                     }`}>
                       {formData.incomeSource.includes("capital-gains") && (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                       )}
                     </div>
                   </div>
                   <div className="flex-grow">
-                    <h4 className={`text-base font-medium ${formData.incomeSource.includes("capital-gains") ? "text-blue-700" : "text-gray-800"}`}>
+                    <h4 className={`text-base sm:text-lg font-medium ${formData.incomeSource.includes("capital-gains") ? "text-blue-700" : "text-gray-800"}`}>
                       Capital Gains
                     </h4>
                     <p className={`text-sm ${formData.incomeSource.includes("capital-gains") ? "text-blue-600" : "text-gray-500"}`}>Profit from sale of assets, shares, or property</p>
                   </div>
-                  <div className={`flex-shrink-0 ml-2 p-2 rounded-full ${formData.incomeSource.includes("capital-gains") ? "bg-blue-100" : "bg-gray-100"}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("capital-gains") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <div className={`flex-shrink-0 ml-3 p-3 rounded-full ${formData.incomeSource.includes("capital-gains") ? "bg-blue-100" : "bg-gray-100"}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("capital-gains") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
                       <polyline points="17 6 23 6 23 12"></polyline>
                     </svg>
                   </div>
                 </div>
                 
+                {/* Business Income */}
                 <div 
-                  className={`border p-4 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-24 flex items-center ${
+                  className={`border p-4 sm:p-6 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-[80px] flex items-center touch-manipulation active:scale-[0.98] ${
                     formData.incomeSource.includes("business") 
-                      ? "border-blue-500 bg-blue-50" 
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20" 
                       : "border-gray-200 hover:border-blue-300"
                   }`}
                   onClick={() => {
@@ -1111,7 +1134,7 @@ export default function StartFiling() {
                     setFormData({...formData, incomeSource: updatedSources});
                   }}
                 >
-                  <div className="relative w-6 h-6 flex-shrink-0 mr-3">
+                  <div className="relative w-6 h-6 flex-shrink-0 mr-4">
                     <input 
                       type="checkbox" 
                       id="income-business"
@@ -1119,35 +1142,36 @@ export default function StartFiling() {
                       checked={formData.incomeSource.includes("business")}
                       onChange={() => {}} // Handled by parent div click
                     />
-                    <div className={`w-5 h-5 border rounded flex items-center justify-center ${
+                    <div className={`w-6 h-6 border-2 rounded flex items-center justify-center ${
                       formData.incomeSource.includes("business") 
                         ? "border-blue-500 bg-blue-500" 
                         : "border-gray-300"
                     }`}>
                       {formData.incomeSource.includes("business") && (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                       )}
                     </div>
                   </div>
                   <div className="flex-grow">
-                    <h4 className={`text-base font-medium ${formData.incomeSource.includes("business") ? "text-blue-700" : "text-gray-800"}`}>
+                    <h4 className={`text-base sm:text-lg font-medium ${formData.incomeSource.includes("business") ? "text-blue-700" : "text-gray-800"}`}>
                       Business Income
                     </h4>
                     <p className={`text-sm ${formData.incomeSource.includes("business") ? "text-blue-600" : "text-gray-500"}`}>Income from business or profession</p>
                   </div>
-                  <div className={`flex-shrink-0 ml-2 p-2 rounded-full ${formData.incomeSource.includes("business") ? "bg-blue-100" : "bg-gray-100"}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("business") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <div className={`flex-shrink-0 ml-3 p-3 rounded-full ${formData.incomeSource.includes("business") ? "bg-blue-100" : "bg-gray-100"}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("business") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                     </svg>
                   </div>
                 </div>
                 
+                {/* Interest Income */}
                 <div 
-                  className={`border p-4 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-24 flex items-center ${
+                  className={`border p-4 sm:p-6 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-[80px] flex items-center touch-manipulation active:scale-[0.98] ${
                     formData.incomeSource.includes("interest") 
-                      ? "border-blue-500 bg-blue-50" 
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20" 
                       : "border-gray-200 hover:border-blue-300"
                   }`}
                   onClick={() => {
@@ -1157,7 +1181,7 @@ export default function StartFiling() {
                     setFormData({...formData, incomeSource: updatedSources});
                   }}
                 >
-                  <div className="relative w-6 h-6 flex-shrink-0 mr-3">
+                  <div className="relative w-6 h-6 flex-shrink-0 mr-4">
                     <input 
                       type="checkbox" 
                       id="income-interest"
@@ -1165,26 +1189,26 @@ export default function StartFiling() {
                       checked={formData.incomeSource.includes("interest")}
                       onChange={() => {}} // Handled by parent div click
                     />
-                    <div className={`w-5 h-5 border rounded flex items-center justify-center ${
+                    <div className={`w-6 h-6 border-2 rounded flex items-center justify-center ${
                       formData.incomeSource.includes("interest") 
                         ? "border-blue-500 bg-blue-500" 
                         : "border-gray-300"
                     }`}>
                       {formData.incomeSource.includes("interest") && (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                       )}
                     </div>
                   </div>
                   <div className="flex-grow">
-                    <h4 className={`text-base font-medium ${formData.incomeSource.includes("interest") ? "text-blue-700" : "text-gray-800"}`}>
+                    <h4 className={`text-base sm:text-lg font-medium ${formData.incomeSource.includes("interest") ? "text-blue-700" : "text-gray-800"}`}>
                       Interest Income
                     </h4>
                     <p className={`text-sm ${formData.incomeSource.includes("interest") ? "text-blue-600" : "text-gray-500"}`}>Interest from savings, deposits, or bonds</p>
                   </div>
-                  <div className={`flex-shrink-0 ml-2 p-2 rounded-full ${formData.incomeSource.includes("interest") ? "bg-blue-100" : "bg-gray-100"}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("interest") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <div className={`flex-shrink-0 ml-3 p-3 rounded-full ${formData.incomeSource.includes("interest") ? "bg-blue-100" : "bg-gray-100"}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("interest") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10"></circle>
                       <line x1="12" y1="8" x2="12" y2="12"></line>
                       <line x1="12" y1="16" x2="12.01" y2="16"></line>
@@ -1192,10 +1216,11 @@ export default function StartFiling() {
                   </div>
                 </div>
                 
+                {/* Other Income */}
                 <div 
-                  className={`border p-4 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-24 flex items-center ${
+                  className={`border p-4 sm:p-6 rounded-lg transition-all duration-200 hover:shadow-md cursor-pointer min-h-[80px] flex items-center touch-manipulation active:scale-[0.98] ${
                     formData.incomeSource.includes("other") 
-                      ? "border-blue-500 bg-blue-50" 
+                      ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20" 
                       : "border-gray-200 hover:border-blue-300"
                   }`}
                   onClick={() => {
@@ -1205,7 +1230,7 @@ export default function StartFiling() {
                     setFormData({...formData, incomeSource: updatedSources});
                   }}
                 >
-                  <div className="relative w-6 h-6 flex-shrink-0 mr-3">
+                  <div className="relative w-6 h-6 flex-shrink-0 mr-4">
                     <input 
                       type="checkbox" 
                       id="income-other"
@@ -1213,26 +1238,26 @@ export default function StartFiling() {
                       checked={formData.incomeSource.includes("other")}
                       onChange={() => {}} // Handled by parent div click
                     />
-                    <div className={`w-5 h-5 border rounded flex items-center justify-center ${
+                    <div className={`w-6 h-6 border-2 rounded flex items-center justify-center ${
                       formData.incomeSource.includes("other") 
                         ? "border-blue-500 bg-blue-500" 
                         : "border-gray-300"
                     }`}>
                       {formData.incomeSource.includes("other") && (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                       )}
                     </div>
                   </div>
                   <div className="flex-grow">
-                    <h4 className={`text-base font-medium ${formData.incomeSource.includes("other") ? "text-blue-700" : "text-gray-800"}`}>
+                    <h4 className={`text-base sm:text-lg font-medium ${formData.incomeSource.includes("other") ? "text-blue-700" : "text-gray-800"}`}>
                       Other Income
                     </h4>
                     <p className={`text-sm ${formData.incomeSource.includes("other") ? "text-blue-600" : "text-gray-500"}`}>Gifts, lottery, gambling, or other sources</p>
                   </div>
-                  <div className={`flex-shrink-0 ml-2 p-2 rounded-full ${formData.incomeSource.includes("other") ? "bg-blue-100" : "bg-gray-100"}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("other") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <div className={`flex-shrink-0 ml-3 p-3 rounded-full ${formData.incomeSource.includes("other") ? "bg-blue-100" : "bg-gray-100"}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={formData.incomeSource.includes("other") ? "#3b82f6" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10"></circle>
                       <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
                       <line x1="9" y1="9" x2="9.01" y2="9"></line>
@@ -1243,8 +1268,11 @@ export default function StartFiling() {
               </div>
               
               {formData.incomeSource.length === 0 && (
-                <div className="text-amber-600 bg-amber-50 p-3 rounded-md text-sm mt-4">
-                  Please select at least one source of income to proceed.
+                <div className="text-amber-600 bg-amber-50 dark:bg-amber-950/20 p-4 rounded-lg text-sm border border-amber-200 dark:border-amber-800">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+                    <span>Please select at least one source of income to proceed.</span>
+                  </div>
                 </div>
               )}
             </div>
@@ -3142,15 +3170,15 @@ export default function StartFiling() {
                   I solemnly declare that to the best of my knowledge and belief, the information given in this return and the schedules, statements, etc. accompanying it is correct and complete, and the amount of total income and other particulars shown therein are truly stated and are in accordance with the provisions of the Income-tax Act, 1961.
                 </p>
               </div>
-            </div>
-          )}
+            )}
           
-          <div className="flex justify-between mt-8">
+          <div className="flex justify-between mt-6 sm:mt-8 gap-3">
             <Button
               type="button"
               variant="outline"
               onClick={previousStep}
               disabled={currentStep === 1}
+              className="min-h-[48px] px-6 text-base font-medium touch-manipulation"
             >
               Back
             </Button>
@@ -3161,6 +3189,7 @@ export default function StartFiling() {
                 (currentStep === 1 && (!formData.fullName || !formData.pan || !validatePAN(formData.pan))) ||
                 (currentStep === 2 && formData.incomeSource.length === 0)
               }
+              className="min-h-[48px] px-6 text-base font-medium touch-manipulation flex-1 sm:flex-none"
             >
               {currentStep === 3 && getNextIncomeSource() 
                 ? `Next: ${getNextIncomeSource() === "salary" ? "Salary Income" 

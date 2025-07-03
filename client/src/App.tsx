@@ -496,11 +496,13 @@ function App() {
             <ItrWizardProvider>
               <GoogleOAuthProvider clientId={googleClientId || "YOUR_GOOGLE_CLIENT_ID_PLACEHOLDER"}>
                 <TooltipProvider>
-                  <div className="flex flex-col min-h-screen bg-background text-foreground">
+                  <div className="flex flex-col min-h-screen bg-background text-foreground overflow-x-hidden">
                     <ScrollToTop />
                     <Header />
-                    <main className="flex-grow pb-16 sm:pb-0">
-                      <Router />
+                    <main className="flex-grow pb-16 sm:pb-0 px-0">
+                      <div className="w-full max-w-none overflow-x-hidden">
+                        <Router />
+                      </div>
                     </main>
                     <Footer />
                     <BottomNav />

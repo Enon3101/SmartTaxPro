@@ -91,91 +91,147 @@ const BlogListPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="mb-8 shadow-none border-none">
-        <CardHeader className="text-center">
-          <CardTitle className="text-3xl md:text-4xl font-bold">Tax Insights & Learning Hub</CardTitle>
-          <CardDescription className="text-lg text-muted-foreground">
+    <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8">
+      {/* Header */}
+      <Card className="mb-6 sm:mb-8 shadow-none border-none bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
+        <CardHeader className="text-center pb-4 sm:pb-6">
+          <CardTitle className="text-2xl sm:text-3xl lg:text-4xl font-bold">Tax Insights & Learning Hub</CardTitle>
+          <CardDescription className="text-base sm:text-lg text-muted-foreground mt-2">
             Stay updated with the latest tax news, tips, and guides.
           </CardDescription>
         </CardHeader>
       </Card>
 
       {/* Filters and Search */}
-      <div className="mb-8 flex flex-col md:flex-row gap-4 items-center">
+      <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
         <Input
           placeholder="Search articles..."
           value={searchTerm}
           onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
-          className="max-w-sm"
+          className="w-full sm:max-w-sm min-h-[48px] text-base touch-manipulation"
         />
         <Select value={categoryFilter} onValueChange={(value) => { setCategoryFilter(value); setPage(1); }}>
-          <SelectTrigger className="w-full md:w-[180px]">
+          <SelectTrigger className="w-full sm:w-[180px] min-h-[48px]">
             <SelectValue placeholder="Filter by category" />
           </SelectTrigger>
           <SelectContent>
             {uniqueCategories.map(cat => (
-              <SelectItem key={cat} value={cat}>{cat === "all" ? "All Categories" : cat}</SelectItem>
+              <SelectItem key={cat} value={cat} className="py-3">
+                {cat === "all" ? "All Categories" : cat}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
+      {/* Loading State */}
       {isLoading ? (
-        <div className="text-center py-10">
+        <div className="text-center py-12 sm:py-16">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-4"></div>
-          <p>Loading articles...</p>
+          <p className="text-lg text-muted-foreground">Loading articles...</p>
         </div>
       ) : posts.length === 0 ? (
-        <div className="text-center py-10">
-          <p className="text-xl text-muted-foreground">No blog posts found matching your criteria.</p>
+        /* Empty State */
+        <div className="text-center py-12 sm:py-16">
+          <div className="max-w-md mx-auto">
+            <div className="w-24 h-24 mx-auto mb-6 bg-muted rounded-full flex items-center justify-center">
+              <Calendar className="h-12 w-12 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">No Articles Found</h3>
+            <p className="text-muted-foreground">
+              No blog posts found matching your criteria. Try adjusting your search or filters.
+            </p>
+          </div>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        /* Blog Posts Grid */
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {posts.map((post) => (
-            <Card key={post.id} className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <Card 
+              key={post.id} 
+              className="flex flex-col overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+            >
+              {/* Featured Image */}
               {post.featuredImage && (
                 <Link href={`/learning/blog/${post.slug}`}>
-                  <img 
-                    src={post.featuredImage} 
-                    alt={post.title} 
-                    className="w-full h-48 object-cover cursor-pointer" 
-                  />
+                  <div className="relative overflow-hidden">
+                    <img 
+                      src={post.featuredImage} 
+                      alt={post.title} 
+                      className="w-full h-48 sm:h-52 object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105" 
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+                  </div>
                 </Link>
               )}
-              <CardHeader>
-                <span className="text-xs text-primary font-semibold uppercase tracking-wider">{post.category}</span>
-                <CardTitle className="mt-1 text-xl">
-                  <Link href={`/learning/blog/${post.slug}`} className="hover:text-primary transition-colors">
+              
+              {/* Content */}
+              <CardHeader className="pb-3">
+                <span className="text-xs text-primary font-semibold uppercase tracking-wider">
+                  {post.category}
+                </span>
+                <CardTitle className="mt-2 text-lg sm:text-xl leading-tight">
+                  <Link 
+                    href={`/learning/blog/${post.slug}`} 
+                    className="hover:text-primary transition-colors block touch-manipulation"
+                  >
                     {post.title}
                   </Link>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-sm text-muted-foreground line-clamp-3">{post.summary}</p>
+              
+              <CardContent className="flex-grow pb-4">
+                <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                  {post.summary}
+                </p>
+                
+                {/* Tags */}
                 {post.tags && (
-                  <div className="mt-2 flex flex-wrap gap-1">
-                    {parseTags(post.tags).map((tag, index) => (
-                      <span key={index} className="px-2 py-0.5 text-xs bg-muted text-muted-foreground rounded-full">
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {parseTags(post.tags).slice(0, 3).map((tag, index) => (
+                      <span 
+                        key={index} 
+                        className="px-2.5 py-1 text-xs bg-muted text-muted-foreground rounded-full"
+                      >
                         {tag}
                       </span>
                     ))}
+                    {parseTags(post.tags).length > 3 && (
+                      <span className="px-2.5 py-1 text-xs bg-muted text-muted-foreground rounded-full">
+                        +{parseTags(post.tags).length - 3}
+                      </span>
+                    )}
                   </div>
                 )}
               </CardContent>
-              <CardFooter className="text-xs text-muted-foreground border-t pt-4">
-                <div className="flex items-center mr-4">
-                  <Calendar className="h-4 w-4 mr-1.5" />
-                  {formatDate(post.publishedAt || post.createdAt)}
-                </div>
-                {post.readTime && (
-                  <div className="flex items-center mr-4"> {/* Added mr-4 for spacing */}
-                    <Clock className="h-4 w-4 mr-1.5" />
-                    {post.readTime} min read
+              
+              {/* Footer */}
+              <CardFooter className="text-xs text-muted-foreground border-t pt-3 bg-muted/20">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-1.5 flex-shrink-0" />
+                      <span className="truncate">
+                        {formatDate(post.publishedAt || post.createdAt)}
+                      </span>
+                    </div>
+                    
+                    {post.readTime && (
+                      <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-1.5 flex-shrink-0" />
+                        <span>{post.readTime} min read</span>
+                      </div>
+                    )}
                   </div>
-                )}
-                {/* Optionally display authorId or fetch author name later */}
-                {/* {post.authorId && <span className="text-xs">Author ID: {post.authorId}</span>} */}
+                  
+                  {/* Read More Link */}
+                  <Link 
+                    href={`/learning/blog/${post.slug}`}
+                    className="text-primary hover:text-primary/80 font-medium transition-colors touch-manipulation sm:ml-auto"
+                  >
+                    Read More →
+                  </Link>
+                </div>
               </CardFooter>
             </Card>
           ))}
@@ -184,24 +240,37 @@ const BlogListPage: React.FC = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="mt-8 flex justify-center items-center space-x-2">
-          <Button 
-            onClick={() => setPage(p => Math.max(1, p - 1))} 
-            disabled={page === 1 || isLoading}
-            variant="outline"
-          >
-            Previous
-          </Button>
-          <span className="text-sm">
-            Page {page} of {totalPages}
-          </span>
-          <Button 
-            onClick={() => setPage(p => Math.min(totalPages, p + 1))} 
-            disabled={page === totalPages || isLoading}
-            variant="outline"
-          >
-            Next
-          </Button>
+        <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row justify-center items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={() => setPage(p => Math.max(1, p - 1))} 
+              disabled={page === 1 || isLoading}
+              variant="outline"
+              className="min-h-[48px] px-6 text-base font-medium touch-manipulation"
+            >
+              Previous
+            </Button>
+            
+            <div className="flex items-center gap-1 px-4">
+              <span className="text-sm font-medium">
+                Page {page} of {totalPages}
+              </span>
+            </div>
+            
+            <Button 
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))} 
+              disabled={page === totalPages || isLoading}
+              variant="outline"
+              className="min-h-[48px] px-6 text-base font-medium touch-manipulation"
+            >
+              Next
+            </Button>
+          </div>
+          
+          {/* Page Info */}
+          <div className="text-sm text-muted-foreground">
+            Showing {Math.min((page - 1) * postsPerPage + 1, posts.length)} - {Math.min(page * postsPerPage, posts.length)} of {totalPages * postsPerPage} articles
+          </div>
         </div>
       )}
     </div>
