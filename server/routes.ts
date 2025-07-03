@@ -940,53 +940,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  authRouter.post("/dev-admin-login", async (req, res) => {
+  // SECURITY: Removed insecure dev-admin-login endpoint - replaced with secure admin setup
+  authRouter.post("/admin/setup", async (req, res) => {
     try {
-      const { username, password } = req.body;
-      if (process.env.NODE_ENV === "production" || username !== "admin" || password !== "admin") {
-        return res.status(401).json({ message: "Invalid or unauthorized request" });
+      // Only allow admin setup if no admin users exist
+      const existingAdmins = await storage.getUsersByRole('admin');
+      if (existingAdmins && existingAdmins.length > 0) {
+        return res.status(403).json({ message: "Admin already exists. Use regular login." });
       }
-      const mockAdminUser = { id: 0, username: "admin", role: "admin", type: "admin", phone: "9876543210", createdAt: new Date(), updatedAt: new Date() };
-      res.status(200).json({ user: mockAdminUser, accessToken: "dev-admin-token", refreshToken: "dev-admin-refresh-token", message: "Dev admin login successful" });
+      
+      const { email, password, setupToken } = req.body;
+      
+      // Verify setup token from environment
+      if (!setupToken || setupToken !== process.env.ADMIN_SETUP_TOKEN) {
+        return res.status(403).json({ message: "Invalid setup token" });
+      }
+      
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+      
+             // Create admin user directly through storage service
+       const passwordHash = await hashPassword(password);
+       const adminUser = await storage.createUser({
+         email,
+         passwordHash,
+         role: 'admin',
+         username: null,
+         phone: null,
+         firstName: null,
+         lastName: null,
+       });
+       
+       res.status(201).json({ 
+         message: "Admin user created successfully",
+         user: {
+           id: adminUser.id,
+           email: adminUser.email,
+           role: adminUser.role
+         }
+       });
     } catch (error) {
-      console.error("Dev admin login error:", error);
-      res.status(500).json({ message: "Internal server error during dev login" });
+      console.error("Admin setup error:", error);
+      const message = error instanceof Error ? error.message : "Admin setup failed";
+      res.status(500).json({ message });
     }
   });
 
-  authRouter.post("/admin-login", async (req, res) => {
-    try {
-      const { username, password } = req.body;
-      if (!username || !password) {
-        return res.status(400).json({ message: "Username and password are required" });
-      }
-      if (username !== "admin" || password !== "admin") { 
-        return res.status(401).json({ message: "Invalid admin credentials" });
-      }
-      let adminUser = await storage.getUserByUsername("admin");
-      if (!adminUser) {
-        const hashedPassword = await hashPassword("admin");
-        adminUser = await storage.createUser({
-          username: "admin",
-          email: "admin@example.com", // Ensure this email is unique or handle potential conflicts
-          passwordHash: hashedPassword,
-          role: sharedUserRoleEnum.enumValues[1] as 'admin' // Cast to specific role type
-        });
-      }
-      else if (adminUser.passwordHash && !(await verifyPassword(password, adminUser.passwordHash))) {
-         return res.status(401).json({ message: "Invalid admin credentials" });
-      }
-
-      const userForToken = { id: adminUser.id, role: adminUser.role as UserRole };
-      const accessToken = generateToken(userForToken);
-      const refreshToken = generateToken(userForToken, 'refresh');
-      const { passwordHash: _unused_phAdmin_login, ...adminWithoutPassword } = adminUser;
-      res.status(200).json({ user: adminWithoutPassword, accessToken, refreshToken, message: "Admin login successful" });
-    } catch (error: unknown) { 
-      console.error("Error in admin login:", error);
-      res.status(500).json({ message: "Failed to login as admin" });
-    }
-  });
+  // SECURITY: Removed insecure admin-login route - use regular login with admin credentials instead
+  // Admin users should use the standard /api/auth/login endpoint with their email/password
   
   authRouter.get("/verify-admin", passport.authenticate('jwt', { session: false }), async (req: AuthenticatedRequest, res) => {
     // If JWT auth is successful, req.user is populated.
