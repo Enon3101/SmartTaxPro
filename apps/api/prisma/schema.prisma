@@ -1,0 +1,318 @@
+// This is your Prisma schema file
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Enhanced Role System
+enum Role {
+  ANONYMOUS
+  AUTHOR
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum FileCategory {
+  BLOG_IMAGE
+  BLOG_ATTACHMENT
+  USER_UPLOAD
+  SYSTEM_FILE
+}
+
+// User Model with enhanced fields
+model User {
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  username         String?   @unique
+  passwordHash     String?
+  firstName        String?
+  lastName         String?
+  phone            String?
+  profileImageUrl  String?
+  
+  // OAuth providers
+  googleId         String?   @unique
+  githubId         String?   @unique
+  
+  // Role-based access
+  roles            UserRole[]
+  permissions      Permission[]
+  
+  // Security
+  mfaEnabled       Boolean   @default(false)
+  mfaSecret        String?
+  emailVerified    Boolean   @default(false)
+  phoneVerified    Boolean   @default(false)
+  lastLoginAt      DateTime?
+  lastLoginIp      String?
+  
+  // Relationships
+  posts            Post[]
+  files            File[]
+  sessions         Session[]
+  refreshTokens    RefreshToken[]
+  auditLogs        AuditLog[]
+  postRevisions    PostRevision[]
+  
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  
+  @@index([email])
+  @@index([username])
+  @@index([googleId])
+  @@index([githubId])
+}
+
+// Many-to-many relationship for roles
+model UserRole {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  roleId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      RoleDefinition @relation(fields: [roleId], references: [id])
+  grantedBy Int?
+  grantedAt DateTime @default(now())
+  
+  @@unique([userId, roleId])
+  @@index([userId])
+  @@index([roleId])
+}
+
+// Role definitions
+model RoleDefinition {
+  id          Int         @id @default(autoincrement())
+  name        Role        @unique
+  description String?
+  userRoles   UserRole[]
+  permissions RolePermission[]
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+// Permission definitions
+model Permission {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
+  resource    String
+  action      String
+  description String?
+  
+  users       User[]
+  roles       RolePermission[]
+  
+  @@unique([resource, action])
+  @@index([resource])
+}
+
+// Many-to-many relationship for role permissions
+model RolePermission {
+  id           Int      @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+  role         RoleDefinition @relation(fields: [roleId], references: [id])
+  permission   Permission     @relation(fields: [permissionId], references: [id])
+  
+  @@unique([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
+}
+
+// Blog Post Model with versioning
+model Post {
+  id              Int            @id @default(autoincrement())
+  title           String
+  slug            String         @unique
+  content         String         @db.Text
+  excerpt         String?
+  coverImage      String?
+  status          PostStatus     @default(DRAFT)
+  
+  // SEO & Metadata
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String[]
+  canonicalUrl    String?
+  
+  // Author & Publishing
+  authorId        Int
+  author          User           @relation(fields: [authorId], references: [id])
+  publishedAt     DateTime?
+  scheduledAt     DateTime?
+  
+  // Content Features
+  featuredOrder   Int?
+  readingTime     Int?
+  viewCount       Int            @default(0)
+  
+  // Categorization
+  tags            Tag[]
+  categories      Category[]
+  
+  // Relationships
+  revisions       PostRevision[]
+  attachments     File[]
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  
+  @@index([slug])
+  @@index([status])
+  @@index([authorId])
+  @@index([publishedAt])
+  @@index([scheduledAt])
+}
+
+// Post Revision History
+model PostRevision {
+  id          Int      @id @default(autoincrement())
+  postId      Int
+  post        Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  title       String
+  content     String   @db.Text
+  excerpt     String?
+  changeNote  String?
+  authorId    Int
+  author      User     @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+  
+  @@index([postId])
+  @@index([authorId])
+  @@index([createdAt])
+}
+
+// Tag Model
+model Tag {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  posts       Post[]
+  createdAt   DateTime @default(now())
+  
+  @@index([slug])
+}
+
+// Category Model
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  parentId    Int?
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  posts       Post[]
+  createdAt   DateTime @default(now())
+  
+  @@index([slug])
+  @@index([parentId])
+}
+
+// File Management
+model File {
+  id              String        @id @default(cuid())
+  originalName    String
+  storedName      String
+  mimeType        String
+  size            Int
+  category        FileCategory
+  
+  // Storage details
+  storageProvider String        @default("local")
+  storagePath     String
+  storageUrl      String?
+  cdnUrl          String?
+  
+  // Security
+  isPublic        Boolean       @default(false)
+  virusScanStatus String?
+  virusScanDate   DateTime?
+  checksum        String?
+  
+  // Relationships
+  uploadedById    Int
+  uploadedBy      User          @relation(fields: [uploadedById], references: [id])
+  postId          Int?
+  post            Post?         @relation(fields: [postId], references: [id])
+  
+  // Metadata
+  metadata        Json?
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  @@index([uploadedById])
+  @@index([postId])
+  @@index([category])
+  @@index([createdAt])
+}
+
+// Session Management
+model Session {
+  id          String    @id @default(cuid())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent   String?
+  ipAddress   String?
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+  
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// Refresh Token Management
+model RefreshToken {
+  id          String    @id @default(cuid())
+  token       String    @unique
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+  
+  @@index([token])
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// Audit Log
+model AuditLog {
+  id          Int       @id @default(autoincrement())
+  userId      Int?
+  user        User?     @relation(fields: [userId], references: [id])
+  action      String
+  resource    String
+  resourceId  String?
+  metadata    Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime  @default(now())
+  
+  @@index([userId])
+  @@index([action])
+  @@index([resource])
+  @@index([createdAt])
+}
+
+// Site Settings
+model SiteSetting {
+  id          Int       @id @default(autoincrement())
+  key         String    @unique
+  value       Json
+  description String?
+  updatedBy   Int?
+  updatedAt   DateTime  @updatedAt
+  
+  @@index([key])
+}
