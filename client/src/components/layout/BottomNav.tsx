@@ -38,14 +38,18 @@ export default function BottomNav() {
   ];
 
   return (
-    <nav className="sm:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-800 shadow-lg border-t border-border flex justify-around py-2 z-50">
+    <nav className="sm:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-800 shadow-lg border-t border-border flex justify-around py-2 z-50 safe-area-inset-bottom">
       {navItems.map((item, index) => (
         <Link key={index} href={item.href}>
-          <div className={`flex flex-col items-center min-w-11 min-h-11 px-2 pt-2 pb-1 rounded-md ${
-            item.active ? "text-blue-500" : "text-muted-foreground"
-          } transition-colors`}>
-            {item.icon}
-            <span className="text-xs mt-1">{item.label}</span>
+          <div className={`flex flex-col items-center justify-center min-w-[60px] min-h-[60px] px-2 py-2 rounded-lg touch-manipulation active:scale-95 transition-all duration-150 ${
+            item.active 
+              ? "text-blue-500 bg-blue-50 dark:bg-blue-900/20" 
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+          }`}>
+            <div className="mb-1">
+              {item.icon}
+            </div>
+            <span className="text-xs font-medium leading-tight text-center">{item.label}</span>
           </div>
         </Link>
       ))}
