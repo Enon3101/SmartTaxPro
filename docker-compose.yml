@@ -1,26 +1,21 @@
 version: '3.8'
 services:
   postgres:
-    image: postgres:15
-    command: ["postgres", "-c", "shared_preload_libraries=pg_stat_statements", "-c", "pg_stat_statements.max=10000", "-c", "pg_stat_statements.track=all"]
-    restart: always
-    env_file:
-      - .env
+    image: postgres:16-alpine
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    # SECURITY: Removed external port mapping - database only accessible internally
-    # ports:
-    #   - "5432:5432"
+      POSTGRES_USER: myeca
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-myeca_secure_password}
+      POSTGRES_DB: myeca_admin
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./docker/initdb:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: ["CMD-SHELL", "pg_isready -U myeca"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   minio:
     image: minio/minio:latest
@@ -134,8 +129,67 @@ services:
       - postgres_data:/var/lib/postgresql/data:ro
       - ./server/logs:/var/log/smarttaxpro:ro
 
+  # API Service
+  api:
+    build:
+      context: .
+      target: api-runner
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://myeca:${DATABASE_PASSWORD:-myeca_secure_password}@postgres:5432/myeca_admin"
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-change-me-in-production}
+      SESSION_SECRET: ${SESSION_SECRET:-change-me-in-production}
+      PORT: 3001
+      # Storage
+      STORAGE_TYPE: ${STORAGE_TYPE:-local}
+      STORAGE_PATH: /app/uploads
+      # S3 (optional)
+      S3_ENDPOINT: ${S3_ENDPOINT:-}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-}
+      S3_REGION: ${S3_REGION:-us-east-1}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+
+  # Web Frontend
+  web:
+    build:
+      context: .
+      target: web-runner
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+
+  # Database Admin Tool (development only)
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    profiles:
+      - dev
+
 volumes:
   postgres_data:
   minio_data:
   pg_backups:
   loki_data:
+
+networks:
+  default:
+    name: myeca_admin_network
