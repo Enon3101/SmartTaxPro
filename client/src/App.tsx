@@ -3,17 +3,18 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { lazy, Suspense } from "react";
 import { DefaultParams, Route, RouteComponentProps, Switch } from "wouter";
 
-import BottomNav from "@/components/BottomNav";
+import BottomNav from "@/components/layout/BottomNav";
 import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import Header from "@/components/layout/Header";
+import AuthGuard from "@/roles/AuthGuard";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import TaxExpertWidget from "@/components/TaxExpertWidget";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Admin from "@/pages/admin.page";
-import AdminLogin from "@/pages/admin-login.page";
-import BlogAdmin from "@/pages/blog-admin.page";
+import Admin from "@/features/admin/components/admin.page";
+import AdminLogin from "@/features/admin/components/admin-login.page";
+import AdminFileLibrary from "@/features/file-management/components/admin-file-library.page";
+import BlogAdmin from "@/features/blog/components/blog-admin.page";
 import Calculators from "@/pages/calculators.page";
 import Dashboard from "@/pages/dashboard.page";
 import DatabaseEditor from "@/pages/database-editor.page";
@@ -21,9 +22,9 @@ import DocumentVault from "@/pages/document-vault.page";
 import FilingComplete from "@/pages/filing-complete.page";
 import FilingRequirements from "@/pages/filing-requirements.page";
 import Home from "@/pages/home.page";
-import ItrFiling from "@/pages/itr-filing.page";
-import ItrWizard from "@/pages/itr-wizard.page";
-import BlogListPage from "@/pages/learning/blog-list.page";
+import ItrFiling from "@/features/tax-filing/components/itr-filing.page";
+import ItrWizard from "@/features/tax-filing/components/itr-wizard.page";
+import BlogListPage from "@/features/blog/components/blog-list.page";
 import Login from "@/pages/login.page";
 import MyFilings from "@/pages/my-filings.page";
 import NotFound from "@/pages/not-found.page";
@@ -45,7 +46,7 @@ const HowToFileITROnline2023_24 = lazy(() => {
   ]).then(([moduleExports]) => moduleExports);
 });
 
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "@/features/auth/AuthContext";
 import { ItrWizardProvider } from "./context/ItrWizardContext";
 import { TaxDataProvider } from "./context/TaxDataProvider";
 import { ThemeProvider } from "./context/ThemeProvider";
@@ -57,7 +58,7 @@ import { queryClient } from "./lib/queryClient";
 
 // Lazy load calculator pages with improved loading
 const CalculatorsIndex = lazy(() => import("@/pages/calculators.page"));
-const LearningBlogPost = lazy(() => import("@/pages/blog-post.page"));
+const LearningBlogPost = lazy(() => import("@/features/blog/components/blog-post.page"));
 
 // Take Home Salary Calculator
 const TakeHomeSalaryCalculator = lazy(() => {
@@ -302,35 +303,36 @@ function Router() {
       <Route path="/start-filing" component={StartFiling} />
       <Route path="/filing-requirements" component={FilingRequirements} />
       <Route path="/itr-wizard" component={ItrWizard} />
-      <ProtectedRoute path="/admin" component={Admin} allowedRoles={['admin']} /> {/* Protected for admin */}
+      <AuthGuard path="/admin" component={Admin} allowedRoles={['admin', 'super_admin']} />
       <Route path="/admin-login" component={AdminLogin} /> {/* Public login for admin - can be removed if main login is used */}
 
+      {/* Admin File Library */}
+      <AuthGuard path="/admin/files" component={AdminFileLibrary} allowedRoles={['admin', 'super_admin']} />
+
       {/* BlogAdmin routes using ProtectedRoute */}
-      <ProtectedRoute path="/admin/blog" component={ListBlogAdminPage} allowedRoles={['admin']} />
-      {/* Removed unused @ts-expect-error */}
-      <ProtectedRoute
+      <AuthGuard path="/admin/blog" component={ListBlogAdminPage} allowedRoles={['admin', 'super_admin']} />
+      <AuthGuard
         path="/admin/blog/new"
         component={CreateBlogAdminPage}
-        allowedRoles={['admin']}
+        allowedRoles={['admin', 'super_admin']}
       />
-      <ProtectedRoute
+      <AuthGuard
         path="/admin/blog/edit/:id"
         component={EditBlogAdminPage}
-        allowedRoles={['admin']}
+        allowedRoles={['admin', 'super_admin']}
       />
-      <ProtectedRoute path="/admin/database-editor" component={DatabaseEditor} allowedRoles={['admin']} /> {/* Protected for admin */}
+      <AuthGuard path="/admin/database-editor" component={DatabaseEditor} allowedRoles={['admin', 'super_admin']} />
       <Route path="/payment" component={Payment} />
       <Route path="/filing-complete" component={FilingComplete} />
       <Route path="/tax-expert" component={TaxExpert} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
-      <Route path="/profile" component={Profile} />
-      <ProtectedRoute path="/dashboard" component={Dashboard} />
-      <ProtectedRoute path="/itr-filing" component={ItrFiling} />
-      <ProtectedRoute path="/itr-filing/:filingId" component={ItrFiling} /> {/* Route for specific filing */}
-      <ProtectedRoute path="/my-filings" component={MyFilings} />
-      <ProtectedRoute path="/document-vault/:filingId" component={DocumentVault} /> {/* Route for specific filing's documents */}
-      <ProtectedRoute path="/document-vault" component={DocumentVault} /> {/* General document vault */}
+      <AuthGuard path="/dashboard" component={Dashboard} />
+      <AuthGuard path="/itr-filing" component={ItrFiling} />
+      <AuthGuard path="/itr-filing/:filingId" component={ItrFiling} />
+      <AuthGuard path="/my-filings" component={MyFilings} />
+      <AuthGuard path="/document-vault/:filingId" component={DocumentVault} />
+      <AuthGuard path="/document-vault" component={DocumentVault} />
 
       {/* Calculator Routes */}
       <Route path="/calculators/index">

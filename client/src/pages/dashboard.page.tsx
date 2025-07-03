@@ -3,7 +3,7 @@ import { Link } from 'wouter'; // For navigation links
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { useAuth } from '@/context/AuthContext'; // Assuming AuthContext provides user info
+import { useAuth } from '@/features/auth/AuthContext'; // Assuming AuthContext provides user info
 
 
 const Dashboard: React.FC = () => {
@@ -75,7 +75,7 @@ const Dashboard: React.FC = () => {
           <CardContent>
             <ul className="list-disc pl-5 space-y-1 text-sm">
               <li>Upload Form-16 to autofill salary details (Placeholder)</li>
-              <li>E-Verify your last year’s return (Placeholder)</li>
+              <li>E-Verify your last year's return (Placeholder)</li>
               <li>Tax filing deadline: July 31st (Placeholder)</li>
             </ul>
           </CardContent>

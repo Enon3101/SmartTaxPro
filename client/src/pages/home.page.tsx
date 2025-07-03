@@ -3,7 +3,7 @@ import { ArrowRight, CheckCircle, Star, FileText, Calculator, CalendarDays, Uplo
 import { useContext } from "react";
 import { Link } from "wouter";
 
-import LoginDialog from "@/components/LoginDialog";
+import LoginDialog from "@/components/modals/LoginDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
@@ -13,10 +13,11 @@ import {
   SelectTrigger,
   SelectValue 
 } from "@/components/ui/select";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/features/auth/AuthContext";
 import { TaxDataContext } from "@/context/TaxDataProvider";
 import { Testimonials } from "@/components/Testimonials";
 import TrustedBySection from "@/components/TrustedBySection";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Bulletin Component
 const BulletinBanner = () => {

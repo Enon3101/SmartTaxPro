@@ -4,7 +4,7 @@ import path from "path";
 
 // Removed duplicate imports of fs, createServer, Server, path
 
-import { sql, eq as drizzleEq, gte } from "drizzle-orm";
+import { sql, eq as drizzleEq, eq, gte, desc, and, inArray } from "drizzle-orm";
 import express, { type Express } from "express";
 import { nanoid } from "nanoid";
 import passport from 'passport';
@@ -14,6 +14,8 @@ import {
   insertTaxFormSchema,
   insertDocumentSchema,
   userRoleEnum as sharedUserRoleEnum,
+  files,
+  users,
 } from "@shared/schema";
 
 // Local/Project specific imports - final attempt at ordering
@@ -668,7 +670,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       const passwordHashVal = await hashPassword(password); 
       
-      let roleToSet: 'user' | 'admin' = 'user'; 
+      let roleToSet: 'anonymous' | 'user' | 'author' | 'admin' | 'super_admin' = 'user'; 
       if (role === sharedUserRoleEnum.enumValues[1]) { 
         roleToSet = sharedUserRoleEnum.enumValues[1];
       } else if (role === sharedUserRoleEnum.enumValues[0]) { 
@@ -867,7 +869,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // For now, relying on the fact that this is under /api/admin which might have its own broad auth.
     // Or, add a direct role check:
     (req: AuthenticatedRequest, res, next) => {
-      if (req.user?.role !== UserRole.ADMIN) { // UserRole from auth.ts
+      if (req.user?.role !== UserRole.ADMIN && req.user?.role !== UserRole.SUPER_ADMIN) { // UserRole from auth.ts
         return res.status(403).json({ message: "Forbidden: Admin access required" });
       }
       next();
@@ -1097,6 +1099,249 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error executing SQL query:", error);
       const message = error instanceof Error ? error.message : String(error);
       res.status(500).json({ message: "Failed to execute SQL query", error: message });
+    }
+  });
+
+  // Admin File Management Routes (new addition)
+  adminRouter.get("/files", async (req, res) => {
+    try {
+      // Get all files with user information
+      const filesQuery = db!
+        .select({
+          id: files.id,
+          originalName: files.originalName,
+          storedName: files.storedName,
+          fileType: files.fileType,
+          fileCategory: files.fileCategory,
+          fileSize: files.fileSize,
+          mimeType: files.mimeType,
+          storageProvider: files.storageProvider,
+          cdnUrl: files.cdnUrl,
+          isPublic: files.isPublic,
+          accessLevel: files.accessLevel,
+          uploadedBy: files.uploadedBy,
+          createdAt: files.createdAt,
+          lastAccessedAt: files.lastAccessedAt,
+          tags: files.tags,
+          uploaderName: sql<string>`CONCAT(${users.firstName}, ' ', ${users.lastName})`.as('uploaderName'),
+        })
+        .from(files)
+        .leftJoin(users, eq(files.uploadedBy, users.id))
+        .orderBy(desc(files.createdAt));
+
+      const allFiles = await filesQuery;
+      
+      res.json({
+        files: allFiles,
+        total: allFiles.length
+      });
+    } catch (error) {
+      console.error("Error fetching files for admin:", error);
+      res.status(500).json({ message: "Failed to fetch files" });
+    }
+  });
+
+  adminRouter.get("/files/stats", async (req, res) => {
+    try {
+      // Get file statistics
+      const [fileCountResult] = await db!
+        .select({ count: sql<number>`count(*)` })
+        .from(files)
+        .where(eq(files.isDeleted, false));
+
+      const [totalSizeResult] = await db!
+        .select({ totalSize: sql<number>`sum(${files.fileSize})` })
+        .from(files)
+        .where(eq(files.isDeleted, false));
+
+      const [publicCountResult] = await db!
+        .select({ count: sql<number>`count(*)` })
+        .from(files)
+        .where(and(eq(files.isDeleted, false), eq(files.isPublic, true)));
+
+      const [privateCountResult] = await db!
+        .select({ count: sql<number>`count(*)` })
+        .from(files)
+        .where(and(eq(files.isDeleted, false), eq(files.isPublic, false)));
+
+      // Get storage provider breakdown
+      const storageBreakdown = await db!
+        .select({
+          provider: files.storageProvider,
+          count: sql<number>`count(*)`,
+          size: sql<number>`sum(${files.fileSize})`
+        })
+        .from(files)
+        .where(eq(files.isDeleted, false))
+        .groupBy(files.storageProvider);
+
+      // Get category breakdown
+      const categoryBreakdown = await db!
+        .select({
+          category: files.fileCategory,
+          count: sql<number>`count(*)`,
+          size: sql<number>`sum(${files.fileSize})`
+        })
+        .from(files)
+        .where(eq(files.isDeleted, false))
+        .groupBy(files.fileCategory);
+
+      const stats = {
+        totalFiles: fileCountResult?.count || 0,
+        totalSize: totalSizeResult?.totalSize || 0,
+        publicFiles: publicCountResult?.count || 0,
+        privateFiles: privateCountResult?.count || 0,
+        storageBreakdown: storageBreakdown.reduce((acc, item) => {
+          if (item.provider) {
+            acc[item.provider] = item.count;
+          }
+          return acc;
+        }, {} as Record<string, number>),
+        categoryBreakdown: categoryBreakdown.reduce((acc, item) => {
+          if (item.category) {
+            acc[item.category] = item.count;
+          }
+          return acc;
+        }, {} as Record<string, number>)
+      };
+
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching file stats:", error);
+      res.status(500).json({ message: "Failed to fetch file statistics" });
+    }
+  });
+
+  adminRouter.get("/files/:fileId/download", async (req, res) => {
+    try {
+      const fileId = req.params.fileId;
+      
+      // Get file record
+      const [fileRecord] = await db!
+        .select()
+        .from(files)
+        .where(and(eq(files.id, fileId), eq(files.isDeleted, false)));
+
+      if (!fileRecord) {
+        return res.status(404).json({ message: "File not found" });
+      }
+
+      // Use the file manager service to get the file
+      const fileBuffer = await fileManagerService.downloadFile({
+        fileId: fileId,
+        userId: req.user?.id || 0
+      });
+
+      // Set appropriate headers
+      res.setHeader('Content-Disposition', `attachment; filename="${fileRecord.originalName}"`);
+      res.setHeader('Content-Type', fileRecord.mimeType || 'application/octet-stream');
+      res.setHeader('Content-Length', fileRecord.fileSize);
+
+      // Send the file
+      res.send(fileBuffer.buffer);
+
+      // Update last accessed timestamp
+      await db!
+        .update(files)
+        .set({ lastAccessedAt: new Date() })
+        .where(eq(files.id, fileId));
+
+    } catch (error) {
+      console.error("Error downloading file:", error);
+      res.status(500).json({ message: "Failed to download file" });
+    }
+  });
+
+  adminRouter.post("/files/bulk-download", async (req, res) => {
+    try {
+      const { fileIds } = req.body;
+      
+      if (!Array.isArray(fileIds) || fileIds.length === 0) {
+        return res.status(400).json({ message: "File IDs array is required" });
+      }
+
+      // Get file records
+      const fileRecords = await db!
+        .select()
+        .from(files)
+        .where(and(
+          inArray(files.id, fileIds),
+          eq(files.isDeleted, false)
+        ));
+
+      if (fileRecords.length === 0) {
+        return res.status(404).json({ message: "No files found" });
+      }
+
+      // Create ZIP archive
+      const archiver = await import('archiver');
+      const archive = archiver.default('zip', { zlib: { level: 9 } });
+
+      res.setHeader('Content-Type', 'application/zip');
+      res.setHeader('Content-Disposition', `attachment; filename="bulk-download-${new Date().toISOString().split('T')[0]}.zip"`);
+
+      archive.pipe(res);
+
+      // Add files to archive
+      for (const fileRecord of fileRecords) {
+        try {
+          const fileBuffer = await fileManagerService.downloadFile({
+            fileId: fileRecord.id,
+            userId: req.user?.id || 0
+          });
+          
+          archive.append(fileBuffer.buffer, { name: fileRecord.originalName });
+        } catch (error) {
+          console.error(`Error adding file ${fileRecord.id} to archive:`, error);
+          // Continue with other files
+        }
+      }
+
+      archive.finalize();
+
+      // Update last accessed timestamps
+      await db!
+        .update(files)
+        .set({ lastAccessedAt: new Date() })
+        .where(inArray(files.id, fileIds));
+
+    } catch (error) {
+      console.error("Error creating bulk download:", error);
+      res.status(500).json({ message: "Failed to create bulk download" });
+    }
+  });
+
+  adminRouter.delete("/files/:fileId", async (req, res) => {
+    try {
+      const fileId = req.params.fileId;
+      
+      // Get file record
+      const [fileRecord] = await db!
+        .select()
+        .from(files)
+        .where(and(eq(files.id, fileId), eq(files.isDeleted, false)));
+
+      if (!fileRecord) {
+        return res.status(404).json({ message: "File not found" });
+      }
+
+      // Soft delete the file
+      await db!
+        .update(files)
+        .set({ 
+          isDeleted: true, 
+          deletedAt: new Date(),
+          deletedBy: req.user?.id || null
+        })
+        .where(eq(files.id, fileId));
+
+      // TODO: Optionally delete from storage provider
+      // await fileManagerService.deleteFile(fileId);
+
+      res.json({ message: "File deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting file:", error);
+      res.status(500).json({ message: "Failed to delete file" });
     }
   });
 

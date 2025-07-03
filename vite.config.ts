@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default defineConfig({
-  // root: 'client', // Rely on root being set in server/vite.ts
+  root: 'client', // Set root to client directory where index.html is located
   plugins: [
     react({
       // Enable React Fast Refresh
@@ -137,6 +137,13 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './client/src'),
       '@shared': resolve(__dirname, './shared'),
+      '@features': resolve(__dirname, './client/src/features'),
+      '@components': resolve(__dirname, './client/src/components'),
+      '@hooks': resolve(__dirname, './client/src/hooks'),
+      '@context': resolve(__dirname, './client/src/context'),
+      '@lib': resolve(__dirname, './client/src/lib'),
+      '@data': resolve(__dirname, './client/src/data'),
+      '@utils': resolve(__dirname, './client/src/utils'),
     },
   },
   

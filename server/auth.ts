@@ -50,14 +50,15 @@ const JWT_EXPIRY = '15m'; // 15 minutes max expiry (Req D)
 const JWT_REFRESH_EXPIRY = '7d'; // 7 days for refresh tokens
 
 /**
- * User roles with specific permissions
+ * User roles with specific permissions matching requirements
  * SECURITY: Implements least-privilege RBAC model (Req B)
  */
 export enum UserRole {
-  ANONYMOUS = 'anonymous', // Unauthenticated users
-  USER = 'user',           // Regular authenticated users
-  TAX_EXPERT = 'tax_expert', // Users with tax expert privileges
-  ADMIN = 'admin',         // Administrative users
+  ANONYMOUS = 'anonymous',   // Unauthenticated users
+  USER = 'user',            // Regular authenticated users
+  AUTHOR = 'author',        // Can create, edit, publish & delete blog posts (own only)
+  ADMIN = 'admin',          // Can view/download files, oversee all posts
+  SUPER_ADMIN = 'super_admin' // Can manage users, roles, site-wide settings
 }
 
 // Interface for our JWT payload
@@ -240,7 +241,7 @@ const ROLE_PERMISSIONS = {
     'view_own_documents',
     'request_tax_help',
   ],
-  [UserRole.TAX_EXPERT]: [
+  [UserRole.AUTHOR]: [
     'view_public_content',
     'register_account',
     'calculate_taxes',
@@ -249,8 +250,10 @@ const ROLE_PERMISSIONS = {
     'upload_documents',
     'view_own_documents',
     'request_tax_help',
-    'answer_tax_queries',
-    'view_assigned_cases',
+    'create_blog_posts',
+    'edit_own_blog_posts',
+    'publish_own_blog_posts',
+    'delete_own_blog_posts',
   ],
   [UserRole.ADMIN]: [
     'view_public_content',
@@ -261,12 +264,40 @@ const ROLE_PERMISSIONS = {
     'upload_documents',
     'view_own_documents',
     'request_tax_help',
-    'answer_tax_queries',
-    'view_assigned_cases',
-    'manage_users',
-    'manage_experts',
+    'create_blog_posts',
+    'edit_own_blog_posts',
+    'publish_own_blog_posts',
+    'delete_own_blog_posts',
+    'edit_all_blog_posts',
+    'publish_all_blog_posts',
+    'delete_all_blog_posts',
     'view_all_documents',
+    'download_all_documents',
+    'manage_file_library',
+  ],
+  [UserRole.SUPER_ADMIN]: [
+    'view_public_content',
+    'register_account',
+    'calculate_taxes',
+    'manage_own_profile',
+    'file_taxes',
+    'upload_documents',
+    'view_own_documents',
+    'request_tax_help',
+    'create_blog_posts',
+    'edit_own_blog_posts',
+    'publish_own_blog_posts',
+    'delete_own_blog_posts',
+    'edit_all_blog_posts',
+    'publish_all_blog_posts',
+    'delete_all_blog_posts',
+    'view_all_documents',
+    'download_all_documents',
+    'manage_file_library',
+    'manage_users',
+    'manage_roles',
     'manage_system_settings',
+    'manage_site_configuration',
   ],
 };
 // The closing */ was missing, adding it back.

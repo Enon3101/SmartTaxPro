@@ -3,7 +3,7 @@ import { nanoid } from "nanoid";
 import { useState, useContext, useEffect } from "react";
 import { useLocation } from "wouter";
 
-import ProgressTracker from "@/components/ProgressTracker";
+import ProgressTracker from "@/components/cards/ProgressTracker";
 import SalarySection from "@/components/SalarySection";
 import TaxComputationDocument from "@/components/TaxComputationDocument";
 import { Button } from "@/components/ui/button";

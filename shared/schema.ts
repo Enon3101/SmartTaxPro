@@ -18,7 +18,13 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
 // Define an enum for user roles
-export const userRoleEnum = pgEnum('user_role', ['user', 'admin']);
+export const userRoleEnum = pgEnum('user_role', [
+  'anonymous',
+  'user', 
+  'author',      // Can create, edit, publish & delete blog posts (own only)
+  'admin',       // Can view/download files, oversee all posts
+  'super_admin'  // Can manage users, roles, site-wide settings
+]);
 
 // File Management Enums
 export const fileTypeEnum = pgEnum('file_type', [
@@ -135,7 +141,7 @@ export const otpVerifications = pgTable('otp_verifications', {
   };
 });
 
-// Enhanced blog posts table
+// Enhanced blog posts table with SEO meta and versioning support
 export const blogPosts = pgTable('blog_posts', {
   id: serial('id').primaryKey(),
   title: varchar('title', { length: 255 }).notNull(),
@@ -149,6 +155,16 @@ export const blogPosts = pgTable('blog_posts', {
   readTime: integer('read_time'),
   published: boolean('published').default(false).notNull(),
   publishedAt: timestamp('published_at', { mode: 'date', withTimezone: true }),
+  
+  // SEO Meta fields
+  seoTitle: varchar('seo_title', { length: 60 }),
+  seoDescription: varchar('seo_description', { length: 160 }),
+  seoKeywords: text('seo_keywords'),
+  socialImageUrl: text('social_image_url'),
+  
+  // Version tracking
+  version: integer('version').default(1).notNull(),
+  
   createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
 }, (table) => {
@@ -158,6 +174,33 @@ export const blogPosts = pgTable('blog_posts', {
     categoryIndex: index('blog_posts_category_idx').on(table.category),
     authorIdIndex: index('blog_posts_author_id_idx').on(table.authorId),
     createdAtIndex: index('blog_posts_created_at_idx').on(table.createdAt),
+  };
+});
+
+// Blog post revisions table for version history
+export const blogPostRevisions = pgTable('blog_post_revisions', {
+  id: serial('id').primaryKey(),
+  postId: integer('post_id').references(() => blogPosts.id, { onDelete: 'cascade' }).notNull(),
+  version: integer('version').notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 255 }).notNull(),
+  summary: text('summary'),
+  content: text('content').notNull(),
+  authorId: integer('author_id').references(() => users.id, { onDelete: 'set null' }),
+  featuredImage: text('featured_image_url'),
+  category: varchar('category', { length: 100 }).notNull(),
+  tags: jsonb('tags'),
+  readTime: integer('read_time'),
+  seoTitle: varchar('seo_title', { length: 60 }),
+  seoDescription: varchar('seo_description', { length: 160 }),
+  seoKeywords: text('seo_keywords'),
+  socialImageUrl: text('social_image_url'),
+  changeNote: text('change_note'),
+  createdAt: timestamp('created_at', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
+}, (table) => {
+  return {
+    postIdVersionIndex: index('blog_post_revisions_post_id_version_idx').on(table.postId, table.version),
+    createdAtIndex: index('blog_post_revisions_created_at_idx').on(table.createdAt),
   };
 });
 
@@ -380,9 +423,21 @@ export const documentsRelations = relations(documents, ({ one }) => ({
   }),
 }));
 
-export const blogPostsRelations = relations(blogPosts, ({ one }) => ({
+export const blogPostsRelations = relations(blogPosts, ({ one, many }) => ({
   author: one(users, {
     fields: [blogPosts.authorId],
+    references: [users.id],
+  }),
+  revisions: many(blogPostRevisions),
+}));
+
+export const blogPostRevisionsRelations = relations(blogPostRevisions, ({ one }) => ({
+  post: one(blogPosts, {
+    fields: [blogPostRevisions.postId],
+    references: [blogPosts.id],
+  }),
+  author: one(users, {
+    fields: [blogPostRevisions.authorId],
     references: [users.id],
   }),
 }));
@@ -483,6 +538,8 @@ export type OtpVerification = InferSelectModel<typeof otpVerifications>;
 export type InsertOtpVerification = InferInsertModel<typeof otpVerifications>;
 export type BlogPost = InferSelectModel<typeof blogPosts>;
 export type InsertBlogPost = InferInsertModel<typeof blogPosts>;
+export type BlogPostRevision = InferSelectModel<typeof blogPostRevisions>;
+export type InsertBlogPostRevision = InferInsertModel<typeof blogPostRevisions>;
 export type PerformanceMetric = InferSelectModel<typeof performanceMetrics>;
 export type InsertPerformanceMetric = InferInsertModel<typeof performanceMetrics>;
 
@@ -522,6 +579,8 @@ export const selectOtpVerificationSchema = createSelectSchema(otpVerifications);
 
 export const insertBlogPostSchema = createInsertSchema(blogPosts);
 export const selectBlogPostSchema = createSelectSchema(blogPosts);
+export const insertBlogPostRevisionSchema = createInsertSchema(blogPostRevisions);
+export const selectBlogPostRevisionSchema = createSelectSchema(blogPostRevisions);
 
 export const insertPerformanceMetricSchema = createInsertSchema(performanceMetrics);
 export const selectPerformanceMetricSchema = createSelectSchema(performanceMetrics);

@@ -6,7 +6,7 @@ import { HelmetProvider } from "react-helmet-async";
 import './i18n'; // Initialize i18next
 
 import App from "./App";
-import GoogleAuthProvider from "./components/GoogleAuthProvider";
+import GoogleAuthProvider from "@/features/auth/components/GoogleAuthProvider";
 import { TaxDataProvider } from "./context/TaxDataProvider";
 import { queryClient } from "./lib/queryClient";
 import "./index.css";

@@ -19,7 +19,7 @@ import {
   // OtherIncomeEntry, // Not directly used
 } from "@/lib/taxInterfaces";
 
-import { useAuth } from "./AuthContext";
+import { useAuth } from "@/features/auth/AuthContext";
 import { saveDraft, listAllDrafts, deleteDraft } from '@/lib/indexedDbDrafts';
 
 interface TaxDataContextType {

@@ -7,7 +7,7 @@ import {
   Home, Briefcase, PiggyBank, CreditCard, FileCheck
 } from 'lucide-react';
 
-import ProgressTracker from "@/components/ProgressTracker";
+import ProgressTracker from "@/components/cards/ProgressTracker";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

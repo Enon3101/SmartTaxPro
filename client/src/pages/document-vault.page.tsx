@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'wouter'; // Assuming routing like /filings/:filingId/documents
 
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/features/auth/AuthContext';
 import { apiRequest } from '@/lib/queryClient';
 // import { Button } from '@/components/ui/button';
 // import { Input } from '@/components/ui/input';

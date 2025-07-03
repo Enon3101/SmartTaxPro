@@ -37,8 +37,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAuth } from "@/context/AuthContext";
-import blogContents from "@/data/blogContent";
+import { useAuth } from "@/features/auth/AuthContext";
+import blogContents from "../features/blog/api/blogContent";
 
 // Blog post interface
 interface BlogPost {
