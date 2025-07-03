@@ -17,8 +17,8 @@ export const SEO = ({
   ogImage = '/og-default.png',
   structuredData 
 }: SEOProps) => {
-  const fullTitle = `${title} | SmartTaxPro - Online ITR Filing India`;
-  const baseUrl = 'https://smarttaxpro.com'; // Replace with actual domain
+  const fullTitle = `${title} | MyeCA.in - Expert eCA Services & ITR Filing India`;
+  const baseUrl = 'https://myeca.in'; // Replace with actual domain
   
   return (
     <Helmet>
@@ -27,7 +27,7 @@ export const SEO = ({
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
       <meta name="robots" content="index, follow" />
-      <meta name="author" content="SmartTaxPro" />
+      <meta name="author" content="MyeCA.in" />
       
       {/* Canonical URL */}
       {canonicalUrl && <link rel="canonical" href={`${baseUrl}${canonicalUrl}`} />}
@@ -38,7 +38,7 @@ export const SEO = ({
       <meta property="og:description" content={description} />
       <meta property="og:image" content={`${baseUrl}${ogImage}`} />
       {canonicalUrl && <meta property="og:url" content={`${baseUrl}${canonicalUrl}`} />}
-      <meta property="og:site_name" content="SmartTaxPro" />
+      <meta property="og:site_name" content="MyeCA.in" />
       
       {/* Twitter Cards */}
       <meta name="twitter:card" content="summary_large_image" />

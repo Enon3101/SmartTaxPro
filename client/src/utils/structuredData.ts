@@ -1,9 +1,9 @@
 export const createOrganizationSchema = () => ({
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "SmartTaxPro",
-  "url": "https://smarttaxpro.com",
-  "logo": "https://smarttaxpro.com/logo.png",
+  "name": "MyeCA.in",
+  "url": "https://myeca.in",
+  "logo": "https://myeca.in/logo.svg",
   "description": "India's leading online income tax filing platform",
   "address": {
     "@type": "PostalAddress",
@@ -15,9 +15,9 @@ export const createOrganizationSchema = () => ({
     "contactType": "customer service"
   },
   "sameAs": [
-    "https://facebook.com/smarttaxpro",
-    "https://twitter.com/smarttaxpro",
-    "https://linkedin.com/company/smarttaxpro"
+    "https://facebook.com/MyeCAin",
+    "https://twitter.com/MyeCAin",
+    "https://linkedin.com/company/myeca-in"
   ]
 });
 
@@ -36,7 +36,7 @@ export const createCalculatorSchema = (name: string, description: string, url: s
   },
   "provider": {
     "@type": "Organization",
-    "name": "SmartTaxPro"
+    "name": "MyeCA.in"
   }
 });
 

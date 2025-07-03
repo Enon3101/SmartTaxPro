@@ -1,6 +1,24 @@
-# SmartTaxPro
+# MyeCA.in - Expert eCA Services Platform
 
-A comprehensive tax filing and management platform built with modern web technologies. SmartTaxPro provides a complete solution for income tax filing, calculations, and document management.
+**India's Premier Digital Platform for Professional Tax Services with Expert Chartered Accountant Assistance**
+
+A comprehensive, secure, and modern tax filing and management platform that connects taxpayers with expert Chartered Accountants (eCAs) for seamless tax compliance and advisory services.
+
+## 🏢 About MyeCA.in
+
+MyeCA.in is India's leading digital tax services platform that bridges the gap between taxpayers and professional Chartered Accountants. We combine cutting-edge technology with certified eCA expertise to provide accurate, efficient, and comprehensive tax solutions for individuals, businesses, and enterprises across India.
+
+### 🎯 Our Mission
+To democratize access to professional tax expertise by providing seamless, technology-driven eCA services that ensure accurate compliance, maximum tax savings, and peace of mind for every taxpayer.
+
+### 💼 Core Services
+- **Expert eCA Consultation**: One-on-one sessions with certified Chartered Accountants
+- **ITR Filing Services**: Comprehensive tax return preparation and filing with eCA oversight
+- **Tax Planning & Advisory**: Strategic guidance for tax optimization and compliance
+- **Business Tax Solutions**: Specialized services for enterprises, MSMEs, and startups
+- **Compliance Management**: End-to-end regulatory compliance support
+- **Document Vault**: Secure storage and management of tax documents
+- **Real-time Calculations**: Advanced tax calculators with professional validation
 
 ## 🚀 Features
 
@@ -52,8 +70,8 @@ A comprehensive tax filing and management platform built with modern web technol
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Enon3101/SmartTaxPro.git
-cd SmartTaxPro
+git clone https://github.com/Enon3101/MyeCA.in.git
+cd MyeCA.in
 ```
 
 ### 2. Install Dependencies
@@ -74,7 +92,7 @@ cd ..
 1. Install PostgreSQL on your system
 2. Create a new database:
    ```sql
-   CREATE DATABASE smarttaxpro;
+   CREATE DATABASE myeca;
    ```
 
 #### Option B: Neon (Cloud PostgreSQL)
@@ -88,7 +106,7 @@ Create a `.env` file in the root directory:
 
 ```env
 # Database
-DATABASE_URL="postgresql://username:password@localhost:5432/smarttaxpro"
+DATABASE_URL="postgresql://username:password@localhost:5432/myeca"
 
 # Google OAuth (for authentication)
 GOOGLE_CLIENT_ID="your-google-client-id"
@@ -136,10 +154,9 @@ npm run dev:client
 ## 📁 Project Structure
 
 ```
-SmartTaxPro/
+MyeCA.in/
 ├── client/                     # Frontend React application
 │   ├── public/                 # Static assets
-│   ├── src/
 │   │   ├── components/         # Reusable UI components
 │   │   │   ├── ui/            # Base UI components (shadcn/ui)
 │   │   │   └── ...            # Custom components

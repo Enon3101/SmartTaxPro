@@ -10,7 +10,7 @@ const testimonials = [
     company: "TechSolutions India",
     image: "https://randomuser.me/api/portraits/men/1.jpg",
     rating: 5,
-    text: "SmartTaxPro made my tax filing incredibly simple. The AI assistant helped me identify deductions I would have missed otherwise. Saved both time and money!"
+    text: "MyeCA.in made my tax filing incredibly simple. The expert eCA assistance helped me identify deductions I would have missed otherwise. Saved both time and money!"
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ const testimonials = [
     company: "Global Brands",
     image: "https://randomuser.me/api/portraits/women/2.jpg",
     rating: 5,
-    text: "As someone with multiple income sources, I was worried about filing correctly. SmartTaxPro guided me through the entire process and I received my refund within 2 weeks!"
+    text: "As someone with multiple income sources, I was worried about filing correctly. MyeCA.in's expert eCA guided me through the entire process and I received my refund within 2 weeks!"
   },
   {
     id: 3,
@@ -37,7 +37,7 @@ const testimonials = [
     company: "Investment Partners",
     image: "https://randomuser.me/api/portraits/women/4.jpg",
     rating: 5,
-    text: "Even as a finance professional, I found SmartTaxPro incredibly helpful. The interface is intuitive and the tax calculation is accurate. Will definitely use again next year."
+    text: "Even as a finance professional, I found MyeCA.in incredibly helpful. The interface is intuitive and the tax calculation with eCA expertise is accurate. Will definitely use again next year."
   },
   {
     id: 5,
@@ -55,7 +55,7 @@ const testimonials = [
     company: "Horizon Corp",
     image: "https://randomuser.me/api/portraits/women/6.jpg",
     rating: 4,
-    text: "Our company recommended SmartTaxPro to all employees, and the feedback has been overwhelmingly positive. The bulk upload feature for Form 16 saved us so much time."
+    text: "Our company recommended MyeCA.in to all employees, and the feedback has been overwhelmingly positive. The bulk upload feature for Form 16 with eCA support saved us so much time."
   }
 ];
 
@@ -106,7 +106,7 @@ const TestimonialCarousel = () => {
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold mb-4">What Our Customers Say</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Join thousands of satisfied customers who have simplified their tax filing experience with SmartTaxPro
+                          Join thousands of satisfied customers who have simplified their tax filing experience with MyeCA.in's expert eCA services
           </p>
         </div>
 

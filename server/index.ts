@@ -36,8 +36,8 @@ const corsOptions = {
     const allowedOrigins = [
       'http://localhost:3000',
       'http://localhost:5000',
-      'https://smarttaxpro.com',
-      'https://app.smarttaxpro.com'
+          'https://myeca.in',
+    'https://app.myeca.in'
     ];
     
     // Allow requests with no origin (mobile apps, Postman, etc.)

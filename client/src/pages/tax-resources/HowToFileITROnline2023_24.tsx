@@ -105,7 +105,7 @@ const HowToFileITROnline2023_24 = () => {
 
         <div className="text-center mt-8 bg-primary/5 p-6 rounded-lg">
           <p className="text-lg mb-4 text-primary-foreground">
-            Start filing your ITR today with SmartTaxPro for a seamless experience!
+            Start filing your ITR today with MyeCA.in for a seamless expert eCA experience!
           </p>
           <Button asChild size="lg">
             <Link href="/start-filing"> 

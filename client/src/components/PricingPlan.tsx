@@ -377,7 +377,7 @@ const PricingPlan: React.FC = () => {
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Why Choose SmartTaxPro?
+                                Why Choose MyeCA.in?
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Built with security, expertise, and user experience in mind
@@ -434,7 +434,7 @@ const PricingPlan: React.FC = () => {
               Ready to File Your Taxes?
             </h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              Join thousands of satisfied customers who trust SmartTaxPro for their tax filing needs
+                              Join thousands of satisfied customers who trust MyeCA.in for their expert eCA services and tax filing needs
             </p>
             <Button size="lg" variant="secondary" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg">
               Get Started Today <ArrowRight className="ml-2 h-5 w-5" />

@@ -55,7 +55,7 @@ const Footer = () => {
             <div className="flex items-center mb-4">
               <FileText className="h-6 w-6 text-primary mr-2" />
               <span className="text-primary font-bold text-xl">
-                myITR<span className="text-secondary">eturn</span>
+                MyeCA<span className="text-secondary">.in</span>
               </span>
             </div>
             <p className="text-sm text-muted-foreground mb-6">
@@ -268,7 +268,7 @@ const Footer = () => {
             <div className="flex items-center mb-4">
               <FileText className="h-6 w-6 text-primary mr-2" />
               <span className="text-primary font-bold text-xl">
-                myITR<span className="text-secondary">eturn</span>
+                MyeCA<span className="text-secondary">.in</span>
               </span>
             </div>
             <p className="text-sm text-muted-foreground mb-6">
@@ -447,14 +447,14 @@ const Footer = () => {
 
         <div className="border-t border-border mt-8 md:mt-12 pt-6 md:pt-8 text-sm text-muted-foreground">
           <div className="flex flex-col md:flex-row md:justify-between gap-4">
-            <p>© {new Date().getFullYear()} myITReturn. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} MyeCA.in. All rights reserved.</p>
             <p className="flex items-center">
               <span className="inline-block mr-2 w-2 h-2 bg-green-500 rounded-full"></span>
               Authorized by Income Tax Department, Government of India
             </p>
           </div>
           <p className="mt-4 text-xs">
-            myITReturn is an authorized e-filing intermediary registered with the Income Tax Department, Government of India. This platform helps taxpayers prepare and file their income tax returns efficiently.
+            MyeCA.in is an authorized e-filing intermediary registered with the Income Tax Department, Government of India. This platform provides expert eCA assistance to help taxpayers prepare and file their income tax returns efficiently.
           </p>
         </div>
       </div>

@@ -1,0 +1,30 @@
+<svg width="140" height="45" viewBox="0 0 140 45" xmlns="http://www.w3.org/2000/svg">
+  <!-- Professional CA Badge -->
+  <rect x="2" y="2" width="41" height="41" rx="8" fill="#1e40af" stroke="#1d4ed8" stroke-width="2"/>
+  
+  <!-- Document Stack -->
+  <rect x="8" y="12" width="14" height="18" rx="1" fill="white" opacity="0.9"/>
+  <rect x="10" y="14" width="14" height="18" rx="1" fill="white" opacity="0.95"/>
+  <rect x="12" y="16" width="14" height="18" rx="1" fill="white"/>
+  
+  <!-- Calculator lines -->
+  <line x1="15" y1="20" x2="23" y2="20" stroke="#1e40af" stroke-width="1"/>
+  <line x1="15" y1="23" x2="23" y2="23" stroke="#1e40af" stroke-width="1"/>
+  <line x1="15" y1="26" x2="21" y2="26" stroke="#1e40af" stroke-width="1"/>
+  <line x1="15" y1="29" x2="19" y2="29" stroke="#059669" stroke-width="1.5"/>
+  
+  <!-- MyeCA Text -->
+  <text x="52" y="20" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1f2937">
+    MyeCA
+  </text>
+  
+  <!-- .in domain -->
+  <text x="108" y="20" font-family="Arial, sans-serif" font-size="16" font-weight="normal" fill="#059669">
+    .in
+  </text>
+  
+  <!-- Professional tagline -->
+  <text x="52" y="33" font-family="Arial, sans-serif" font-size="9" fill="#6b7280">
+    Expert CA Services
+  </text>
+</svg> 

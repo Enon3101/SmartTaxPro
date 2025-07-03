@@ -8,7 +8,7 @@ interface SocialShareProps {
 }
 
 export const SocialShare = ({ url, title, description }: SocialShareProps) => {
-  const shareUrl = `https://smarttaxpro.com${url}`;
+  const shareUrl = `https://myeca.in${url}`;
   
   const shareLinks = {
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,

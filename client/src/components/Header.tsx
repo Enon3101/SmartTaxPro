@@ -201,7 +201,7 @@ const Header = () => {
                 <FileText className="h-5 w-5 text-primary" />
               </div>
               <span className="text-primary font-bold text-xl">
-                {location.startsWith('/admin') ? 'Admin' : 'myITR'}<span className="text-secondary">{location.startsWith('/admin') ? 'Panel' : 'eturn'}</span>
+                {location.startsWith('/admin') ? 'Admin' : 'MyeCA'}<span className="text-secondary">{location.startsWith('/admin') ? 'Panel' : '.in'}</span>
               </span>
             </div>
           </Link>
@@ -286,7 +286,7 @@ const Header = () => {
                       <FileText className="h-5 w-5 text-primary" />
                     </div>
                     <span className="text-primary font-bold text-xl">
-                      {location.startsWith('/admin') ? 'Admin' : 'myITR'}<span className="text-secondary">{location.startsWith('/admin') ? 'Panel' : 'eturn'}</span>
+                      {location.startsWith('/admin') ? 'Admin' : 'MyeCA'}<span className="text-secondary">{location.startsWith('/admin') ? 'Panel' : '.in'}</span>
                     </span>
                   </div>
                 </Link>

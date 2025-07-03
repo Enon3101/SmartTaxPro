@@ -13,21 +13,21 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    content: "SmartTaxPro made tax filing a breeze! The step-by-step guidance was incredibly helpful and saved me hours of work.",
+          content: "MyeCA.in made tax filing a breeze! The expert eCA guidance was incredibly helpful and saved me hours of work.",
     author: "Rahul Sharma",
     role: "Freelance Developer",
     rating: 5,
   },
   {
     id: 2,
-    content: "As a small business owner, I was dreading tax season. But with SmartTaxPro, I filed my taxes accurately and got my maximum refund.",
+    content: "As a small business owner, I was dreading tax season. But with MyeCA.in's expert eCA assistance, I filed my taxes accurately and got my maximum refund.",
     author: "Priya Patel",
     role: "Small Business Owner",
     rating: 5,
   },
   {
     id: 3,
-    content: "The interface is so intuitive and the calculations are spot on. I've recommended SmartTaxPro to all my colleagues.",
+    content: "The interface is so intuitive and the calculations are spot on. I've recommended MyeCA.in to all my colleagues.",
     author: "Amit Kumar",
     role: "Senior Accountant",
     rating: 5,
@@ -104,7 +104,7 @@ export const Testimonials = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-muted-foreground max-w-2xl mx-auto text-lg"
           >
-            Join thousands of satisfied users who have made SmartTaxPro their preferred tax filing solution
+            Join thousands of satisfied users who have made MyeCA.in their preferred expert eCA tax filing solution
           </motion.p>
         </div>
         

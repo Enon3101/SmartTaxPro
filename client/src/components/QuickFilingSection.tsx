@@ -785,7 +785,7 @@ const QuickFilingSection = () => {
           {/* Features */}
           <Card className="shadow-lg border-0">
             <CardHeader>
-              <CardTitle className="text-lg">Why Choose SmartTaxPro?</CardTitle>
+                              <CardTitle className="text-lg">Why Choose MyeCA.in?</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-3">

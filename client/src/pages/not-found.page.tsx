@@ -30,7 +30,7 @@ export default function NotFound() {
             <Link href="/">
               <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Take me home</button>
             </Link>
-            <a href="mailto:support@smarttaxpro.in" className="w-full text-center underline text-blue-600 hover:text-blue-800">Contact support</a>
+                          <a href="mailto:support@myeca.in" className="w-full text-center underline text-blue-600 hover:text-blue-800">Contact support</a>
           </div>
         </CardContent>
       </Card>

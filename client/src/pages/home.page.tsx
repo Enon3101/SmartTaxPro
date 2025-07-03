@@ -355,7 +355,7 @@ const Home = () => {
             transition={{ duration: 0.3 }}
             className="text-3xl font-bold text-center mb-12"
           >
-            Why Choose SmartTaxPro?
+                              Why Choose MyeCA.in?
           </motion.h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
@@ -431,7 +431,7 @@ const Home = () => {
             transition={{ duration: 0.3, delay: 0.1 }}
             className="text-primary-foreground/90 mb-8 max-w-2xl mx-auto"
           >
-            Join thousands of satisfied customers who have filed their returns with SmartTaxPro. Get started in minutes!
+                            Join thousands of satisfied customers who have filed their returns with MyeCA.in's expert eCA assistance. Get started in minutes!
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
