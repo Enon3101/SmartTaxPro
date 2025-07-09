@@ -14,6 +14,7 @@ import logger from './logger'; // Import shared logger
 import { registerRoutes } from "./routes";
 import { setupSecurityMiddleware } from "./securityMiddleware";
 import { setupVite, serveStatic } from "./vite"; // Removed log import
+import { healthCheckHandler, simpleHealthCheck } from './healthcheck';
 // calculatorRouter and blogRouter are no longer used directly here
 
 const httpLogger = pinoHttp({ logger });
@@ -70,10 +71,9 @@ app.use(httpLogger);
 // Initialize Passport
 app.use(passport.initialize());
 
-// Health check route
-app.get('/health', (_req: Request, res: Response) => {
-  res.status(200).json({ status: 'ok' });
-});
+// Health check routes
+app.get('/health', healthCheckHandler); // Comprehensive health check
+app.get('/health/simple', simpleHealthCheck); // Simple health check for load balancers
 
 // Add after helmet middleware
 app.use(compression());

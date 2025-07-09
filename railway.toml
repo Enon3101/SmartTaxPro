@@ -11,6 +11,6 @@ NPM_CONFIG_IGNORE_ENGINES = "true"
 
 [deploy]
 startCommand = "npm start"
-healthcheckPath = "/health"
+healthcheckPath = "/health/simple"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure" 
