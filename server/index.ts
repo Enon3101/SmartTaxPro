@@ -79,49 +79,87 @@ app.get('/health/simple', simpleHealthCheck); // Simple health check for load ba
 app.use(compression());
 
 (async () => {
-  const server = await registerRoutes(app);
+  try {
+    logger.info('Starting SmartTaxPro server...');
+    
+    const server = await registerRoutes(app);
 
-  app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-    const status = (err as any).status || (err as any).statusCode || 500;
-    
-    // SECURITY: Don't expose detailed error messages in production (Req E)
-    const isProduction = process.env.NODE_ENV === 'production';
-    const message = isProduction && status === 500 
-      ? "Internal Server Error" 
-      : err.message || "Internal Server Error";
-    
-    // SECURITY: Don't include stack traces in response (Req E)
-    const response = { message };
-    
-    logger.error({ status, err }, `Unhandled error: ${err.message}`);
-    
-    res.status(status).json(response);
-    
-    // Don't throw in production to prevent crashing the server
-    if (!isProduction) {
-      throw err;
+    app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+      const status = (err as any).status || (err as any).statusCode || 500;
+      
+      // SECURITY: Don't expose detailed error messages in production (Req E)
+      const isProduction = process.env.NODE_ENV === 'production';
+      const message = isProduction && status === 500 
+        ? "Internal Server Error" 
+        : err.message || "Internal Server Error";
+      
+      // SECURITY: Don't include stack traces in response (Req E)
+      const response = { message };
+      
+      logger.error({ status, err }, `Unhandled error: ${err.message}`);
+      
+      res.status(status).json(response);
+      
+      // Don't throw in production to prevent crashing the server
+      if (!isProduction) {
+        throw err;
+      }
+    });
+
+    // importantly only setup vite in development and after
+    // setting up all the other routes so the catch-all route
+    // doesn't interfere with the other routes
+    if (app.get("env") === "development") {
+      await setupVite(app, server);
+    } else {
+      serveStatic(app);
     }
-  });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
+    // Get port from environment variable (Railway sets PORT)
+    const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
+    
+    logger.info(`Attempting to start server on port ${port}...`);
+    
+    server.listen({
+      port,
+      host: "0.0.0.0",
+    }, () => {
+      logger.info(`✅ Server successfully started on http://0.0.0.0:${port}`);
+      logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      logger.info(`Health check available at: http://0.0.0.0:${port}/health/simple`);
+    });
+
+    // Handle server errors
+    server.on('error', (error: any) => {
+      logger.error('Server error:', error);
+      if (error.code === 'EADDRINUSE') {
+        logger.error(`Port ${port} is already in use`);
+        process.exit(1);
+      } else {
+        logger.error('Unknown server error:', error);
+        process.exit(1);
+      }
+    });
+
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+      logger.info('SIGTERM received, shutting down gracefully...');
+      server.close(() => {
+        logger.info('Server closed');
+        process.exit(0);
+      });
+    });
+
+    process.on('SIGINT', () => {
+      logger.info('SIGINT received, shutting down gracefully...');
+      server.close(() => {
+        logger.info('Server closed');
+        process.exit(0);
+      });
+    });
+
+  } catch (error) {
+    logger.error('Failed to start server:', error);
+    process.exit(1);
   }
-
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  // CLINE: Attempting to change port to 3000 and remove reusePort due to ENOTSUP error
-  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    // reusePort: true, // CLINE: Removed reusePort
-  }, () => {
-    logger.info(`Server listening on http://0.0.0.0:${port}`);
-  });
 })();

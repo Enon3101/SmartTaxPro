@@ -6,11 +6,12 @@ NODE_ENV = "production"
 NPM_CONFIG_OPTIONAL = "false"
 NPM_CONFIG_OMIT = "optional"
 NPM_CONFIG_LEGACY_PEER_DEPS = "true"
-NPM_CONFIG_IGNORE_SCRIPTS = "true"
+NPM_CONFIG_IGNORE_SCRIPTS = "false"
 NPM_CONFIG_IGNORE_ENGINES = "true"
 
 [deploy]
 startCommand = "npm start"
 healthcheckPath = "/health/simple"
-healthcheckTimeout = 300
-restartPolicyType = "on_failure" 
+healthcheckTimeout = 60
+restartPolicyType = "on_failure"
+numReplicas = 1 
