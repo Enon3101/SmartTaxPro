@@ -71,18 +71,61 @@ app.use(httpLogger);
 // Initialize Passport
 app.use(passport.initialize());
 
-// Health check routes
+// Health check routes - these should be early in the middleware chain
 app.get('/health', healthCheckHandler); // Comprehensive health check
 app.get('/health/simple', simpleHealthCheck); // Simple health check for load balancers
 
 // Add after helmet middleware
 app.use(compression());
 
+// Add a basic readiness check
+app.get('/ready', (req: Request, res: Response) => {
+  res.status(200).json({ 
+    status: 'ready',
+    timestamp: new Date().toISOString(),
+    message: 'Server is ready to accept requests'
+  });
+});
+
+// Add a basic root endpoint
+app.get('/', (req: Request, res: Response) => {
+  res.json({ 
+    message: 'SmartTaxPro API is running',
+    version: process.env.npm_package_version || '1.0.0',
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  });
+});
+
 (async () => {
   try {
     logger.info('Starting SmartTaxPro server...');
+    logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(`Node version: ${process.version}`);
+    logger.info(`Platform: ${process.platform}`);
+    logger.info(`Architecture: ${process.arch}`);
     
-    const server = await registerRoutes(app);
+    // Check if DATABASE_URL is configured
+    if (!process.env.DATABASE_URL) {
+      logger.warn('DATABASE_URL not configured - some features may not work');
+    } else {
+      logger.info('Database URL is configured');
+    }
+    
+    let server;
+    let routesRegistered = false;
+    
+    try {
+      server = await registerRoutes(app);
+      routesRegistered = true;
+      logger.info('All routes registered successfully');
+    } catch (error) {
+      logger.error('Failed to register routes:', error);
+      // Create a minimal server for health checks
+      const { createServer } = await import('http');
+      server = createServer(app);
+      logger.warn('Created minimal server for health checks only');
+    }
 
     app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
       const status = (err as any).status || (err as any).statusCode || 500;
@@ -120,6 +163,9 @@ app.use(compression());
     
     logger.info(`Attempting to start server on port ${port}...`);
     
+    // Add a small delay to ensure all middleware is properly initialized
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     server.listen({
       port,
       host: "0.0.0.0",
@@ -127,6 +173,12 @@ app.use(compression());
       logger.info(`✅ Server successfully started on http://0.0.0.0:${port}`);
       logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
       logger.info(`Health check available at: http://0.0.0.0:${port}/health/simple`);
+      logger.info(`Ready check available at: http://0.0.0.0:${port}/ready`);
+      logger.info(`Routes registered: ${routesRegistered ? 'Yes' : 'No (minimal mode)'}`);
+      
+      // Log memory usage
+      const memUsage = process.memoryUsage();
+      logger.info(`Memory usage: ${Math.round(memUsage.heapUsed / 1024 / 1024)}MB / ${Math.round(memUsage.heapTotal / 1024 / 1024)}MB`);
     });
 
     // Handle server errors

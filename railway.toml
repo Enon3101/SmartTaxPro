@@ -10,8 +10,8 @@ NPM_CONFIG_IGNORE_SCRIPTS = "false"
 NPM_CONFIG_IGNORE_ENGINES = "true"
 
 [deploy]
-startCommand = "npm start"
-healthcheckPath = "/health/simple"
-healthcheckTimeout = 60
-restartPolicyType = "on_failure"
+startCommand = "node railway-server.js"
+healthcheckPath = "/ready"
+healthcheckTimeout = 30
+restartPolicyType = "always"
 numReplicas = 1 

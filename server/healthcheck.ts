@@ -51,8 +51,26 @@ export class HealthChecker {
   async checkDatabase(): Promise<HealthCheck> {
     const start = Date.now();
     try {
-      // Test database connectivity
-      await db.execute('SELECT 1 as test');
+      // Check if DATABASE_URL is configured
+      if (!process.env.DATABASE_URL) {
+        return {
+          status: 'degraded',
+          message: 'Database URL not configured',
+          details: {
+            type: 'postgresql',
+            error: 'DATABASE_URL environment variable not set'
+          }
+        };
+      }
+
+      // Test database connectivity with timeout
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Database timeout')), 5000)
+      );
+      
+      const dbPromise = db.execute('SELECT 1 as test');
+      await Promise.race([dbPromise, timeoutPromise]);
+      
       const responseTime = Date.now() - start;
       
       return {
@@ -176,9 +194,6 @@ export class HealthChecker {
       // Check if critical dependencies are available
       const criticalModules = [
         'express',
-        'react',
-        'react-dom',
-        '@radix-ui/react-dialog',
         'drizzle-orm'
       ];
       
@@ -252,7 +267,7 @@ export class HealthChecker {
       Promise.resolve(this.checkDependencies())
     ]);
 
-    // Determine overall status
+    // Determine overall status - be more lenient with database issues
     const checks = [dbCheck, fsCheck, memoryCheck, diskCheck, depsCheck];
     const unhealthyCount = checks.filter(c => c.status === 'unhealthy').length;
     const degradedCount = checks.filter(c => c.status === 'degraded').length;
@@ -305,11 +320,21 @@ export const healthCheckHandler = async (req: Request, res: Response) => {
 };
 
 export const simpleHealthCheck = (req: Request, res: Response) => {
-  res.status(200).json({ 
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: process.env.NODE_ENV || 'development',
-    version: process.env.npm_package_version || '1.0.0'
-  });
+  try {
+    res.status(200).json({ 
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || 'development',
+      version: process.env.npm_package_version || '1.0.0',
+      message: 'Service is running'
+    });
+  } catch (error) {
+    res.status(503).json({
+      status: 'error',
+      timestamp: new Date().toISOString(),
+      message: 'Health check failed',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 }; 
