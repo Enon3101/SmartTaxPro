@@ -43,6 +43,7 @@ export default defineConfig({
     target: 'es2020',
     
     rollupOptions: {
+      external: ['i18next-http-backend'],
       output: {
         // Enhanced manual chunking strategy
         manualChunks: (id) => {
@@ -118,7 +119,7 @@ export default defineConfig({
       'wouter',
       '@tanstack/react-query',
     ],
-    exclude: ['@vite/client', '@vite/env'],
+    exclude: ['@vite/client', '@vite/env', 'i18next-http-backend'],
   },
   
   // Performance optimizations
