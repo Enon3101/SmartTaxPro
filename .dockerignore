@@ -1,28 +1,19 @@
-# Global
+node_modules
+npm-debug.log
 .git
 .gitignore
-Dockerfile
-dist
-uploads
+README.md
 .env
-.env.*
-node_modules
-coverage
-*.log
-
-# Client & server build artefacts
-client/node_modules
-client/dist
-server/node_modules
-server/dist
-
-node_modules
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 .DS_Store
-server/public
-vite.config.ts.*
-*.tar.gz
-
-# Added for .dockerignore
-uploads/
 *.log
-build/
+coverage
+.nyc_output
+.vscode
+.idea
+*.swp
+*.swo
+*~

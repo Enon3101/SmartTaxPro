@@ -173,6 +173,12 @@
     "vite": "^4.5.5"
   },
   "overrides": {
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.0",
+    "rollup": "^3.29.5",
+    "@rollup/rollup-linux-x64-gnu": "npm:rollup@^3.29.5",
+    "@rollup/rollup-linux-x64-musl": "npm:rollup@^3.29.5",
+    "@rollup/rollup-darwin-x64": "npm:rollup@^3.29.5",
+    "@rollup/rollup-darwin-arm64": "npm:rollup@^3.29.5",
+    "@rollup/rollup-win32-x64-msvc": "npm:rollup@^3.29.5"
   }
 }
