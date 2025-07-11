@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - MyeCA.in | Developer Resources</title>
+    <meta name="description" content="Comprehensive API documentation for MyeCA.in tax filing services. Integrate tax calculations, document processing, and filing automation.">
+    <meta name="keywords" content="API documentation, tax filing API, developer resources, integration, MyeCA.in API">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://myeca.in/api-documentation">
+    <meta property="og:title" content="API Documentation - MyeCA.in">
+    <meta property="og:description" content="Developer resources and API integration">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://myeca.in/api-documentation">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <img src="assets/logo.png" alt="MyeCA.in" class="logo">
+                    </a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="start-filing.html">Start Filing</a></li>
+                    <li><a href="calculators.html">Calculators</a></li>
+                    <li><a href="document-vault.html">Document Vault</a></li>
+                    <li><a href="tax-expert.html">Tax Expert</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="support.html">Support</a></li>
+                    <li><a href="login.html" class="btn-login">Login</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section api-hero">
+            <div class="container">
+                <h1>API Documentation</h1>
+                <p>Integrate MyeCA.in tax filing services into your applications</p>
+                <div class="api-badges">
+                    <div class="badge">
+                        <span class="badge-icon">🔑</span>
+                        <span>RESTful API</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">📊</span>
+                        <span>JSON Responses</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">🔒</span>
+                        <span>OAuth 2.0</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="api-overview">
+            <div class="container">
+                <div class="api-grid">
+                    <div class="api-card">
+                        <div class="api-icon">🧮</div>
+                        <h3>Tax Calculators</h3>
+                        <p>Calculate income tax, TDS, GST, and other tax liabilities with real-time data.</p>
+                        <ul>
+                            <li>Income tax calculation</li>
+                            <li>TDS computation</li>
+                            <li>GST calculation</li>
+                            <li>Deduction optimization</li>
+                        </ul>
+                    </div>
+                    <div class="api-card">
+                        <div class="api-icon">📄</div>
+                        <h3>Document Processing</h3>
+                        <p>Upload, validate, and process tax documents with AI-powered OCR.</p>
+                        <ul>
+                            <li>Document upload</li>
+                            <li>OCR extraction</li>
+                            <li>Data validation</li>
+                            <li>Format conversion</li>
+                        </ul>
+                    </div>
+                    <div class="api-card">
+                        <div class="api-icon">📋</div>
+                        <h3>Filing Automation</h3>
+                        <p>Automate tax filing processes with our comprehensive API endpoints.</p>
+                        <ul>
+                            <li>Form generation</li>
+                            <li>E-filing submission</li>
+                            <li>Status tracking</li>
+                            <li>Refund monitoring</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="api-authentication">
+            <div class="container">
+                <h2>Authentication</h2>
+                <div class="auth-content">
+                    <div class="auth-method">
+                        <h3>OAuth 2.0</h3>
+                        <p>Secure authentication using OAuth 2.0 with PKCE for public clients.</p>
+                        <div class="code-block">
+                            <pre><code>GET /oauth/authorize
+  ?client_id=YOUR_CLIENT_ID
+  &redirect_uri=YOUR_REDIRECT_URI
+  &response_type=code
+  &scope=tax_calculation document_upload
+  &state=random_string</code></pre>
+                        </div>
+                    </div>
+                    <div class="auth-method">
+                        <h3>API Keys</h3>
+                        <p>For server-to-server communication, use API keys in request headers.</p>
+                        <div class="code-block">
+                            <pre><code>Authorization: Bearer YOUR_API_KEY
+Content-Type: application/json</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="api-endpoints">
+            <div class="container">
+                <h2>API Endpoints</h2>
+                
+                <div class="endpoint-category">
+                    <h3>Tax Calculation</h3>
+                    <div class="endpoint-item">
+                        <div class="endpoint-header">
+                            <span class="method post">POST</span>
+                            <span class="url">/api/v1/calculate/income-tax</span>
+                        </div>
+                        <p>Calculate income tax liability based on income and deductions.</p>
+                        <div class="endpoint-details">
+                            <h4>Request Body</h4>
+                            <div class="code-block">
+                                <pre><code>{
+  "financial_year": "2024-25",
+  "income": {
+    "salary": 800000,
+    "business": 0,
+    "capital_gains": 50000,
+    "other_sources": 10000
+  },
+  "deductions": {
+    "section_80c": 150000,
+    "section_80d": 25000,
+    "section_80g": 10000
+  },
+  "tax_regime": "new"
+}</code></pre>
+                            </div>
+                            <h4>Response</h4>
+                            <div class="code-block">
+                                <pre><code>{
+  "success": true,
+  "data": {
+    "total_income": 860000,
+    "taxable_income": 675000,
+    "total_tax": 45000,
+    "cess": 1800,
+    "total_tax_liability": 46800,
+    "effective_tax_rate": 5.44
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="endpoint-item">
+                        <div class="endpoint-header">
+                            <span class="method post">POST</span>
+                            <span class="url">/api/v1/calculate/gst</span>
+                        </div>
+                        <p>Calculate GST for goods and services.</p>
+                        <div class="endpoint-details">
+                            <h4>Request Body</h4>
+                            <div class="code-block">
+                                <pre><code>{
+  "base_amount": 10000,
+  "gst_rate": 18,
+  "is_interstate": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint-category">
+                    <h3>Document Management</h3>
+                    <div class="endpoint-item">
+                        <div class="endpoint-header">
+                            <span class="method post">POST</span>
+                            <span class="url">/api/v1/documents/upload</span>
+                        </div>
+                        <p>Upload and process tax documents.</p>
+                        <div class="endpoint-details">
+                            <h4>Request (Multipart Form)</h4>
+                            <div class="code-block">
+                                <pre><code>Content-Type: multipart/form-data
+
+file: [binary data]
+document_type: "form_16"
+financial_year: "2024-25"
+metadata: {
+  "employer_name": "ABC Corp",
+  "employee_id": "EMP123"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="endpoint-item">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <span class="url">/api/v1/documents/{document_id}</span>
+                        </div>
+                        <p>Retrieve document information and extracted data.</p>
+                    </div>
+                </div>
+
+                <div class="endpoint-category">
+                    <h3>Filing Management</h3>
+                    <div class="endpoint-item">
+                        <div class="endpoint-header">
+                            <span class="method post">POST</span>
+                            <span class="url">/api/v1/filing/create</span>
+                        </div>
+                        <p>Create a new tax filing session.</p>
+                        <div class="endpoint-details">
+                            <h4>Request Body</h4>
+                            <div class="code-block">
+                                <pre><code>{
+  "user_id": "user_123",
+  "financial_year": "2024-25",
+  "filing_type": "individual",
+  "documents": ["doc_1", "doc_2"],
+  "preferences": {
+    "auto_calculate": true,
+    "optimize_deductions": true
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="endpoint-item">
+                        <div class="endpoint-header">
+                            <span class="method get">GET</span>
+                            <span class="url">/api/v1/filing/{filing_id}/status</span>
+                        </div>
+                        <p>Get filing status and progress information.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="api-sdk">
+            <div class="container">
+                <h2>SDKs & Libraries</h2>
+                <div class="sdk-grid">
+                    <div class="sdk-card">
+                        <div class="sdk-icon">🐍</div>
+                        <h3>Python SDK</h3>
+                        <p>Official Python client library for MyeCA.in API.</p>
+                        <div class="code-block">
+                            <pre><code>pip install myeca-python
+
+from myeca import MyeCA
+
+client = MyeCA(api_key="YOUR_API_KEY")
+tax_data = client.calculate_income_tax(income=800000)</code></pre>
+                        </div>
+                        <a href="#" class="sdk-link">View Documentation</a>
+                    </div>
+                    
+                    <div class="sdk-card">
+                        <div class="sdk-icon">☕</div>
+                        <h3>Java SDK</h3>
+                        <p>Java client library with full API support.</p>
+                        <div class="code-block">
+                            <pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;com.myeCA&lt;/groupId&gt;
+  &lt;artifactId&gt;myeca-java&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+                        </div>
+                        <a href="#" class="sdk-link">View Documentation</a>
+                    </div>
+                    
+                    <div class="sdk-card">
+                        <div class="sdk-icon">🟨</div>
+                        <h3>JavaScript SDK</h3>
+                        <p>Node.js and browser-compatible JavaScript library.</p>
+                        <div class="code-block">
+                            <pre><code>npm install @myeca/sdk
+
+import { MyeCA } from '@myeca/sdk';
+
+const client = new MyeCA('YOUR_API_KEY');
+const result = await client.calculateTax(income);</code></pre>
+                        </div>
+                        <a href="#" class="sdk-link">View Documentation</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="api-examples">
+            <div class="container">
+                <h2>Code Examples</h2>
+                <div class="examples-tabs">
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" data-tab="python">Python</button>
+                        <button class="tab-btn" data-tab="javascript">JavaScript</button>
+                        <button class="tab-btn" data-tab="curl">cURL</button>
+                        <button class="tab-btn" data-tab="php">PHP</button>
+                    </div>
+                    
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="python">
+                            <h3>Complete Tax Filing Example</h3>
+                            <div class="code-block">
+                                <pre><code>from myeca import MyeCA
+import json
+
+# Initialize client
+client = MyeCA(api_key="your_api_key")
+
+# Calculate tax
+tax_data = {
+    "financial_year": "2024-25",
+    "income": {
+        "salary": 800000,
+        "other_sources": 10000
+    },
+    "deductions": {
+        "section_80c": 150000
+    }
+}
+
+result = client.calculate_income_tax(tax_data)
+print(f"Tax Liability: ₹{result['total_tax_liability']}")
+
+# Upload documents
+with open("form16.pdf", "rb") as f:
+    doc = client.upload_document(
+        file=f,
+        document_type="form_16",
+        financial_year="2024-25"
+    )
+
+# Create filing
+filing = client.create_filing(
+    user_id="user_123",
+    financial_year="2024-25",
+    documents=[doc['id']]
+)
+
+print(f"Filing ID: {filing['id']}")</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane" id="javascript">
+                            <h3>Node.js Integration</h3>
+                            <div class="code-block">
+                                <pre><code>const { MyeCA } = require('@myeca/sdk');
+
+const client = new MyeCA('your_api_key');
+
+async function fileTaxes() {
+    try {
+        // Calculate tax
+        const taxResult = await client.calculateIncomeTax({
+            financial_year: '2024-25',
+            income: {
+                salary: 800000,
+                other_sources: 10000
+            },
+            deductions: {
+                section_80c: 150000
+            }
+        });
+
+        console.log(`Tax: ₹${taxResult.total_tax_liability}`);
+
+        // Upload document
+        const fs = require('fs');
+        const document = await client.uploadDocument({
+            file: fs.createReadStream('form16.pdf'),
+            document_type: 'form_16',
+            financial_year: '2024-25'
+        });
+
+        // Create filing
+        const filing = await client.createFiling({
+            user_id: 'user_123',
+            financial_year: '2024-25',
+            documents: [document.id]
+        });
+
+        console.log(`Filing created: ${filing.id}`);
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+}
+
+fileTaxes();</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane" id="curl">
+                            <h3>REST API Calls</h3>
+                            <div class="code-block">
+                                <pre><code># Calculate Income Tax
+curl -X POST https://api.myeca.in/v1/calculate/income-tax \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "financial_year": "2024-25",
+    "income": {
+      "salary": 800000,
+      "other_sources": 10000
+    },
+    "deductions": {
+      "section_80c": 150000
+    }
+  }'
+
+# Upload Document
+curl -X POST https://api.myeca.in/v1/documents/upload \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -F "file=@form16.pdf" \
+  -F "document_type=form_16" \
+  -F "financial_year=2024-25"
+
+# Create Filing
+curl -X POST https://api.myeca.in/v1/filing/create \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user_123",
+    "financial_year": "2024-25",
+    "filing_type": "individual"
+  }'</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-pane" id="php">
+                            <h3>PHP Integration</h3>
+                            <div class="code-block">
+                                <pre><code>&lt;?php
+require_once 'vendor/autoload.php';
+
+use MyeCA\MyeCAClient;
+
+$client = new MyeCAClient('your_api_key');
+
+// Calculate tax
+$taxData = [
+    'financial_year' => '2024-25',
+    'income' => [
+        'salary' => 800000,
+        'other_sources' => 10000
+    ],
+    'deductions' => [
+        'section_80c' => 150000
+    ]
+];
+
+$result = $client->calculateIncomeTax($taxData);
+echo "Tax Liability: ₹" . $result['total_tax_liability'] . "\n";
+
+// Upload document
+$document = $client->uploadDocument([
+    'file' => new CURLFile('form16.pdf'),
+    'document_type' => 'form_16',
+    'financial_year' => '2024-25'
+]);
+
+// Create filing
+$filing = $client->createFiling([
+    'user_id' => 'user_123',
+    'financial_year' => '2024-25',
+    'documents' => [$document['id']]
+]);
+
+echo "Filing ID: " . $filing['id'] . "\n";
+?&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="api-rate-limits">
+            <div class="container">
+                <h2>Rate Limits & Pricing</h2>
+                <div class="rate-limits-grid">
+                    <div class="rate-limit-card">
+                        <h3>Free Tier</h3>
+                        <div class="limits">
+                            <div class="limit-item">
+                                <span>API Calls</span>
+                                <span>1,000/month</span>
+                            </div>
+                            <div class="limit-item">
+                                <span>Document Uploads</span>
+                                <span>10/month</span>
+                            </div>
+                            <div class="limit-item">
+                                <span>Filing Creation</span>
+                                <span>5/month</span>
+                            </div>
+                        </div>
+                        <p>Perfect for testing and small integrations</p>
+                    </div>
+                    
+                    <div class="rate-limit-card featured">
+                        <h3>Professional</h3>
+                        <div class="limits">
+                            <div class="limit-item">
+                                <span>API Calls</span>
+                                <span>50,000/month</span>
+                            </div>
+                            <div class="limit-item">
+                                <span>Document Uploads</span>
+                                <span>1,000/month</span>
+                            </div>
+                            <div class="limit-item">
+                                <span>Filing Creation</span>
+                                <span>500/month</span>
+                            </div>
+                        </div>
+                        <p>Ideal for growing businesses</p>
+                        <span class="price">₹5,000/month</span>
+                    </div>
+                    
+                    <div class="rate-limit-card">
+                        <h3>Enterprise</h3>
+                        <div class="limits">
+                            <div class="limit-item">
+                                <span>API Calls</span>
+                                <span>Unlimited</span>
+                            </div>
+                            <div class="limit-item">
+                                <span>Document Uploads</span>
+                                <span>Unlimited</span>
+                            </div>
+                            <div class="limit-item">
+                                <span>Filing Creation</span>
+                                <span>Unlimited</span>
+                            </div>
+                        </div>
+                        <p>For large-scale integrations</p>
+                        <span class="price">Custom Pricing</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="api-support">
+            <div class="container">
+                <h2>Developer Support</h2>
+                <div class="support-grid">
+                    <div class="support-card">
+                        <div class="support-icon">📚</div>
+                        <h3>Documentation</h3>
+                        <p>Comprehensive guides, tutorials, and reference materials.</p>
+                        <a href="#" class="support-link">Browse Docs</a>
+                    </div>
+                    
+                    <div class="support-card">
+                        <div class="support-icon">💬</div>
+                        <h3>Developer Chat</h3>
+                        <p>Real-time support from our technical team.</p>
+                        <a href="#" class="support-link">Join Chat</a>
+                    </div>
+                    
+                    <div class="support-card">
+                        <div class="support-icon">🐛</div>
+                        <h3>Issue Tracker</h3>
+                        <p>Report bugs and request new features.</p>
+                        <a href="#" class="support-link">View Issues</a>
+                    </div>
+                    
+                    <div class="support-card">
+                        <div class="support-icon">📧</div>
+                        <h3>Email Support</h3>
+                        <p>Direct email support for complex issues.</p>
+                        <a href="mailto:api-support@myeca.in" class="support-link">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Ready to Integrate?</h2>
+                    <p>Start building with MyeCA.in API today</p>
+                    <div class="cta-buttons">
+                        <a href="#" class="btn-primary">Get API Key</a>
+                        <a href="#" class="btn-secondary">View SDKs</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MyeCA.in</h3>
+                    <p>Your trusted partner for hassle-free tax filing and financial planning.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">📘</a>
+                        <a href="#" aria-label="Twitter">🐦</a>
+                        <a href="#" aria-label="LinkedIn">💼</a>
+                        <a href="#" aria-label="Instagram">📷</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="start-filing.html">Tax Filing</a></li>
+                        <li><a href="calculators.html">Tax Calculators</a></li>
+                        <li><a href="document-vault.html">Document Vault</a></li>
+                        <li><a href="tax-expert.html">Tax Expert</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="tax-resources.html">Tax Resources</a></li>
+                        <li><a href="support.html">Support</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="terms-of-service.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MyeCA.in. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Tab functionality for code examples
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+                
+                // Update active tab button
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update active tab content
+                document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Syntax highlighting simulation
+        document.querySelectorAll('.code-block pre code').forEach(block => {
+            // Add line numbers
+            const lines = block.textContent.split('\n');
+            const numberedLines = lines.map((line, index) => 
+                `<span class="line-number">${index + 1}</span>${line}`
+            ).join('\n');
+            block.innerHTML = numberedLines;
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('.code-block').forEach(block => {
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.onclick = function() {
+                const code = block.querySelector('code').textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+                });
+            };
+            block.appendChild(copyBtn);
+        });
+    </script>
+</body>
+</html>
