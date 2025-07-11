@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Map - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+    .sitemap-header { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; text-align: center; }
+    .sitemap-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: #1f2937; }
+    .sitemap-header p { font-size: 1.1rem; color: #64748b; max-width: 600px; margin: 0 auto; }
+    .sitemap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+    .sitemap-section { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; }
+    .section-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; color: #1f2937; display: flex; align-items: center; gap: 0.5rem; }
+    .page-list { list-style: none; padding: 0; margin: 0; }
+    .page-item { margin-bottom: 1rem; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; transition: all 0.2s; }
+    .page-item:hover { border-color: #2563eb; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1); }
+    .page-link { color: #2563eb; text-decoration: none; font-weight: 600; font-size: 1.1rem; display: block; margin-bottom: 0.5rem; }
+    .page-link:hover { text-decoration: underline; }
+    .page-description { color: #64748b; font-size: 0.9rem; line-height: 1.5; }
+    .page-meta { display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 0.8rem; color: #9ca3af; }
+    .quick-links { background: #eff6ff; border-radius: 1rem; padding: 2rem; margin-bottom: 2rem; }
+    .quick-links h2 { font-weight: 600; margin-bottom: 1rem; color: #1e40af; }
+    .quick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+    .quick-link { background: #fff; padding: 1rem; border-radius: 0.5rem; text-decoration: none; color: #374151; transition: all 0.2s; border: 1px solid #dbeafe; }
+    .quick-link:hover { border-color: #2563eb; transform: translateY(-2px); }
+    .quick-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .quick-title { font-weight: 600; margin-bottom: 0.25rem; }
+    .quick-desc { font-size: 0.8rem; color: #64748b; }
+    @media (max-width: 768px) { .sitemap-grid { grid-template-columns: 1fr; } .quick-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <nav class="container" style="padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+  
+  <div class="container">
+    <div class="sitemap-header">
+      <h1>Site Map</h1>
+      <p>Complete overview of all pages and features available on MyeCA.in. Find what you're looking for quickly and easily.</p>
+    </div>
+    
+    <div class="quick-links">
+      <h2>🚀 Quick Access</h2>
+      <div class="quick-grid">
+        <a href="start-filing.html" class="quick-link">
+          <div class="quick-icon">📝</div>
+          <div class="quick-title">Start Filing</div>
+          <div class="quick-desc">Begin your tax return</div>
+        </a>
+        <a href="calculators.html" class="quick-link">
+          <div class="quick-icon">🧮</div>
+          <div class="quick-title">Tax Calculators</div>
+          <div class="quick-desc">Calculate your tax liability</div>
+        </a>
+        <a href="tax-expert.html" class="quick-link">
+          <div class="quick-icon">🤖</div>
+          <div class="quick-title">Tax Expert</div>
+          <div class="quick-desc">Get expert advice</div>
+        </a>
+        <a href="pricing.html" class="quick-link">
+          <div class="quick-icon">💰</div>
+          <div class="quick-title">Pricing Plans</div>
+          <div class="quick-desc">View our plans</div>
+        </a>
+        <a href="support.html" class="quick-link">
+          <div class="quick-icon">❓</div>
+          <div class="quick-title">Support</div>
+          <div class="quick-desc">Get help & support</div>
+        </a>
+        <a href="contact.html" class="quick-link">
+          <div class="quick-icon">📞</div>
+          <div class="quick-title">Contact Us</div>
+          <div class="quick-desc">Reach out to us</div>
+        </a>
+      </div>
+    </div>
+    
+    <div class="sitemap-grid">
+      <div class="sitemap-section">
+        <div class="section-title">🏠 Main Pages</div>
+        <ul class="page-list">
+          <li class="page-item">
+            <a href="index.html" class="page-link">Home</a>
+            <div class="page-description">Landing page with hero section, features, testimonials, and call-to-action</div>
+            <div class="page-meta">
+              <span>📊 Overview</span>
+              <span>⭐ Featured</span>
+            </div>
+          </li>
+          <li class="page-item">
+            <a href="about.html" class="page-link">About Us</a>
+            <div class="page-description">Learn about MyeCA.in, our mission, and commitment to simplifying tax filing</div>
+            <div class="page-meta">
+              <span>ℹ️ Information</span>
+            </div>
+          </li>
+          <li class="page-item">
+            <a href="features.html" class="page-link">Features</a>
+            <div class="page-description">Explore all the features and tools available on our tax filing platform</div>
+            <div class="page-meta">
+              <span>✨ Features</span>
+            </div>
+          </li>
+          <li class="page-item">
+            <a href="gallery.html" class="page-link">Gallery</a>
+            <div class="page-description">Visual showcase of our platform interface and user experience</div>
+            <div class="page-meta">
+              <span>🖼️ Visual</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="sitemap-section">
+        <div class="section-title">📝 Tax Filing</div>
+        <ul class="page-list">
+          <li class="page-item">
+            <a href="start-filing.html" class="page-link">Start Filing</a>
+            <div class="page-description">Multi-step tax filing wizard with form validation and guided process</div>
+            <div class="page-meta">
+              <span>🚀 Primary</span>
+              <span>⭐ Popular</span>
+            </div>
+          </li>
+          <li class="page-item">
+            <a href="filing-complete.html" class="page-link">Filing Complete</a>
+            <div class="page-description">Success page with acknowledgement number and next steps after filing</div>
+            <div class="page-meta">
+              <span>✅ Success</span>
+            </div>
+          </li>
+          <li class="page-item">
+            <a href="payment.html" class="page-link">Payment</a>
+            <div class="page-description">Secure payment gateway with multiple payment options (net banking, cards, UPI)</div>
+            <div class="page-meta">
+              <span>💳 Payment</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="sitemap-section">
+        <div class="section-title">🧮 Calculators & Tools</div>
+        <ul class="page-list">
+          <li class="page-item">
+            <a href="calculators.html" class="page-link">Tax Calculators</a>
+            <div class="page-description">Comprehensive tax and financial calculators with interactive tabs</div>
+            <div class="page-meta">
+              <span>🧮 Tools</span>
+              <span>⭐ Popular</span>
+            </div>
+          </li>
+          <li class="page-item">
+            <a href="document-vault.html" class="page-link">Document Vault</a>
+            <div class="page-description">Secure document management with file upload simulation and organization</div>
+            <div class="page-meta">
+              <span>📁 Storage</span>
+            </div>
+          </li>
+          <li class="page-item">
+            <a href="tax-expert.html" class="page-link">Tax Expert</a>
+            <div class="page-description">AI-powered chat interface for instant tax advice and answers</div>
+            <div class="page-meta">
+              <span>🤖 AI</span>
+              <span>⭐ Popular</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="sitemap-section">
+        <div class="section-title">📚 Resources & Information</div>
+        <ul class="page-list">
+          <li class="page-item">
+            <a href="tax-resources.html" class="page-link">Tax Resources</a>
+            <div class="page-description">Comprehensive tax information, slabs, deadlines, and government resources</div>
+            <div class="page-meta">
+              <span>📚 Resources</span>
+              <span>⭐ Popular</span>
+            </div>
+          </li>
+          <li class="page-item">
+            <a href="profile.html" class="page-link">My Profile</a>
+            <div class="page-description">User profile management with personal info, filing history, and documents</div>
+            <div class="page-meta">
+              <span>👤 Profile</span>
+            </div>
+          </li>
+          <li class="page-item">
+            <a href="search.html" class="page-link">Search Results</a>
+            <div class="page-description">Search functionality with filters and categorized results</div>
+            <div class="page-meta">
+              <span>🔍 Search</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="sitemap-section">
+        <div class="section-title">💰 Business & Support</div>
+        <ul class="page-list">
+          <li class="page-item">
+            <a href="pricing.html" class="page-link">Pricing Plans</a>
+            <div class="page-description">Complete pricing plans for DIY and expert-assisted tax filing</div>
+            <div class="page-meta">
+              <span>💰 Pricing</span>
+              <span>⭐ Popular</span>
+            </div>
+          </li>
+          <li class="page-item">
+            <a href="support.html" class="page-link">Support Center</a>
+            <div class="page-description">FAQ accordion, contact methods, and comprehensive support resources</div>
+            <div class="page-meta">
+              <span>❓ Support</span>
+            </div>
+          </li>
+          <li class="page-item">
+            <a href="contact.html" class="page-link">Contact Us</a>
+            <div class="page-description">Contact information, office locations, and contact form</div>
+            <div class="page-meta">
+              <span>📞 Contact</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="sitemap-section">
+        <div class="section-title">🔐 User Account</div>
+        <ul class="page-list">
+          <li class="page-item">
+            <a href="login.html" class="page-link">Login</a>
+            <div class="page-description">User authentication with email/password and validation</div>
+            <div class="page-meta">
+              <span>🔑 Auth</span>
+            </div>
+          </li>
+          <li class="page-item">
+            <a href="register.html" class="page-link">Register</a>
+            <div class="page-description">User registration with comprehensive form and validation</div>
+            <div class="page-meta">
+              <span>📝 Sign Up</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="sitemap-section">
+        <div class="section-title">⚠️ System Pages</div>
+        <ul class="page-list">
+          <li class="page-item">
+            <a href="404.html" class="page-link">404 - Page Not Found</a>
+            <div class="page-description">Custom error page with helpful navigation and search options</div>
+            <div class="page-meta">
+              <span>❌ Error</span>
+            </div>
+          </li>
+          <li class="page-item">
+            <a href="offline.html" class="page-link">Offline Page</a>
+            <div class="page-description">Offline experience page with retry functionality and available features</div>
+            <div class="page-meta">
+              <span>📡 Offline</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+      <h3 style="margin-bottom: 1rem; color: #1f2937;">Can't find what you're looking for?</h3>
+      <p style="color: #64748b; margin-bottom: 1.5rem;">Use our search functionality or contact our support team for assistance.</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="search.html" class="btn">🔍 Search Site</a>
+        <a href="support.html" class="btn btn-outline">❓ Get Help</a>
+        <a href="contact.html" class="btn btn-outline">📞 Contact Us</a>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+  
+  <script>
+    // Track page view for analytics
+    console.log('Sitemap page viewed');
+    
+    // Add smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

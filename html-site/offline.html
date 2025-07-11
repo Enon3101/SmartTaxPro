@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; }
+    .container { max-width: 600px; margin: 0 auto; padding: 2rem 1rem; }
+    .offline-card { background: #fff; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; text-align: center; }
+    .offline-header { background: linear-gradient(90deg, #f59e0b, #d97706); color: #fff; padding: 3rem 2rem; }
+    .offline-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .offline-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .offline-content { padding: 3rem 2rem; }
+    .offline-message { font-size: 1.25rem; color: #64748b; margin-bottom: 2rem; }
+    .retry-button { background: #2563eb; color: #fff; padding: 1rem 2rem; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; margin-bottom: 2rem; }
+    .retry-button:hover { background: #1d4ed8; }
+    .offline-features { background: #f8fafc; border-radius: 0.5rem; padding: 2rem; margin-top: 2rem; }
+    .offline-features h3 { font-weight: 600; margin-bottom: 1rem; }
+    .feature-list { text-align: left; max-width: 400px; margin: 0 auto; }
+    .feature-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+    .feature-icon { color: #22c55e; }
+    @media (max-width: 768px) { .offline-header h1 { font-size: 1.5rem; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="offline-card">
+      <div class="offline-header">
+        <div class="offline-icon">📡</div>
+        <h1>You're Offline</h1>
+        <p>No internet connection detected</p>
+      </div>
+      
+      <div class="offline-content">
+        <div class="offline-message">
+          Don't worry! You can still access some features while offline.
+        </div>
+        
+        <button class="retry-button" onclick="retryConnection()">
+          🔄 Try Again
+        </button>
+        
+        <div class="offline-features">
+          <h3>Available Offline</h3>
+          <div class="feature-list">
+            <div class="feature-item">
+              <span class="feature-icon">✅</span>
+              <span>View previously loaded pages</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">✅</span>
+              <span>Access saved form data</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">✅</span>
+              <span>View tax calculators</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">✅</span>
+              <span>Read tax resources</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">✅</span>
+              <span>Access your profile</span>
+            </div>
+          </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+          <p style="color: #64748b; font-size: 0.9rem;">
+            Need help? Contact us when you're back online at 
+            <strong>support@myeca.in</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function retryConnection() {
+      if (navigator.onLine) {
+        window.location.reload();
+      } else {
+        alert('Still offline. Please check your internet connection.');
+      }
+    }
+    
+    // Listen for online/offline events
+    window.addEventListener('online', () => {
+      window.location.reload();
+    });
+    
+    // Auto-retry every 30 seconds
+    setInterval(() => {
+      if (navigator.onLine) {
+        window.location.reload();
+      }
+    }, 30000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1rem; }
+    .search-header { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; }
+    .search-box { display: flex; gap: 1rem; margin-bottom: 1rem; }
+    .search-input { flex: 1; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 0.5rem; font-size: 1rem; }
+    .search-input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+    .search-button { background: #2563eb; color: #fff; padding: 1rem 2rem; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; }
+    .search-button:hover { background: #1d4ed8; }
+    .search-stats { color: #64748b; font-size: 0.9rem; }
+    .results-container { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; }
+    .result-item { border-bottom: 1px solid #e2e8f0; padding: 1.5rem 0; }
+    .result-item:last-child { border-bottom: none; }
+    .result-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .result-title a { color: #2563eb; text-decoration: none; }
+    .result-title a:hover { text-decoration: underline; }
+    .result-url { color: #22c55e; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .result-snippet { color: #64748b; line-height: 1.6; }
+    .result-meta { display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 0.8rem; color: #9ca3af; }
+    .filters { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .filter-button { padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; background: #fff; cursor: pointer; transition: all 0.2s; }
+    .filter-button.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+    .filter-button:hover { border-color: #2563eb; }
+    .no-results { text-align: center; padding: 3rem; color: #64748b; }
+    .suggestions { background: #f8fafc; border-radius: 0.5rem; padding: 1.5rem; margin-top: 2rem; }
+    .suggestions h3 { font-weight: 600; margin-bottom: 1rem; }
+    .suggestion-list { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .suggestion-tag { background: #e2e8f0; color: #374151; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.9rem; cursor: pointer; transition: background 0.2s; }
+    .suggestion-tag:hover { background: #cbd5e1; }
+    @media (max-width: 768px) { .search-box { flex-direction: column; } .filters { justify-content: center; } }
+  </style>
+</head>
+<body>
+  <nav class="container" style="padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+  
+  <div class="container">
+    <div class="search-header">
+      <div class="search-box">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search for tax filing, calculators, help..." value="tax filing" onkeypress="searchOnEnter(event)">
+        <button class="search-button" onclick="performSearch()">🔍 Search</button>
+      </div>
+      <div class="search-stats">About 127 results (0.32 seconds)</div>
+    </div>
+    
+    <div class="filters">
+      <button class="filter-button active" onclick="filterResults('all')">All</button>
+      <button class="filter-button" onclick="filterResults('filing')">Tax Filing</button>
+      <button class="filter-button" onclick="filterResults('calculators')">Calculators</button>
+      <button class="filter-button" onclick="filterResults('resources')">Resources</button>
+      <button class="filter-button" onclick="filterResults('support')">Support</button>
+    </div>
+    
+    <div class="results-container">
+      <div id="searchResults">
+        <div class="result-item" data-category="filing">
+          <div class="result-title">
+            <a href="start-filing.html">Start Tax Filing - Complete Guide</a>
+          </div>
+          <div class="result-url">https://myeca.in/start-filing.html</div>
+          <div class="result-snippet">
+            Begin your tax filing process with our step-by-step wizard. File your income tax return easily with our guided process, document upload, and expert support.
+          </div>
+          <div class="result-meta">
+            <span>📝 Tax Filing</span>
+            <span>⏱️ 5 min read</span>
+            <span>⭐ 4.8/5 rating</span>
+          </div>
+        </div>
+        
+        <div class="result-item" data-category="calculators">
+          <div class="result-title">
+            <a href="calculators.html">Tax Calculator - Calculate Your Tax Liability</a>
+          </div>
+          <div class="result-url">https://myeca.in/calculators.html</div>
+          <div class="result-snippet">
+            Use our comprehensive tax calculators to estimate your income tax liability, plan your investments, and optimize your tax savings for the current financial year.
+          </div>
+          <div class="result-meta">
+            <span>🧮 Calculators</span>
+            <span>⏱️ 2 min read</span>
+            <span>⭐ 4.9/5 rating</span>
+          </div>
+        </div>
+        
+        <div class="result-item" data-category="resources">
+          <div class="result-title">
+            <a href="tax-resources.html">Tax Resources - Complete Tax Information</a>
+          </div>
+          <div class="result-url">https://myeca.in/tax-resources.html</div>
+          <div class="result-snippet">
+            Access comprehensive tax resources including tax slabs, filing deadlines, government resources, and detailed guides for understanding income tax.
+          </div>
+          <div class="result-meta">
+            <span>📚 Resources</span>
+            <span>⏱️ 10 min read</span>
+            <span>⭐ 4.7/5 rating</span>
+          </div>
+        </div>
+        
+        <div class="result-item" data-category="filing">
+          <div class="result-title">
+            <a href="document-vault.html">Document Vault - Secure Document Management</a>
+          </div>
+          <div class="result-url">https://myeca.in/document-vault.html</div>
+          <div class="result-snippet">
+            Securely store and manage your tax documents, receipts, and certificates. Upload, organize, and access your documents anytime for tax filing.
+          </div>
+          <div class="result-meta">
+            <span>📁 Documents</span>
+            <span>⏱️ 3 min read</span>
+            <span>⭐ 4.8/5 rating</span>
+          </div>
+        </div>
+        
+        <div class="result-item" data-category="support">
+          <div class="result-title">
+            <a href="tax-expert.html">Tax Expert - Get Expert Tax Advice</a>
+          </div>
+          <div class="result-url">https://myeca.in/tax-expert.html</div>
+          <div class="result-snippet">
+            Get instant answers to your tax questions with our AI-powered tax expert. Ask about deductions, exemptions, filing procedures, and more.
+          </div>
+          <div class="result-meta">
+            <span>🤖 AI Expert</span>
+            <span>⏱️ Instant</span>
+            <span>⭐ 4.6/5 rating</span>
+          </div>
+        </div>
+        
+        <div class="result-item" data-category="filing">
+          <div class="result-title">
+            <a href="profile.html">My Profile - Manage Your Tax Filings</a>
+          </div>
+          <div class="result-url">https://myeca.in/profile.html</div>
+          <div class="result-snippet">
+            View and manage your tax filing history, personal information, and documents. Track your filing status and access previous returns.
+          </div>
+          <div class="result-meta">
+            <span>👤 Profile</span>
+            <span>⏱️ 2 min read</span>
+            <span>⭐ 4.7/5 rating</span>
+          </div>
+        </div>
+        
+        <div class="result-item" data-category="support">
+          <div class="result-title">
+            <a href="support.html">Support Center - Get Help & Support</a>
+          </div>
+          <div class="result-url">https://myeca.in/support.html</div>
+          <div class="result-snippet">
+            Find answers to frequently asked questions, contact our support team, and get help with tax filing, calculators, and platform usage.
+          </div>
+          <div class="result-meta">
+            <span>❓ Support</span>
+            <span>⏱️ 5 min read</span>
+            <span>⭐ 4.9/5 rating</span>
+          </div>
+        </div>
+        
+        <div class="result-item" data-category="resources">
+          <div class="result-title">
+            <a href="pricing.html">Pricing Plans - Choose Your Plan</a>
+          </div>
+          <div class="result-url">https://myeca.in/pricing.html</div>
+          <div class="result-snippet">
+            Compare our pricing plans for DIY tax filing and expert-assisted filing. Choose the plan that best suits your needs and budget.
+          </div>
+          <div class="result-meta">
+            <span>💰 Pricing</span>
+            <span>⏱️ 3 min read</span>
+            <span>⭐ 4.5/5 rating</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="suggestions">
+        <h3>Related Searches</h3>
+        <div class="suggestion-list">
+          <span class="suggestion-tag" onclick="searchFor('income tax return')">income tax return</span>
+          <span class="suggestion-tag" onclick="searchFor('tax deductions')">tax deductions</span>
+          <span class="suggestion-tag" onclick="searchFor('form 16')">form 16</span>
+          <span class="suggestion-tag" onclick="searchFor('tax calculator')">tax calculator</span>
+          <span class="suggestion-tag" onclick="searchFor('document upload')">document upload</span>
+          <span class="suggestion-tag" onclick="searchFor('tax expert help')">tax expert help</span>
+          <span class="suggestion-tag" onclick="searchFor('filing deadline')">filing deadline</span>
+          <span class="suggestion-tag" onclick="searchFor('refund status')">refund status</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+  
+  <script>
+    let currentFilter = 'all';
+    
+    function performSearch() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (query) {
+        // In a real implementation, this would perform an actual search
+        console.log('Searching for:', query);
+        // For demo purposes, we'll just show the current results
+      }
+    }
+    
+    function searchOnEnter(event) {
+      if (event.key === 'Enter') {
+        performSearch();
+      }
+    }
+    
+    function filterResults(category) {
+      currentFilter = category;
+      
+      // Update filter buttons
+      document.querySelectorAll('.filter-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // Filter results
+      const results = document.querySelectorAll('.result-item');
+      results.forEach(result => {
+        if (category === 'all' || result.dataset.category === category) {
+          result.style.display = 'block';
+        } else {
+          result.style.display = 'none';
+        }
+      });
+      
+      // Update search stats
+      const visibleResults = document.querySelectorAll('.result-item[style="display: block"]').length;
+      document.querySelector('.search-stats').textContent = `About ${visibleResults} results (0.32 seconds)`;
+    }
+    
+    function searchFor(query) {
+      document.getElementById('searchInput').value = query;
+      performSearch();
+    }
+    
+    // Initialize search on page load
+    window.addEventListener('load', () => {
+      performSearch();
+    });
+  </script>
+</body>
+</html>
