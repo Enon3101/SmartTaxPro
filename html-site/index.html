@@ -3,23 +3,188 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home - Simple HTML Site</title>
+  <title>MyeCA.in - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+    .bulletin { display: flex; gap: 1rem; justify-content: center; padding: 1rem 0; background: linear-gradient(90deg, #eff6ff, #fff, #eff6ff); border-bottom: 1px solid #dbeafe; }
+    .bulletin-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 999px; font-size: 0.95rem; font-weight: 500; }
+    .bulletin-orange { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
+    .bulletin-yellow { background: #fefce8; color: #ca8a04; border: 1px solid #fde68a; }
+    .bulletin-green { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+    .hero { display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; justify-content: space-between; padding: 3rem 0; background: linear-gradient(90deg, #eff6ff 0%, #f0f9ff 100%); }
+    .hero-content { flex: 1 1 350px; }
+    .hero-title { font-size: 2.5rem; font-weight: bold; background: linear-gradient(90deg, #2563eb, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-stars { display: flex; align-items: center; gap: 0.25rem; margin-bottom: 0.5rem; }
+    .star { color: #facc15; }
+    .hero-steps { background: #f1f5f9; border-radius: 1rem; padding: 1.5rem; margin-top: 2rem; }
+    .step { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .step-number { background: #2563eb; color: #fff; border-radius: 50%; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+    .quick-access { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin: 3rem 0; }
+    .quick-card { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; text-align: center; transition: box-shadow 0.2s; }
+    .quick-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.10); }
+    .features-section { background: #f3f4f6; padding: 3rem 0; }
+    .features-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; }
+    .feature-card { background: #fff; border-radius: 1rem; padding: 2rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .testimonials-section { padding: 3rem 0; }
+    .cta-section { background: #2563eb; color: #fff; text-align: center; padding: 3rem 1rem; border-radius: 1rem; margin: 3rem 0; }
+    .btn { display: inline-block; padding: 0.75rem 2rem; border-radius: 0.5rem; background: #2563eb; color: #fff; font-weight: 600; text-decoration: none; transition: background 0.2s; }
+    .btn:hover { background: #1d4ed8; }
+    @media (max-width: 800px) { .hero { flex-direction: column; } }
+  </style>
 </head>
 <body>
-  <nav>
-    <ul>
+  <nav class="container" style="padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
       <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="features.html">Features</a></li>
-      <li><a href="gallery.html">Gallery</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
     </ul>
   </nav>
-  <main>
-    <h1>Welcome to the Simple HTML Site</h1>
-    <p>This is a quick-deploy static site template. Use the navigation above to explore the features.</p>
-  </main>
-  <script src="script.js"></script>
+
+  <!-- Bulletin Banner -->
+  <div class="bulletin">
+    <div class="bulletin-item bulletin-orange">⏰ The Due date for ITR filing has been extended to 15th September 2025</div>
+    <div class="bulletin-item bulletin-yellow">⚠️ ITR 2 - ITR 3 are yet to be provided by Income Tax Department</div>
+    <div class="bulletin-item bulletin-green">✅ ITR Filing LIVE Now</div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="container hero">
+    <div class="hero-content">
+      <div class="hero-title">Fill, File and Smile</div>
+      <div style="color: #3b82f6; font-size: 1.25rem; font-weight: 500; margin: 1rem 0 0.5rem;">Easy filing wizard</div>
+      <div class="hero-stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        <span style="margin-left: 0.5rem; color: #64748b;">4.7 | 22,500+ Reviews</span>
+      </div>
+      <div style="color: #64748b; margin: 1rem 0;">Complete your Income Tax Return in as little as 10 minutes. Get maximum refund with our intelligent tax engine.</div>
+      <div style="margin: 1.5rem 0;">
+        <span style="font-weight: 500; color: #2563eb;">Assessment Year:</span>
+        <select style="padding: 0.5rem; border-radius: 0.5rem; border: 1px solid #d1d5db;">
+          <option>2023-24</option>
+          <option>2024-25</option>
+          <option>2025-26</option>
+          <option>2026-27</option>
+        </select>
+      </div>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="start-filing.html" class="btn">Start Filing Now →</a>
+        <a href="filing-requirements.html" class="btn" style="background: #f1f5f9; color: #2563eb; border: 1px solid #2563eb;">Who Should File ITR?</a>
+        <a href="pricing.html" class="btn" style="background: #fff; color: #2563eb; border: 1px solid #2563eb;">View Pricing</a>
+      </div>
+    </div>
+    <div class="hero-steps">
+      <div style="font-size: 1.25rem; font-weight: bold; text-align: center; margin-bottom: 1rem;">ITR Filing Made Easy</div>
+      <div class="step"><div class="step-number">1</div> <div><b>Enter Your Details</b><br><span style="color: #64748b;">Simple step-by-step wizard to collect your information</span></div></div>
+      <div class="step"><div class="step-number">2</div> <div><b>Review Your Information</b><br><span style="color: #64748b;">Verify your details and calculate your refund</span></div></div>
+      <div class="step"><div class="step-number">3</div> <div><b>Pay & Submit</b><br><span style="color: #64748b;">Make payment and file your return securely</span></div></div>
+      <div class="step"><div class="step-number">4</div> <div><b>e-Verify Your Return</b><br><span style="color: #64748b;">Complete the process with digital verification</span></div></div>
+    </div>
+  </section>
+
+  <!-- Quick Access Navigation -->
+  <section class="container">
+    <h2 style="text-align: center; font-size: 2rem; font-weight: bold; margin: 3rem 0 2rem;">Everything You Need for Tax Filing</h2>
+    <div class="quick-access">
+      <a href="start-filing.html" class="quick-card">
+        <div style="background: #2563eb; color: #fff; width: 3rem; height: 3rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem;">📝</div>
+        <div style="font-weight: 600; font-size: 1.1rem;">ITR Filing</div>
+        <div style="color: #64748b; font-size: 0.95rem;">Complete ITR filing with step-by-step guidance</div>
+      </a>
+      <a href="calculators.html" class="quick-card">
+        <div style="background: #22c55e; color: #fff; width: 3rem; height: 3rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem;">🧮</div>
+        <div style="font-weight: 600; font-size: 1.1rem;">Tax Calculators</div>
+        <div style="color: #64748b; font-size: 0.95rem;">Calculate income tax, HRA, and other deductions</div>
+      </a>
+      <a href="document-vault.html" class="quick-card">
+        <div style="background: #a78bfa; color: #fff; width: 3rem; height: 3rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem;">📁</div>
+        <div style="font-weight: 600; font-size: 1.1rem;">Document Vault</div>
+        <div style="color: #64748b; font-size: 0.95rem;">Securely store and manage your tax documents</div>
+      </a>
+      <a href="tax-expert.html" class="quick-card">
+        <div style="background: #f59e42; color: #fff; width: 3rem; height: 3rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem;">🤖</div>
+        <div style="font-weight: 600; font-size: 1.1rem;">Tax Expert</div>
+        <div style="color: #64748b; font-size: 0.95rem;">Get expert guidance and answers to tax queries</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <h2 style="text-align: center; font-size: 2rem; font-weight: bold; margin-bottom: 2rem;">Why Choose MyeCA.in?</h2>
+      <div class="features-list">
+        <div class="feature-card">
+          <div style="font-size: 2rem; color: #22c55e;">✔️</div>
+          <div style="font-weight: 600; font-size: 1.1rem;">100% Accurate</div>
+          <div style="color: #64748b;">Our advanced algorithms ensure maximum accuracy in your tax calculations and filings.</div>
+        </div>
+        <div class="feature-card">
+          <div style="font-size: 2rem; color: #2563eb;">📄</div>
+          <div style="font-weight: 600; font-size: 1.1rem;">All ITR Forms</div>
+          <div style="color: #64748b;">Support for all ITR forms including ITR-1, ITR-2, ITR-3, ITR-4, ITR-5, ITR-6, and ITR-7.</div>
+        </div>
+        <div class="feature-card">
+          <div style="font-size: 2rem; color: #a78bfa;">⬆️</div>
+          <div style="font-weight: 600; font-size: 1.1rem;">Auto Import</div>
+          <div style="color: #64748b;">Automatically import data from Form 26AS, AIS, and other pre-filled sources.</div>
+        </div>
+        <div class="feature-card">
+          <div style="font-size: 2rem; color: #22c55e;">🧮</div>
+          <div style="font-weight: 600; font-size: 1.1rem;">Smart Calculations</div>
+          <div style="color: #64748b;">Real-time tax calculations with automatic optimization for maximum refunds.</div>
+        </div>
+        <div class="feature-card">
+          <div style="font-size: 2rem; color: #f59e42;">📞</div>
+          <div style="font-weight: 600; font-size: 1.1rem;">Expert Support</div>
+          <div style="color: #64748b;">Get help from certified tax professionals whenever you need assistance.</div>
+        </div>
+        <div class="feature-card">
+          <div style="font-size: 2rem; color: #2563eb;">🔒</div>
+          <div style="font-weight: 600; font-size: 1.1rem;">Secure & Safe</div>
+          <div style="color: #64748b;">Bank-level security with 256-bit SSL encryption to protect your sensitive data.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials-section container">
+    <h2 style="text-align: center; font-size: 2rem; font-weight: bold; margin-bottom: 2rem;">What Our Users Say</h2>
+    <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;">
+      <div class="feature-card" style="max-width: 350px;">
+        <div style="font-size: 1.5rem; color: #f59e42;">“</div>
+        <div style="font-style: italic; color: #334155;">Super easy and fast! Got my refund in days. Highly recommended.</div>
+        <div style="margin-top: 1rem; font-weight: 600;">Amit S.</div>
+      </div>
+      <div class="feature-card" style="max-width: 350px;">
+        <div style="font-size: 1.5rem; color: #f59e42;">“</div>
+        <div style="font-style: italic; color: #334155;">The step-by-step wizard made tax filing stress-free. Great support team!</div>
+        <div style="margin-top: 1rem; font-weight: 600;">Priya K.</div>
+      </div>
+      <div class="feature-card" style="max-width: 350px;">
+        <div style="font-size: 1.5rem; color: #f59e42;">“</div>
+        <div style="font-style: italic; color: #334155;">Accurate calculations and secure platform. Will use again next year.</div>
+        <div style="margin-top: 1rem; font-weight: 600;">Rahul M.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="container cta-section">
+    <h2 style="font-size: 2rem; font-weight: bold; margin-bottom: 1rem;">Ready to File Your ITR?</h2>
+    <p style="margin-bottom: 2rem; font-size: 1.1rem;">Join thousands of satisfied customers who have filed their returns with MyeCA.in's expert eCA assistance. Get started in minutes!</p>
+    <a href="start-filing.html" class="btn" style="background: #fff; color: #2563eb; border: 1px solid #fff;">Start Your Free Filing →</a>
+  </section>
+
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
 </body>
 </html>
