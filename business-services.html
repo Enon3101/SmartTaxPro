@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Services - MyeCA.in | Complete Business Solutions</title>
+    <meta name="description" content="Complete business services including company registration, compliance, accounting, and tax services. Expert business solutions for entrepreneurs and companies.">
+    <meta name="keywords" content="business services, company registration, business compliance, accounting services, business tax, MyeCA.in business">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://myeca.in/business-services">
+    <meta property="og:title" content="Business Services - MyeCA.in">
+    <meta property="og:description" content="Complete business solutions and services">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://myeca.in/business-services">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <img src="assets/logo.png" alt="MyeCA.in" class="logo">
+                    </a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="start-filing.html">Start Filing</a></li>
+                    <li><a href="calculators.html">Calculators</a></li>
+                    <li><a href="document-vault.html">Document Vault</a></li>
+                    <li><a href="tax-expert.html">Tax Expert</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="support.html">Support</a></li>
+                    <li><a href="login.html" class="btn-login">Login</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section business-hero">
+            <div class="container">
+                <h1>Business Services</h1>
+                <p>Complete business solutions for registration, compliance, accounting, and growth</p>
+                <div class="business-badges">
+                    <div class="badge">
+                        <span class="badge-icon">🏢</span>
+                        <span>Registration</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">📊</span>
+                        <span>Compliance</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">💼</span>
+                        <span>Growth</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="business-overview">
+            <div class="container">
+                <div class="business-grid">
+                    <div class="business-card">
+                        <div class="business-icon">🏢</div>
+                        <h3>Company Registration</h3>
+                        <p>Complete company registration services for all business types.</p>
+                        <ul>
+                            <li>Private Limited Company</li>
+                            <li>LLP Registration</li>
+                            <li>Partnership Firm</li>
+                            <li>Proprietorship</li>
+                        </ul>
+                        <button onclick="startCompanyRegistration()" class="business-btn">Start Registration</button>
+                    </div>
+                    
+                    <div class="business-card">
+                        <div class="business-icon">📋</div>
+                        <h3>Business Compliance</h3>
+                        <p>Ensure complete compliance with all business laws and regulations.</p>
+                        <ul>
+                            <li>ROC Compliance</li>
+                            <li>GST Compliance</li>
+                            <li>Tax Compliance</li>
+                            <li>Labour Law Compliance</li>
+                        </ul>
+                        <button onclick="checkBusinessCompliance()" class="business-btn">Check Compliance</button>
+                    </div>
+                    
+                    <div class="business-card">
+                        <div class="business-icon">📊</div>
+                        <h3>Accounting Services</h3>
+                        <p>Professional accounting and bookkeeping services for businesses.</p>
+                        <ul>
+                            <li>Bookkeeping</li>
+                            <li>Financial Statements</li>
+                            <li>Audit Support</li>
+                            <li>Tax Planning</li>
+                        </ul>
+                        <button onclick="startAccountingServices()" class="business-btn">Get Started</button>
+                    </div>
+                    
+                    <div class="business-card">
+                        <div class="business-icon">💼</div>
+                        <h3>Business Advisory</h3>
+                        <p>Strategic business advisory and growth consulting services.</p>
+                        <ul>
+                            <li>Business Planning</li>
+                            <li>Financial Planning</li>
+                            <li>Growth Strategy</li>
+                            <li>Risk Management</li>
+                        </ul>
+                        <button onclick="bookBusinessConsultation()" class="business-btn">Get Advice</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="company-registration">
+            <div class="container">
+                <h2>Company Registration Services</h2>
+                <div class="registration-content">
+                    <div class="company-types">
+                        <h3>Types of Business Entities</h3>
+                        <div class="types-grid">
+                            <div class="type-card">
+                                <div class="type-icon">🏢</div>
+                                <h4>Private Limited Company</h4>
+                                <p>Most popular form of business with limited liability and separate legal entity.</p>
+                                <div class="type-features">
+                                    <span>Limited liability</span>
+                                    <span>Separate legal entity</span>
+                                    <span>Easy funding</span>
+                                    <span>Professional image</span>
+                                </div>
+                                <div class="type-price">Starting from ₹4,999</div>
+                                <button onclick="registerCompany('pvt-ltd')" class="register-btn">Register Now</button>
+                            </div>
+                            
+                            <div class="type-card">
+                                <div class="type-icon">🤝</div>
+                                <h4>Limited Liability Partnership</h4>
+                                <p>Flexible business structure with limited liability for partners.</p>
+                                <div class="type-features">
+                                    <span>Limited liability</span>
+                                    <span>Flexible management</span>
+                                    <span>Tax benefits</span>
+                                    <span>Easy compliance</span>
+                                </div>
+                                <div class="type-price">Starting from ₹3,999</div>
+                                <button onclick="registerCompany('llp')" class="register-btn">Register Now</button>
+                            </div>
+                            
+                            <div class="type-card">
+                                <div class="type-icon">👥</div>
+                                <h4>Partnership Firm</h4>
+                                <p>Traditional business structure for two or more partners.</p>
+                                <div class="type-features">
+                                    <span>Easy formation</span>
+                                    <span>Shared resources</span>
+                                    <span>Flexible terms</span>
+                                    <span>Low compliance</span>
+                                </div>
+                                <div class="type-price">Starting from ₹1,999</div>
+                                <button onclick="registerCompany('partnership')" class="register-btn">Register Now</button>
+                            </div>
+                            
+                            <div class="type-card">
+                                <div class="type-icon">👤</div>
+                                <h4>Proprietorship</h4>
+                                <p>Simplest form of business owned by a single person.</p>
+                                <div class="type-features">
+                                    <span>Easy to start</span>
+                                    <span>Full control</span>
+                                    <span>Minimal compliance</span>
+                                    <span>Quick registration</span>
+                                </div>
+                                <div class="type-price">Starting from ₹999</div>
+                                <button onclick="registerCompany('proprietorship')" class="register-btn">Register Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="registration-process">
+                        <h3>Registration Process</h3>
+                        <div class="process-timeline">
+                            <div class="process-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Document Collection</h4>
+                                    <p>Collect all required documents including PAN, Aadhaar, address proof, and business plan.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Name Approval</h4>
+                                    <p>Apply for name approval with MCA and get DSC (Digital Signature Certificate).</p>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Application Filing</h4>
+                                    <p>File incorporation application with all required forms and documents.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>Certificate & Compliance</h4>
+                                    <p>Receive incorporation certificate and set up initial compliance requirements.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="business-compliance">
+            <div class="container">
+                <h2>Business Compliance Services</h2>
+                <div class="compliance-grid">
+                    <div class="compliance-card">
+                        <div class="compliance-icon">📋</div>
+                        <h3>ROC Compliance</h3>
+                        <p>Complete ROC (Registrar of Companies) compliance services.</p>
+                        <ul>
+                            <li>Annual filing (AOC-4, MGT-7)</li>
+                            <li>Board meetings compliance</li>
+                            <li>Share transfer compliance</li>
+                            <li>Change in directorship</li>
+                        </ul>
+                        <button onclick="startROCCompliance()" class="compliance-btn">Get Started</button>
+                    </div>
+                    
+                    <div class="compliance-card">
+                        <div class="compliance-icon">📊</div>
+                        <h3>GST Compliance</h3>
+                        <p>Complete GST compliance and filing services.</p>
+                        <ul>
+                            <li>GST registration</li>
+                            <li>Monthly/quarterly returns</li>
+                            <li>Annual returns</li>
+                            <li>Audit support</li>
+                        </ul>
+                        <button onclick="startGSTCompliance()" class="compliance-btn">Get Started</button>
+                    </div>
+                    
+                    <div class="compliance-card">
+                        <div class="compliance-icon">💰</div>
+                        <h3>Tax Compliance</h3>
+                        <p>Complete tax compliance for businesses.</p>
+                        <ul>
+                            <li>Income tax filing</li>
+                            <li>TDS compliance</li>
+                            <li>Advance tax</li>
+                            <li>Tax planning</li>
+                        </ul>
+                        <button onclick="startTaxCompliance()" class="compliance-btn">Get Started</button>
+                    </div>
+                    
+                    <div class="compliance-card">
+                        <div class="compliance-icon">👥</div>
+                        <h3>Labour Law Compliance</h3>
+                        <p>Complete labour law compliance services.</p>
+                        <ul>
+                            <li>PF registration</li>
+                            <li>ESI registration</li>
+                            <li>Labour license</li>
+                            <li>Contract compliance</li>
+                        </ul>
+                        <button onclick="startLabourCompliance()" class="compliance-btn">Get Started</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="accounting-services">
+            <div class="container">
+                <h2>Accounting & Bookkeeping Services</h2>
+                <div class="accounting-content">
+                    <div class="accounting-services-grid">
+                        <div class="accounting-card">
+                            <div class="accounting-icon">📝</div>
+                            <h3>Bookkeeping</h3>
+                            <p>Professional bookkeeping services to maintain accurate financial records.</p>
+                            <ul>
+                                <li>Daily transaction recording</li>
+                                <li>Bank reconciliation</li>
+                                <li>Ledger maintenance</li>
+                                <li>Financial reports</li>
+                            </ul>
+                            <div class="service-price">Starting from ₹2,999/month</div>
+                            <button onclick="startBookkeeping()" class="accounting-btn">Start Service</button>
+                        </div>
+                        
+                        <div class="accounting-card">
+                            <div class="accounting-icon">📊</div>
+                            <h3>Financial Statements</h3>
+                            <p>Preparation of accurate financial statements and reports.</p>
+                            <ul>
+                                <li>Profit & Loss Statement</li>
+                                <li>Balance Sheet</li>
+                                <li>Cash Flow Statement</li>
+                                <li>Financial analysis</li>
+                            </ul>
+                            <div class="service-price">Starting from ₹1,999/month</div>
+                            <button onclick="startFinancialStatements()" class="accounting-btn">Start Service</button>
+                        </div>
+                        
+                        <div class="accounting-card">
+                            <div class="accounting-icon">🔍</div>
+                            <h3>Audit Support</h3>
+                            <p>Complete audit support and preparation services.</p>
+                            <ul>
+                                <li>Audit preparation</li>
+                                <li>Document organization</li>
+                                <li>Audit representation</li>
+                                <li>Compliance review</li>
+                            </ul>
+                            <div class="service-price">Starting from ₹5,999</div>
+                            <button onclick="startAuditSupport()" class="accounting-btn">Start Service</button>
+                        </div>
+                        
+                        <div class="accounting-card">
+                            <div class="accounting-icon">📈</div>
+                            <h3>Tax Planning</h3>
+                            <p>Strategic tax planning to optimize tax liability.</p>
+                            <ul>
+                                <li>Tax optimization</li>
+                                <li>Deduction planning</li>
+                                <li>Investment advisory</li>
+                                <li>Compliance planning</li>
+                            </ul>
+                            <div class="service-price">Starting from ₹3,999</div>
+                            <button onclick="startTaxPlanning()" class="accounting-btn">Start Service</button>
+                        </div>
+                    </div>
+                    
+                    <div class="accounting-calculator">
+                        <h3>Business Tax Calculator</h3>
+                        <div class="calculator-form">
+                            <div class="form-group">
+                                <label for="business-income">Business Income (₹)</label>
+                                <input type="number" id="business-income" placeholder="Enter business income">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="business-type">Business Type</label>
+                                <select id="business-type">
+                                    <option value="proprietorship">Proprietorship</option>
+                                    <option value="partnership">Partnership</option>
+                                    <option value="pvt-ltd">Private Limited</option>
+                                    <option value="llp">LLP</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="business-deductions">Deductions (₹)</label>
+                                <input type="number" id="business-deductions" placeholder="Enter deductions">
+                            </div>
+                            
+                            <button onclick="calculateBusinessTax()" class="calculate-btn">Calculate Tax</button>
+                            
+                            <div class="calculation-result" id="business-tax-result">
+                                <div class="result-item">
+                                    <span>Taxable Income:</span>
+                                    <span id="taxable-income">₹0.00</span>
+                                </div>
+                                <div class="result-item">
+                                    <span>Income Tax:</span>
+                                    <span id="income-tax">₹0.00</span>
+                                </div>
+                                <div class="result-item">
+                                    <span>Surcharge:</span>
+                                    <span id="surcharge">₹0.00</span>
+                                </div>
+                                <div class="result-item total">
+                                    <span>Total Tax:</span>
+                                    <span id="total-business-tax">₹0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="business-advisory">
+            <div class="container">
+                <h2>Business Advisory Services</h2>
+                <div class="advisory-grid">
+                    <div class="advisory-card">
+                        <div class="advisory-icon">📋</div>
+                        <h3>Business Planning</h3>
+                        <p>Strategic business planning and roadmap development.</p>
+                        <ul>
+                            <li>Business model analysis</li>
+                            <li>Market research</li>
+                            <li>Financial projections</li>
+                            <li>Growth strategy</li>
+                        </ul>
+                        <button onclick="startBusinessPlanning()" class="advisory-btn">Get Started</button>
+                    </div>
+                    
+                    <div class="advisory-card">
+                        <div class="advisory-icon">💰</div>
+                        <h3>Financial Planning</h3>
+                        <p>Comprehensive financial planning for business growth.</p>
+                        <ul>
+                            <li>Cash flow management</li>
+                            <li>Funding strategy</li>
+                            <li>Investment planning</li>
+                            <li>Risk management</li>
+                        </ul>
+                        <button onclick="startFinancialPlanning()" class="advisory-btn">Get Started</button>
+                    </div>
+                    
+                    <div class="advisory-card">
+                        <div class="advisory-icon">📈</div>
+                        <h3>Growth Strategy</h3>
+                        <p>Strategic planning for business expansion and growth.</p>
+                        <ul>
+                            <li>Market expansion</li>
+                            <li>Product development</li>
+                            <li>Partnership strategy</li>
+                            <li>Scaling plans</li>
+                        </ul>
+                        <button onclick="startGrowthStrategy()" class="advisory-btn">Get Started</button>
+                    </div>
+                    
+                    <div class="advisory-card">
+                        <div class="advisory-icon">🛡️</div>
+                        <h3>Risk Management</h3>
+                        <p>Comprehensive risk assessment and management strategies.</p>
+                        <ul>
+                            <li>Risk identification</li>
+                            <li>Mitigation strategies</li>
+                            <li>Insurance planning</li>
+                            <li>Compliance risk</li>
+                        </ul>
+                        <button onclick="startRiskManagement()" class="advisory-btn">Get Started</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="business-pricing">
+            <div class="container">
+                <h2>Business Services Pricing</h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Starter Business Package</h3>
+                            <div class="pricing-amount">₹4,999/year</div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li>Company Registration</li>
+                                <li>Basic Compliance</li>
+                                <li>GST Registration</li>
+                                <li>Basic Bookkeeping</li>
+                                <li>Email Support</li>
+                            </ul>
+                        </div>
+                        <button onclick="selectBusinessPackage('starter')" class="pricing-btn">Choose Plan</button>
+                    </div>
+                    
+                    <div class="pricing-card featured">
+                        <div class="pricing-header">
+                            <h3>Professional Business Package</h3>
+                            <div class="pricing-amount">₹12,999/year</div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li>All Starter features</li>
+                                <li>Complete Compliance</li>
+                                <li>Monthly Bookkeeping</li>
+                                <li>Financial Statements</li>
+                                <li>Tax Planning</li>
+                                <li>Priority Support</li>
+                            </ul>
+                        </div>
+                        <button onclick="selectBusinessPackage('professional')" class="pricing-btn featured">Choose Plan</button>
+                    </div>
+                    
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Enterprise Business Package</h3>
+                            <div class="pricing-amount">₹24,999/year</div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li>All Professional features</li>
+                                <li>Dedicated Account Manager</li>
+                                <li>Audit Support</li>
+                                <li>Business Advisory</li>
+                                <li>24/7 Support</li>
+                                <li>Custom Reports</li>
+                            </ul>
+                        </div>
+                        <button onclick="selectBusinessPackage('enterprise')" class="pricing-btn">Choose Plan</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="business-tools">
+            <div class="container">
+                <h2>Business Tools & Resources</h2>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-icon">📊</div>
+                        <h3>Business Plan Generator</h3>
+                        <p>Create professional business plans with our guided template.</p>
+                        <button onclick="generateBusinessPlan()" class="tool-btn">Generate Plan</button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">💰</div>
+                        <h3>Funding Calculator</h3>
+                        <p>Calculate funding requirements and repayment schedules.</p>
+                        <button onclick="calculateFunding()" class="tool-btn">Calculate</button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">📈</div>
+                        <h3>Financial Projections</h3>
+                        <p>Generate financial projections for your business plan.</p>
+                        <button onclick="generateProjections()" class="tool-btn">Generate</button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">📋</div>
+                        <h3>Compliance Checklist</h3>
+                        <p>Get a comprehensive compliance checklist for your business.</p>
+                        <button onclick="getComplianceChecklist()" class="tool-btn">Get Checklist</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="business-faq">
+            <div class="container">
+                <h2>Business Services FAQ</h2>
+                <div class="faq-content">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleBusinessFAQ(this)">
+                            <h3>Which business structure is best for me?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>The best business structure depends on factors like liability protection, tax benefits, funding requirements, and compliance burden. We can help you choose the most suitable structure based on your business needs and goals.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleBusinessFAQ(this)">
+                            <h3>How long does company registration take?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Company registration typically takes 15-20 working days for Private Limited Companies and LLPs, 7-10 days for Partnership Firms, and 2-3 days for Proprietorship registration.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleBusinessFAQ(this)">
+                            <h3>What are the ongoing compliance requirements?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Ongoing compliance includes annual ROC filings, GST returns, income tax returns, TDS compliance, and other regulatory requirements depending on your business type and size.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleBusinessFAQ(this)">
+                            <h3>Do I need a business bank account?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, it's mandatory for companies and LLPs to have a separate business bank account. For proprietorship, while not mandatory, it's highly recommended for better financial management.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleBusinessFAQ(this)">
+                            <h3>What documents are required for registration?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Required documents include PAN, Aadhaar, address proof, business plan, bank statements, and other documents depending on the business structure. We provide a complete checklist during the process.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="business-cta">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Ready to Start Your Business Journey?</h2>
+                    <p>Get expert business services and take your business to the next level.</p>
+                    <div class="cta-buttons">
+                        <button onclick="startCompanyRegistration()" class="btn-primary">Start Business Registration</button>
+                        <button onclick="bookBusinessConsultation()" class="btn-secondary">Free Consultation</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MyeCA.in</h3>
+                    <p>Your trusted partner for hassle-free tax filing and financial planning.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">📘</a>
+                        <a href="#" aria-label="Twitter">🐦</a>
+                        <a href="#" aria-label="LinkedIn">💼</a>
+                        <a href="#" aria-label="Instagram">📷</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="start-filing.html">Tax Filing</a></li>
+                        <li><a href="calculators.html">Tax Calculators</a></li>
+                        <li><a href="document-vault.html">Document Vault</a></li>
+                        <li><a href="tax-expert.html">Tax Expert</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="tax-resources.html">Tax Resources</a></li>
+                        <li><a href="support.html">Support</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="terms-of-service.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MyeCA.in. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Business FAQ toggle functionality
+        function toggleBusinessFAQ(element) {
+            const answer = element.nextElementSibling;
+            const toggle = element.querySelector('.faq-toggle');
+            
+            if (answer.style.maxHeight) {
+                answer.style.maxHeight = null;
+                toggle.textContent = '+';
+            } else {
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                toggle.textContent = '−';
+            }
+        }
+
+        // Business Tax Calculator
+        function calculateBusinessTax() {
+            const income = parseFloat(document.getElementById('business-income').value) || 0;
+            const deductions = parseFloat(document.getElementById('business-deductions').value) || 0;
+            const businessType = document.getElementById('business-type').value;
+            
+            if (income <= 0) {
+                alert('Please enter a valid business income');
+                return;
+            }
+            
+            const taxableIncome = Math.max(0, income - deductions);
+            let tax = 0;
+            let surcharge = 0;
+            
+            // Calculate tax based on business type and income
+            if (businessType === 'proprietorship' || businessType === 'partnership') {
+                // Individual tax rates
+                if (taxableIncome <= 250000) {
+                    tax = 0;
+                } else if (taxableIncome <= 500000) {
+                    tax = (taxableIncome - 250000) * 0.05;
+                } else if (taxableIncome <= 1000000) {
+                    tax = 12500 + (taxableIncome - 500000) * 0.2;
+                } else {
+                    tax = 112500 + (taxableIncome - 1000000) * 0.3;
+                }
+            } else {
+                // Corporate tax rate (25% for small companies, 30% for others)
+                const rate = taxableIncome <= 10000000 ? 0.25 : 0.3;
+                tax = taxableIncome * rate;
+            }
+            
+            // Surcharge for high income
+            if (taxableIncome > 50000000) {
+                surcharge = tax * 0.1;
+            }
+            
+            document.getElementById('taxable-income').textContent = `₹${taxableIncome.toFixed(2)}`;
+            document.getElementById('income-tax').textContent = `₹${tax.toFixed(2)}`;
+            document.getElementById('surcharge').textContent = `₹${surcharge.toFixed(2)}`;
+            document.getElementById('total-business-tax').textContent = `₹${(tax + surcharge).toFixed(2)}`;
+        }
+
+        // Company Registration
+        function startCompanyRegistration() {
+            alert('Company registration process started! Our team will contact you within 2 hours to begin the process.');
+        }
+
+        function registerCompany(type) {
+            const types = {
+                'pvt-ltd': 'Private Limited Company',
+                'llp': 'Limited Liability Partnership',
+                'partnership': 'Partnership Firm',
+                'proprietorship': 'Proprietorship'
+            };
+            
+            alert(`${types[type]} registration initiated! Our team will contact you within 2 hours.`);
+        }
+
+        // Business Compliance
+        function checkBusinessCompliance() {
+            alert('Business compliance check initiated! We will analyze your compliance status and provide recommendations.');
+        }
+
+        function startROCCompliance() {
+            alert('ROC compliance service started! Our team will handle all your ROC filing requirements.');
+        }
+
+        function startGSTCompliance() {
+            alert('GST compliance service started! We will manage all your GST filing and compliance needs.');
+        }
+
+        function startTaxCompliance() {
+            alert('Tax compliance service started! Our team will handle all your tax filing and compliance requirements.');
+        }
+
+        function startLabourCompliance() {
+            alert('Labour law compliance service started! We will ensure all labour law requirements are met.');
+        }
+
+        // Accounting Services
+        function startAccountingServices() {
+            alert('Accounting services initiated! Our team will contact you to discuss your specific requirements.');
+        }
+
+        function startBookkeeping() {
+            alert('Bookkeeping service started! We will set up your accounting system and begin maintaining your books.');
+        }
+
+        function startFinancialStatements() {
+            alert('Financial statements service started! We will prepare your financial statements and reports.');
+        }
+
+        function startAuditSupport() {
+            alert('Audit support service started! Our team will help you prepare for and manage your audit.');
+        }
+
+        function startTaxPlanning() {
+            alert('Tax planning service started! We will analyze your tax situation and provide optimization strategies.');
+        }
+
+        // Business Advisory
+        function bookBusinessConsultation() {
+            alert('Free business consultation booked! Our business expert will contact you within 24 hours.');
+        }
+
+        function startBusinessPlanning() {
+            alert('Business planning service started! We will help you develop a comprehensive business plan.');
+        }
+
+        function startFinancialPlanning() {
+            alert('Financial planning service started! We will create a financial roadmap for your business.');
+        }
+
+        function startGrowthStrategy() {
+            alert('Growth strategy service started! We will develop strategies to scale your business.');
+        }
+
+        function startRiskManagement() {
+            alert('Risk management service started! We will assess and help mitigate business risks.');
+        }
+
+        // Package selection
+        function selectBusinessPackage(package) {
+            const packages = {
+                'starter': 'Starter Business Package - ₹4,999/year',
+                'professional': 'Professional Business Package - ₹12,999/year',
+                'enterprise': 'Enterprise Business Package - ₹24,999/year'
+            };
+            
+            if (confirm(`You have selected ${packages[package]}. Would you like to proceed with the purchase?`)) {
+                alert('Package purchase confirmed! Our team will contact you within 2 hours to set up your account.');
+            }
+        }
+
+        // Tool functions
+        function generateBusinessPlan() {
+            alert('Business plan generator will open. Please fill in the required details to generate your business plan.');
+        }
+
+        function calculateFunding() {
+            alert('Funding calculator will open. Please enter your business details to calculate funding requirements.');
+        }
+
+        function generateProjections() {
+            alert('Financial projections generator will open. Please provide your business data to generate projections.');
+        }
+
+        function getComplianceChecklist() {
+            alert('Compliance checklist will be generated based on your business type and requirements.');
+        }
+
+        // Auto-calculate business tax on input change
+        document.getElementById('business-income').addEventListener('input', calculateBusinessTax);
+        document.getElementById('business-deductions').addEventListener('input', calculateBusinessTax);
+        document.getElementById('business-type').addEventListener('change', calculateBusinessTax);
+
+        // Initialize business tax calculator on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateBusinessTax();
+        });
+    </script>
+</body>
+</html>

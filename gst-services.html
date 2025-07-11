@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GST Services - MyeCA.in | GST Registration & Filing</title>
+    <meta name="description" content="Complete GST services including registration, filing, compliance, and support. Expert GST services for businesses and individuals.">
+    <meta name="keywords" content="GST services, GST registration, GST filing, GST compliance, GST return, MyeCA.in GST">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://myeca.in/gst-services">
+    <meta property="og:title" content="GST Services - MyeCA.in">
+    <meta property="og:description" content="Complete GST registration and filing services">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://myeca.in/gst-services">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <img src="assets/logo.png" alt="MyeCA.in" class="logo">
+                    </a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="start-filing.html">Start Filing</a></li>
+                    <li><a href="calculators.html">Calculators</a></li>
+                    <li><a href="document-vault.html">Document Vault</a></li>
+                    <li><a href="tax-expert.html">Tax Expert</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="support.html">Support</a></li>
+                    <li><a href="login.html" class="btn-login">Login</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section gst-hero">
+            <div class="container">
+                <h1>GST Services</h1>
+                <p>Complete GST solutions for registration, filing, compliance, and support</p>
+                <div class="gst-badges">
+                    <div class="badge">
+                        <span class="badge-icon">📋</span>
+                        <span>Registration</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">📊</span>
+                        <span>Filing</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">🛡️</span>
+                        <span>Compliance</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="gst-overview">
+            <div class="container">
+                <div class="gst-grid">
+                    <div class="gst-card">
+                        <div class="gst-icon">🏢</div>
+                        <h3>GST Registration</h3>
+                        <p>Quick and hassle-free GST registration for businesses and individuals.</p>
+                        <ul>
+                            <li>New GST registration</li>
+                            <li>Amendment services</li>
+                            <li>Registration cancellation</li>
+                            <li>Multi-state registration</li>
+                        </ul>
+                        <button onclick="startGSTRegistration()" class="gst-btn">Start Registration</button>
+                    </div>
+                    
+                    <div class="gst-card">
+                        <div class="gst-icon">📊</div>
+                        <h3>GST Filing</h3>
+                        <p>Timely and accurate GST return filing for all business types.</p>
+                        <ul>
+                            <li>GSTR-1 (Sales)</li>
+                            <li>GSTR-3B (Summary)</li>
+                            <li>GSTR-9 (Annual)</li>
+                            <li>GSTR-9C (Reconciliation)</li>
+                        </ul>
+                        <button onclick="startGSTFiling()" class="gst-btn">Start Filing</button>
+                    </div>
+                    
+                    <div class="gst-card">
+                        <div class="gst-icon">🔍</div>
+                        <h3>GST Compliance</h3>
+                        <p>Ensure complete compliance with GST laws and regulations.</p>
+                        <ul>
+                            <li>Compliance monitoring</li>
+                            <li>Audit support</li>
+                            <li>Notice handling</li>
+                            <li>Penalty management</li>
+                        </ul>
+                        <button onclick="checkGSTCompliance()" class="gst-btn">Check Compliance</button>
+                    </div>
+                    
+                    <div class="gst-card">
+                        <div class="gst-icon">💼</div>
+                        <h3>GST Advisory</h3>
+                        <p>Expert guidance on GST matters and tax optimization strategies.</p>
+                        <ul>
+                            <li>GST planning</li>
+                            <li>Tax optimization</li>
+                            <li>Rate classification</li>
+                            <li>Input credit guidance</li>
+                        </ul>
+                        <button onclick="bookGSTConsultation()" class="gst-btn">Get Advice</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="gst-registration">
+            <div class="container">
+                <h2>GST Registration Services</h2>
+                <div class="registration-content">
+                    <div class="registration-types">
+                        <h3>Types of GST Registration</h3>
+                        <div class="type-grid">
+                            <div class="type-card">
+                                <div class="type-icon">🏪</div>
+                                <h4>Regular GST</h4>
+                                <p>For businesses with turnover above ₹20 lakhs (₹10 lakhs for special category states)</p>
+                                <div class="type-features">
+                                    <span>Full GST benefits</span>
+                                    <span>Input tax credit</span>
+                                    <span>Inter-state supply</span>
+                                </div>
+                            </div>
+                            
+                            <div class="type-card">
+                                <div class="type-icon">🛍️</div>
+                                <h4>Composition Scheme</h4>
+                                <p>For small businesses with turnover up to ₹1.5 crores (₹75 lakhs for special category states)</p>
+                                <div class="type-features">
+                                    <span>Simplified compliance</span>
+                                    <span>Lower tax rates</span>
+                                    <span>Quarterly filing</span>
+                                </div>
+                            </div>
+                            
+                            <div class="type-card">
+                                <div class="type-icon">🌐</div>
+                                <h4>Non-Resident</h4>
+                                <p>For foreign businesses supplying goods or services in India</p>
+                                <div class="type-features">
+                                    <span>Foreign business</span>
+                                    <span>OIDAR services</span>
+                                    <span>Special compliance</span>
+                                </div>
+                            </div>
+                            
+                            <div class="type-card">
+                                <div class="type-icon">🏭</div>
+                                <h4>Casual Taxable Person</h4>
+                                <p>For occasional business activities or exhibitions</p>
+                                <div class="type-features">
+                                    <span>Temporary registration</span>
+                                    <span>Event-based</span>
+                                    <span>Short-term validity</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="registration-process">
+                        <h3>Registration Process</h3>
+                        <div class="process-steps">
+                            <div class="process-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Document Collection</h4>
+                                    <p>Collect all required documents including PAN, Aadhaar, business proof, and bank details.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Application Filing</h4>
+                                    <p>File GST registration application on the GST portal with all required information.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Verification</h4>
+                                    <p>GST department verifies the application and may request additional documents.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="process-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>GST Number</h4>
+                                    <p>Receive GST registration certificate and GSTIN within 7-15 working days.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="gst-filing">
+            <div class="container">
+                <h2>GST Return Filing</h2>
+                <div class="filing-content">
+                    <div class="return-types">
+                        <h3>Types of GST Returns</h3>
+                        <div class="returns-grid">
+                            <div class="return-card">
+                                <div class="return-header">
+                                    <h4>GSTR-1</h4>
+                                    <span class="return-frequency">Monthly/Quarterly</span>
+                                </div>
+                                <p>Outward supplies (sales) details</p>
+                                <ul>
+                                    <li>Invoice-wise details</li>
+                                    <li>Credit/debit notes</li>
+                                    <li>Advances received</li>
+                                    <li>HSN-wise summary</li>
+                                </ul>
+                                <div class="return-deadline">Due: 11th of next month</div>
+                            </div>
+                            
+                            <div class="return-card">
+                                <div class="return-header">
+                                    <h4>GSTR-3B</h4>
+                                    <span class="return-frequency">Monthly</span>
+                                </div>
+                                <p>Summary return for tax payment</p>
+                                <ul>
+                                    <li>Tax liability summary</li>
+                                    <li>Input tax credit</li>
+                                    <li>Tax payment details</li>
+                                    <li>Interest and penalties</li>
+                                </ul>
+                                <div class="return-deadline">Due: 20th of next month</div>
+                            </div>
+                            
+                            <div class="return-card">
+                                <div class="return-header">
+                                    <h4>GSTR-9</h4>
+                                    <span class="return-frequency">Annual</span>
+                                </div>
+                                <p>Annual return for regular taxpayers</p>
+                                <ul>
+                                    <li>Annual summary</li>
+                                    <li>Reconciliation</li>
+                                    <li>Audit details</li>
+                                    <li>Additional information</li>
+                                </ul>
+                                <div class="return-deadline">Due: 31st December</div>
+                            </div>
+                            
+                            <div class="return-card">
+                                <div class="return-header">
+                                    <h4>GSTR-9C</h4>
+                                    <span class="return-frequency">Annual</span>
+                                </div>
+                                <p>Reconciliation statement and audit report</p>
+                                <ul>
+                                    <li>Audit report</li>
+                                    <li>Reconciliation statement</li>
+                                    <li>Certification</li>
+                                    <li>Discrepancy reporting</li>
+                                </ul>
+                                <div class="return-deadline">Due: 31st December</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="filing-calculator">
+                        <h3>GST Calculator</h3>
+                        <div class="calculator-form">
+                            <div class="form-group">
+                                <label for="gst-amount">Amount (₹)</label>
+                                <input type="number" id="gst-amount" placeholder="Enter amount">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="gst-rate">GST Rate</label>
+                                <select id="gst-rate">
+                                    <option value="0">0% - Exempt</option>
+                                    <option value="5">5% - Reduced Rate</option>
+                                    <option value="12">12% - Standard Rate</option>
+                                    <option value="18" selected>18% - Standard Rate</option>
+                                    <option value="28">28% - Higher Rate</option>
+                                </select>
+                            </div>
+                            
+                            <button onclick="calculateGST()" class="calculate-btn">Calculate GST</button>
+                            
+                            <div class="calculation-result" id="gst-result">
+                                <div class="result-item">
+                                    <span>Base Amount:</span>
+                                    <span id="base-amount">₹0.00</span>
+                                </div>
+                                <div class="result-item">
+                                    <span>CGST (9%):</span>
+                                    <span id="cgst-amount">₹0.00</span>
+                                </div>
+                                <div class="result-item">
+                                    <span>SGST (9%):</span>
+                                    <span id="sgst-amount">₹0.00</span>
+                                </div>
+                                <div class="result-item total">
+                                    <span>Total Amount:</span>
+                                    <span id="total-amount">₹0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="gst-compliance">
+            <div class="container">
+                <h2>GST Compliance Services</h2>
+                <div class="compliance-grid">
+                    <div class="compliance-card">
+                        <div class="compliance-icon">📊</div>
+                        <h3>Compliance Monitoring</h3>
+                        <p>Regular monitoring of GST compliance status and timely alerts.</p>
+                        <ul>
+                            <li>Filing deadline tracking</li>
+                            <li>Payment due alerts</li>
+                            <li>Compliance score</li>
+                            <li>Risk assessment</li>
+                        </ul>
+                        <button onclick="checkCompliance()" class="compliance-btn">Check Status</button>
+                    </div>
+                    
+                    <div class="compliance-card">
+                        <div class="compliance-icon">🔍</div>
+                        <h3>Audit Support</h3>
+                        <p>Complete support during GST audits and assessments.</p>
+                        <ul>
+                            <li>Document preparation</li>
+                            <li>Audit representation</li>
+                            <li>Query responses</li>
+                            <li>Appeal support</li>
+                        </ul>
+                        <button onclick="bookAuditSupport()" class="compliance-btn">Get Support</button>
+                    </div>
+                    
+                    <div class="compliance-card">
+                        <div class="compliance-icon">📋</div>
+                        <h3>Notice Handling</h3>
+                        <p>Professional handling of GST notices and communications.</p>
+                        <ul>
+                            <li>Notice analysis</li>
+                            <li>Response preparation</li>
+                            <li>Representation</li>
+                            <li>Follow-up</li>
+                        </ul>
+                        <button onclick="handleNotice()" class="compliance-btn">Handle Notice</button>
+                    </div>
+                    
+                    <div class="compliance-card">
+                        <div class="compliance-icon">💰</div>
+                        <h3>Penalty Management</h3>
+                        <p>Assistance with penalty reduction and settlement options.</p>
+                        <ul>
+                            <li>Penalty assessment</li>
+                            <li>Reduction requests</li>
+                            <li>Settlement options</li>
+                            <li>Payment plans</li>
+                        </ul>
+                        <button onclick="managePenalty()" class="compliance-btn">Manage Penalty</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="gst-pricing">
+            <div class="container">
+                <h2>GST Services Pricing</h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Basic GST Package</h3>
+                            <div class="pricing-amount">₹2,999/year</div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li>GST Registration</li>
+                                <li>GSTR-1 Filing (Monthly)</li>
+                                <li>GSTR-3B Filing (Monthly)</li>
+                                <li>Basic Compliance</li>
+                                <li>Email Support</li>
+                            </ul>
+                        </div>
+                        <button onclick="selectPackage('basic')" class="pricing-btn">Choose Plan</button>
+                    </div>
+                    
+                    <div class="pricing-card featured">
+                        <div class="pricing-header">
+                            <h3>Professional GST Package</h3>
+                            <div class="pricing-amount">₹5,999/year</div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li>All Basic features</li>
+                                <li>GSTR-9 Annual Return</li>
+                                <li>GSTR-9C Audit Report</li>
+                                <li>Compliance Monitoring</li>
+                                <li>Notice Handling</li>
+                                <li>Priority Support</li>
+                            </ul>
+                        </div>
+                        <button onclick="selectPackage('professional')" class="pricing-btn featured">Choose Plan</button>
+                    </div>
+                    
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Premium GST Package</h3>
+                            <div class="pricing-amount">₹9,999/year</div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li>All Professional features</li>
+                                <li>Dedicated GST specialist</li>
+                                <li>Audit Support</li>
+                                <li>Penalty Management</li>
+                                <li>24/7 Support</li>
+                                <li>Custom Reports</li>
+                            </ul>
+                        </div>
+                        <button onclick="selectPackage('premium')" class="pricing-btn">Choose Plan</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="gst-tools">
+            <div class="container">
+                <h2>GST Tools & Utilities</h2>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-icon">🔍</div>
+                        <h3>GST Number Search</h3>
+                        <p>Search and verify GST numbers of businesses and suppliers.</p>
+                        <div class="tool-form">
+                            <input type="text" id="gst-search" placeholder="Enter GST Number">
+                            <button onclick="searchGST()">Search</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">📊</div>
+                        <h3>HSN Code Finder</h3>
+                        <p>Find the correct HSN codes for your products and services.</p>
+                        <div class="tool-form">
+                            <input type="text" id="hsn-search" placeholder="Search product/service">
+                            <button onclick="searchHSN()">Find HSN</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">📅</div>
+                        <h3>GST Calendar</h3>
+                        <p>Track important GST deadlines and filing dates.</p>
+                        <div class="tool-actions">
+                            <button onclick="viewGSTCalendar()">View Calendar</button>
+                            <button onclick="setGSTReminders()">Set Reminders</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">📋</div>
+                        <h3>Document Generator</h3>
+                        <p>Generate GST invoices, receipts, and other documents.</p>
+                        <div class="tool-actions">
+                            <button onclick="generateInvoice()">Generate Invoice</button>
+                            <button onclick="generateReceipt()">Generate Receipt</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="gst-faq">
+            <div class="container">
+                <h2>GST Frequently Asked Questions</h2>
+                <div class="faq-content">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleGSTFAQ(this)">
+                            <h3>Who needs GST registration?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>GST registration is mandatory for businesses with annual turnover above ₹20 lakhs (₹10 lakhs for special category states). It's also required for inter-state supplies, e-commerce operators, and certain specific business activities.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleGSTFAQ(this)">
+                            <h3>What is the composition scheme?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>The composition scheme is for small businesses with turnover up to ₹1.5 crores. It offers simplified compliance with lower tax rates and quarterly filing instead of monthly returns.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleGSTFAQ(this)">
+                            <h3>What are the GST return filing deadlines?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>GSTR-1 is due by 11th of next month, GSTR-3B by 20th of next month, GSTR-9 (annual) by 31st December, and GSTR-9C (audit) by 31st December of the following year.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleGSTFAQ(this)">
+                            <h3>How to claim input tax credit?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Input tax credit can be claimed on purchases used for business purposes. The supplier must have filed GSTR-1 and you must have received the goods/services. ITC is claimed in GSTR-3B.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleGSTFAQ(this)">
+                            <h3>What are the penalties for late filing?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Late filing attracts a penalty of ₹50 per day (₹20 for nil returns) and interest at 18% per annum on the tax amount. Additional penalties may apply for continued non-compliance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="gst-cta">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Ready to Get Started with GST?</h2>
+                    <p>Get expert GST services and ensure compliance with all GST requirements.</p>
+                    <div class="cta-buttons">
+                        <button onclick="startGSTRegistration()" class="btn-primary">Start GST Registration</button>
+                        <button onclick="bookGSTConsultation()" class="btn-secondary">Free Consultation</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MyeCA.in</h3>
+                    <p>Your trusted partner for hassle-free tax filing and financial planning.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">📘</a>
+                        <a href="#" aria-label="Twitter">🐦</a>
+                        <a href="#" aria-label="LinkedIn">💼</a>
+                        <a href="#" aria-label="Instagram">📷</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="start-filing.html">Tax Filing</a></li>
+                        <li><a href="calculators.html">Tax Calculators</a></li>
+                        <li><a href="document-vault.html">Document Vault</a></li>
+                        <li><a href="tax-expert.html">Tax Expert</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="tax-resources.html">Tax Resources</a></li>
+                        <li><a href="support.html">Support</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="terms-of-service.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MyeCA.in. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // GST FAQ toggle functionality
+        function toggleGSTFAQ(element) {
+            const answer = element.nextElementSibling;
+            const toggle = element.querySelector('.faq-toggle');
+            
+            if (answer.style.maxHeight) {
+                answer.style.maxHeight = null;
+                toggle.textContent = '+';
+            } else {
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                toggle.textContent = '−';
+            }
+        }
+
+        // GST Calculator
+        function calculateGST() {
+            const amount = parseFloat(document.getElementById('gst-amount').value) || 0;
+            const rate = parseFloat(document.getElementById('gst-rate').value) || 0;
+            
+            if (amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            const baseAmount = amount / (1 + (rate / 100));
+            const gstAmount = amount - baseAmount;
+            const cgstAmount = gstAmount / 2;
+            const sgstAmount = gstAmount / 2;
+            
+            document.getElementById('base-amount').textContent = `₹${baseAmount.toFixed(2)}`;
+            document.getElementById('cgst-amount').textContent = `₹${cgstAmount.toFixed(2)}`;
+            document.getElementById('sgst-amount').textContent = `₹${sgstAmount.toFixed(2)}`;
+            document.getElementById('total-amount').textContent = `₹${amount.toFixed(2)}`;
+        }
+
+        // GST Registration
+        function startGSTRegistration() {
+            alert('GST registration process started! Our team will contact you within 2 hours to begin the process.');
+        }
+
+        // GST Filing
+        function startGSTFiling() {
+            alert('GST filing service initiated! Please upload your documents to begin the filing process.');
+        }
+
+        // GST Compliance
+        function checkGSTCompliance() {
+            alert('Compliance check initiated! We will analyze your GST compliance status and provide recommendations.');
+        }
+
+        // GST Consultation
+        function bookGSTConsultation() {
+            alert('Free GST consultation booked! Our GST expert will contact you within 24 hours.');
+        }
+
+        // Package selection
+        function selectPackage(package) {
+            const packages = {
+                'basic': 'Basic GST Package - ₹2,999/year',
+                'professional': 'Professional GST Package - ₹5,999/year',
+                'premium': 'Premium GST Package - ₹9,999/year'
+            };
+            
+            if (confirm(`You have selected ${packages[package]}. Would you like to proceed with the purchase?`)) {
+                alert('Package purchase confirmed! Our team will contact you within 2 hours to set up your account.');
+            }
+        }
+
+        // Compliance functions
+        function checkCompliance() {
+            alert('Compliance status check initiated! You will receive a detailed report within 24 hours.');
+        }
+
+        function bookAuditSupport() {
+            alert('GST audit support booked! Our audit specialist will contact you within 24 hours.');
+        }
+
+        function handleNotice() {
+            alert('Notice handling service initiated! Please upload the notice for our review.');
+        }
+
+        function managePenalty() {
+            alert('Penalty management service initiated! Our team will analyze your case and provide solutions.');
+        }
+
+        // Tool functions
+        function searchGST() {
+            const gstNumber = document.getElementById('gst-search').value;
+            if (gstNumber) {
+                alert(`Searching for GST number: ${gstNumber}. Results will be displayed shortly.`);
+            } else {
+                alert('Please enter a GST number to search.');
+            }
+        }
+
+        function searchHSN() {
+            const searchTerm = document.getElementById('hsn-search').value;
+            if (searchTerm) {
+                alert(`Searching for HSN codes related to: ${searchTerm}. Results will be displayed shortly.`);
+            } else {
+                alert('Please enter a product or service to search for HSN codes.');
+            }
+        }
+
+        function viewGSTCalendar() {
+            alert('GST calendar will open in a new window showing all important deadlines and dates.');
+        }
+
+        function setGSTReminders() {
+            alert('GST reminder setup initiated! You will receive notifications for all important GST deadlines.');
+        }
+
+        function generateInvoice() {
+            alert('GST invoice generator will open. Please fill in the required details to generate your invoice.');
+        }
+
+        function generateReceipt() {
+            alert('GST receipt generator will open. Please fill in the required details to generate your receipt.');
+        }
+
+        // Auto-calculate GST on input change
+        document.getElementById('gst-amount').addEventListener('input', calculateGST);
+        document.getElementById('gst-rate').addEventListener('change', calculateGST);
+
+        // Initialize GST calculator on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateGST();
+        });
+    </script>
+</body>
+</html>
