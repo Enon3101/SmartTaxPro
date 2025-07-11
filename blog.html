@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Blog - MyeCA.in | Latest Tax Tips & Updates</title>
+    <meta name="description" content="Stay updated with the latest tax tips, filing guides, and regulatory changes. Expert insights to help you maximize your tax savings.">
+    <meta name="keywords" content="tax blog, tax tips, tax updates, filing guide, tax savings, tax news">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://myeca.in/blog">
+    <meta property="og:title" content="Tax Blog - MyeCA.in">
+    <meta property="og:description" content="Latest tax tips, filing guides, and regulatory updates">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://myeca.in/blog">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <img src="assets/logo.png" alt="MyeCA.in" class="logo">
+                    </a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="start-filing.html">Start Filing</a></li>
+                    <li><a href="calculators.html">Calculators</a></li>
+                    <li><a href="document-vault.html">Document Vault</a></li>
+                    <li><a href="tax-expert.html">Tax Expert</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="blog.html" class="active">Blog</a></li>
+                    <li><a href="support.html">Support</a></li>
+                    <li><a href="login.html" class="btn-login">Login</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section blog-hero">
+            <div class="container">
+                <h1>Tax Blog</h1>
+                <p>Stay informed with the latest tax tips, updates, and expert insights</p>
+                <div class="search-box">
+                    <input type="text" id="blogSearch" placeholder="Search articles...">
+                    <button type="button" onclick="searchBlog()">Search</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="blog-categories">
+            <div class="container">
+                <div class="category-filters">
+                    <button class="category-btn active" data-category="all">All Posts</button>
+                    <button class="category-btn" data-category="tips">Tax Tips</button>
+                    <button class="category-btn" data-category="updates">Updates</button>
+                    <button class="category-btn" data-category="guide">Guides</button>
+                    <button class="category-btn" data-category="news">News</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="blog-content">
+            <div class="container">
+                <div class="blog-grid" id="blogGrid">
+                    <!-- Featured Article -->
+                    <article class="blog-card featured" data-category="tips">
+                        <div class="blog-image">
+                            <img src="assets/blog/tax-saving-tips.jpg" alt="Tax Saving Tips">
+                            <span class="category-badge">Featured</span>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="date">March 15, 2024</span>
+                                <span class="category">Tax Tips</span>
+                            </div>
+                            <h2><a href="blog/tax-saving-tips-2024.html">10 Essential Tax Saving Tips for FY 2024-25</a></h2>
+                            <p>Discover the most effective ways to reduce your tax liability and maximize your savings for the current financial year.</p>
+                            <div class="blog-footer">
+                                <span class="read-time">5 min read</span>
+                                <a href="blog/tax-saving-tips-2024.html" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Regular Articles -->
+                    <article class="blog-card" data-category="updates">
+                        <div class="blog-image">
+                            <img src="assets/blog/new-tax-regime.jpg" alt="New Tax Regime">
+                            <span class="category-badge">Updates</span>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="date">March 10, 2024</span>
+                                <span class="category">Updates</span>
+                            </div>
+                            <h2><a href="blog/new-tax-regime-changes.html">Key Changes in New Tax Regime for FY 2024-25</a></h2>
+                            <p>Understanding the latest modifications to the new tax regime and how they affect your tax planning.</p>
+                            <div class="blog-footer">
+                                <span class="read-time">4 min read</span>
+                                <a href="blog/new-tax-regime-changes.html" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="blog-card" data-category="guide">
+                        <div class="blog-image">
+                            <img src="assets/blog/itr-filing-guide.jpg" alt="ITR Filing Guide">
+                            <span class="category-badge">Guide</span>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="date">March 8, 2024</span>
+                                <span class="category">Guide</span>
+                            </div>
+                            <h2><a href="blog/complete-itr-filing-guide.html">Complete ITR Filing Guide: Step-by-Step Process</a></h2>
+                            <p>A comprehensive guide to filing your Income Tax Return with detailed instructions and common mistakes to avoid.</p>
+                            <div class="blog-footer">
+                                <span class="read-time">8 min read</span>
+                                <a href="blog/complete-itr-filing-guide.html" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="blog-card" data-category="tips">
+                        <div class="blog-image">
+                            <img src="assets/blog/investment-deductions.jpg" alt="Investment Deductions">
+                            <span class="category-badge">Tips</span>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="date">March 5, 2024</span>
+                                <span class="category">Tax Tips</span>
+                            </div>
+                            <h2><a href="blog/investment-deductions-guide.html">Investment Deductions: Maximize Your Tax Benefits</a></h2>
+                            <p>Learn about various investment options that offer tax deductions under Section 80C and other provisions.</p>
+                            <div class="blog-footer">
+                                <span class="read-time">6 min read</span>
+                                <a href="blog/investment-deductions-guide.html" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="blog-card" data-category="news">
+                        <div class="blog-image">
+                            <img src="assets/blog/budget-2024.jpg" alt="Budget 2024">
+                            <span class="category-badge">News</span>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="date">March 1, 2024</span>
+                                <span class="category">News</span>
+                            </div>
+                            <h2><a href="blog/budget-2024-tax-implications.html">Budget 2024: Key Tax Implications for Individuals</a></h2>
+                            <p>Analysis of the Union Budget 2024 and its impact on individual taxpayers and businesses.</p>
+                            <div class="blog-footer">
+                                <span class="read-time">7 min read</span>
+                                <a href="blog/budget-2024-tax-implications.html" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="blog-card" data-category="guide">
+                        <div class="blog-image">
+                            <img src="assets/blog/digital-payments.jpg" alt="Digital Payments">
+                            <span class="category-badge">Guide</span>
+                        </div>
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span class="date">February 28, 2024</span>
+                                <span class="category">Guide</span>
+                            </div>
+                            <h2><a href="blog/digital-payment-tax-benefits.html">Digital Payment Benefits: Tax Advantages You Should Know</a></h2>
+                            <p>How digital payments can help you save taxes and the documentation required for claiming benefits.</p>
+                            <div class="blog-footer">
+                                <span class="read-time">4 min read</span>
+                                <a href="blog/digital-payment-tax-benefits.html" class="read-more">Read More</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="pagination">
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn next">Next →</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="newsletter-signup">
+            <div class="container">
+                <div class="newsletter-content">
+                    <h2>Stay Updated</h2>
+                    <p>Get the latest tax tips and updates delivered to your inbox</p>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input type="email" placeholder="Enter your email" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MyeCA.in</h3>
+                    <p>Your trusted partner for hassle-free tax filing and financial planning.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">📘</a>
+                        <a href="#" aria-label="Twitter">🐦</a>
+                        <a href="#" aria-label="LinkedIn">💼</a>
+                        <a href="#" aria-label="Instagram">📷</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="start-filing.html">Tax Filing</a></li>
+                        <li><a href="calculators.html">Tax Calculators</a></li>
+                        <li><a href="document-vault.html">Document Vault</a></li>
+                        <li><a href="tax-expert.html">Tax Expert</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="tax-resources.html">Tax Resources</a></li>
+                        <li><a href="support.html">Support</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="terms-of-service.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MyeCA.in. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Blog functionality
+        function searchBlog() {
+            const searchTerm = document.getElementById('blogSearch').value.toLowerCase();
+            const articles = document.querySelectorAll('.blog-card');
+            
+            articles.forEach(article => {
+                const title = article.querySelector('h2').textContent.toLowerCase();
+                const content = article.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || content.includes(searchTerm)) {
+                    article.style.display = 'block';
+                } else {
+                    article.style.display = 'none';
+                }
+            });
+        }
+
+        // Category filtering
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const category = this.dataset.category;
+                
+                // Update active button
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Filter articles
+                const articles = document.querySelectorAll('.blog-card');
+                articles.forEach(article => {
+                    if (category === 'all' || article.dataset.category === category) {
+                        article.style.display = 'block';
+                    } else {
+                        article.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Newsletter subscription
+        function subscribeNewsletter(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+            
+            // Simulate subscription
+            alert('Thank you for subscribing! You will receive our latest updates soon.');
+            event.target.reset();
+        }
+
+        // Pagination
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                // In a real implementation, this would load new content
+            });
+        });
+    </script>
+</body>
+</html>
