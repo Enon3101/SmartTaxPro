@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; }
+    .container { max-width: 400px; margin: 0 auto; padding: 2rem 1rem; }
+    .register-card { background: #fff; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+    .register-header { background: linear-gradient(90deg, #2563eb, #3b82f6); color: #fff; padding: 2rem; text-align: center; }
+    .register-header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .register-header p { color: #bfdbfe; font-size: 0.9rem; }
+    .register-form { padding: 2rem; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; color: #374151; }
+    .form-group label .required { color: #dc2626; }
+    .form-group input { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem; }
+    .form-group input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+    .btn { width: 100%; padding: 0.75rem; background: #2563eb; color: #fff; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn:hover { background: #1d4ed8; }
+    .btn:disabled { background: #9ca3af; cursor: not-allowed; }
+    .btn-link { background: none; color: #2563eb; text-decoration: underline; cursor: pointer; border: none; padding: 0; }
+    .btn-link:hover { color: #1d4ed8; }
+    .error { color: #dc2626; font-size: 0.875rem; margin-top: 0.25rem; }
+    .spinner { display: inline-block; width: 1rem; height: 1rem; border: 2px solid #fff; border-radius: 50%; border-top-color: transparent; animation: spin 1s linear infinite; margin-right: 0.5rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .login-link { text-align: center; margin-top: 1rem; color: #6b7280; font-size: 0.875rem; }
+    .separator { position: relative; text-align: center; margin: 1.5rem 0; }
+    .separator::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #e5e7eb; }
+    .separator span { background: #fff; padding: 0 1rem; color: #6b7280; font-size: 0.75rem; text-transform: uppercase; }
+    .google-btn { width: 100%; padding: 0.75rem; background: #fff; color: #374151; border: 1px solid #d1d5db; border-radius: 0.5rem; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .google-btn:hover { background: #f9fafb; border-color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <nav style="padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+    </ul>
+  </nav>
+  
+  <div class="container">
+    <div class="register-card">
+      <div class="register-header">
+        <h1>Create an Account</h1>
+        <p>Register with your email and password</p>
+      </div>
+      
+      <form class="register-form" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label for="email">Email<span class="required">*</span></label>
+          <input type="email" id="email" placeholder="Enter your email" required>
+          <div class="error" id="email-error"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password<span class="required">*</span></label>
+          <input type="password" id="password" placeholder="Choose a password" required>
+          <div class="error" id="password-error"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password<span class="required">*</span></label>
+          <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+          <div class="error" id="confirmPassword-error"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="username">Username (Optional)</label>
+          <input type="text" id="username" placeholder="Choose a username">
+          <div class="error" id="username-error"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="phone">Phone (Optional, Indian)</label>
+          <input type="tel" id="phone" placeholder="Enter your phone number">
+          <div class="error" id="phone-error"></div>
+        </div>
+        
+        <button type="submit" class="btn" id="register-btn">
+          <span id="btn-text">📝 Register</span>
+          <span id="btn-loading" style="display: none;">
+            <span class="spinner"></span>
+            Registering...
+          </span>
+        </button>
+        
+        <div class="separator">
+          <span>Or continue with</span>
+        </div>
+        
+        <button type="button" class="google-btn" onclick="handleGoogleSignup()">
+          <span style="font-size: 1.2rem;">🔍</span>
+          Sign up with Google
+        </button>
+        
+        <div class="login-link">
+          <span>Already have an account? </span>
+          <button type="button" class="btn-link" onclick="window.location.href='login.html'">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    function handleRegister(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const username = document.getElementById('username').value;
+      const phone = document.getElementById('phone').value;
+      
+      const btn = document.getElementById('register-btn');
+      const btnText = document.getElementById('btn-text');
+      const btnLoading = document.getElementById('btn-loading');
+      
+      // Clear previous errors
+      clearErrors();
+      
+      // Show loading state
+      btn.disabled = true;
+      btnText.style.display = 'none';
+      btnLoading.style.display = 'inline';
+      
+      // Simulate registration process
+      setTimeout(() => {
+        // Validation
+        let hasErrors = false;
+        
+        if (!email.includes('@')) {
+          document.getElementById('email-error').textContent = 'Invalid email address.';
+          hasErrors = true;
+        }
+        
+        if (password.length < 8) {
+          document.getElementById('password-error').textContent = 'Password must be at least 8 characters.';
+          hasErrors = true;
+        }
+        
+        if (password !== confirmPassword) {
+          document.getElementById('confirmPassword-error').textContent = 'Passwords don\'t match.';
+          hasErrors = true;
+        }
+        
+        if (username && username.length < 3) {
+          document.getElementById('username-error').textContent = 'Username must be at least 3 characters.';
+          hasErrors = true;
+        }
+        
+        if (phone && !/^(\+?91)?[6-9]\d{9}$/.test(phone)) {
+          document.getElementById('phone-error').textContent = 'Invalid Indian phone number.';
+          hasErrors = true;
+        }
+        
+        if (hasErrors) {
+          resetButton();
+          return;
+        }
+        
+        // Simulate successful registration
+        alert('Registration successful! Welcome to MyeCA.in');
+        window.location.href = 'index.html';
+      }, 1500);
+    }
+    
+    function handleGoogleSignup() {
+      alert('Google signup would be implemented here in the full version.');
+    }
+    
+    function clearErrors() {
+      const errorElements = document.querySelectorAll('.error');
+      errorElements.forEach(el => el.textContent = '');
+    }
+    
+    function resetButton() {
+      const btn = document.getElementById('register-btn');
+      const btnText = document.getElementById('btn-text');
+      const btnLoading = document.getElementById('btn-loading');
+      
+      btn.disabled = false;
+      btnText.style.display = 'inline';
+      btnLoading.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

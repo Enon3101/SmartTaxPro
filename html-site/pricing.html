@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing Plans - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+    .hero { background: linear-gradient(90deg, #2563eb, #7c3aed); color: #fff; padding: 4rem 0; text-align: center; }
+    .hero h1 { font-size: 3rem; font-weight: bold; margin-bottom: 1rem; }
+    .hero p { font-size: 1.25rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 3rem 0; }
+    .pricing-card { background: #fff; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 2rem; text-align: center; transition: all 0.3s; position: relative; }
+    .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    .pricing-card.popular { border: 2px solid #7c3aed; }
+    .popular-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, #7c3aed, #ec4899); color: #fff; padding: 0.25rem 1rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; }
+    .free-badge { background: #dcfce7; color: #166534; padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.8rem; font-weight: 600; margin-bottom: 1rem; display: inline-block; }
+    .price { font-size: 2.5rem; font-weight: bold; margin: 1rem 0; }
+    .price.free { color: #166534; }
+    .price.paid { color: #2563eb; }
+    .original-price { text-decoration: line-through; color: #64748b; font-size: 1rem; margin-right: 0.5rem; }
+    .features { list-style: none; padding: 0; margin: 2rem 0; }
+    .features li { padding: 0.5rem 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem; color: #64748b; }
+    .features li::before { content: "✓"; color: #22c55e; font-weight: bold; }
+    .btn { display: inline-block; padding: 0.75rem 2rem; border-radius: 0.5rem; text-decoration: none; font-weight: 600; transition: all 0.2s; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-popular { background: linear-gradient(90deg, #7c3aed, #ec4899); color: #fff; }
+    .btn-popular:hover { background: linear-gradient(90deg, #6d28d9, #db2777); }
+    .btn-outline { background: #fff; color: #2563eb; border: 1px solid #2563eb; }
+    .btn-outline:hover { background: #2563eb; color: #fff; }
+    .section { padding: 4rem 0; }
+    .section-title { text-align: center; font-size: 2rem; font-weight: bold; margin-bottom: 1rem; }
+    .section-subtitle { text-align: center; color: #64748b; margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+    .feature-card { background: #fff; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
+    .feature-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .cta-section { background: linear-gradient(90deg, #2563eb, #7c3aed); color: #fff; text-align: center; padding: 4rem 0; }
+    .cta-section h2 { font-size: 2.5rem; font-weight: bold; margin-bottom: 1rem; }
+    .cta-section p { font-size: 1.25rem; opacity: 0.9; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .btn-white { background: #fff; color: #2563eb; }
+    .btn-white:hover { background: #f1f5f9; }
+    @media (max-width: 768px) { .hero h1 { font-size: 2rem; } .pricing-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="container" style="padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+    </ul>
+  </nav>
+  
+  <div class="hero">
+    <div class="container">
+      <div style="font-size: 4rem; margin-bottom: 1.5rem;">💰</div>
+      <h1>Transparent Pricing Plans</h1>
+      <p>Choose the perfect plan for your tax filing needs. From simple DIY filing to expert-assisted services.</p>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="section">
+      <div class="section-title">⚡ File ITR Yourself</div>
+      <div class="section-subtitle">Complete your tax filing independently with our intuitive platform. Includes all income types: Salary, House Property, Capital Gains, Business Income, and more.</div>
+      
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="free-badge">Free</div>
+          <h3>Basic</h3>
+          <p style="color: #64748b; margin-bottom: 1rem;">Income 0 - 10K</p>
+          <div class="price free">Free</div>
+          <ul class="features">
+            <li>Simple ITR filing</li>
+            <li>Basic deductions</li>
+            <li>Email support</li>
+            <li>Standard processing</li>
+          </ul>
+          <a href="start-filing.html" class="btn btn-primary">Start Free</a>
+        </div>
+        
+        <div class="pricing-card">
+          <h3>Standard</h3>
+          <p style="color: #64748b; margin-bottom: 1rem;">Income 10K - 1L</p>
+          <div class="price paid">
+            <span class="original-price">₹99</span>
+            ₹49
+          </div>
+          <ul class="features">
+            <li>All Basic features</li>
+            <li>Advanced deductions</li>
+            <li>Priority support</li>
+            <li>Faster processing</li>
+            <li>Document storage</li>
+          </ul>
+          <a href="start-filing.html" class="btn btn-primary">Choose Plan</a>
+        </div>
+        
+        <div class="pricing-card popular">
+          <div class="popular-badge">Most Popular</div>
+          <h3>Premium</h3>
+          <p style="color: #64748b; margin-bottom: 1rem;">Income 1L - 5L</p>
+          <div class="price paid">
+            <span class="original-price">₹449</span>
+            ₹382
+          </div>
+          <ul class="features">
+            <li>All Standard features</li>
+            <li>Expert consultation</li>
+            <li>24/7 support</li>
+            <li>Instant processing</li>
+            <li>Advanced analytics</li>
+            <li>Tax optimization</li>
+          </ul>
+          <a href="start-filing.html" class="btn btn-popular">Choose Plan</a>
+        </div>
+        
+        <div class="pricing-card">
+          <h3>Enterprise</h3>
+          <p style="color: #64748b; margin-bottom: 1rem;">Income 10L+</p>
+          <div class="price paid">
+            <span class="original-price">₹1,499</span>
+            ₹1,274
+          </div>
+          <ul class="features">
+            <li>All Premium features</li>
+            <li>Dedicated expert</li>
+            <li>Custom solutions</li>
+            <li>Priority filing</li>
+            <li>Compliance guarantee</li>
+            <li>Year-round support</li>
+          </ul>
+          <a href="contact.html" class="btn btn-outline">Contact Sales</a>
+        </div>
+      </div>
+      
+      <div style="text-align: center; margin-top: 2rem;">
+        <a href="start-filing.html" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">Start Filing Now →</a>
+      </div>
+    </div>
+    
+    <div class="section" style="background: #f8fafc;">
+      <div class="section-title">👥 Expert-Assisted Plans</div>
+      <div class="section-subtitle">Get professional assistance from certified tax experts. Perfect for complex tax scenarios and maximum optimization.</div>
+      
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">📄</div>
+          <h3>Standard</h3>
+          <p style="color: #64748b; margin-bottom: 1rem;">Salary (1 employer) + Single House Property</p>
+          <div class="price paid">
+            <span class="original-price">₹1,499</span>
+            ₹1,274
+          </div>
+          <ul class="features">
+            <li>Salary Income</li>
+            <li>Single House Property</li>
+            <li>Other Sources</li>
+            <li>Basic Support</li>
+          </ul>
+          <a href="start-filing.html" class="btn btn-primary">Choose Plan</a>
+        </div>
+        
+        <div class="pricing-card">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+          <h3>Multiple Form 16</h3>
+          <p style="color: #64748b; margin-bottom: 1rem;">Multiple employers + All Standard features</p>
+          <div class="price paid">
+            <span class="original-price">₹1,999</span>
+            ₹1,699
+          </div>
+          <ul class="features">
+            <li>Multiple Employers</li>
+            <li>All Standard features</li>
+            <li>Priority Support</li>
+          </ul>
+          <a href="start-filing.html" class="btn btn-primary">Choose Plan</a>
+        </div>
+        
+        <div class="pricing-card">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">💼</div>
+          <h3>Business Income</h3>
+          <p style="color: #64748b; margin-bottom: 1rem;">Business income + Multiple properties</p>
+          <div class="price paid">
+            <span class="original-price">₹3,124</span>
+            ₹2,655
+          </div>
+          <ul class="features">
+            <li>Business Income</li>
+            <li>Multiple Properties</li>
+            <li>Section 44AD/44ADA</li>
+            <li>Expert Support</li>
+          </ul>
+          <a href="start-filing.html" class="btn btn-primary">Choose Plan</a>
+        </div>
+        
+        <div class="pricing-card">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">📈</div>
+          <h3>Capital Gains</h3>
+          <p style="color: #64748b; margin-bottom: 1rem;">Capital gains + All Business features</p>
+          <div class="price paid">
+            <span class="original-price">₹4,999</span>
+            ₹4,249
+          </div>
+          <ul class="features">
+            <li>Capital Gains</li>
+            <li>Crypto Assets</li>
+            <li>Relief u/s 89</li>
+            <li>Premium Support</li>
+          </ul>
+          <a href="start-filing.html" class="btn btn-primary">Choose Plan</a>
+        </div>
+        
+        <div class="pricing-card">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">🌍</div>
+          <h3>NRI</h3>
+          <p style="color: #64748b; margin-bottom: 1rem;">NRI tax optimization</p>
+          <div class="price paid">
+            <span class="original-price">₹9,374</span>
+            ₹7,968
+          </div>
+          <ul class="features">
+            <li>NRI Specific</li>
+            <li>Foreign Assets</li>
+            <li>DTAA Benefits</li>
+            <li>Dedicated Expert</li>
+          </ul>
+          <a href="start-filing.html" class="btn btn-primary">Choose Plan</a>
+        </div>
+        
+        <div class="pricing-card">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+          <h3>Foreign Income</h3>
+          <p style="color: #64748b; margin-bottom: 1rem;">Complete foreign income handling</p>
+          <div class="price paid">
+            <span class="original-price">₹12,499</span>
+            ₹10,624
+          </div>
+          <ul class="features">
+            <li>Foreign Income</li>
+            <li>Form 67</li>
+            <li>FTC Optimization</li>
+            <li>24/7 Expert Support</li>
+          </ul>
+          <a href="start-filing.html" class="btn btn-primary">Choose Plan</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">Why Choose MyeCA.in?</div>
+      <div class="section-subtitle">Built with security, expertise, and user experience in mind</div>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>100% Secure</h3>
+          <p>Bank-level encryption and security protocols to protect your sensitive data</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⭐</div>
+          <h3>Expert Support</h3>
+          <p>Get help from certified tax professionals whenever you need assistance</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Fast & Easy</h3>
+          <p>Complete your filing in minutes with our intuitive step-by-step process</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="cta-section">
+    <div class="container">
+      <h2>Ready to File Your Taxes?</h2>
+      <p>Join thousands of satisfied customers who trust MyeCA.in for their expert eCA services and tax filing needs</p>
+      <a href="start-filing.html" class="btn btn-white" style="padding: 1rem 2rem; font-size: 1.1rem;">Get Started Today →</a>
+    </div>
+  </div>
+  
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+</body>
+</html>

@@ -3,32 +3,256 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact - Simple HTML Site</title>
+  <title>Contact Us - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+    .hero { background: linear-gradient(90deg, #2563eb, #7c3aed); color: #fff; padding: 4rem 0; text-align: center; }
+    .hero h1 { font-size: 3rem; font-weight: bold; margin-bottom: 1rem; }
+    .hero p { font-size: 1.25rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin: 4rem 0; }
+    .contact-info { background: #fff; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 2rem; }
+    .contact-form { background: #fff; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 2rem; }
+    .contact-item { display: flex; align-items: center; margin-bottom: 1.5rem; }
+    .contact-icon { width: 3rem; height: 3rem; background: #eff6ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 1rem; font-size: 1.2rem; }
+    .contact-details h3 { font-weight: 600; margin-bottom: 0.25rem; }
+    .contact-details p { color: #64748b; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem; }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .btn { background: #2563eb; color: #fff; padding: 0.75rem 2rem; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn:hover { background: #1d4ed8; }
+    .offices-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin: 4rem 0; }
+    .office-card { background: #fff; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 2rem; }
+    .office-card h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: #2563eb; }
+    .office-details p { margin-bottom: 0.5rem; color: #64748b; }
+    .office-details strong { color: #374151; }
+    @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } .hero h1 { font-size: 2rem; } }
+  </style>
 </head>
 <body>
-  <nav>
-    <ul>
+  <nav class="container" style="padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
       <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="features.html">Features</a></li>
-      <li><a href="gallery.html">Gallery</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
     </ul>
   </nav>
-  <main>
-    <h1>Contact Us</h1>
-    <form id="contact-form">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required>
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required>
-      <label for="message">Message:</label>
-      <textarea id="message" name="message" required></textarea>
-      <button type="submit">Send</button>
-    </form>
-    <div id="contact-success" style="display:none; color:green;">Thank you for contacting us!</div>
-  </main>
-  <script src="script.js"></script>
+  
+  <div class="hero">
+    <div class="container">
+      <div style="font-size: 4rem; margin-bottom: 1.5rem;">📞</div>
+      <h1>Get in Touch</h1>
+      <p>Have questions about our services? We're here to help you with all your tax filing needs.</p>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 2rem;">Contact Information</h2>
+        
+        <div class="contact-item">
+          <div class="contact-icon">📧</div>
+          <div class="contact-details">
+            <h3>Email</h3>
+            <p>support@myeca.in</p>
+            <p>info@myeca.in</p>
+          </div>
+        </div>
+        
+        <div class="contact-item">
+          <div class="contact-icon">📞</div>
+          <div class="contact-details">
+            <h3>Phone</h3>
+            <p>+91-1800-123-4567</p>
+            <p>+91-98765-43210</p>
+          </div>
+        </div>
+        
+        <div class="contact-item">
+          <div class="contact-icon">💬</div>
+          <div class="contact-details">
+            <h3>Live Chat</h3>
+            <p>Available 24/7</p>
+            <p>Click the chat icon on any page</p>
+          </div>
+        </div>
+        
+        <div class="contact-item">
+          <div class="contact-icon">⏰</div>
+          <div class="contact-details">
+            <h3>Business Hours</h3>
+            <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+            <p>Saturday: 9:00 AM - 2:00 PM</p>
+            <p>Sunday: Closed</p>
+          </div>
+        </div>
+        
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div class="contact-details">
+            <h3>Head Office</h3>
+            <p>MyeCA.in Tower</p>
+            <p>123 Tax Street, Financial District</p>
+            <p>Mumbai, Maharashtra 400001</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="contact-form">
+        <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 2rem;">Send us a Message</h2>
+        
+        <form onsubmit="submitContactForm(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name *</label>
+              <input type="text" id="firstName" required>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name *</label>
+              <input type="text" id="lastName" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone">
+          </div>
+          
+          <div class="form-group">
+            <label for="subject">Subject *</label>
+            <select id="subject" required>
+              <option value="">Select a subject</option>
+              <option value="general">General Inquiry</option>
+              <option value="support">Technical Support</option>
+              <option value="billing">Billing & Payment</option>
+              <option value="filing">Tax Filing Help</option>
+              <option value="partnership">Partnership Inquiry</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="message">Message *</label>
+            <textarea id="message" placeholder="Please describe your inquiry in detail..." required></textarea>
+          </div>
+          
+          <button type="submit" class="btn" style="width: 100%;">Send Message</button>
+        </form>
+      </div>
+    </div>
+    
+    <div style="text-align: center; margin: 4rem 0;">
+      <h2 style="font-size: 2rem; font-weight: 600; margin-bottom: 1rem;">Our Offices</h2>
+      <p style="color: #64748b; max-width: 600px; margin: 0 auto;">Visit us at any of our locations across India for in-person assistance</p>
+    </div>
+    
+    <div class="offices-grid">
+      <div class="office-card">
+        <h3>Mumbai (Head Office)</h3>
+        <div class="office-details">
+          <p><strong>Address:</strong> MyeCA.in Tower, 123 Tax Street, Financial District, Mumbai, Maharashtra 400001</p>
+          <p><strong>Phone:</strong> +91-22-1234-5678</p>
+          <p><strong>Email:</strong> mumbai@myeca.in</p>
+          <p><strong>Hours:</strong> Mon-Fri: 9:00 AM - 6:00 PM</p>
+        </div>
+      </div>
+      
+      <div class="office-card">
+        <h3>Delhi</h3>
+        <div class="office-details">
+          <p><strong>Address:</strong> Tax Plaza, 456 Business Avenue, Connaught Place, New Delhi 110001</p>
+          <p><strong>Phone:</strong> +91-11-2345-6789</p>
+          <p><strong>Email:</strong> delhi@myeca.in</p>
+          <p><strong>Hours:</strong> Mon-Fri: 9:00 AM - 6:00 PM</p>
+        </div>
+      </div>
+      
+      <div class="office-card">
+        <h3>Bangalore</h3>
+        <div class="office-details">
+          <p><strong>Address:</strong> Tech Park, 789 Innovation Road, Electronic City, Bangalore, Karnataka 560100</p>
+          <p><strong>Phone:</strong> +91-80-3456-7890</p>
+          <p><strong>Email:</strong> bangalore@myeca.in</p>
+          <p><strong>Hours:</strong> Mon-Fri: 9:00 AM - 6:00 PM</p>
+        </div>
+      </div>
+      
+      <div class="office-card">
+        <h3>Chennai</h3>
+        <div class="office-details">
+          <p><strong>Address:</strong> Financial Center, 321 Corporate Lane, T Nagar, Chennai, Tamil Nadu 600017</p>
+          <p><strong>Phone:</strong> +91-44-4567-8901</p>
+          <p><strong>Email:</strong> chennai@myeca.in</p>
+          <p><strong>Hours:</strong> Mon-Fri: 9:00 AM - 6:00 PM</p>
+        </div>
+      </div>
+      
+      <div class="office-card">
+        <h3>Hyderabad</h3>
+        <div class="office-details">
+          <p><strong>Address:</strong> Business Hub, 654 Tech Street, Hitech City, Hyderabad, Telangana 500081</p>
+          <p><strong>Phone:</strong> +91-40-5678-9012</p>
+          <p><strong>Email:</strong> hyderabad@myeca.in</p>
+          <p><strong>Hours:</strong> Mon-Fri: 9:00 AM - 6:00 PM</p>
+        </div>
+      </div>
+      
+      <div class="office-card">
+        <h3>Kolkata</h3>
+        <div class="office-details">
+          <p><strong>Address:</strong> Eastern Plaza, 987 Heritage Road, Park Street, Kolkata, West Bengal 700016</p>
+          <p><strong>Phone:</strong> +91-33-6789-0123</p>
+          <p><strong>Email:</strong> kolkata@myeca.in</p>
+          <p><strong>Hours:</strong> Mon-Fri: 9:00 AM - 6:00 PM</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+  
+  <script>
+    function submitContactForm(event) {
+      event.preventDefault();
+      
+      const firstName = document.getElementById('firstName').value;
+      const lastName = document.getElementById('lastName').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const subject = document.getElementById('subject').value;
+      const message = document.getElementById('message').value;
+      
+      // Simple validation
+      if (!firstName || !lastName || !email || !subject || !message) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+      
+      if (!email.includes('@')) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+      
+      // Simulate form submission
+      alert('Thank you for your message! We will get back to you within 24 hours.');
+      event.target.reset();
+    }
+  </script>
 </body>
 </html>
