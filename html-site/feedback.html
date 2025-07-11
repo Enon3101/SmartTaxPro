@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1rem; }
+    .feedback-header { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; text-align: center; }
+    .feedback-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: #1f2937; }
+    .feedback-header p { font-size: 1.1rem; color: #64748b; }
+    .feedback-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+    .feedback-form { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; }
+    .feedback-info { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 0.5rem; font-size: 1rem; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+    .form-group textarea { min-height: 120px; resize: vertical; }
+    .rating-group { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+    .rating-star { font-size: 1.5rem; cursor: pointer; color: #d1d5db; transition: color 0.2s; }
+    .rating-star:hover, .rating-star.active { color: #f59e0b; }
+    .feedback-type { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .type-card { border: 2px solid #e2e8f0; border-radius: 0.5rem; padding: 1rem; cursor: pointer; transition: all 0.2s; text-align: center; }
+    .type-card:hover { border-color: #2563eb; background: #eff6ff; }
+    .type-card.selected { border-color: #2563eb; background: #eff6ff; }
+    .type-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .type-title { font-weight: 600; margin-bottom: 0.25rem; color: #374151; }
+    .type-desc { font-size: 0.9rem; color: #64748b; }
+    .info-section { margin-bottom: 2rem; }
+    .info-section h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: #1f2937; }
+    .info-section p { color: #4b5563; line-height: 1.6; margin-bottom: 1rem; }
+    .info-list { list-style: none; padding: 0; }
+    .info-list li { padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 0.5rem; }
+    .info-list li:last-child { border-bottom: none; }
+    .info-icon { color: #22c55e; font-size: 1.2rem; }
+    .success-message { background: #dcfce7; border: 1px solid #22c55e; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; color: #166534; display: none; }
+    .error-message { background: #fef2f2; border: 1px solid #ef4444; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; color: #dc2626; display: none; }
+    .submit-btn { background: #2563eb; color: #fff; padding: 1rem 2rem; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; width: 100%; font-size: 1rem; transition: background 0.2s; }
+    .submit-btn:hover { background: #1d4ed8; }
+    .submit-btn:disabled { background: #9ca3af; cursor: not-allowed; }
+    @media (max-width: 768px) { .feedback-grid { grid-template-columns: 1fr; } .feedback-header h1 { font-size: 2rem; } }
+  </style>
+</head>
+<body>
+  <nav class="container" style="padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+  
+  <div class="container">
+    <div class="feedback-header">
+      <h1>We Value Your Feedback</h1>
+      <p>Help us improve MyeCA.in by sharing your thoughts, suggestions, and experiences</p>
+    </div>
+    
+    <div class="feedback-grid">
+      <div class="feedback-form">
+        <h2 style="margin-bottom: 1.5rem; color: #1f2937;">Share Your Feedback</h2>
+        
+        <div class="success-message" id="successMessage">
+          ✅ Thank you! Your feedback has been submitted successfully. We'll review it and get back to you soon.
+        </div>
+        
+        <div class="error-message" id="errorMessage">
+          ❌ There was an error submitting your feedback. Please try again.
+        </div>
+        
+        <form id="feedbackForm">
+          <div class="form-group">
+            <label for="feedbackType">Feedback Type *</label>
+            <div class="feedback-type">
+              <div class="type-card" data-type="suggestion">
+                <div class="type-icon">💡</div>
+                <div class="type-title">Suggestion</div>
+                <div class="type-desc">New feature ideas</div>
+              </div>
+              <div class="type-card" data-type="bug">
+                <div class="type-icon">🐛</div>
+                <div class="type-title">Bug Report</div>
+                <div class="type-desc">Technical issues</div>
+              </div>
+              <div class="type-card" data-type="compliment">
+                <div class="type-icon">👍</div>
+                <div class="type-title">Compliment</div>
+                <div class="type-desc">Positive feedback</div>
+              </div>
+              <div class="type-card" data-type="complaint">
+                <div class="type-icon">😞</div>
+                <div class="type-title">Complaint</div>
+                <div class="type-desc">Issues to address</div>
+              </div>
+            </div>
+            <input type="hidden" id="feedbackType" name="feedbackType" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name">
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="subject">Subject *</label>
+            <input type="text" id="subject" name="subject" placeholder="Brief description of your feedback" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="rating">Overall Experience Rating</label>
+            <div class="rating-group" id="ratingGroup">
+              <span class="rating-star" data-rating="1">⭐</span>
+              <span class="rating-star" data-rating="2">⭐</span>
+              <span class="rating-star" data-rating="3">⭐</span>
+              <span class="rating-star" data-rating="4">⭐</span>
+              <span class="rating-star" data-rating="5">⭐</span>
+            </div>
+            <input type="hidden" id="rating" name="rating">
+          </div>
+          
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" name="category">
+              <option value="">Select a category</option>
+              <option value="tax-filing">Tax Filing Process</option>
+              <option value="calculators">Tax Calculators</option>
+              <option value="document-vault">Document Vault</option>
+              <option value="tax-expert">Tax Expert AI</option>
+              <option value="user-interface">User Interface</option>
+              <option value="performance">Performance & Speed</option>
+              <option value="mobile-experience">Mobile Experience</option>
+              <option value="customer-support">Customer Support</option>
+              <option value="pricing">Pricing & Plans</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="message">Detailed Feedback *</label>
+            <textarea id="message" name="message" placeholder="Please provide detailed feedback about your experience, suggestions for improvement, or any issues you encountered..." required></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="priority">Priority Level</label>
+            <select id="priority" name="priority">
+              <option value="low">Low - Nice to have</option>
+              <option value="medium" selected>Medium - Important</option>
+              <option value="high">High - Critical</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="contactMe" name="contactMe">
+              Contact me for follow-up questions
+            </label>
+          </div>
+          
+          <button type="submit" class="submit-btn" id="submitBtn">
+            📤 Submit Feedback
+          </button>
+        </form>
+      </div>
+      
+      <div class="feedback-info">
+        <h2 style="margin-bottom: 1.5rem; color: #1f2937;">How Your Feedback Helps</h2>
+        
+        <div class="info-section">
+          <h3>🚀 Product Improvement</h3>
+          <p>Your feedback directly influences our product roadmap and helps us prioritize features that matter most to our users.</p>
+          <ul class="info-list">
+            <li><span class="info-icon">✅</span> New feature development</li>
+            <li><span class="info-icon">✅</span> User experience enhancements</li>
+            <li><span class="info-icon">✅</span> Performance optimizations</li>
+            <li><span class="info-icon">✅</span> Bug fixes and improvements</li>
+          </ul>
+        </div>
+        
+        <div class="info-section">
+          <h3>📊 What We Track</h3>
+          <p>We analyze feedback patterns to understand user needs and improve our services:</p>
+          <ul class="info-list">
+            <li><span class="info-icon">📈</span> Feature usage and satisfaction</li>
+            <li><span class="info-icon">📈</span> Pain points and frustrations</li>
+            <li><span class="info-icon">📈</span> User workflow improvements</li>
+            <li><span class="info-icon">📈</span> Performance and reliability issues</li>
+          </ul>
+        </div>
+        
+        <div class="info-section">
+          <h3>⏱️ Response Timeline</h3>
+          <p>We review all feedback and respond based on priority:</p>
+          <ul class="info-list">
+            <li><span class="info-icon">🔴</span> Critical issues: Within 24 hours</li>
+            <li><span class="info-icon">🟡</span> High priority: Within 3-5 days</li>
+            <li><span class="info-icon">🟢</span> Medium priority: Within 1-2 weeks</li>
+            <li><span class="info-icon">🔵</span> Low priority: Monthly review</li>
+          </ul>
+        </div>
+        
+        <div class="info-section">
+          <h3>💡 Feedback Tips</h3>
+          <p>To help us better understand your feedback:</p>
+          <ul class="info-list">
+            <li><span class="info-icon">💭</span> Be specific about the issue or suggestion</li>
+            <li><span class="info-icon">💭</span> Include steps to reproduce bugs</li>
+            <li><span class="info-icon">💭</span> Describe your expected behavior</li>
+            <li><span class="info-icon">💭</span> Mention your device and browser</li>
+          </ul>
+        </div>
+        
+        <div style="background: #eff6ff; border-radius: 0.5rem; padding: 1.5rem; margin-top: 2rem;">
+          <h3 style="margin-bottom: 1rem; color: #1e40af;">📞 Need Immediate Help?</h3>
+          <p style="color: #1e40af; margin-bottom: 1rem;">For urgent issues or technical support, contact our support team directly:</p>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="support.html" class="btn" style="font-size: 0.9rem;">❓ Support Center</a>
+            <a href="contact.html" class="btn btn-outline" style="font-size: 0.9rem;">📞 Contact Us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+      <h3 style="margin-bottom: 1rem; color: #1f2937;">Other Ways to Connect</h3>
+      <p style="color: #64748b; margin-bottom: 1.5rem;">Join our community and stay updated with the latest features and improvements.</p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="#" class="btn btn-outline">📧 Newsletter</a>
+        <a href="#" class="btn btn-outline">💬 Community Forum</a>
+        <a href="#" class="btn btn-outline">📱 Social Media</a>
+        <a href="#" class="btn btn-outline">📊 Feature Requests</a>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+  
+  <script>
+    // Feedback type selection
+    document.querySelectorAll('.type-card').forEach(card => {
+      card.addEventListener('click', function() {
+        document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+        document.getElementById('feedbackType').value = this.dataset.type;
+      });
+    });
+    
+    // Rating system
+    document.querySelectorAll('.rating-star').forEach(star => {
+      star.addEventListener('click', function() {
+        const rating = this.dataset.rating;
+        document.getElementById('rating').value = rating;
+        
+        document.querySelectorAll('.rating-star').forEach(s => {
+          s.classList.remove('active');
+          if (s.dataset.rating <= rating) {
+            s.classList.add('active');
+          }
+        });
+      });
+    });
+    
+    // Form submission
+    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const successMessage = document.getElementById('successMessage');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      // Disable submit button
+      submitBtn.disabled = true;
+      submitBtn.textContent = '📤 Submitting...';
+      
+      // Hide previous messages
+      successMessage.style.display = 'none';
+      errorMessage.style.display = 'none';
+      
+      // Simulate form submission
+      setTimeout(() => {
+        // Show success message
+        successMessage.style.display = 'block';
+        
+        // Reset form
+        document.getElementById('feedbackForm').reset();
+        document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('.rating-star').forEach(s => s.classList.remove('active'));
+        
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.textContent = '📤 Submit Feedback';
+        
+        // Scroll to success message
+        successMessage.scrollIntoView({ behavior: 'smooth' });
+        
+        // Track feedback submission
+        console.log('Feedback submitted successfully');
+        
+        // Store feedback in localStorage for demo
+        const feedback = {
+          type: document.getElementById('feedbackType').value,
+          name: document.getElementById('name').value,
+          email: document.getElementById('email').value,
+          subject: document.getElementById('subject').value,
+          rating: document.getElementById('rating').value,
+          category: document.getElementById('category').value,
+          message: document.getElementById('message').value,
+          priority: document.getElementById('priority').value,
+          contactMe: document.getElementById('contactMe').checked,
+          timestamp: new Date().toISOString()
+        };
+        
+        // Store in localStorage
+        const existingFeedback = JSON.parse(localStorage.getItem('feedback') || '[]');
+        existingFeedback.push(feedback);
+        localStorage.setItem('feedback', JSON.stringify(existingFeedback));
+        
+      }, 2000);
+    });
+    
+    // Track page view
+    console.log('Feedback page viewed');
+  </script>
+</body>
+</html>
