@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Start Filing - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+    .stepper { display: flex; gap: 1rem; margin-bottom: 2rem; }
+    .stepper-step { flex: 1; text-align: center; padding: 1rem; border-radius: 0.5rem; background: #f1f5f9; color: #2563eb; font-weight: 600; }
+    .stepper-step.active { background: #2563eb; color: #fff; }
+    .form-section { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
+    .form-group input, .form-group select { width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #d1d5db; }
+    .form-actions { display: flex; justify-content: space-between; gap: 1rem; }
+    .btn { display: inline-block; padding: 0.75rem 2rem; border-radius: 0.5rem; background: #2563eb; color: #fff; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s; }
+    .btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+    .btn-outline { background: #f1f5f9; color: #2563eb; border: 1px solid #2563eb; }
+    .review-section { background: #f9fafb; border-radius: 1rem; padding: 2rem; margin-bottom: 2rem; }
+    .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+    .summary-table th, .summary-table td { text-align: left; padding: 0.5rem 1rem; }
+    .summary-table th { color: #2563eb; }
+    .summary-table tr:nth-child(even) { background: #f1f5f9; }
+    .declaration { background: #eff6ff; border: 1px solid #dbeafe; border-radius: 0.5rem; padding: 1rem; margin-bottom: 2rem; }
+    @media (max-width: 600px) { .stepper { flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <nav class="container" style="padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <div class="stepper">
+      <div class="stepper-step active" id="step-1-tab">1. Basic Info</div>
+      <div class="stepper-step" id="step-2-tab">2. Income Sources</div>
+      <div class="stepper-step" id="step-3-tab">3. Income Details</div>
+      <div class="stepper-step" id="step-4-tab">4. Deductions</div>
+      <div class="stepper-step" id="step-5-tab">5. Taxes Paid</div>
+      <div class="stepper-step" id="step-6-tab">6. Review</div>
+    </div>
+    <form id="filing-form">
+      <!-- Step 1: Basic Info -->
+      <div class="form-section" id="step-1">
+        <h2 style="font-size: 1.5rem; font-weight: bold; color: #2563eb; margin-bottom: 1rem;">Basic Information</h2>
+        <div class="form-group"><label for="fullName">Full Name</label><input type="text" id="fullName" required value="Amit Sharma"></div>
+        <div class="form-group"><label for="pan">PAN</label><input type="text" id="pan" required maxlength="10" value="ABCDE1234F"></div>
+        <div class="form-group"><label for="dob">Date of Birth</label><input type="date" id="dob" required value="1990-01-01"></div>
+        <div class="form-group"><label for="email">Email</label><input type="email" id="email" required value="amit@example.com"></div>
+        <div class="form-group"><label for="phone">Phone</label><input type="tel" id="phone" required value="9876543210"></div>
+        <div class="form-actions"><button type="button" class="btn" onclick="nextStep(2)">Continue</button></div>
+      </div>
+      <!-- Step 2: Income Sources -->
+      <div class="form-section" id="step-2" style="display:none;">
+        <h2 style="font-size: 1.5rem; font-weight: bold; color: #2563eb; margin-bottom: 1rem;">Income Sources</h2>
+        <div class="form-group"><label><input type="checkbox" checked disabled> Salary Income</label></div>
+        <div class="form-group"><label><input type="checkbox"> House Property Income</label></div>
+        <div class="form-group"><label><input type="checkbox"> Capital Gains</label></div>
+        <div class="form-group"><label><input type="checkbox"> Business Income</label></div>
+        <div class="form-group"><label><input type="checkbox"> Interest Income</label></div>
+        <div class="form-group"><label><input type="checkbox"> Other Income</label></div>
+        <div class="form-actions"><button type="button" class="btn-outline btn" onclick="prevStep(1)">Back</button><button type="button" class="btn" onclick="nextStep(3)">Continue</button></div>
+      </div>
+      <!-- Step 3: Income Details -->
+      <div class="form-section" id="step-3" style="display:none;">
+        <h2 style="font-size: 1.5rem; font-weight: bold; color: #2563eb; margin-bottom: 1rem;">Income Details</h2>
+        <div class="form-group"><label for="employerName">Employer Name</label><input type="text" id="employerName" value="ABC Pvt Ltd"></div>
+        <div class="form-group"><label for="grossSalary">Gross Salary</label><input type="number" id="grossSalary" value="800000"></div>
+        <div class="form-group"><label for="standardDeduction">Standard Deduction</label><input type="number" id="standardDeduction" value="50000"></div>
+        <div class="form-actions"><button type="button" class="btn-outline btn" onclick="prevStep(2)">Back</button><button type="button" class="btn" onclick="nextStep(4)">Continue</button></div>
+      </div>
+      <!-- Step 4: Deductions -->
+      <div class="form-section" id="step-4" style="display:none;">
+        <h2 style="font-size: 1.5rem; font-weight: bold; color: #2563eb; margin-bottom: 1rem;">Deductions</h2>
+        <div class="form-group"><label for="deduction80C">Section 80C (e.g. PPF, ELSS)</label><input type="number" id="deduction80C" value="150000"></div>
+        <div class="form-group"><label for="deduction80D">Section 80D (Medical Insurance)</label><input type="number" id="deduction80D" value="25000"></div>
+        <div class="form-actions"><button type="button" class="btn-outline btn" onclick="prevStep(3)">Back</button><button type="button" class="btn" onclick="nextStep(5)">Continue</button></div>
+      </div>
+      <!-- Step 5: Taxes Paid -->
+      <div class="form-section" id="step-5" style="display:none;">
+        <h2 style="font-size: 1.5rem; font-weight: bold; color: #2563eb; margin-bottom: 1rem;">Taxes Paid</h2>
+        <div class="form-group"><label for="tdsSalary">TDS from Salary</label><input type="number" id="tdsSalary" value="60000"></div>
+        <div class="form-group"><label for="advanceTax">Advance Tax Paid</label><input type="number" id="advanceTax" value="0"></div>
+        <div class="form-actions"><button type="button" class="btn-outline btn" onclick="prevStep(4)">Back</button><button type="button" class="btn" onclick="nextStep(6)">Continue</button></div>
+      </div>
+      <!-- Step 6: Review & Submit -->
+      <div class="review-section" id="step-6" style="display:none;">
+        <h2 style="font-size: 1.5rem; font-weight: bold; color: #2563eb; margin-bottom: 1rem;">Review & Submit</h2>
+        <table class="summary-table">
+          <tr><th colspan="2">Personal Information</th></tr>
+          <tr><td>Name</td><td id="reviewName">Amit Sharma</td></tr>
+          <tr><td>PAN</td><td id="reviewPAN">ABCDE1234F</td></tr>
+          <tr><td>Assessment Year</td><td id="reviewAY">2024-25</td></tr>
+          <tr><td>Email</td><td id="reviewEmail">amit@example.com</td></tr>
+          <tr><td>Phone</td><td id="reviewPhone">9876543210</td></tr>
+        </table>
+        <table class="summary-table">
+          <tr><th colspan="2">Income & Tax Details</th></tr>
+          <tr><td>Gross Salary</td><td id="reviewGrossSalary">₹8,00,000</td></tr>
+          <tr><td>Standard Deduction</td><td id="reviewStdDeduction">₹50,000</td></tr>
+          <tr><td>Section 80C</td><td id="review80C">₹1,50,000</td></tr>
+          <tr><td>Section 80D</td><td id="review80D">₹25,000</td></tr>
+          <tr><td>TDS from Salary</td><td id="reviewTDS">₹60,000</td></tr>
+        </table>
+        <div class="declaration">
+          <b>Declaration:</b> I solemnly declare that to the best of my knowledge and belief, the information given in this return and the schedules, statements, etc. accompanying it is correct and complete, and the amount of total income and other particulars shown therein are truly stated and are in accordance with the provisions of the Income-tax Act, 1961.
+        </div>
+        <div class="form-actions"><button type="button" class="btn-outline btn" onclick="prevStep(5)">Back</button><button type="submit" class="btn">Submit Filing</button></div>
+      </div>
+    </form>
+  </div>
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+  <script>
+    let currentStep = 1;
+    function showStep(step) {
+      for (let i = 1; i <= 6; i++) {
+        document.getElementById('step-' + i).style.display = (i === step) ? '' : 'none';
+        document.getElementById('step-' + i + '-tab').classList.toggle('active', i === step);
+      }
+      currentStep = step;
+    }
+    function nextStep(step) { showStep(step); }
+    function prevStep(step) { showStep(step); }
+    showStep(1);
+    document.getElementById('filing-form').onsubmit = function(e) {
+      e.preventDefault();
+      alert('Your filing has been submitted! (Demo)');
+      showStep(1);
+    };
+  </script>
+</body>
+</html>
