@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Expert - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+    .chat-container { display: grid; grid-template-columns: 1fr 300px; gap: 1.5rem; }
+    .chat-main { background: #fff; border: 1px solid #dbeafe; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .chat-header { background: #eff6ff; padding: 1.5rem; border-bottom: 1px solid #dbeafe; border-radius: 0.5rem 0.5rem 0 0; }
+    .chat-header h2 { color: #1e40af; font-weight: 600; margin-bottom: 0.25rem; }
+    .chat-header p { color: #64748b; font-size: 0.9rem; }
+    .chat-messages { height: 500px; overflow-y: auto; padding: 1rem; }
+    .message { margin-bottom: 1rem; display: flex; }
+    .message.user { justify-content: flex-end; }
+    .message.bot { justify-content: flex-start; }
+    .message-content { max-width: 80%; padding: 0.75rem; border-radius: 0.5rem; }
+    .message.user .message-content { background: #2563eb; color: #fff; border-bottom-right-radius: 0; }
+    .message.bot .message-content { background: #f1f5f9; color: #1e293b; border-bottom-left-radius: 0; }
+    .message-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.8rem; }
+    .message-time { opacity: 0.7; margin-left: auto; }
+    .chat-input { padding: 1rem; border-top: 1px solid #e2e8f0; display: flex; gap: 0.5rem; }
+    .chat-input input { flex: 1; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; }
+    .btn { padding: 0.75rem 1rem; border-radius: 0.5rem; background: #2563eb; color: #fff; border: none; cursor: pointer; font-weight: 500; }
+    .btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+    .btn-outline { background: #fff; color: #2563eb; border: 1px solid #2563eb; }
+    .sidebar { display: flex; flex-direction: column; gap: 1rem; }
+    .sidebar-card { background: #fff; border: 1px solid #dbeafe; border-radius: 0.5rem; padding: 1rem; }
+    .sidebar-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; color: #1e40af; }
+    .example-question { padding: 0.5rem; background: #eff6ff; border-radius: 0.25rem; margin-bottom: 0.5rem; cursor: pointer; transition: background 0.2s; font-size: 0.9rem; }
+    .example-question:hover { background: #dbeafe; }
+    .topic-badge { display: inline-block; padding: 0.25rem 0.5rem; background: #eff6ff; color: #1e40af; border-radius: 0.25rem; margin: 0.25rem; cursor: pointer; font-size: 0.8rem; transition: background 0.2s; }
+    .topic-badge:hover { background: #dbeafe; }
+    .loading { display: flex; align-items: center; gap: 0.5rem; color: #64748b; font-style: italic; }
+    .spinner { width: 1rem; height: 1rem; border: 2px solid #e2e8f0; border-top: 2px solid #2563eb; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @media (max-width: 768px) { .chat-container { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="container" style="padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <div style="margin-bottom: 1.5rem;">
+      <a href="index.html" style="color: #2563eb; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">← Back to Home</a>
+    </div>
+    
+    <div class="chat-container">
+      <div class="chat-main">
+        <div class="chat-header">
+          <h2>🤖 TaxGuru - Indian Tax Expert</h2>
+          <p>Ask any questions about Indian income tax laws, deductions, ITR filing</p>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="message bot">
+            <div class="message-content">
+              <div class="message-header">
+                <span>🤖 TaxGuru</span>
+                <span class="message-time" id="welcome-time"></span>
+              </div>
+              <div>Hi! I'm TaxGuru, your personal Indian tax expert. I can help you with:
+
+• Understanding tax deductions (80C, 80D, 80TTA, etc.)
+• Filing requirements and deadlines
+• Tax slabs and calculations
+• ITR forms selection
+• Tax saving strategies
+• And much more!
+
+What tax-related question do you have today?</div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input">
+          <input type="text" id="message-input" placeholder="Ask a question about Indian income tax..." onkeypress="handleKeyPress(event)">
+          <button class="btn" onclick="sendMessage()" id="send-btn">Send</button>
+          <button class="btn btn-outline" onclick="resetChat()">Reset</button>
+        </div>
+      </div>
+      
+      <div class="sidebar">
+        <div class="sidebar-card">
+          <h3>⚠️ Example Questions</h3>
+          <div class="example-question" onclick="askQuestion('What are the tax slabs for AY 2026-27?')">What are the tax slabs for AY 2026-27?</div>
+          <div class="example-question" onclick="askQuestion('How much can I claim under section 80C?')">How much can I claim under section 80C?</div>
+          <div class="example-question" onclick="askQuestion('What is the difference between old and new tax regime?')">What is the difference between old and new tax regime?</div>
+          <div class="example-question" onclick="askQuestion('Which ITR form should I use as a salaried employee?')">Which ITR form should I use as a salaried employee?</div>
+        </div>
+        
+        <div class="sidebar-card">
+          <h3>Popular Topics</h3>
+          <div class="topic-badge" onclick="askQuestion('Explain Section 80C deductions in detail')">Section 80C</div>
+          <div class="topic-badge" onclick="askQuestion('How is HRA exemption calculated?')">HRA Exemption</div>
+          <div class="topic-badge" onclick="askQuestion('What are the deadlines for ITR Filing?')">ITR Filing</div>
+          <div class="topic-badge" onclick="askQuestion('What are the best ways for tax saving?')">Tax Saving</div>
+          <div class="topic-badge" onclick="askQuestion('How can I check my income tax refund status?')">Income Tax Refund</div>
+          <div class="topic-badge" onclick="askQuestion('What is standard deduction and how much can I claim?')">Standard Deduction</div>
+          <div class="topic-badge" onclick="askQuestion('How are capital gains taxed in India?')">Capital Gains</div>
+        </div>
+        
+        <div class="sidebar-card">
+          <p style="font-size: 0.8rem; color: #64748b;">This expert uses AI to provide information about Indian tax laws. The responses are for informational purposes only and should not be considered as legal or tax advice.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+  <script>
+    // Sample responses for demo
+    const responses = {
+      'tax slabs': 'For AY 2026-27, the tax slabs under the new regime are:\n\n• Up to ₹3,00,000: Nil\n• ₹3,00,001 - ₹6,00,000: 5%\n• ₹6,00,001 - ₹9,00,000: 10%\n• ₹9,00,001 - ₹12,00,000: 15%\n• ₹12,00,001 - ₹15,00,000: 20%\n• Above ₹15,00,000: 30%\n\nUnder the old regime, the basic exemption limit is ₹2,50,000 (₹3,00,000 for senior citizens).',
+      'section 80c': 'Section 80C allows a deduction of up to ₹1,50,000 from your total income. Eligible investments include:\n\n• Public Provident Fund (PPF)\n• Employee Provident Fund (EPF)\n• Equity Linked Saving Scheme (ELSS)\n• National Savings Certificate (NSC)\n• Fixed Deposits (5-year term)\n• Life Insurance Premiums\n• Home Loan Principal Repayment\n• Tuition Fees for Children\n\nThis deduction is available only under the old tax regime.',
+      'tax regime': 'The main differences between old and new tax regimes:\n\nOLD REGIME:\n• Higher basic exemption: ₹2,50,000\n• Multiple deductions available (80C, 80D, HRA, etc.)\n• Lower tax slabs but with deductions\n\nNEW REGIME:\n• Higher basic exemption: ₹3,00,000\n• No deductions except standard deduction of ₹50,000\n• Lower tax rates but no other benefits\n\nChoose based on your deductions - if you have significant deductions, old regime might be better.',
+      'itr form': 'For salaried employees, the ITR form depends on your income sources:\n\n• ITR-1 (Sahaj): Only salary income, one house property, other income up to ₹5,000\n• ITR-2: Multiple house properties, capital gains, foreign income\n• ITR-3: Business income, professional income\n• ITR-4 (Sugam): Presumptive business income\n\nMost salaried employees with simple income use ITR-1.',
+      'hra exemption': 'HRA exemption is calculated as the minimum of:\n\n1. Actual HRA received\n2. Rent paid minus 10% of basic salary\n3. 50% of basic salary (metro cities) or 40% (non-metro)\n\nExample: If your basic salary is ₹5,00,000, HRA is ₹2,00,000, and rent paid is ₹1,20,000:\n• Option 1: ₹2,00,000\n• Option 2: ₹1,20,000 - ₹50,000 = ₹70,000\n• Option 3: ₹2,50,000\n\nExemption = ₹70,000 (minimum of the three)',
+      'itr filing': 'ITR filing deadlines for AY 2025-26:\n\n• July 31, 2025: Non-audit cases\n• October 31, 2025: Audit cases\n\nLate filing attracts a penalty of ₹5,000 (₹1,000 if total income ≤ ₹5,00,000).',
+      'tax saving': 'Popular tax saving options:\n\n• Section 80C: PPF, ELSS, EPF (₹1,50,000)\n• Section 80D: Health insurance (₹25,000)\n• HRA exemption: House rent allowance\n• Section 80TTA: Interest on savings account (₹10,000)\n• NPS: Additional ₹50,000 under 80CCD(1B)\n\nPlan early in the financial year for maximum benefits.',
+      'refund status': 'To check your income tax refund status:\n\n1. Visit incometax.gov.in\n2. Go to "Quick Links" → "Refund Status"\n3. Enter your PAN and Assessment Year\n4. View your refund status\n\nYou can also check through the ITR portal or call the helpline.',
+      'standard deduction': 'Standard deduction is a flat deduction available to all salaried employees:\n\n• Amount: ₹50,000\n• Available in both old and new tax regimes\n• Automatically applied, no documents needed\n• Reduces your taxable salary income\n\nThis replaced the earlier transport allowance and medical reimbursement exemptions.',
+      'capital gains': 'Capital gains are taxed based on holding period:\n\nSHORT-TERM CAPITAL GAINS:\n• Equity: 15% (if STT paid)\n• Other assets: As per income tax slab\n\nLONG-TERM CAPITAL GAINS:\n• Equity: 10% (above ₹1,00,000)\n• Property: 20% with indexation\n• Other assets: 20% with indexation\n\nHolding period: 12 months for equity, 24 months for property, 36 months for others.'
+    };
+    
+    function getResponse(question) {
+      const lowerQuestion = question.toLowerCase();
+      for (const [key, response] of Object.entries(responses)) {
+        if (lowerQuestion.includes(key)) {
+          return response;
+        }
+      }
+      return "I understand your question about Indian income tax. For specific guidance, I recommend consulting with a qualified tax professional or visiting the official Income Tax Department website. You can also use our calculators for detailed calculations.";
+    }
+    
+    function addMessage(content, sender) {
+      const messagesContainer = document.getElementById('chat-messages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}`;
+      
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const senderName = sender === 'user' ? 'You' : 'TaxGuru';
+      const senderIcon = sender === 'user' ? '👤' : '🤖';
+      
+      messageDiv.innerHTML = `
+        <div class="message-content">
+          <div class="message-header">
+            <span>${senderIcon} ${senderName}</span>
+            <span class="message-time">${time}</span>
+          </div>
+          <div>${content}</div>
+        </div>
+      `;
+      
+      messagesContainer.appendChild(messageDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    
+    function sendMessage() {
+      const input = document.getElementById('message-input');
+      const message = input.value.trim();
+      
+      if (!message) return;
+      
+      addMessage(message, 'user');
+      input.value = '';
+      document.getElementById('send-btn').disabled = true;
+      
+      // Show loading
+      const loadingDiv = document.createElement('div');
+      loadingDiv.className = 'message bot';
+      loadingDiv.innerHTML = `
+        <div class="message-content">
+          <div class="loading">
+            <div class="spinner"></div>
+            <span>TaxGuru is thinking...</span>
+          </div>
+        </div>
+      `;
+      document.getElementById('chat-messages').appendChild(loadingDiv);
+      
+      // Simulate response delay
+      setTimeout(() => {
+        document.getElementById('chat-messages').removeChild(loadingDiv);
+        const response = getResponse(message);
+        addMessage(response, 'bot');
+        document.getElementById('send-btn').disabled = false;
+      }, 1500);
+    }
+    
+    function askQuestion(question) {
+      const input = document.getElementById('message-input');
+      input.value = question;
+      sendMessage();
+    }
+    
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
+    
+    function resetChat() {
+      if (confirm('Are you sure you want to reset the conversation?')) {
+        document.getElementById('chat-messages').innerHTML = `
+          <div class="message bot">
+            <div class="message-content">
+              <div class="message-header">
+                <span>🤖 TaxGuru</span>
+                <span class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              </div>
+              <div>Hi! I'm TaxGuru, your personal Indian tax expert. I can help you with:
+
+• Understanding tax deductions (80C, 80D, 80TTA, etc.)
+• Filing requirements and deadlines
+• Tax slabs and calculations
+• ITR forms selection
+• Tax saving strategies
+• And much more!
+
+What tax-related question do you have today?</div>
+            </div>
+          </div>
+        `;
+      }
+    }
+    
+    // Set initial time
+    document.getElementById('welcome-time').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  </script>
+</body>
+</html>
