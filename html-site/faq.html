@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frequently Asked Questions - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1rem; }
+    .faq-header { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; text-align: center; }
+    .faq-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: #1f2937; }
+    .faq-header p { font-size: 1.1rem; color: #64748b; }
+    .search-section { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; }
+    .search-box { position: relative; margin-bottom: 1.5rem; }
+    .search-input { width: 100%; padding: 1rem 1rem 1rem 3rem; border: 2px solid #e2e8f0; border-radius: 0.5rem; font-size: 1rem; transition: border-color 0.2s; }
+    .search-input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+    .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 1.2rem; }
+    .category-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .category-tab { padding: 0.75rem 1.5rem; border: 2px solid #e2e8f0; border-radius: 0.5rem; background: #fff; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; font-weight: 500; }
+    .category-tab:hover, .category-tab.active { border-color: #2563eb; background: #eff6ff; color: #2563eb; }
+    .faq-section { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; }
+    .section-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 1.5rem; color: #1f2937; display: flex; align-items: center; gap: 0.5rem; }
+    .faq-item { border: 1px solid #e2e8f0; border-radius: 0.5rem; margin-bottom: 1rem; overflow: hidden; }
+    .faq-question { padding: 1.5rem; background: #f8fafc; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+    .faq-question:hover { background: #f1f5f9; }
+    .faq-question.active { background: #eff6ff; border-bottom: 1px solid #e2e8f0; }
+    .question-text { font-weight: 600; color: #1f2937; }
+    .toggle-icon { color: #64748b; font-size: 1.2rem; transition: transform 0.2s; }
+    .toggle-icon.active { transform: rotate(180deg); color: #2563eb; }
+    .faq-answer { padding: 1.5rem; background: #fff; display: none; }
+    .faq-answer.active { display: block; }
+    .answer-text { color: #4b5563; line-height: 1.6; margin-bottom: 1rem; }
+    .answer-meta { font-size: 0.9rem; color: #9ca3af; }
+    .helpful-section { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-top: 2rem; text-align: center; }
+    .helpful-section h3 { margin-bottom: 1rem; color: #1f2937; }
+    .helpful-section p { color: #64748b; margin-bottom: 1.5rem; }
+    .helpful-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .helpful-btn { padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; background: #fff; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
+    .helpful-btn:hover { border-color: #2563eb; background: #eff6ff; color: #2563eb; }
+    .helpful-btn.clicked { border-color: #22c55e; background: #dcfce7; color: #166534; }
+    .no-results { text-align: center; padding: 3rem; color: #64748b; }
+    .no-results-icon { font-size: 3rem; margin-bottom: 1rem; }
+    @media (max-width: 768px) { .faq-header h1 { font-size: 2rem; } .category-tabs { justify-content: center; } }
+  </style>
+</head>
+<body>
+  <nav class="container" style="padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+  
+  <div class="container">
+    <div class="faq-header">
+      <h1>Frequently Asked Questions</h1>
+      <p>Find answers to common questions about MyeCA.in tax filing platform</p>
+    </div>
+    
+    <div class="search-section">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search for questions or keywords...">
+      </div>
+      
+      <div class="category-tabs">
+        <button class="category-tab active" data-category="all">All Questions</button>
+        <button class="category-tab" data-category="general">General</button>
+        <button class="category-tab" data-category="filing">Tax Filing</button>
+        <button class="category-tab" data-category="calculators">Calculators</button>
+        <button class="category-tab" data-category="documents">Documents</button>
+        <button class="category-tab" data-category="payment">Payment</button>
+        <button class="category-tab" data-category="account">Account</button>
+        <button class="category-tab" data-category="technical">Technical</button>
+      </div>
+    </div>
+    
+    <div class="faq-section" id="generalSection">
+      <div class="section-title">📋 General Questions</div>
+      
+      <div class="faq-item" data-category="general">
+        <div class="faq-question">
+          <div class="question-text">What is MyeCA.in and how does it work?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            MyeCA.in is a comprehensive online tax filing platform that helps individuals and businesses file their taxes easily and accurately. Our platform guides you through the entire tax filing process step-by-step, from document collection to final submission. We use advanced technology and AI to ensure accuracy and maximize your tax savings.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-category="general">
+        <div class="faq-question">
+          <div class="question-text">Is MyeCA.in safe and secure?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            Yes, MyeCA.in prioritizes your security and privacy. We use bank-level encryption (256-bit SSL) to protect your data, implement strict access controls, and comply with all relevant data protection regulations. Your personal and financial information is never shared with third parties without your explicit consent.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-category="general">
+        <div class="faq-question">
+          <div class="question-text">What types of tax returns can I file with MyeCA.in?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            MyeCA.in supports various types of tax returns including Individual Income Tax Returns (ITR-1, ITR-2, ITR-3, ITR-4), Business Tax Returns, Partnership Returns, and Corporate Tax Returns. We also support filing for different assessment years and handle various income sources like salary, business, capital gains, and more.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="faq-section" id="filingSection">
+      <div class="section-title">📝 Tax Filing Questions</div>
+      
+      <div class="faq-item" data-category="filing">
+        <div class="faq-question">
+          <div class="question-text">How long does it take to file taxes with MyeCA.in?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            The time to complete your tax filing depends on the complexity of your return. Simple returns can be completed in 15-30 minutes, while complex returns with multiple income sources may take 1-2 hours. Our step-by-step guidance and document upload features help streamline the process significantly.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-category="filing">
+        <div class="faq-question">
+          <div class="question-text">What documents do I need to file my taxes?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            You'll need Form 16 (from employer), bank statements, investment proofs, property documents, business income details, and any other income-related documents. Our platform provides a comprehensive checklist based on your specific situation, and you can upload documents directly to our secure document vault.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-category="filing">
+        <div class="faq-question">
+          <div class="question-text">Can I file taxes for previous years?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            Yes, you can file belated returns for previous years using MyeCA.in. However, there may be penalties and interest charges for late filing. We recommend filing within the due date to avoid these additional costs. Our platform supports filing for the last 6 assessment years.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-category="filing">
+        <div class="faq-question">
+          <div class="question-text">What happens after I submit my tax return?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            After submission, you'll receive an acknowledgment (ITR-V) via email. The Income Tax Department will process your return and may send notices if additional information is required. You can track the status of your return through our platform or the official IT portal.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="faq-section" id="calculatorsSection">
+      <div class="section-title">🧮 Calculator Questions</div>
+      
+      <div class="faq-item" data-category="calculators">
+        <div class="faq-question">
+          <div class="question-text">How accurate are the tax calculators?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            Our tax calculators are highly accurate and updated regularly with the latest tax laws and rates. They use the same calculation methods as the official Income Tax Department. However, these are estimates and the final tax liability may vary based on your complete financial situation.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-category="calculators">
+        <div class="faq-question">
+          <div class="question-text">Can I save my calculations for later?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            Yes, you can save your calculations in your account for future reference. This is especially useful for comparing different scenarios or planning your taxes throughout the year. You can also export your calculations as PDF for offline reference.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="faq-section" id="documentsSection">
+      <div class="section-title">📁 Document Management</div>
+      
+      <div class="faq-item" data-category="documents">
+        <div class="faq-question">
+          <div class="question-text">How secure is my document storage?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            Your documents are stored with enterprise-grade security using AES-256 encryption. We use secure cloud storage with multiple layers of protection, including access controls, audit logs, and regular security audits. Your documents are only accessible to you and authorized personnel.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-category="documents">
+        <div class="faq-question">
+          <div class="question-text">What file formats are supported for document upload?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            We support PDF, JPG, PNG, and TIFF formats for document uploads. PDF is recommended for best quality and compatibility. The maximum file size is 10MB per document. You can upload multiple documents and organize them by category for easy access.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="faq-section" id="paymentSection">
+      <div class="section-title">💳 Payment Questions</div>
+      
+      <div class="faq-item" data-category="payment">
+        <div class="faq-question">
+          <div class="question-text">What payment methods do you accept?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            We accept all major credit/debit cards, UPI, net banking, and digital wallets including Paytm, Google Pay, and PhonePe. All payments are processed through secure payment gateways with PCI DSS compliance. You'll receive an instant payment confirmation and invoice.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-category="payment">
+        <div class="faq-question">
+          <div class="question-text">Is there a money-back guarantee?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            Yes, we offer a 100% money-back guarantee if you're not satisfied with our service. If you encounter any issues or are not happy with the results, contact our support team within 30 days of purchase for a full refund. We're committed to your satisfaction.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="faq-section" id="accountSection">
+      <div class="section-title">👤 Account Management</div>
+      
+      <div class="faq-item" data-category="account">
+        <div class="faq-question">
+          <div class="question-text">How do I reset my password?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            Click on "Forgot Password" on the login page and enter your registered email address. You'll receive a password reset link via email. Click the link and follow the instructions to create a new password. The link expires after 24 hours for security.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-category="account">
+        <div class="faq-question">
+          <div class="question-text">Can I access my account from multiple devices?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            Yes, you can access your account from any device with an internet connection. Your data is synchronized across all devices in real-time. For security, we recommend logging out from shared devices and enabling two-factor authentication for additional protection.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="faq-section" id="technicalSection">
+      <div class="section-title">🔧 Technical Support</div>
+      
+      <div class="faq-item" data-category="technical">
+        <div class="faq-question">
+          <div class="question-text">What browsers are supported?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            MyeCA.in works on all modern browsers including Chrome, Firefox, Safari, and Edge. We recommend using the latest version of these browsers for the best experience. The platform is also fully responsive and works on mobile devices and tablets.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-category="technical">
+        <div class="faq-question">
+          <div class="question-text">What should I do if the site is not loading?</div>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-text">
+            First, check your internet connection and try refreshing the page. Clear your browser cache and cookies if the issue persists. If the problem continues, check our system status page for any ongoing issues, or contact our support team for assistance.
+          </div>
+          <div class="answer-meta">Last updated: December 2024</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="no-results" id="noResults" style="display: none;">
+      <div class="no-results-icon">🔍</div>
+      <h3>No questions found</h3>
+      <p>Try adjusting your search terms or browse by category</p>
+    </div>
+    
+    <div class="helpful-section">
+      <h3>Still Need Help?</h3>
+      <p>Can't find the answer you're looking for? Our support team is here to help.</p>
+      <div class="helpful-buttons">
+        <a href="support.html" class="btn">📞 Contact Support</a>
+        <a href="tax-expert.html" class="btn btn-outline">🤖 Ask AI Expert</a>
+        <a href="contact.html" class="btn btn-outline">📧 Send Email</a>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+  
+  <script>
+    // FAQ accordion functionality
+    document.querySelectorAll('.faq-question').forEach(question => {
+      question.addEventListener('click', function() {
+        const answer = this.nextElementSibling;
+        const icon = this.querySelector('.toggle-icon');
+        
+        // Close other open questions
+        document.querySelectorAll('.faq-question.active').forEach(activeQuestion => {
+          if (activeQuestion !== this) {
+            activeQuestion.classList.remove('active');
+            activeQuestion.nextElementSibling.classList.remove('active');
+            activeQuestion.querySelector('.toggle-icon').classList.remove('active');
+          }
+        });
+        
+        // Toggle current question
+        this.classList.toggle('active');
+        answer.classList.toggle('active');
+        icon.classList.toggle('active');
+      });
+    });
+    
+    // Search functionality
+    const searchInput = document.getElementById('searchInput');
+    const faqItems = document.querySelectorAll('.faq-item');
+    const noResults = document.getElementById('noResults');
+    
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      let hasResults = false;
+      
+      faqItems.forEach(item => {
+        const question = item.querySelector('.question-text').textContent.toLowerCase();
+        const answer = item.querySelector('.answer-text').textContent.toLowerCase();
+        
+        if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+          item.style.display = 'block';
+          hasResults = true;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+      
+      noResults.style.display = hasResults ? 'none' : 'block';
+    });
+    
+    // Category filtering
+    document.querySelectorAll('.category-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        const category = this.dataset.category;
+        
+        // Update active tab
+        document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Filter FAQ items
+        faqItems.forEach(item => {
+          if (category === 'all' || item.dataset.category === category) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+        
+        // Clear search
+        searchInput.value = '';
+        noResults.style.display = 'none';
+      });
+    });
+    
+    // Track page view
+    console.log('FAQ page viewed');
+  </script>
+</body>
+</html>

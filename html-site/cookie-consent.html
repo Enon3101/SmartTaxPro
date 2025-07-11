@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cookie Policy - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1rem; }
+    .cookie-header { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; text-align: center; }
+    .cookie-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: #1f2937; }
+    .cookie-header p { font-size: 1.1rem; color: #64748b; }
+    .cookie-content { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; }
+    .cookie-section { margin-bottom: 2rem; }
+    .cookie-section h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: #1f2937; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+    .cookie-section h3 { font-size: 1.25rem; font-weight: 600; margin: 1.5rem 0 0.5rem 0; color: #374151; }
+    .cookie-section p { color: #4b5563; line-height: 1.7; margin-bottom: 1rem; }
+    .cookie-section ul { color: #4b5563; line-height: 1.7; margin-bottom: 1rem; padding-left: 1.5rem; }
+    .cookie-section li { margin-bottom: 0.5rem; }
+    .cookie-table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    .cookie-table th, .cookie-table td { border: 1px solid #e2e8f0; padding: 0.75rem; text-align: left; }
+    .cookie-table th { background: #f8fafc; font-weight: 600; color: #374151; }
+    .cookie-table td { color: #4b5563; }
+    .cookie-type { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.8rem; font-weight: 600; }
+    .cookie-type.necessary { background: #dcfce7; color: #166534; }
+    .cookie-type.functional { background: #dbeafe; color: #1e40af; }
+    .cookie-type.analytics { background: #fef3c7; color: #d97706; }
+    .cookie-type.marketing { background: #f3e8ff; color: #7c3aed; }
+    .preferences-panel { background: #f8fafc; border-radius: 0.5rem; padding: 1.5rem; margin: 1.5rem 0; }
+    .preference-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #e2e8f0; }
+    .preference-item:last-child { border-bottom: none; }
+    .preference-info { flex: 1; }
+    .preference-title { font-weight: 600; margin-bottom: 0.25rem; color: #374151; }
+    .preference-desc { font-size: 0.9rem; color: #64748b; }
+    .toggle-switch { position: relative; width: 50px; height: 24px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #cbd5e1; border-radius: 24px; transition: 0.3s; }
+    .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+    input:checked + .toggle-slider { background: #2563eb; }
+    input:checked + .toggle-slider:before { transform: translateX(26px); }
+    .toggle-switch.disabled .toggle-slider { background: #e2e8f0; cursor: not-allowed; }
+    .toggle-switch.disabled input:checked + .toggle-slider { background: #e2e8f0; }
+    .action-buttons { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+    .save-preferences { background: #2563eb; color: #fff; padding: 1rem 2rem; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .save-preferences:hover { background: #1d4ed8; }
+    .accept-all { background: #22c55e; color: #fff; padding: 1rem 2rem; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .accept-all:hover { background: #16a34a; }
+    .reject-all { background: #ef4444; color: #fff; padding: 1rem 2rem; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .reject-all:hover { background: #dc2626; }
+    .info-box { background: #eff6ff; border-left: 4px solid #2563eb; padding: 1rem; margin: 1rem 0; border-radius: 0.5rem; }
+    .info-box strong { color: #1e40af; }
+    .warning-box { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; margin: 1rem 0; border-radius: 0.5rem; }
+    .warning-box strong { color: #d97706; }
+    @media (max-width: 768px) { .cookie-header h1 { font-size: 2rem; } .preference-item { flex-direction: column; align-items: flex-start; gap: 1rem; } .action-buttons { flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <nav class="container" style="padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+  
+  <div class="container">
+    <div class="cookie-header">
+      <h1>Cookie Policy</h1>
+      <p>Learn how we use cookies and manage your preferences</p>
+    </div>
+    
+    <div class="cookie-content">
+      <div class="cookie-section">
+        <h2>What Are Cookies?</h2>
+        <p>Cookies are small text files that are stored on your device when you visit our website. They help us provide you with a better experience by remembering your preferences, analyzing how you use our site, and personalizing content.</p>
+        
+        <div class="info-box">
+          <strong>Important:</strong> We only use cookies that are necessary for the website to function properly and to improve your experience. We never sell your personal information to third parties.
+        </div>
+      </div>
+      
+      <div class="cookie-section">
+        <h2>Types of Cookies We Use</h2>
+        
+        <h3>1. Necessary Cookies</h3>
+        <p>These cookies are essential for the website to function properly. They enable basic functions like page navigation, access to secure areas, and form submissions. The website cannot function properly without these cookies.</p>
+        
+        <h3>2. Functional Cookies</h3>
+        <p>These cookies enable enhanced functionality and personalization, such as remembering your language preferences, login status, and form data you've entered.</p>
+        
+        <h3>3. Analytics Cookies</h3>
+        <p>These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously. This helps us improve our website and services.</p>
+        
+        <h3>4. Marketing Cookies</h3>
+        <p>These cookies are used to track visitors across websites to display relevant and engaging advertisements. They may be set by us or by third-party advertising partners.</p>
+      </div>
+      
+      <div class="cookie-section">
+        <h2>Detailed Cookie Information</h2>
+        
+        <table class="cookie-table">
+          <thead>
+            <tr>
+              <th>Cookie Name</th>
+              <th>Type</th>
+              <th>Purpose</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>session_id</td>
+              <td><span class="cookie-type necessary">Necessary</span></td>
+              <td>Maintains your session and login status</td>
+              <td>Session</td>
+            </tr>
+            <tr>
+              <td>csrf_token</td>
+              <td><span class="cookie-type necessary">Necessary</span></td>
+              <td>Protects against cross-site request forgery</td>
+              <td>Session</td>
+            </tr>
+            <tr>
+              <td>language_pref</td>
+              <td><span class="cookie-type functional">Functional</span></td>
+              <td>Remembers your language preference</td>
+              <td>1 year</td>
+            </tr>
+            <tr>
+              <td>theme_pref</td>
+              <td><span class="cookie-type functional">Functional</span></td>
+              <td>Remembers your theme preference</td>
+              <td>1 year</td>
+            </tr>
+            <tr>
+              <td>_ga</td>
+              <td><span class="cookie-type analytics">Analytics</span></td>
+              <td>Google Analytics - tracks website usage</td>
+              <td>2 years</td>
+            </tr>
+            <tr>
+              <td>_gid</td>
+              <td><span class="cookie-type analytics">Analytics</span></td>
+              <td>Google Analytics - tracks user sessions</td>
+              <td>24 hours</td>
+            </tr>
+            <tr>
+              <td>_fbp</td>
+              <td><span class="cookie-type marketing">Marketing</span></td>
+              <td>Facebook Pixel - tracks conversions</td>
+              <td>3 months</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="cookie-section">
+        <h2>Manage Your Cookie Preferences</h2>
+        <p>You can control which cookies are set on your device. Please note that disabling certain cookies may affect the functionality of our website.</p>
+        
+        <div class="preferences-panel">
+          <div class="preference-item">
+            <div class="preference-info">
+              <div class="preference-title">Necessary Cookies</div>
+              <div class="preference-desc">Essential for the website to function properly. Cannot be disabled.</div>
+            </div>
+            <div class="toggle-switch disabled">
+              <input type="checkbox" checked disabled>
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+          
+          <div class="preference-item">
+            <div class="preference-info">
+              <div class="preference-title">Functional Cookies</div>
+              <div class="preference-desc">Enhance your experience by remembering preferences and settings.</div>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="functionalCookies" checked>
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+          
+          <div class="preference-item">
+            <div class="preference-info">
+              <div class="preference-title">Analytics Cookies</div>
+              <div class="preference-desc">Help us understand how you use our website to improve our services.</div>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="analyticsCookies" checked>
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+          
+          <div class="preference-item">
+            <div class="preference-info">
+              <div class="preference-title">Marketing Cookies</div>
+              <div class="preference-desc">Used to deliver relevant advertisements and track marketing campaigns.</div>
+            </div>
+            <div class="toggle-switch">
+              <input type="checkbox" id="marketingCookies">
+              <span class="toggle-slider"></span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="save-preferences" onclick="savePreferences()">💾 Save Preferences</button>
+          <button class="accept-all" onclick="acceptAll()">✅ Accept All Cookies</button>
+          <button class="reject-all" onclick="rejectAll()">❌ Reject All Optional</button>
+        </div>
+      </div>
+      
+      <div class="cookie-section">
+        <h2>Third-Party Cookies</h2>
+        <p>Some cookies are set by third-party services that appear on our pages. We use these services to:</p>
+        <ul>
+          <li><strong>Google Analytics:</strong> Analyze website traffic and user behavior</li>
+          <li><strong>Facebook Pixel:</strong> Track conversions and optimize advertising</li>
+          <li><strong>Payment Processors:</strong> Process secure payments</li>
+          <li><strong>Chat Services:</strong> Provide customer support</li>
+        </ul>
+        
+        <div class="warning-box">
+          <strong>Note:</strong> Third-party cookies are subject to the privacy policies of those third parties. We recommend reviewing their policies for more information.
+        </div>
+      </div>
+      
+      <div class="cookie-section">
+        <h2>How to Control Cookies in Your Browser</h2>
+        <p>You can control and manage cookies through your browser settings. Here's how to do it in popular browsers:</p>
+        
+        <h3>Chrome</h3>
+        <p>Settings → Privacy and security → Cookies and other site data → Block third-party cookies</p>
+        
+        <h3>Firefox</h3>
+        <p>Options → Privacy & Security → Cookies and Site Data → Block cookies and site data</p>
+        
+        <h3>Safari</h3>
+        <p>Preferences → Privacy → Block all cookies</p>
+        
+        <h3>Edge</h3>
+        <p>Settings → Cookies and site permissions → Cookies and site data → Block third-party cookies</p>
+      </div>
+      
+      <div class="cookie-section">
+        <h2>Your Rights</h2>
+        <p>Under GDPR and other privacy laws, you have the following rights regarding cookies:</p>
+        <ul>
+          <li><strong>Right to be informed:</strong> We must tell you about our use of cookies</li>
+          <li><strong>Right of access:</strong> You can request information about what cookies we use</li>
+          <li><strong>Right to withdraw consent:</strong> You can change your cookie preferences at any time</li>
+          <li><strong>Right to erasure:</strong> You can request deletion of your data</li>
+          <li><strong>Right to data portability:</strong> You can request a copy of your data</li>
+        </ul>
+      </div>
+      
+      <div class="cookie-section">
+        <h2>Updates to This Policy</h2>
+        <p>We may update this Cookie Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will notify you of any material changes by posting the new policy on this page and updating the "Last Updated" date.</p>
+        
+        <div class="info-box">
+          <strong>Last Updated:</strong> December 15, 2024<br>
+          <strong>Next Review:</strong> December 15, 2025
+        </div>
+      </div>
+      
+      <div class="cookie-section">
+        <h2>Contact Us</h2>
+        <p>If you have any questions about our use of cookies or this Cookie Policy, please contact us:</p>
+        <ul>
+          <li><strong>Email:</strong> privacy@myeca.in</li>
+          <li><strong>Phone:</strong> +91-22-1234-5678</li>
+          <li><strong>Address:</strong> MyeCA.in, 123 Business Street, Mumbai, Maharashtra 400001, India</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+  
+  <script>
+    // Load saved preferences
+    function loadPreferences() {
+      const preferences = JSON.parse(localStorage.getItem('cookiePreferences') || '{}');
+      
+      if (preferences.functional !== undefined) {
+        document.getElementById('functionalCookies').checked = preferences.functional;
+      }
+      if (preferences.analytics !== undefined) {
+        document.getElementById('analyticsCookies').checked = preferences.analytics;
+      }
+      if (preferences.marketing !== undefined) {
+        document.getElementById('marketingCookies').checked = preferences.marketing;
+      }
+    }
+    
+    // Save preferences
+    function savePreferences() {
+      const preferences = {
+        functional: document.getElementById('functionalCookies').checked,
+        analytics: document.getElementById('analyticsCookies').checked,
+        marketing: document.getElementById('marketingCookies').checked,
+        timestamp: new Date().toISOString()
+      };
+      
+      localStorage.setItem('cookiePreferences', JSON.stringify(preferences));
+      
+      // Show success message
+      alert('Cookie preferences saved successfully!');
+      
+      // Track preference update
+      console.log('Cookie preferences updated:', preferences);
+    }
+    
+    // Accept all cookies
+    function acceptAll() {
+      document.getElementById('functionalCookies').checked = true;
+      document.getElementById('analyticsCookies').checked = true;
+      document.getElementById('marketingCookies').checked = true;
+      savePreferences();
+    }
+    
+    // Reject all optional cookies
+    function rejectAll() {
+      document.getElementById('functionalCookies').checked = false;
+      document.getElementById('analyticsCookies').checked = false;
+      document.getElementById('marketingCookies').checked = false;
+      savePreferences();
+    }
+    
+    // Initialize preferences on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadPreferences();
+    });
+    
+    // Track page view
+    console.log('Cookie Policy page viewed');
+  </script>
+</body>
+</html>

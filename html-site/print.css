@@ -1,0 +1,554 @@
+/* Print Stylesheet for MyeCA.in */
+
+/* Reset and base styles for print */
+@media print {
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Hide non-essential elements */
+  nav,
+  .btn,
+  .btn-outline,
+  .search-section,
+  .filter-buttons,
+  .category-tabs,
+  .helpful-section,
+  .rss-feed,
+  footer,
+  .cookie-banner,
+  .chat-widget,
+  .floating-action,
+  .back-to-top {
+    display: none !important;
+  }
+
+  /* Typography adjustments */
+  body {
+    font-family: 'Times New Roman', serif !important;
+    font-size: 12pt !important;
+    line-height: 1.4 !important;
+    color: #000 !important;
+    background: white !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Times New Roman', serif !important;
+    font-weight: bold !important;
+    page-break-after: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  h1 { font-size: 18pt !important; }
+  h2 { font-size: 16pt !important; }
+  h3 { font-size: 14pt !important; }
+  h4 { font-size: 12pt !important; }
+
+  /* Links */
+  a {
+    text-decoration: underline !important;
+    color: #000 !important;
+  }
+
+  a[href]:after {
+    content: " (" attr(href) ")" !important;
+    font-size: 10pt !important;
+    color: #666 !important;
+  }
+
+  /* Hide internal links and anchors */
+  a[href^="#"]:after,
+  a[href^="javascript:"]:after {
+    content: "" !important;
+  }
+
+  /* Page breaks */
+  .page-break {
+    page-break-before: always !important;
+  }
+
+  .avoid-break {
+    page-break-inside: avoid !important;
+  }
+
+  /* Container adjustments */
+  .container {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Card and section styling */
+  .card,
+  .section,
+  .faq-section,
+  .version-card,
+  .incident,
+  .service-card {
+    border: 1px solid #ccc !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin-bottom: 1em !important;
+    padding: 1em !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Form elements */
+  input, select, textarea {
+    border: 1px solid #ccc !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Tables */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  th, td {
+    border: 1px solid #ccc !important;
+    padding: 0.5em !important;
+    text-align: left !important;
+  }
+
+  th {
+    background: #f0f0f0 !important;
+    font-weight: bold !important;
+  }
+
+  /* Lists */
+  ul, ol {
+    margin-left: 1.5em !important;
+  }
+
+  li {
+    margin-bottom: 0.5em !important;
+  }
+
+  /* Specific page optimizations */
+
+  /* Home page */
+  .hero-section {
+    text-align: center !important;
+    margin-bottom: 2em !important;
+  }
+
+  .hero-section h1 {
+    font-size: 20pt !important;
+    margin-bottom: 0.5em !important;
+  }
+
+  .features-grid,
+  .testimonials-grid {
+    display: block !important;
+  }
+
+  .feature-card,
+  .testimonial-card {
+    margin-bottom: 1em !important;
+    border: 1px solid #ccc !important;
+    padding: 1em !important;
+  }
+
+  /* Tax filing wizard */
+  .step-indicator {
+    display: none !important;
+  }
+
+  .form-step {
+    page-break-inside: avoid !important;
+    margin-bottom: 2em !important;
+  }
+
+  .form-group {
+    margin-bottom: 1em !important;
+  }
+
+  .form-group label {
+    font-weight: bold !important;
+    display: block !important;
+    margin-bottom: 0.25em !important;
+  }
+
+  /* Calculators */
+  .calculator-tabs {
+    display: none !important;
+  }
+
+  .calculator-content {
+    display: block !important;
+  }
+
+  .calculator-form {
+    border: 1px solid #ccc !important;
+    padding: 1em !important;
+    margin-bottom: 1em !important;
+  }
+
+  .calculator-result {
+    border: 2px solid #000 !important;
+    padding: 1em !important;
+    margin-top: 1em !important;
+    background: #f9f9f9 !important;
+  }
+
+  /* Document vault */
+  .file-grid {
+    display: block !important;
+  }
+
+  .file-item {
+    border: 1px solid #ccc !important;
+    padding: 0.5em !important;
+    margin-bottom: 0.5em !important;
+  }
+
+  /* Tax expert chat */
+  .chat-container {
+    border: 1px solid #ccc !important;
+    padding: 1em !important;
+  }
+
+  .chat-message {
+    margin-bottom: 1em !important;
+    padding: 0.5em !important;
+    border-bottom: 1px solid #eee !important;
+  }
+
+  .chat-input {
+    display: none !important;
+  }
+
+  /* Pricing */
+  .pricing-grid {
+    display: block !important;
+  }
+
+  .pricing-card {
+    border: 1px solid #ccc !important;
+    margin-bottom: 1em !important;
+    padding: 1em !important;
+  }
+
+  .pricing-features {
+    list-style: disc !important;
+    margin-left: 1.5em !important;
+  }
+
+  /* Support */
+  .faq-item {
+    border: 1px solid #ccc !important;
+    margin-bottom: 1em !important;
+  }
+
+  .faq-question {
+    font-weight: bold !important;
+    padding: 0.5em !important;
+    background: #f0f0f0 !important;
+  }
+
+  .faq-answer {
+    padding: 0.5em !important;
+    display: block !important;
+  }
+
+  /* Profile */
+  .profile-tabs {
+    display: none !important;
+  }
+
+  .profile-section {
+    display: block !important;
+    margin-bottom: 2em !important;
+  }
+
+  .profile-info {
+    border: 1px solid #ccc !important;
+    padding: 1em !important;
+  }
+
+  /* Contact */
+  .contact-info {
+    border: 1px solid #ccc !important;
+    padding: 1em !important;
+    margin-bottom: 1em !important;
+  }
+
+  .contact-form {
+    display: none !important;
+  }
+
+  /* Status page */
+  .status-indicator {
+    border: 2px solid #000 !important;
+    padding: 1em !important;
+    margin-bottom: 1em !important;
+    text-align: center !important;
+  }
+
+  .service-card {
+    border: 1px solid #ccc !important;
+    margin-bottom: 1em !important;
+    padding: 1em !important;
+  }
+
+  /* Changelog */
+  .version-filter {
+    display: none !important;
+  }
+
+  .version-card {
+    border: 1px solid #ccc !important;
+    margin-bottom: 2em !important;
+    padding: 1em !important;
+  }
+
+  .version-header {
+    border-bottom: 2px solid #000 !important;
+    padding-bottom: 0.5em !important;
+    margin-bottom: 1em !important;
+  }
+
+  .changelog-section {
+    margin-bottom: 1em !important;
+  }
+
+  .changelog-item {
+    border-bottom: 1px solid #eee !important;
+    padding: 0.5em 0 !important;
+  }
+
+  /* FAQ */
+  .search-section {
+    display: none !important;
+  }
+
+  .faq-section {
+    margin-bottom: 2em !important;
+  }
+
+  .faq-item {
+    border: 1px solid #ccc !important;
+    margin-bottom: 1em !important;
+  }
+
+  .faq-question {
+    font-weight: bold !important;
+    padding: 0.5em !important;
+    background: #f0f0f0 !important;
+  }
+
+  .faq-answer {
+    padding: 0.5em !important;
+    display: block !important;
+  }
+
+  /* Legal pages */
+  .legal-content {
+    line-height: 1.6 !important;
+  }
+
+  .legal-section {
+    margin-bottom: 2em !important;
+  }
+
+  .legal-section h2 {
+    border-bottom: 1px solid #ccc !important;
+    padding-bottom: 0.25em !important;
+  }
+
+  /* Utility pages */
+  .sitemap-list {
+    list-style: disc !important;
+    margin-left: 1.5em !important;
+  }
+
+  .sitemap-item {
+    margin-bottom: 0.5em !important;
+  }
+
+  /* Headers and footers */
+  @page {
+    margin: 1in !important;
+  }
+
+  @page :first {
+    margin-top: 0.5in !important;
+  }
+
+  /* Page headers */
+  .page-header {
+    text-align: center !important;
+    border-bottom: 2px solid #000 !important;
+    padding-bottom: 0.5em !important;
+    margin-bottom: 1em !important;
+  }
+
+  .page-header h1 {
+    margin: 0 !important;
+    font-size: 18pt !important;
+  }
+
+  /* Page footers */
+  .page-footer {
+    text-align: center !important;
+    font-size: 10pt !important;
+    color: #666 !important;
+    margin-top: 2em !important;
+    border-top: 1px solid #ccc !important;
+    padding-top: 0.5em !important;
+  }
+
+  /* URLs and contact info */
+  .print-url {
+    font-size: 10pt !important;
+    color: #666 !important;
+    margin-top: 0.5em !important;
+  }
+
+  /* Important information highlighting */
+  .important {
+    border: 2px solid #000 !important;
+    padding: 1em !important;
+    margin: 1em 0 !important;
+    background: #f9f9f9 !important;
+  }
+
+  .warning {
+    border: 2px solid #f59e0b !important;
+    padding: 1em !important;
+    margin: 1em 0 !important;
+    background: #fef3c7 !important;
+  }
+
+  .success {
+    border: 2px solid #22c55e !important;
+    padding: 1em !important;
+    margin: 1em 0 !important;
+    background: #dcfce7 !important;
+  }
+
+  /* Hide decorative elements */
+  .emoji,
+  .icon,
+  .decoration {
+    display: none !important;
+  }
+
+  /* Show important icons as text */
+  .icon-important:before {
+    content: "⚠ " !important;
+  }
+
+  .icon-success:before {
+    content: "✓ " !important;
+  }
+
+  .icon-info:before {
+    content: "ℹ " !important;
+  }
+
+  /* Print-specific classes */
+  .print-only {
+    display: block !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  /* Force page breaks where needed */
+  .page-break-before {
+    page-break-before: always !important;
+  }
+
+  .page-break-after {
+    page-break-after: always !important;
+  }
+
+  /* Avoid page breaks in important content */
+  .keep-together {
+    page-break-inside: avoid !important;
+  }
+
+  /* Optimize for different paper sizes */
+  @page letter {
+    size: letter !important;
+  }
+
+  @page a4 {
+    size: A4 !important;
+  }
+
+  /* Landscape orientation for wide content */
+  @page landscape {
+    size: landscape !important;
+  }
+
+  /* Print quality optimizations */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Ensure text is readable */
+  p, div, span {
+    orphans: 3 !important;
+    widows: 3 !important;
+  }
+
+  /* Optimize images for print */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Hide background images */
+  * {
+    background-image: none !important;
+  }
+}
+
+/* Print-specific utility classes */
+@media print {
+  .print-break {
+    page-break-before: always !important;
+  }
+
+  .print-avoid-break {
+    page-break-inside: avoid !important;
+  }
+
+  .print-small {
+    font-size: 10pt !important;
+  }
+
+  .print-large {
+    font-size: 14pt !important;
+  }
+
+  .print-bold {
+    font-weight: bold !important;
+  }
+
+  .print-underline {
+    text-decoration: underline !important;
+  }
+
+  .print-border {
+    border: 1px solid #000 !important;
+  }
+
+  .print-center {
+    text-align: center !important;
+  }
+
+  .print-right {
+    text-align: right !important;
+  }
+}

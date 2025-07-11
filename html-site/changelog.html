@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changelog - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1rem; }
+    .changelog-header { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; text-align: center; }
+    .changelog-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; color: #1f2937; }
+    .changelog-header p { font-size: 1.1rem; color: #64748b; }
+    .version-filter { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 1.5rem; margin-bottom: 2rem; }
+    .filter-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .filter-btn { padding: 0.5rem 1rem; border: 2px solid #e2e8f0; border-radius: 0.5rem; background: #fff; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; }
+    .filter-btn:hover, .filter-btn.active { border-color: #2563eb; background: #eff6ff; color: #2563eb; }
+    .version-card { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; }
+    .version-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #e2e8f0; }
+    .version-info { display: flex; align-items: center; gap: 1rem; }
+    .version-number { font-size: 1.5rem; font-weight: 700; color: #1f2937; }
+    .version-date { color: #64748b; font-size: 0.9rem; }
+    .version-type { padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 600; }
+    .version-type.major { background: #fef2f2; color: #dc2626; }
+    .version-type.minor { background: #fef3c7; color: #d97706; }
+    .version-type.patch { background: #dcfce7; color: #166534; }
+    .version-type.beta { background: #dbeafe; color: #1e40af; }
+    .changelog-section { margin-bottom: 1.5rem; }
+    .section-title { font-weight: 600; margin-bottom: 1rem; color: #374151; display: flex; align-items: center; gap: 0.5rem; }
+    .section-title.features { color: #059669; }
+    .section-title.improvements { color: #2563eb; }
+    .section-title.fixes { color: #dc2626; }
+    .section-title.security { color: #7c3aed; }
+    .changelog-list { list-style: none; padding: 0; }
+    .changelog-item { padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start; gap: 0.75rem; }
+    .changelog-item:last-child { border-bottom: none; }
+    .change-icon { font-size: 1.2rem; margin-top: 0.1rem; }
+    .change-icon.feature { color: #059669; }
+    .change-icon.improvement { color: #2563eb; }
+    .change-icon.fix { color: #dc2626; }
+    .change-icon.security { color: #7c3aed; }
+    .change-text { color: #4b5563; line-height: 1.6; }
+    .change-meta { font-size: 0.8rem; color: #9ca3af; margin-top: 0.25rem; }
+    .contributors { background: #f8fafc; border-radius: 0.5rem; padding: 1rem; margin-top: 1rem; }
+    .contributors-title { font-weight: 600; margin-bottom: 0.5rem; color: #374151; }
+    .contributor-list { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .contributor { background: #e2e8f0; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.8rem; color: #64748b; }
+    .rss-feed { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 1.5rem; margin-top: 2rem; text-align: center; }
+    .rss-feed h3 { margin-bottom: 1rem; color: #1f2937; }
+    .rss-feed p { color: #64748b; margin-bottom: 1rem; }
+    @media (max-width: 768px) { .changelog-header h1 { font-size: 2rem; } .version-header { flex-direction: column; align-items: flex-start; gap: 1rem; } }
+  </style>
+</head>
+<body>
+  <nav class="container" style="padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+  
+  <div class="container">
+    <div class="changelog-header">
+      <h1>Changelog</h1>
+      <p>Track all updates, improvements, and bug fixes for MyeCA.in</p>
+    </div>
+    
+    <div class="version-filter">
+      <h3 style="margin-bottom: 1rem; color: #1f2937;">Filter by Version Type</h3>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">All Versions</button>
+        <button class="filter-btn" data-filter="major">Major Releases</button>
+        <button class="filter-btn" data-filter="minor">Minor Updates</button>
+        <button class="filter-btn" data-filter="patch">Bug Fixes</button>
+        <button class="filter-btn" data-filter="beta">Beta Releases</button>
+      </div>
+    </div>
+    
+    <div class="version-card" data-version="major">
+      <div class="version-header">
+        <div class="version-info">
+          <div class="version-number">v2.0.0</div>
+          <div class="version-date">December 15, 2024</div>
+        </div>
+        <div class="version-type major">Major Release</div>
+      </div>
+      
+      <div class="changelog-section">
+        <div class="section-title features">🚀 New Features</div>
+        <ul class="changelog-list">
+          <li class="changelog-item">
+            <span class="change-icon feature">✨</span>
+            <div>
+              <div class="change-text">Complete static site conversion from React to HTML/CSS/JavaScript</div>
+              <div class="change-meta">Improved performance and reduced hosting costs</div>
+            </div>
+          </li>
+          <li class="changelog-item">
+            <span class="change-icon feature">✨</span>
+            <div>
+              <div class="change-text">Added comprehensive accessibility features with WCAG 2.1 AA compliance</div>
+              <div class="change-meta">Enhanced inclusivity for users with disabilities</div>
+            </div>
+          </li>
+          <li class="changelog-item">
+            <span class="change-icon feature">✨</span>
+            <div>
+              <div class="change-text">Implemented Progressive Web App (PWA) capabilities</div>
+              <div class="change-meta">Offline functionality and app-like experience</div>
+            </div>
+          </li>
+          <li class="changelog-item">
+            <span class="change-icon feature">✨</span>
+            <div>
+              <div class="change-text">Added system status page with real-time service monitoring</div>
+              <div class="change-meta">Transparency in service availability</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="changelog-section">
+        <div class="section-title improvements">🔧 Improvements</div>
+        <ul class="changelog-list">
+          <li class="changelog-item">
+            <span class="change-icon improvement">⚡</span>
+            <div>
+              <div class="change-text">Optimized page load times by 60% through static site generation</div>
+              <div class="change-meta">Average load time reduced from 3.2s to 1.2s</div>
+            </div>
+          </li>
+          <li class="changelog-item">
+            <span class="change-icon improvement">📱</span>
+            <div>
+              <div class="change-text">Enhanced mobile responsiveness across all pages</div>
+              <div class="change-meta">Improved touch targets and mobile navigation</div>
+            </div>
+          </li>
+          <li class="changelog-item">
+            <span class="change-icon improvement">🔍</span>
+            <div>
+              <div class="change-text">Improved SEO with structured data and optimized meta tags</div>
+              <div class="change-meta">Better search engine visibility and rankings</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="changelog-section">
+        <div class="section-title security">🔒 Security</div>
+        <ul class="changelog-list">
+          <li class="changelog-item">
+            <span class="change-icon security">🛡️</span>
+            <div>
+              <div class="change-text">Enhanced security with input validation and XSS prevention</div>
+              <div class="change-meta">Improved protection against common web vulnerabilities</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="contributors">
+        <div class="contributors-title">Contributors</div>
+        <div class="contributor-list">
+          <span class="contributor">Development Team</span>
+          <span class="contributor">UX Design Team</span>
+          <span class="contributor">QA Team</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="version-card" data-version="minor">
+      <div class="version-header">
+        <div class="version-info">
+          <div class="version-number">v1.5.0</div>
+          <div class="version-date">November 28, 2024</div>
+        </div>
+        <div class="version-type minor">Minor Update</div>
+      </div>
+      
+      <div class="changelog-section">
+        <div class="section-title features">🚀 New Features</div>
+        <ul class="changelog-list">
+          <li class="changelog-item">
+            <span class="change-icon feature">✨</span>
+            <div>
+              <div class="change-text">Added advanced tax calculators with multiple scenarios</div>
+              <div class="change-meta">Support for complex tax situations</div>
+            </div>
+          </li>
+          <li class="changelog-item">
+            <span class="change-icon feature">✨</span>
+            <div>
+              <div class="change-text">Implemented document vault with secure file storage</div>
+              <div class="change-meta">Enhanced document management capabilities</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="changelog-section">
+        <div class="section-title improvements">🔧 Improvements</div>
+        <ul class="changelog-list">
+          <li class="changelog-item">
+            <span class="change-icon improvement">⚡</span>
+            <div>
+              <div class="change-text">Improved form validation and error handling</div>
+              <div class="change-meta">Better user experience with clear error messages</div>
+            </div>
+          </li>
+          <li class="changelog-item">
+            <span class="change-icon improvement">🎨</span>
+            <div>
+              <div class="change-text">Updated UI design with modern components</div>
+              <div class="change-meta">Consistent design system across all pages</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="version-card" data-version="patch">
+      <div class="version-header">
+        <div class="version-info">
+          <div class="version-number">v1.4.2</div>
+          <div class="version-date">November 15, 2024</div>
+        </div>
+        <div class="version-type patch">Bug Fix</div>
+      </div>
+      
+      <div class="changelog-section">
+        <div class="section-title fixes">🐛 Bug Fixes</div>
+        <ul class="changelog-list">
+          <li class="changelog-item">
+            <span class="change-icon fix">🔧</span>
+            <div>
+              <div class="change-text">Fixed calculation errors in tax estimator</div>
+              <div class="change-meta">Resolved rounding issues in tax calculations</div>
+            </div>
+          </li>
+          <li class="changelog-item">
+            <span class="change-icon fix">🔧</span>
+            <div>
+              <div class="change-text">Fixed mobile navigation menu not closing properly</div>
+              <div class="change-meta">Improved mobile user experience</div>
+            </div>
+          </li>
+          <li class="changelog-item">
+            <span class="change-icon fix">🔧</span>
+            <div>
+              <div class="change-text">Resolved form submission issues on slow connections</div>
+              <div class="change-meta">Added timeout handling and retry logic</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="version-card" data-version="minor">
+      <div class="version-header">
+        <div class="version-info">
+          <div class="version-number">v1.4.0</div>
+          <div class="version-date">October 30, 2024</div>
+        </div>
+        <div class="version-type minor">Minor Update</div>
+      </div>
+      
+      <div class="changelog-section">
+        <div class="section-title features">🚀 New Features</div>
+        <ul class="changelog-list">
+          <li class="changelog-item">
+            <span class="change-icon feature">✨</span>
+            <div>
+              <div class="change-text">Added AI-powered tax expert chat interface</div>
+              <div class="change-meta">24/7 tax assistance and guidance</div>
+            </div>
+          </li>
+          <li class="changelog-item">
+            <span class="change-icon feature">✨</span>
+            <div>
+              <div class="change-text">Implemented user feedback system</div>
+              <div class="change-meta">Collect and analyze user suggestions</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="changelog-section">
+        <div class="section-title improvements">🔧 Improvements</div>
+        <ul class="changelog-list">
+          <li class="changelog-item">
+            <span class="change-icon improvement">⚡</span>
+            <div>
+              <div class="change-text">Optimized database queries for faster response times</div>
+              <div class="change-meta">Reduced API response time by 40%</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="version-card" data-version="patch">
+      <div class="version-header">
+        <div class="version-info">
+          <div class="version-number">v1.3.1</div>
+          <div class="version-date">October 15, 2024</div>
+        </div>
+        <div class="version-type patch">Bug Fix</div>
+      </div>
+      
+      <div class="changelog-section">
+        <div class="section-title fixes">🐛 Bug Fixes</div>
+        <ul class="changelog-list">
+          <li class="changelog-item">
+            <span class="change-icon fix">🔧</span>
+            <div>
+              <div class="change-text">Fixed PDF generation issues in filing process</div>
+              <div class="change-meta">Resolved character encoding problems</div>
+            </div>
+          </li>
+          <li class="changelog-item">
+            <span class="change-icon fix">🔧</span>
+            <div>
+              <div class="change-text">Fixed email notification delivery issues</div>
+              <div class="change-meta">Improved email service reliability</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="version-card" data-version="major">
+      <div class="version-header">
+        <div class="version-info">
+          <div class="version-number">v1.3.0</div>
+          <div class="version-date">September 25, 2024</div>
+        </div>
+        <div class="version-type major">Major Release</div>
+      </div>
+      
+      <div class="changelog-section">
+        <div class="section-title features">🚀 New Features</div>
+        <ul class="changelog-list">
+          <li class="changelog-item">
+            <span class="change-icon feature">✨</span>
+            <div>
+              <div class="change-text">Launched complete tax filing platform</div>
+              <div class="change-meta">End-to-end tax filing solution</div>
+            </div>
+          </li>
+          <li class="changelog-item">
+            <span class="change-icon feature">✨</span>
+            <div>
+              <div class="change-text">Added user authentication and profile management</div>
+              <div class="change-meta">Secure user accounts and data</div>
+            </div>
+          </li>
+          <li class="changelog-item">
+            <span class="change-icon feature">✨</span>
+            <div>
+              <div class="change-text">Implemented payment processing system</div>
+              <div class="change-meta">Secure payment gateway integration</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="changelog-section">
+        <div class="section-title improvements">🔧 Improvements</div>
+        <ul class="changelog-list">
+          <li class="changelog-item">
+            <span class="change-icon improvement">⚡</span>
+            <div>
+              <div class="change-text">Built responsive design system</div>
+              <div class="change-meta">Mobile-first approach with modern UI</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="rss-feed">
+      <h3>Stay Updated</h3>
+      <p>Subscribe to our RSS feed to get notified about new releases and updates.</p>
+      <a href="#" class="btn">📡 Subscribe to RSS Feed</a>
+    </div>
+  </div>
+  
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+  
+  <script>
+    // Version filtering
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const filter = this.dataset.filter;
+        
+        // Update active button
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Filter version cards
+        document.querySelectorAll('.version-card').forEach(card => {
+          if (filter === 'all' || card.dataset.version === filter) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+    
+    // Track page view
+    console.log('Changelog page viewed');
+  </script>
+</body>
+</html>
