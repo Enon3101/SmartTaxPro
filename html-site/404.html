@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; }
+    .container { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+    .error-card { background: #fff; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; text-align: center; }
+    .error-header { background: linear-gradient(90deg, #ef4444, #dc2626); color: #fff; padding: 3rem 2rem; }
+    .error-icon { font-size: 6rem; margin-bottom: 1rem; }
+    .error-header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .error-content { padding: 3rem 2rem; }
+    .error-code { font-size: 8rem; font-weight: 900; color: #f1f5f9; margin-bottom: 1rem; }
+    .error-message { font-size: 1.25rem; color: #64748b; margin-bottom: 2rem; }
+    .search-box { max-width: 400px; margin: 0 auto 2rem; }
+    .search-box input { width: 100%; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 0.5rem; font-size: 1rem; }
+    .search-box input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+    .action-buttons { display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem; flex-wrap: wrap; }
+    .btn { padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 600; text-decoration: none; display: inline-block; transition: all 0.2s; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-outline { background: #fff; color: #2563eb; border: 1px solid #2563eb; }
+    .btn-outline:hover { background: #2563eb; color: #fff; }
+    .popular-links { background: #f8fafc; border-radius: 0.5rem; padding: 2rem; margin-top: 2rem; }
+    .popular-links h3 { font-weight: 600; margin-bottom: 1rem; }
+    .link-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+    .link-item { background: #fff; padding: 1rem; border-radius: 0.5rem; border: 1px solid #e2e8f0; text-decoration: none; color: #374151; transition: all 0.2s; }
+    .link-item:hover { border-color: #2563eb; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1); }
+    .link-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .link-title { font-weight: 600; margin-bottom: 0.25rem; }
+    .link-desc { font-size: 0.9rem; color: #64748b; }
+    @media (max-width: 768px) { .error-code { font-size: 4rem; } .action-buttons { flex-direction: column; align-items: center; } }
+  </style>
+</head>
+<body>
+  <nav class="container" style="padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+  
+  <div class="container">
+    <div class="error-card">
+      <div class="error-header">
+        <div class="error-icon">🔍</div>
+        <h1>Page Not Found</h1>
+        <p>The page you're looking for doesn't exist or has been moved</p>
+      </div>
+      
+      <div class="error-content">
+        <div class="error-code">404</div>
+        <div class="error-message">
+          Don't worry! You can still find what you're looking for.
+        </div>
+        
+        <div class="search-box">
+          <input type="text" placeholder="Search for tax filing, calculators, or help..." onkeypress="searchOnEnter(event)">
+        </div>
+        
+        <div class="action-buttons">
+          <a href="index.html" class="btn btn-primary">Go to Homepage</a>
+          <a href="start-filing.html" class="btn btn-outline">Start Tax Filing</a>
+          <a href="support.html" class="btn btn-outline">Get Help</a>
+        </div>
+        
+        <div class="popular-links">
+          <h3>Popular Pages</h3>
+          <div class="link-grid">
+            <a href="start-filing.html" class="link-item">
+              <div class="link-icon">📝</div>
+              <div class="link-title">Start Filing</div>
+              <div class="link-desc">File your income tax return</div>
+            </a>
+            <a href="calculators.html" class="link-item">
+              <div class="link-icon">🧮</div>
+              <div class="link-title">Tax Calculators</div>
+              <div class="link-desc">Calculate your tax liability</div>
+            </a>
+            <a href="document-vault.html" class="link-item">
+              <div class="link-icon">📁</div>
+              <div class="link-title">Document Vault</div>
+              <div class="link-desc">Manage your tax documents</div>
+            </a>
+            <a href="tax-expert.html" class="link-item">
+              <div class="link-icon">🤖</div>
+              <div class="link-title">Tax Expert</div>
+              <div class="link-desc">Get expert tax advice</div>
+            </a>
+            <a href="pricing.html" class="link-item">
+              <div class="link-icon">💰</div>
+              <div class="link-title">Pricing</div>
+              <div class="link-desc">View our pricing plans</div>
+            </a>
+            <a href="support.html" class="link-item">
+              <div class="link-icon">❓</div>
+              <div class="link-title">Support</div>
+              <div class="link-desc">Get help and support</div>
+            </a>
+          </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+          <p style="color: #64748b; font-size: 0.9rem;">
+            Still can't find what you're looking for? 
+            <a href="contact.html" style="color: #2563eb; text-decoration: none;">Contact our support team</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+  
+  <script>
+    function searchOnEnter(event) {
+      if (event.key === 'Enter') {
+        const query = event.target.value.trim();
+        if (query) {
+          // In a real implementation, this would search the site
+          alert(`Searching for: ${query}\nThis would redirect to search results in the real application.`);
+        }
+      }
+    }
+    
+    // Track 404 errors for analytics
+    console.log('404 Error - Page not found:', window.location.href);
+  </script>
+</body>
+</html>
