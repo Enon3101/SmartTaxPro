@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Export & Backup - MyeCA.in | Manage Your Data</title>
+    <meta name="description" content="Export your tax data, manage backups, and control your data privacy settings. Download your complete tax filing history and documents.">
+    <meta name="keywords" content="data export, backup, tax data download, privacy settings, GDPR, data management">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://myeca.in/data-export">
+    <meta property="og:title" content="Data Export & Backup - MyeCA.in">
+    <meta property="og:description" content="Manage your data and privacy settings">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://myeca.in/data-export">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <img src="assets/logo.png" alt="MyeCA.in" class="logo">
+                    </a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="start-filing.html">Start Filing</a></li>
+                    <li><a href="calculators.html">Calculators</a></li>
+                    <li><a href="document-vault.html">Document Vault</a></li>
+                    <li><a href="tax-expert.html">Tax Expert</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="support.html">Support</a></li>
+                    <li><a href="login.html" class="btn-login">Login</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section data-export-hero">
+            <div class="container">
+                <h1>Data Export & Backup</h1>
+                <p>Download your complete tax data, manage backups, and control your privacy settings</p>
+                <div class="data-badges">
+                    <div class="badge">
+                        <span class="badge-icon">📊</span>
+                        <span>Complete Data</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">🔒</span>
+                        <span>Secure</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">⚡</span>
+                        <span>Instant</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="data-overview">
+            <div class="container">
+                <div class="data-grid">
+                    <div class="data-card">
+                        <div class="data-icon">📋</div>
+                        <h3>Tax Filings</h3>
+                        <p>Complete history of all your tax filings with detailed information.</p>
+                        <ul>
+                            <li>Filing details and status</li>
+                            <li>Income and deduction data</li>
+                            <li>Payment information</li>
+                            <li>Acknowledgment numbers</li>
+                        </ul>
+                        <button onclick="exportData('tax-filings')" class="export-btn">Export Tax Filings</button>
+                    </div>
+                    
+                    <div class="data-card">
+                        <div class="data-icon">📄</div>
+                        <h3>Documents</h3>
+                        <p>All uploaded documents and supporting files in original format.</p>
+                        <ul>
+                            <li>Form 16 and certificates</li>
+                            <li>Bank statements</li>
+                            <li>Investment proofs</li>
+                            <li>Other supporting documents</li>
+                        </ul>
+                        <button onclick="exportData('documents')" class="export-btn">Export Documents</button>
+                    </div>
+                    
+                    <div class="data-card">
+                        <div class="data-icon">👤</div>
+                        <h3>Profile Data</h3>
+                        <p>Your personal information and account settings.</p>
+                        <ul>
+                            <li>Personal details</li>
+                            <li>Contact information</li>
+                            <li>Account preferences</li>
+                            <li>Security settings</li>
+                        </ul>
+                        <button onclick="exportData('profile')" class="export-btn">Export Profile</button>
+                    </div>
+                    
+                    <div class="data-card">
+                        <div class="data-icon">📊</div>
+                        <h3>Complete Archive</h3>
+                        <p>Everything in one comprehensive download package.</p>
+                        <ul>
+                            <li>All tax filings</li>
+                            <li>All documents</li>
+                            <li>Profile data</li>
+                            <li>Activity logs</li>
+                        </ul>
+                        <button onclick="exportData('complete')" class="export-btn primary">Export Everything</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="export-options">
+            <div class="container">
+                <h2>Export Options</h2>
+                <div class="options-grid">
+                    <div class="option-card">
+                        <div class="option-header">
+                            <h3>Format Options</h3>
+                            <div class="format-badges">
+                                <span class="format-badge active" data-format="json">JSON</span>
+                                <span class="format-badge" data-format="csv">CSV</span>
+                                <span class="format-badge" data-format="pdf">PDF</span>
+                                <span class="format-badge" data-format="zip">ZIP</span>
+                            </div>
+                        </div>
+                        <div class="format-description">
+                            <p><strong>JSON:</strong> Machine-readable format for developers and data analysis</p>
+                            <p><strong>CSV:</strong> Spreadsheet-friendly format for Excel and Google Sheets</p>
+                            <p><strong>PDF:</strong> Human-readable reports with proper formatting</p>
+                            <p><strong>ZIP:</strong> Compressed archive with all files and data</p>
+                        </div>
+                    </div>
+                    
+                    <div class="option-card">
+                        <div class="option-header">
+                            <h3>Date Range</h3>
+                            <div class="date-inputs">
+                                <input type="date" id="start-date" class="date-input">
+                                <span>to</span>
+                                <input type="date" id="end-date" class="date-input">
+                            </div>
+                        </div>
+                        <div class="date-presets">
+                            <button class="preset-btn" data-preset="current-year">Current Year</button>
+                            <button class="preset-btn" data-preset="last-year">Last Year</button>
+                            <button class="preset-btn" data-preset="last-3-years">Last 3 Years</button>
+                            <button class="preset-btn" data-preset="all">All Time</button>
+                        </div>
+                    </div>
+                    
+                    <div class="option-card">
+                        <div class="option-header">
+                            <h3>Include Options</h3>
+                        </div>
+                        <div class="include-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-documents" checked>
+                                <span class="checkmark"></span>
+                                Include original documents
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-metadata" checked>
+                                <span class="checkmark"></span>
+                                Include metadata and timestamps
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-activity" checked>
+                                <span class="checkmark"></span>
+                                Include activity logs
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="include-analytics">
+                                <span class="checkmark"></span>
+                                Include analytics data
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="backup-management">
+            <div class="container">
+                <h2>Backup Management</h2>
+                <div class="backup-content">
+                    <div class="backup-settings">
+                        <h3>Automatic Backups</h3>
+                        <div class="backup-option">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="auto-backup" checked>
+                                <span class="toggle-slider"></span>
+                                Enable automatic backups
+                            </label>
+                            <p>Automatically create backups of your data every month</p>
+                        </div>
+                        
+                        <div class="backup-frequency">
+                            <label for="backup-frequency">Backup Frequency:</label>
+                            <select id="backup-frequency">
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly" selected>Monthly</option>
+                                <option value="quarterly">Quarterly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        
+                        <div class="backup-retention">
+                            <label for="backup-retention">Retention Period:</label>
+                            <select id="backup-retention">
+                                <option value="1-year">1 Year</option>
+                                <option value="3-years" selected>3 Years</option>
+                                <option value="5-years">5 Years</option>
+                                <option value="forever">Forever</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="backup-history">
+                        <h3>Backup History</h3>
+                        <div class="backup-list">
+                            <div class="backup-item">
+                                <div class="backup-info">
+                                    <div class="backup-date">March 15, 2024</div>
+                                    <div class="backup-size">2.4 MB</div>
+                                    <div class="backup-status success">✅ Completed</div>
+                                </div>
+                                <div class="backup-actions">
+                                    <button class="download-btn">Download</button>
+                                    <button class="delete-btn">Delete</button>
+                                </div>
+                            </div>
+                            
+                            <div class="backup-item">
+                                <div class="backup-info">
+                                    <div class="backup-date">February 15, 2024</div>
+                                    <div class="backup-size">2.1 MB</div>
+                                    <div class="backup-status success">✅ Completed</div>
+                                </div>
+                                <div class="backup-actions">
+                                    <button class="download-btn">Download</button>
+                                    <button class="delete-btn">Delete</button>
+                                </div>
+                            </div>
+                            
+                            <div class="backup-item">
+                                <div class="backup-info">
+                                    <div class="backup-date">January 15, 2024</div>
+                                    <div class="backup-size">1.9 MB</div>
+                                    <div class="backup-status success">✅ Completed</div>
+                                </div>
+                                <div class="backup-actions">
+                                    <button class="download-btn">Download</button>
+                                    <button class="delete-btn">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="privacy-controls">
+            <div class="container">
+                <h2>Privacy Controls</h2>
+                <div class="privacy-grid">
+                    <div class="privacy-card">
+                        <div class="privacy-icon">👁️</div>
+                        <h3>Data Visibility</h3>
+                        <p>Control who can see your data and how it's used.</p>
+                        <div class="privacy-options">
+                            <label class="radio-label">
+                                <input type="radio" name="data-visibility" value="private" checked>
+                                <span class="radio-custom"></span>
+                                Private - Only you can access
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="data-visibility" value="shared">
+                                <span class="radio-custom"></span>
+                                Shared - Allow MyeCA.in to use for improvements
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="data-visibility" value="public">
+                                <span class="radio-custom"></span>
+                                Public - Allow research and analytics
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="privacy-card">
+                        <div class="privacy-icon">🔔</div>
+                        <h3>Notifications</h3>
+                        <p>Choose what notifications you receive about your data.</p>
+                        <div class="notification-options">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="notify-backup" checked>
+                                <span class="checkmark"></span>
+                                Backup completion notifications
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="notify-access" checked>
+                                <span class="checkmark"></span>
+                                Data access notifications
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="notify-changes">
+                                <span class="checkmark"></span>
+                                Privacy policy changes
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="notify-analytics">
+                                <span class="checkmark"></span>
+                                Analytics and insights
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="privacy-card">
+                        <div class="privacy-icon">🗑️</div>
+                        <h3>Data Deletion</h3>
+                        <p>Request deletion of your data from our systems.</p>
+                        <div class="deletion-options">
+                            <button class="delete-data-btn" onclick="requestDataDeletion('account')">Delete Account Data</button>
+                            <button class="delete-data-btn" onclick="requestDataDeletion('analytics')">Delete Analytics Data</button>
+                            <button class="delete-data-btn warning" onclick="requestDataDeletion('all')">Delete All Data</button>
+                        </div>
+                        <p class="deletion-note">Note: Deletion is permanent and cannot be undone.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="data-usage">
+            <div class="container">
+                <h2>Data Usage Analytics</h2>
+                <div class="usage-content">
+                    <div class="usage-stats">
+                        <div class="stat-card">
+                            <div class="stat-number">2.4 GB</div>
+                            <div class="stat-label">Total Data Stored</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">15</div>
+                            <div class="stat-label">Tax Filings</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">47</div>
+                            <div class="stat-label">Documents</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Backups</div>
+                        </div>
+                    </div>
+                    
+                    <div class="usage-breakdown">
+                        <h3>Storage Breakdown</h3>
+                        <div class="storage-chart">
+                            <div class="storage-item">
+                                <div class="storage-label">Tax Filings</div>
+                                <div class="storage-bar">
+                                    <div class="storage-fill" style="width: 45%"></div>
+                                </div>
+                                <div class="storage-size">1.1 GB</div>
+                            </div>
+                            <div class="storage-item">
+                                <div class="storage-label">Documents</div>
+                                <div class="storage-bar">
+                                    <div class="storage-fill" style="width: 35%"></div>
+                                </div>
+                                <div class="storage-size">0.8 GB</div>
+                            </div>
+                            <div class="storage-item">
+                                <div class="storage-label">Backups</div>
+                                <div class="storage-bar">
+                                    <div class="storage-fill" style="width: 20%"></div>
+                                </div>
+                                <div class="storage-size">0.5 GB</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="export-progress">
+            <div class="container">
+                <div class="progress-modal" id="progress-modal" style="display: none;">
+                    <div class="progress-content">
+                        <h3>Preparing Your Export</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        <div class="progress-text" id="progress-text">Initializing...</div>
+                        <div class="progress-steps">
+                            <div class="step" id="step-1">📋 Collecting tax filings</div>
+                            <div class="step" id="step-2">📄 Gathering documents</div>
+                            <div class="step" id="step-3">👤 Processing profile data</div>
+                            <div class="step" id="step-4">📦 Creating archive</div>
+                            <div class="step" id="step-5">⬇️ Preparing download</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="data-security">
+            <div class="container">
+                <h2>Data Security</h2>
+                <div class="security-grid">
+                    <div class="security-card">
+                        <div class="security-icon">🔐</div>
+                        <h3>Encryption</h3>
+                        <p>All data is encrypted using AES-256 encryption both in transit and at rest.</p>
+                    </div>
+                    
+                    <div class="security-card">
+                        <div class="security-icon">🛡️</div>
+                        <h3>Access Control</h3>
+                        <p>Multi-factor authentication and role-based access controls protect your data.</p>
+                    </div>
+                    
+                    <div class="security-card">
+                        <div class="security-icon">🔍</div>
+                        <h3>Audit Logs</h3>
+                        <p>Complete audit trail of all data access and modifications for transparency.</p>
+                    </div>
+                    
+                    <div class="security-card">
+                        <div class="security-icon">🌐</div>
+                        <h3>GDPR Compliant</h3>
+                        <p>Full compliance with GDPR and other data protection regulations.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Ready to Export Your Data?</h2>
+                    <p>Download your complete tax filing history and take control of your data</p>
+                    <div class="cta-buttons">
+                        <button onclick="exportData('complete')" class="btn-primary">Export All Data</button>
+                        <a href="privacy-policy.html" class="btn-secondary">Privacy Policy</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MyeCA.in</h3>
+                    <p>Your trusted partner for hassle-free tax filing and financial planning.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">📘</a>
+                        <a href="#" aria-label="Twitter">🐦</a>
+                        <a href="#" aria-label="LinkedIn">💼</a>
+                        <a href="#" aria-label="Instagram">📷</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="start-filing.html">Tax Filing</a></li>
+                        <li><a href="calculators.html">Tax Calculators</a></li>
+                        <li><a href="document-vault.html">Document Vault</a></li>
+                        <li><a href="tax-expert.html">Tax Expert</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="tax-resources.html">Tax Resources</a></li>
+                        <li><a href="support.html">Support</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="terms-of-service.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MyeCA.in. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Format selection
+        document.querySelectorAll('.format-badge').forEach(badge => {
+            badge.addEventListener('click', function() {
+                document.querySelectorAll('.format-badge').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Date presets
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const preset = this.dataset.preset;
+                const today = new Date();
+                const startDate = document.getElementById('start-date');
+                const endDate = document.getElementById('end-date');
+                
+                switch(preset) {
+                    case 'current-year':
+                        startDate.value = `${today.getFullYear()}-04-01`;
+                        endDate.value = `${today.getFullYear()}-03-31`;
+                        break;
+                    case 'last-year':
+                        startDate.value = `${today.getFullYear()-1}-04-01`;
+                        endDate.value = `${today.getFullYear()-1}-03-31`;
+                        break;
+                    case 'last-3-years':
+                        startDate.value = `${today.getFullYear()-3}-04-01`;
+                        endDate.value = `${today.getFullYear()}-03-31`;
+                        break;
+                    case 'all':
+                        startDate.value = '2015-04-01';
+                        endDate.value = `${today.getFullYear()}-03-31`;
+                        break;
+                }
+            });
+        });
+
+        // Export functionality
+        function exportData(type) {
+            const modal = document.getElementById('progress-modal');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+            
+            modal.style.display = 'flex';
+            
+            // Simulate export progress
+            let progress = 0;
+            const steps = [
+                'Collecting tax filings...',
+                'Gathering documents...',
+                'Processing profile data...',
+                'Creating archive...',
+                'Preparing download...'
+            ];
+            
+            const interval = setInterval(() => {
+                progress += 20;
+                progressFill.style.width = progress + '%';
+                
+                if (progress <= 100) {
+                    progressText.textContent = steps[Math.floor(progress / 20) - 1] || steps[steps.length - 1];
+                    document.getElementById(`step-${Math.floor(progress / 20)}`).classList.add('completed');
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                        // Simulate download
+                        const link = document.createElement('a');
+                        link.href = '#';
+                        link.download = `myeca-${type}-export-${new Date().toISOString().split('T')[0]}.zip`;
+                        link.click();
+                    }, 1000);
+                }
+            }, 500);
+        }
+
+        // Data deletion requests
+        function requestDataDeletion(type) {
+            const confirmMessage = type === 'all' 
+                ? 'Are you sure you want to delete ALL your data? This action cannot be undone.'
+                : `Are you sure you want to delete your ${type} data?`;
+                
+            if (confirm(confirmMessage)) {
+                // Simulate deletion request
+                alert(`Deletion request for ${type} data has been submitted. You will receive a confirmation email within 24 hours.`);
+            }
+        }
+
+        // Backup download functionality
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Simulate download
+                const link = document.createElement('a');
+                link.href = '#';
+                link.download = `myeca-backup-${new Date().toISOString().split('T')[0]}.zip`;
+                link.click();
+            });
+        });
+
+        // Backup delete functionality
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to delete this backup?')) {
+                    this.closest('.backup-item').remove();
+                }
+            });
+        });
+
+        // Initialize date inputs with current year
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const startDate = document.getElementById('start-date');
+            const endDate = document.getElementById('end-date');
+            
+            startDate.value = `${today.getFullYear()}-04-01`;
+            endDate.value = `${today.getFullYear()}-03-31`;
+        });
+    </script>
+</body>
+</html>

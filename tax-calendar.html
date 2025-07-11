@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Calendar & Reminders - MyeCA.in | Stay Organized</title>
+    <meta name="description" content="Track important tax deadlines, set reminders, and stay organized with your tax obligations throughout the year. Never miss a tax deadline again.">
+    <meta name="keywords" content="tax calendar, tax deadlines, tax reminders, tax due dates, tax filing schedule, MyeCA.in calendar">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://myeca.in/tax-calendar">
+    <meta property="og:title" content="Tax Calendar & Reminders - MyeCA.in">
+    <meta property="og:description" content="Stay organized with tax deadlines and reminders">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://myeca.in/tax-calendar">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <img src="assets/logo.png" alt="MyeCA.in" class="logo">
+                    </a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="start-filing.html">Start Filing</a></li>
+                    <li><a href="calculators.html">Calculators</a></li>
+                    <li><a href="document-vault.html">Document Vault</a></li>
+                    <li><a href="tax-expert.html">Tax Expert</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="support.html">Support</a></li>
+                    <li><a href="login.html" class="btn-login">Login</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section calendar-hero">
+            <div class="container">
+                <h1>Tax Calendar & Reminders</h1>
+                <p>Never miss a tax deadline again. Track important dates and get timely reminders</p>
+                <div class="calendar-badges">
+                    <div class="badge">
+                        <span class="badge-icon">📅</span>
+                        <span>Smart Calendar</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">🔔</span>
+                        <span>Smart Reminders</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">⚡</span>
+                        <span>Real-time</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="calendar-overview">
+            <div class="container">
+                <div class="calendar-controls">
+                    <div class="calendar-nav">
+                        <button class="nav-btn" onclick="previousMonth()">‹</button>
+                        <h2 id="current-month">March 2024</h2>
+                        <button class="nav-btn" onclick="nextMonth()">›</button>
+                    </div>
+                    <div class="calendar-actions">
+                        <button class="action-btn" onclick="addReminder()">Add Reminder</button>
+                        <button class="action-btn" onclick="syncCalendar()">Sync Calendar</button>
+                        <button class="action-btn" onclick="exportCalendar()">Export</button>
+                    </div>
+                </div>
+                
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <div class="day-header">Sun</div>
+                        <div class="day-header">Mon</div>
+                        <div class="day-header">Tue</div>
+                        <div class="day-header">Wed</div>
+                        <div class="day-header">Thu</div>
+                        <div class="day-header">Fri</div>
+                        <div class="day-header">Sat</div>
+                    </div>
+                    <div class="calendar-grid" id="calendar-grid">
+                        <!-- Calendar days will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="upcoming-deadlines">
+            <div class="container">
+                <h2>Upcoming Deadlines</h2>
+                <div class="deadlines-grid">
+                    <div class="deadline-card urgent">
+                        <div class="deadline-icon">🚨</div>
+                        <div class="deadline-content">
+                            <h3>Income Tax Return Filing</h3>
+                            <p class="deadline-date">July 31, 2024</p>
+                            <p class="deadline-desc">Last date for filing ITR for FY 2023-24</p>
+                            <div class="deadline-countdown" id="itr-countdown">Loading...</div>
+                        </div>
+                        <div class="deadline-actions">
+                            <button class="remind-btn">Set Reminder</button>
+                            <button class="file-btn">File Now</button>
+                        </div>
+                    </div>
+                    
+                    <div class="deadline-card important">
+                        <div class="deadline-icon">📊</div>
+                        <div class="deadline-content">
+                            <h3>Advance Tax Payment</h3>
+                            <p class="deadline-date">June 15, 2024</p>
+                            <p class="deadline-desc">First installment of advance tax for FY 2024-25</p>
+                            <div class="deadline-countdown" id="advance-tax-countdown">Loading...</div>
+                        </div>
+                        <div class="deadline-actions">
+                            <button class="remind-btn">Set Reminder</button>
+                            <button class="pay-btn">Pay Now</button>
+                        </div>
+                    </div>
+                    
+                    <div class="deadline-card normal">
+                        <div class="deadline-icon">📋</div>
+                        <div class="deadline-content">
+                            <h3>Form 16 Collection</h3>
+                            <p class="deadline-date">May 31, 2024</p>
+                            <p class="deadline-desc">Employers must issue Form 16 to employees</p>
+                            <div class="deadline-countdown" id="form16-countdown">Loading...</div>
+                        </div>
+                        <div class="deadline-actions">
+                            <button class="remind-btn">Set Reminder</button>
+                            <button class="collect-btn">Collect</button>
+                        </div>
+                    </div>
+                    
+                    <div class="deadline-card normal">
+                        <div class="deadline-icon">💼</div>
+                        <div class="deadline-content">
+                            <h3>Business Tax Filing</h3>
+                            <p class="deadline-date">October 31, 2024</p>
+                            <p class="deadline-desc">Last date for business tax return filing</p>
+                            <div class="deadline-countdown" id="business-tax-countdown">Loading...</div>
+                        </div>
+                        <div class="deadline-actions">
+                            <button class="remind-btn">Set Reminder</button>
+                            <button class="file-btn">File Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="reminder-management">
+            <div class="container">
+                <h2>Reminder Management</h2>
+                <div class="reminder-content">
+                    <div class="reminder-form">
+                        <h3>Add New Reminder</h3>
+                        <form id="reminder-form">
+                            <div class="form-group">
+                                <label for="reminder-title">Title</label>
+                                <input type="text" id="reminder-title" placeholder="e.g., File ITR, Pay Advance Tax">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reminder-date">Date</label>
+                                <input type="date" id="reminder-date">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reminder-time">Time</label>
+                                <input type="time" id="reminder-time" value="09:00">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reminder-category">Category</label>
+                                <select id="reminder-category">
+                                    <option value="filing">Tax Filing</option>
+                                    <option value="payment">Tax Payment</option>
+                                    <option value="document">Document Collection</option>
+                                    <option value="deadline">Deadline</option>
+                                    <option value="custom">Custom</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reminder-description">Description</label>
+                                <textarea id="reminder-description" placeholder="Add details about this reminder"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reminder-frequency">Reminder Frequency</label>
+                                <select id="reminder-frequency">
+                                    <option value="once">Once</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reminder-notification">Notification Type</label>
+                                <div class="notification-options">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="email-notification" checked>
+                                        <span class="checkmark"></span>
+                                        Email
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="sms-notification">
+                                        <span class="checkmark"></span>
+                                        SMS
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="push-notification" checked>
+                                        <span class="checkmark"></span>
+                                        Push Notification
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="add-reminder-btn">Add Reminder</button>
+                        </form>
+                    </div>
+                    
+                    <div class="reminder-list">
+                        <h3>Your Reminders</h3>
+                        <div class="reminders" id="reminders-list">
+                            <div class="reminder-item">
+                                <div class="reminder-info">
+                                    <div class="reminder-title">File Income Tax Return</div>
+                                    <div class="reminder-date">July 31, 2024 at 09:00 AM</div>
+                                    <div class="reminder-category filing">Tax Filing</div>
+                                </div>
+                                <div class="reminder-actions">
+                                    <button class="edit-btn">Edit</button>
+                                    <button class="delete-btn">Delete</button>
+                                </div>
+                            </div>
+                            
+                            <div class="reminder-item">
+                                <div class="reminder-info">
+                                    <div class="reminder-title">Pay Advance Tax</div>
+                                    <div class="reminder-date">June 15, 2024 at 10:00 AM</div>
+                                    <div class="reminder-category payment">Tax Payment</div>
+                                </div>
+                                <div class="reminder-actions">
+                                    <button class="edit-btn">Edit</button>
+                                    <button class="delete-btn">Delete</button>
+                                </div>
+                            </div>
+                            
+                            <div class="reminder-item">
+                                <div class="reminder-info">
+                                    <div class="reminder-title">Collect Form 16</div>
+                                    <div class="reminder-date">May 31, 2024 at 11:00 AM</div>
+                                    <div class="reminder-category document">Document Collection</div>
+                                </div>
+                                <div class="reminder-actions">
+                                    <button class="edit-btn">Edit</button>
+                                    <button class="delete-btn">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tax-timeline">
+            <div class="container">
+                <h2>Annual Tax Timeline</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">April</div>
+                        <div class="timeline-content">
+                            <h3>Financial Year Begins</h3>
+                            <p>New financial year starts. Begin collecting documents and tracking income.</p>
+                            <ul>
+                                <li>Start maintaining records</li>
+                                <li>Track all income sources</li>
+                                <li>Plan tax-saving investments</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">June</div>
+                        <div class="timeline-content">
+                            <h3>First Advance Tax Payment</h3>
+                            <p>Pay first installment of advance tax if your tax liability exceeds ₹10,000.</p>
+                            <ul>
+                                <li>Calculate advance tax liability</li>
+                                <li>Pay 15% of total tax</li>
+                                <li>Keep payment receipts</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">September</div>
+                        <div class="timeline-content">
+                            <h3>Second Advance Tax Payment</h3>
+                            <p>Pay second installment of advance tax (45% of total tax).</p>
+                            <ul>
+                                <li>Review income till date</li>
+                                <li>Calculate revised liability</li>
+                                <li>Pay additional amount if needed</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">December</div>
+                        <div class="timeline-content">
+                            <h3>Third Advance Tax Payment</h3>
+                            <p>Pay third installment of advance tax (75% of total tax).</p>
+                            <ul>
+                                <li>Assess annual income</li>
+                                <li>Plan final payment</li>
+                                <li>Review tax-saving options</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">March</div>
+                        <div class="timeline-content">
+                            <h3>Financial Year Ends</h3>
+                            <p>Complete all tax-saving investments and finalize documents.</p>
+                            <ul>
+                                <li>Make last-minute investments</li>
+                                <li>Collect all documents</li>
+                                <li>Prepare for filing</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">May</div>
+                        <div class="timeline-content">
+                            <h3>Form 16 Collection</h3>
+                            <p>Employers must issue Form 16 to employees by May 31st.</p>
+                            <ul>
+                                <li>Request Form 16 from employer</li>
+                                <li>Verify details in Form 16</li>
+                                <li>Collect other certificates</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">July</div>
+                        <div class="timeline-content">
+                            <h3>Income Tax Return Filing</h3>
+                            <p>Last date for filing ITR for individuals (July 31st).</p>
+                            <ul>
+                                <li>File ITR before deadline</li>
+                                <li>Pay any remaining tax</li>
+                                <li>Keep acknowledgment receipt</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-date">October</div>
+                        <div class="timeline-content">
+                            <h3>Business Tax Filing</h3>
+                            <p>Last date for filing ITR for businesses and audit cases.</p>
+                            <ul>
+                                <li>Complete audit if required</li>
+                                <li>File business ITR</li>
+                                <li>Pay any additional tax</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="calendar-integration">
+            <div class="container">
+                <h2>Calendar Integration</h2>
+                <div class="integration-grid">
+                    <div class="integration-card">
+                        <div class="integration-icon">📱</div>
+                        <h3>Google Calendar</h3>
+                        <p>Sync your tax deadlines with Google Calendar for seamless integration.</p>
+                        <button class="sync-btn" onclick="syncGoogleCalendar()">Sync with Google</button>
+                    </div>
+                    
+                    <div class="integration-card">
+                        <div class="integration-icon">🍎</div>
+                        <h3>Apple Calendar</h3>
+                        <p>Add tax reminders to your Apple Calendar and get notifications on all devices.</p>
+                        <button class="sync-btn" onclick="syncAppleCalendar()">Sync with Apple</button>
+                    </div>
+                    
+                    <div class="integration-card">
+                        <div class="integration-icon">📧</div>
+                        <h3>Email Reminders</h3>
+                        <p>Get email reminders for all important tax deadlines and events.</p>
+                        <button class="sync-btn" onclick="setupEmailReminders()">Setup Email</button>
+                    </div>
+                    
+                    <div class="integration-card">
+                        <div class="integration-icon">📱</div>
+                        <h3>Mobile App</h3>
+                        <p>Download our mobile app for push notifications and offline access.</p>
+                        <button class="sync-btn" onclick="downloadApp()">Download App</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="quick-actions">
+            <div class="container">
+                <h2>Quick Actions</h2>
+                <div class="actions-grid">
+                    <div class="action-card">
+                        <div class="action-icon">📅</div>
+                        <h3>View Full Calendar</h3>
+                        <p>See all your tax deadlines and reminders in a comprehensive calendar view.</p>
+                        <button class="action-btn" onclick="viewFullCalendar()">View Calendar</button>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon">📊</div>
+                        <h3>Tax Calculator</h3>
+                        <p>Calculate your tax liability and plan your payments accordingly.</p>
+                        <button class="action-btn" onclick="openTaxCalculator()">Calculate Tax</button>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon">📋</div>
+                        <h3>Document Checklist</h3>
+                        <p>Get a comprehensive checklist of documents needed for tax filing.</p>
+                        <button class="action-btn" onclick="viewDocumentChecklist()">View Checklist</button>
+                    </div>
+                    
+                    <div class="action-card">
+                        <div class="action-icon">📱</div>
+                        <h3>Mobile Reminders</h3>
+                        <p>Set up mobile notifications for important tax deadlines.</p>
+                        <button class="action-btn" onclick="setupMobileReminders()">Setup Reminders</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Stay Organized with Tax Deadlines</h2>
+                    <p>Never miss an important tax date again. Get personalized reminders and stay on top of your tax obligations.</p>
+                    <div class="cta-buttons">
+                        <button onclick="addReminder()" class="btn-primary">Add Your First Reminder</button>
+                        <a href="start-filing.html" class="btn-secondary">Start Filing</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MyeCA.in</h3>
+                    <p>Your trusted partner for hassle-free tax filing and financial planning.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">📘</a>
+                        <a href="#" aria-label="Twitter">🐦</a>
+                        <a href="#" aria-label="LinkedIn">💼</a>
+                        <a href="#" aria-label="Instagram">📷</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="start-filing.html">Tax Filing</a></li>
+                        <li><a href="calculators.html">Tax Calculators</a></li>
+                        <li><a href="document-vault.html">Document Vault</a></li>
+                        <li><a href="tax-expert.html">Tax Expert</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="tax-resources.html">Tax Resources</a></li>
+                        <li><a href="support.html">Support</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="terms-of-service.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MyeCA.in. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        // Initialize calendar
+        function initCalendar() {
+            updateCalendarHeader();
+            renderCalendar();
+            updateCountdowns();
+        }
+
+        // Update calendar header
+        function updateCalendarHeader() {
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            document.getElementById('current-month').textContent = 
+                `${monthNames[currentMonth]} ${currentYear}`;
+        }
+
+        // Render calendar grid
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            grid.innerHTML = '';
+
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay());
+
+            for (let i = 0; i < 42; i++) {
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+                
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                if (date.getMonth() !== currentMonth) {
+                    dayElement.classList.add('other-month');
+                }
+                
+                if (date.toDateString() === new Date().toDateString()) {
+                    dayElement.classList.add('today');
+                }
+                
+                dayElement.innerHTML = `
+                    <div class="day-number">${date.getDate()}</div>
+                    <div class="day-events">
+                        ${getEventsForDate(date)}
+                    </div>
+                `;
+                
+                dayElement.addEventListener('click', () => selectDate(date));
+                grid.appendChild(dayElement);
+            }
+        }
+
+        // Get events for a specific date
+        function getEventsForDate(date) {
+            const events = [];
+            const dateString = date.toDateString();
+            
+            // Sample events - in real app, this would come from database
+            if (dateString === new Date(2024, 6, 31).toDateString()) {
+                events.push('<div class="event filing">ITR Deadline</div>');
+            }
+            if (dateString === new Date(2024, 5, 15).toDateString()) {
+                events.push('<div class="event payment">Advance Tax</div>');
+            }
+            if (dateString === new Date(2024, 4, 31).toDateString()) {
+                events.push('<div class="event document">Form 16 Due</div>');
+            }
+            
+            return events.join('');
+        }
+
+        // Select date
+        function selectDate(date) {
+            // Remove previous selection
+            document.querySelectorAll('.calendar-day.selected').forEach(day => {
+                day.classList.remove('selected');
+            });
+            
+            // Add selection to clicked day
+            event.target.closest('.calendar-day').classList.add('selected');
+            
+            // Update reminder form date
+            document.getElementById('reminder-date').value = date.toISOString().split('T')[0];
+        }
+
+        // Navigation functions
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateCalendarHeader();
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateCalendarHeader();
+            renderCalendar();
+        }
+
+        // Update countdowns
+        function updateCountdowns() {
+            const deadlines = [
+                { id: 'itr-countdown', date: new Date(2024, 6, 31), name: 'ITR Filing' },
+                { id: 'advance-tax-countdown', date: new Date(2024, 5, 15), name: 'Advance Tax' },
+                { id: 'form16-countdown', date: new Date(2024, 4, 31), name: 'Form 16' },
+                { id: 'business-tax-countdown', date: new Date(2024, 9, 31), name: 'Business Tax' }
+            ];
+
+            deadlines.forEach(deadline => {
+                const element = document.getElementById(deadline.id);
+                if (element) {
+                    const now = new Date();
+                    const diff = deadline.date - now;
+                    
+                    if (diff > 0) {
+                        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        element.textContent = `${days} days, ${hours} hours remaining`;
+                    } else {
+                        element.textContent = 'Deadline passed';
+                        element.style.color = '#e74c3c';
+                    }
+                }
+            });
+        }
+
+        // Reminder form submission
+        document.getElementById('reminder-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('reminder-title').value;
+            const date = document.getElementById('reminder-date').value;
+            const time = document.getElementById('reminder-time').value;
+            const category = document.getElementById('reminder-category').value;
+            const description = document.getElementById('reminder-description').value;
+            
+            if (!title || !date) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Add reminder to list
+            addReminderToList(title, date, time, category, description);
+            
+            // Reset form
+            this.reset();
+            document.getElementById('reminder-time').value = '09:00';
+            
+            alert('Reminder added successfully!');
+        });
+
+        // Add reminder to list
+        function addReminderToList(title, date, time, category, description) {
+            const remindersList = document.getElementById('reminders-list');
+            const reminderItem = document.createElement('div');
+            reminderItem.className = 'reminder-item';
+            
+            const dateObj = new Date(date + 'T' + time);
+            const formattedDate = dateObj.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            reminderItem.innerHTML = `
+                <div class="reminder-info">
+                    <div class="reminder-title">${title}</div>
+                    <div class="reminder-date">${formattedDate}</div>
+                    <div class="reminder-category ${category}">${getCategoryName(category)}</div>
+                </div>
+                <div class="reminder-actions">
+                    <button class="edit-btn">Edit</button>
+                    <button class="delete-btn">Delete</button>
+                </div>
+            `;
+            
+            remindersList.appendChild(reminderItem);
+        }
+
+        // Get category name
+        function getCategoryName(category) {
+            const categories = {
+                'filing': 'Tax Filing',
+                'payment': 'Tax Payment',
+                'document': 'Document Collection',
+                'deadline': 'Deadline',
+                'custom': 'Custom'
+            };
+            return categories[category] || 'Custom';
+        }
+
+        // Quick action functions
+        function addReminder() {
+            document.getElementById('reminder-title').focus();
+        }
+
+        function syncCalendar() {
+            alert('Calendar sync feature will be available soon!');
+        }
+
+        function exportCalendar() {
+            alert('Calendar export feature will be available soon!');
+        }
+
+        function syncGoogleCalendar() {
+            alert('Google Calendar integration will be available soon!');
+        }
+
+        function syncAppleCalendar() {
+            alert('Apple Calendar integration will be available soon!');
+        }
+
+        function setupEmailReminders() {
+            alert('Email reminder setup will be available soon!');
+        }
+
+        function downloadApp() {
+            alert('Mobile app download will be available soon!');
+        }
+
+        function viewFullCalendar() {
+            alert('Full calendar view will be available soon!');
+        }
+
+        function openTaxCalculator() {
+            window.location.href = 'calculators.html';
+        }
+
+        function viewDocumentChecklist() {
+            alert('Document checklist will be available soon!');
+        }
+
+        function setupMobileReminders() {
+            alert('Mobile reminder setup will be available soon!');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initCalendar();
+            
+            // Update countdowns every minute
+            setInterval(updateCountdowns, 60000);
+            
+            // Set today's date in reminder form
+            document.getElementById('reminder-date').value = new Date().toISOString().split('T')[0];
+        });
+
+        // Delete reminder functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('delete-btn')) {
+                if (confirm('Are you sure you want to delete this reminder?')) {
+                    e.target.closest('.reminder-item').remove();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

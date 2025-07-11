@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhooks - MyeCA.in | Real-time Integration</title>
+    <meta name="description" content="Integrate MyeCA.in webhooks for real-time notifications and data synchronization. Get instant updates on tax filing status, payments, and more.">
+    <meta name="keywords" content="webhooks, real-time integration, tax filing notifications, API webhooks, MyeCA.in webhooks">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://myeca.in/webhooks">
+    <meta property="og:title" content="Webhooks - MyeCA.in">
+    <meta property="og:description" content="Real-time integration and notifications">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://myeca.in/webhooks">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <img src="assets/logo.png" alt="MyeCA.in" class="logo">
+                    </a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="start-filing.html">Start Filing</a></li>
+                    <li><a href="calculators.html">Calculators</a></li>
+                    <li><a href="document-vault.html">Document Vault</a></li>
+                    <li><a href="tax-expert.html">Tax Expert</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="support.html">Support</a></li>
+                    <li><a href="login.html" class="btn-login">Login</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section webhooks-hero">
+            <div class="container">
+                <h1>Webhooks</h1>
+                <p>Get real-time notifications and data synchronization with MyeCA.in webhooks</p>
+                <div class="webhook-badges">
+                    <div class="badge">
+                        <span class="badge-icon">⚡</span>
+                        <span>Real-time</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">🔒</span>
+                        <span>Secure</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">📊</span>
+                        <span>Reliable</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="webhook-overview">
+            <div class="container">
+                <div class="webhook-grid">
+                    <div class="webhook-card">
+                        <div class="webhook-icon">📋</div>
+                        <h3>Filing Status Updates</h3>
+                        <p>Get instant notifications when tax filing status changes.</p>
+                        <ul>
+                            <li>Filing submitted</li>
+                            <li>Processing started</li>
+                            <li>Filing completed</li>
+                            <li>Refund processed</li>
+                        </ul>
+                    </div>
+                    <div class="webhook-card">
+                        <div class="webhook-icon">💳</div>
+                        <h3>Payment Events</h3>
+                        <p>Track payment status and transaction updates in real-time.</p>
+                        <ul>
+                            <li>Payment initiated</li>
+                            <li>Payment successful</li>
+                            <li>Payment failed</li>
+                            <li>Refund issued</li>
+                        </ul>
+                    </div>
+                    <div class="webhook-card">
+                        <div class="webhook-icon">📄</div>
+                        <h3>Document Events</h3>
+                        <p>Monitor document uploads, processing, and validation status.</p>
+                        <ul>
+                            <li>Document uploaded</li>
+                            <li>OCR completed</li>
+                            <li>Validation passed</li>
+                            <li>Document rejected</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="webhook-setup">
+            <div class="container">
+                <h2>Setting Up Webhooks</h2>
+                <div class="setup-content">
+                    <div class="setup-steps">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h3>Create Webhook Endpoint</h3>
+                                <p>Set up a secure HTTPS endpoint on your server to receive webhook notifications.</p>
+                                <div class="code-block">
+                                    <pre><code>POST https://your-domain.com/webhooks/myeca
+Content-Type: application/json
+X-MyeCA-Signature: sha256=...</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h3>Register Webhook URL</h3>
+                                <p>Register your webhook URL through our API or dashboard.</p>
+                                <div class="code-block">
+                                    <pre><code>POST /api/v1/webhooks
+{
+  "url": "https://your-domain.com/webhooks/myeca",
+  "events": ["filing.completed", "payment.successful"],
+  "secret": "your-webhook-secret"
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h3>Verify Webhook</h3>
+                                <p>Verify the webhook signature to ensure data integrity.</p>
+                                <div class="code-block">
+                                    <pre><code>const signature = request.headers['x-myeca-signature'];
+const expectedSignature = crypto
+  .createHmac('sha256', secret)
+  .update(payload)
+  .digest('hex');
+
+if (signature === expectedSignature) {
+  // Process webhook
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="webhook-events">
+            <div class="container">
+                <h2>Available Webhook Events</h2>
+                <div class="events-grid">
+                    <div class="event-category">
+                        <h3>Filing Events</h3>
+                        <div class="event-list">
+                            <div class="event-item">
+                                <div class="event-header">
+                                    <span class="event-name">filing.created</span>
+                                    <span class="event-status">✅</span>
+                                </div>
+                                <p>Triggered when a new tax filing is created.</p>
+                                <div class="event-payload">
+                                    <h4>Payload Example</h4>
+                                    <div class="code-block">
+                                        <pre><code>{
+  "event": "filing.created",
+  "data": {
+    "filing_id": "filing_123456",
+    "user_id": "user_789",
+    "financial_year": "2024-25",
+    "created_at": "2024-03-15T10:30:00Z"
+  }
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="event-item">
+                                <div class="event-header">
+                                    <span class="event-name">filing.submitted</span>
+                                    <span class="event-status">✅</span>
+                                </div>
+                                <p>Triggered when a tax filing is submitted to the government.</p>
+                                <div class="event-payload">
+                                    <h4>Payload Example</h4>
+                                    <div class="code-block">
+                                        <pre><code>{
+  "event": "filing.submitted",
+  "data": {
+    "filing_id": "filing_123456",
+    "acknowledgment_number": "123456789",
+    "submitted_at": "2024-03-15T14:45:00Z"
+  }
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="event-item">
+                                <div class="event-header">
+                                    <span class="event-name">filing.completed</span>
+                                    <span class="event-status">✅</span>
+                                </div>
+                                <p>Triggered when tax filing processing is completed.</p>
+                                <div class="event-payload">
+                                    <h4>Payload Example</h4>
+                                    <div class="code-block">
+                                        <pre><code>{
+  "event": "filing.completed",
+  "data": {
+    "filing_id": "filing_123456",
+    "status": "completed",
+    "refund_amount": 15000,
+    "completed_at": "2024-03-20T09:15:00Z"
+  }
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-category">
+                        <h3>Payment Events</h3>
+                        <div class="event-list">
+                            <div class="event-item">
+                                <div class="event-header">
+                                    <span class="event-name">payment.initiated</span>
+                                    <span class="event-status">✅</span>
+                                </div>
+                                <p>Triggered when a payment is initiated.</p>
+                                <div class="event-payload">
+                                    <h4>Payload Example</h4>
+                                    <div class="code-block">
+                                        <pre><code>{
+  "event": "payment.initiated",
+  "data": {
+    "payment_id": "pay_123456",
+    "amount": 299,
+    "currency": "INR",
+    "payment_method": "card",
+    "initiated_at": "2024-03-15T11:20:00Z"
+  }
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="event-item">
+                                <div class="event-header">
+                                    <span class="event-name">payment.successful</span>
+                                    <span class="event-status">✅</span>
+                                </div>
+                                <p>Triggered when a payment is successfully completed.</p>
+                                <div class="event-payload">
+                                    <h4>Payload Example</h4>
+                                    <div class="code-block">
+                                        <pre><code>{
+  "event": "payment.successful",
+  "data": {
+    "payment_id": "pay_123456",
+    "transaction_id": "txn_789012",
+    "amount": 299,
+    "status": "successful",
+    "completed_at": "2024-03-15T11:25:00Z"
+  }
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="event-item">
+                                <div class="event-header">
+                                    <span class="event-name">payment.failed</span>
+                                    <span class="event-status">✅</span>
+                                </div>
+                                <p>Triggered when a payment fails.</p>
+                                <div class="event-payload">
+                                    <h4>Payload Example</h4>
+                                    <div class="code-block">
+                                        <pre><code>{
+  "event": "payment.failed",
+  "data": {
+    "payment_id": "pay_123456",
+    "error_code": "card_declined",
+    "error_message": "Card was declined",
+    "failed_at": "2024-03-15T11:22:00Z"
+  }
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-category">
+                        <h3>Document Events</h3>
+                        <div class="event-list">
+                            <div class="event-item">
+                                <div class="event-header">
+                                    <span class="event-name">document.uploaded</span>
+                                    <span class="event-status">✅</span>
+                                </div>
+                                <p>Triggered when a document is uploaded.</p>
+                                <div class="event-payload">
+                                    <h4>Payload Example</h4>
+                                    <div class="code-block">
+                                        <pre><code>{
+  "event": "document.uploaded",
+  "data": {
+    "document_id": "doc_123456",
+    "document_type": "form_16",
+    "file_size": 2048576,
+    "uploaded_at": "2024-03-15T10:15:00Z"
+  }
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="event-item">
+                                <div class="event-header">
+                                    <span class="event-name">document.processed</span>
+                                    <span class="event-status">✅</span>
+                                </div>
+                                <p>Triggered when document OCR processing is completed.</p>
+                                <div class="event-payload">
+                                    <h4>Payload Example</h4>
+                                    <div class="code-block">
+                                        <pre><code>{
+  "event": "document.processed",
+  "data": {
+    "document_id": "doc_123456",
+    "extracted_data": {
+      "employer_name": "ABC Corp",
+      "total_income": 800000,
+      "tds": 50000
+    },
+    "confidence_score": 0.95,
+    "processed_at": "2024-03-15T10:20:00Z"
+  }
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="webhook-security">
+            <div class="container">
+                <h2>Security & Verification</h2>
+                <div class="security-content">
+                    <div class="security-method">
+                        <h3>Signature Verification</h3>
+                        <p>All webhooks include a signature header for verification. Verify the signature to ensure the webhook came from MyeCA.in.</p>
+                        <div class="code-examples">
+                            <div class="code-tabs">
+                                <button class="tab-btn active" data-tab="nodejs">Node.js</button>
+                                <button class="tab-btn" data-tab="python">Python</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                            </div>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="nodejs">
+                                    <div class="code-block">
+                                        <pre><code>const crypto = require('crypto');
+
+function verifyWebhookSignature(payload, signature, secret) {
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(payload, 'utf8')
+    .digest('hex');
+    
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+
+// Usage
+app.post('/webhooks/myeca', (req, res) => {
+  const signature = req.headers['x-myeca-signature'];
+  const payload = JSON.stringify(req.body);
+  
+  if (verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
+    // Process webhook
+    console.log('Webhook verified successfully');
+    res.status(200).send('OK');
+  } else {
+    res.status(400).send('Invalid signature');
+  }
+});</code></pre>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="python">
+                                    <div class="code-block">
+                                        <pre><code>import hmac
+import hashlib
+import json
+
+def verify_webhook_signature(payload, signature, secret):
+    expected_signature = hmac.new(
+        secret.encode('utf-8'),
+        payload.encode('utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+    
+    return hmac.compare_digest(signature, expected_signature)
+
+# Usage
+@app.route('/webhooks/myeca', methods=['POST'])
+def webhook_handler():
+    signature = request.headers.get('X-MyeCA-Signature')
+    payload = request.get_data(as_text=True)
+    
+    if verify_webhook_signature(payload, signature, os.environ['WEBHOOK_SECRET']):
+        # Process webhook
+        print('Webhook verified successfully')
+        return 'OK', 200
+    else:
+        return 'Invalid signature', 400</code></pre>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="php">
+                                    <div class="code-block">
+                                        <pre><code>&lt;?php
+function verifyWebhookSignature($payload, $signature, $secret) {
+    $expectedSignature = hash_hmac('sha256', $payload, $secret);
+    return hash_equals($expectedSignature, $signature);
+}
+
+// Usage
+$signature = $_SERVER['HTTP_X_MYECA_SIGNATURE'] ?? '';
+$payload = file_get_contents('php://input');
+$secret = $_ENV['WEBHOOK_SECRET'];
+
+if (verifyWebhookSignature($payload, $signature, $secret)) {
+    // Process webhook
+    echo 'Webhook verified successfully';
+    http_response_code(200);
+} else {
+    echo 'Invalid signature';
+    http_response_code(400);
+}
+?&gt;</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="security-method">
+                        <h3>IP Whitelisting</h3>
+                        <p>For additional security, you can whitelist MyeCA.in's IP addresses to ensure webhooks only come from our servers.</p>
+                        <div class="ip-list">
+                            <h4>MyeCA.in Webhook IPs</h4>
+                            <ul>
+                                <li><code>203.0.113.0/24</code> - Primary webhook servers</li>
+                                <li><code>198.51.100.0/24</code> - Backup webhook servers</li>
+                                <li><code>192.0.2.0/24</code> - Development webhook servers</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="webhook-testing">
+            <div class="container">
+                <h2>Testing Webhooks</h2>
+                <div class="testing-content">
+                    <div class="testing-method">
+                        <h3>Webhook Simulator</h3>
+                        <p>Test your webhook endpoint using our webhook simulator. Send test events to verify your implementation.</p>
+                        <div class="simulator-form">
+                            <div class="form-group">
+                                <label for="webhook-url">Webhook URL</label>
+                                <input type="url" id="webhook-url" placeholder="https://your-domain.com/webhooks/myeca">
+                            </div>
+                            <div class="form-group">
+                                <label for="event-type">Event Type</label>
+                                <select id="event-type">
+                                    <option value="filing.created">filing.created</option>
+                                    <option value="filing.submitted">filing.submitted</option>
+                                    <option value="filing.completed">filing.completed</option>
+                                    <option value="payment.initiated">payment.initiated</option>
+                                    <option value="payment.successful">payment.successful</option>
+                                    <option value="payment.failed">payment.failed</option>
+                                    <option value="document.uploaded">document.uploaded</option>
+                                    <option value="document.processed">document.processed</option>
+                                </select>
+                            </div>
+                            <button onclick="sendTestWebhook()" class="test-btn">Send Test Webhook</button>
+                        </div>
+                        <div class="test-result" id="test-result"></div>
+                    </div>
+                    
+                    <div class="testing-method">
+                        <h3>Local Testing</h3>
+                        <p>Use tools like ngrok to test webhooks locally during development.</p>
+                        <div class="code-block">
+                            <pre><code># Install ngrok
+npm install -g ngrok
+
+# Start your local server
+npm start
+
+# Expose local server
+ngrok http 3000
+
+# Use the ngrok URL as your webhook endpoint
+# https://abc123.ngrok.io/webhooks/myeca</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="webhook-monitoring">
+            <div class="container">
+                <h2>Webhook Monitoring</h2>
+                <div class="monitoring-grid">
+                    <div class="monitoring-card">
+                        <div class="monitoring-icon">📊</div>
+                        <h3>Delivery Status</h3>
+                        <p>Track webhook delivery status and retry attempts in real-time.</p>
+                        <ul>
+                            <li>Success/failure rates</li>
+                            <li>Response times</li>
+                            <li>Retry attempts</li>
+                            <li>Error logs</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="monitoring-card">
+                        <div class="monitoring-icon">🔔</div>
+                        <h3>Alerts</h3>
+                        <p>Get notified when webhook delivery fails or response times are high.</p>
+                        <ul>
+                            <li>Email notifications</li>
+                            <li>Slack integration</li>
+                            <li>Webhook alerts</li>
+                            <li>Custom thresholds</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="monitoring-card">
+                        <div class="monitoring-icon">📈</div>
+                        <h3>Analytics</h3>
+                        <p>Detailed analytics on webhook performance and usage patterns.</p>
+                        <ul>
+                            <li>Event volume</li>
+                            <li>Peak usage times</li>
+                            <li>Geographic distribution</li>
+                            <li>Performance trends</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="webhook-best-practices">
+            <div class="container">
+                <h2>Best Practices</h2>
+                <div class="practices-grid">
+                    <div class="practice-card">
+                        <div class="practice-icon">⚡</div>
+                        <h3>Respond Quickly</h3>
+                        <p>Always respond to webhooks within 5 seconds to avoid timeouts and retries.</p>
+                    </div>
+                    
+                    <div class="practice-card">
+                        <div class="practice-icon">🔄</div>
+                        <h3>Handle Retries</h3>
+                        <p>Implement idempotency to handle duplicate webhook deliveries safely.</p>
+                    </div>
+                    
+                    <div class="practice-card">
+                        <div class="practice-icon">🔒</div>
+                        <h3>Verify Signatures</h3>
+                        <p>Always verify webhook signatures to ensure data integrity and security.</p>
+                    </div>
+                    
+                    <div class="practice-card">
+                        <div class="practice-icon">📝</div>
+                        <h3>Log Everything</h3>
+                        <p>Log all webhook events for debugging and audit purposes.</p>
+                    </div>
+                    
+                    <div class="practice-card">
+                        <div class="practice-icon">🚫</div>
+                        <h3>Handle Failures</h3>
+                        <p>Implement proper error handling for webhook processing failures.</p>
+                    </div>
+                    
+                    <div class="practice-card">
+                        <div class="practice-icon">📊</div>
+                        <h3>Monitor Performance</h3>
+                        <p>Monitor webhook response times and success rates regularly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Ready to Integrate Webhooks?</h2>
+                    <p>Start receiving real-time notifications and keep your systems in sync</p>
+                    <div class="cta-buttons">
+                        <a href="api-documentation.html" class="btn-primary">View API Docs</a>
+                        <a href="#" class="btn-secondary">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MyeCA.in</h3>
+                    <p>Your trusted partner for hassle-free tax filing and financial planning.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">📘</a>
+                        <a href="#" aria-label="Twitter">🐦</a>
+                        <a href="#" aria-label="LinkedIn">💼</a>
+                        <a href="#" aria-label="Instagram">📷</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="start-filing.html">Tax Filing</a></li>
+                        <li><a href="calculators.html">Tax Calculators</a></li>
+                        <li><a href="document-vault.html">Document Vault</a></li>
+                        <li><a href="tax-expert.html">Tax Expert</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="tax-resources.html">Tax Resources</a></li>
+                        <li><a href="support.html">Support</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="terms-of-service.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MyeCA.in. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Tab functionality for code examples
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+                
+                // Update active tab button
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update active tab content
+                document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Webhook testing functionality
+        function sendTestWebhook() {
+            const url = document.getElementById('webhook-url').value;
+            const eventType = document.getElementById('event-type').value;
+            
+            if (!url) {
+                alert('Please enter a webhook URL');
+                return;
+            }
+            
+            // Simulate webhook test
+            const resultDiv = document.getElementById('test-result');
+            resultDiv.innerHTML = `
+                <div class="test-status">
+                    <h4>Test Webhook Sent</h4>
+                    <p><strong>URL:</strong> ${url}</p>
+                    <p><strong>Event:</strong> ${eventType}</p>
+                    <p><strong>Status:</strong> <span class="status-success">Success</span></p>
+                    <p><strong>Response Time:</strong> 245ms</p>
+                </div>
+            `;
+            
+            // Simulate response
+            setTimeout(() => {
+                resultDiv.innerHTML += `
+                    <div class="test-response">
+                        <h4>Response Received</h4>
+                        <div class="code-block">
+                            <pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "status": "success",
+  "message": "Webhook processed successfully"
+}</code></pre>
+                        </div>
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // Animate event items on scroll
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.event-item').forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(item);
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('.code-block').forEach(block => {
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.onclick = function() {
+                const code = block.querySelector('code').textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+                });
+            };
+            block.appendChild(copyBtn);
+        });
+    </script>
+</body>
+</html>
