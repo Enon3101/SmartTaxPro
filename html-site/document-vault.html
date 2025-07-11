@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Vault - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+    .upload-section { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
+    .form-group input { width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #d1d5db; }
+    .file-input { padding: 0.5rem; border: 2px dashed #d1d5db; border-radius: 0.5rem; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+    .file-input:hover { border-color: #2563eb; }
+    .btn { display: inline-block; padding: 0.75rem 2rem; border-radius: 0.5rem; background: #2563eb; color: #fff; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s; }
+    .btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+    .documents-list { margin-top: 2rem; }
+    .document-item { background: #f8fafc; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .document-info h4 { font-weight: 600; margin-bottom: 0.25rem; }
+    .document-meta { font-size: 0.8rem; color: #64748b; }
+    .document-actions { display: flex; gap: 0.5rem; }
+    .action-btn { padding: 0.5rem 1rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; }
+    .view-btn { background: #2563eb; color: #fff; }
+    .delete-btn { background: #dc2626; color: #fff; }
+    .empty-state { text-align: center; padding: 3rem; color: #64748b; }
+    .upload-icon { font-size: 3rem; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <nav class="container" style="padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 1rem;">Document Vault</h1>
+    <p style="color: #64748b; margin-bottom: 2rem;">Managing documents for Filing ID: <strong>AY2024-25_001</strong></p>
+    
+    <div class="upload-section">
+      <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">Upload New Document</h2>
+      <div class="form-group">
+        <label for="file-upload">Select File (PDF, JPG, PNG)</label>
+        <div class="file-input" onclick="document.getElementById('file-upload').click()">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">📁</div>
+          <div>Click to select a file or drag and drop</div>
+          <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">Supports: PDF, JPG, PNG (Max 10MB)</div>
+        </div>
+        <input type="file" id="file-upload" style="display: none;" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileSelect(event)">
+      </div>
+      <div class="form-group">
+        <label for="documentType">Document Type</label>
+        <input type="text" id="documentType" placeholder="E.g., Form 16, PAN Card, Bank Statement" value="Form 16">
+      </div>
+      <button class="btn" onclick="uploadDocument()" id="upload-btn" disabled>Upload Document</button>
+      <div id="upload-status" style="margin-top: 1rem;"></div>
+    </div>
+    
+    <div class="documents-list">
+      <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Uploaded Documents</h2>
+      <div id="documents-container">
+        <div class="document-item">
+          <div>
+            <h4>Form_16_2024.pdf</h4>
+            <div class="document-meta">Type: Form 16 | Size: 245.6 KB | Uploaded: 15 Jan 2024</div>
+          </div>
+          <div class="document-actions">
+            <a href="#" class="action-btn view-btn">View</a>
+            <a href="#" class="action-btn delete-btn" onclick="deleteDocument(this)">Delete</a>
+          </div>
+        </div>
+        <div class="document-item">
+          <div>
+            <h4>PAN_Card.jpg</h4>
+            <div class="document-meta">Type: PAN Card | Size: 89.2 KB | Uploaded: 10 Jan 2024</div>
+          </div>
+          <div class="document-actions">
+            <a href="#" class="action-btn view-btn">View</a>
+            <a href="#" class="action-btn delete-btn" onclick="deleteDocument(this)">Delete</a>
+          </div>
+        </div>
+        <div class="document-item">
+          <div>
+            <h4>Bank_Statement_Q4.pdf</h4>
+            <div class="document-meta">Type: Bank Statement | Size: 1.2 MB | Uploaded: 5 Jan 2024</div>
+          </div>
+          <div class="document-actions">
+            <a href="#" class="action-btn view-btn">View</a>
+            <a href="#" class="action-btn delete-btn" onclick="deleteDocument(this)">Delete</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+  <script>
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      const uploadBtn = document.getElementById('upload-btn');
+      const status = document.getElementById('upload-status');
+      
+      if (file) {
+        uploadBtn.disabled = false;
+        status.innerHTML = `<div style="color: #059669;">✓ Selected: ${file.name}</div>`;
+      } else {
+        uploadBtn.disabled = true;
+        status.innerHTML = '';
+      }
+    }
+    
+    function uploadDocument() {
+      const fileInput = document.getElementById('file-upload');
+      const documentType = document.getElementById('documentType').value;
+      const status = document.getElementById('upload-status');
+      const uploadBtn = document.getElementById('upload-btn');
+      
+      if (!fileInput.files[0]) {
+        alert('Please select a file first');
+        return;
+      }
+      
+      uploadBtn.disabled = true;
+      uploadBtn.textContent = 'Uploading...';
+      status.innerHTML = '<div style="color: #2563eb;">⏳ Uploading document...</div>';
+      
+      // Simulate upload
+      setTimeout(() => {
+        const file = fileInput.files[0];
+        const documentsContainer = document.getElementById('documents-container');
+        const newDocument = document.createElement('div');
+        newDocument.className = 'document-item';
+        newDocument.innerHTML = `
+          <div>
+            <h4>${file.name}</h4>
+            <div class="document-meta">Type: ${documentType} | Size: ${(file.size / 1024).toFixed(1)} KB | Uploaded: ${new Date().toLocaleDateString()}</div>
+          </div>
+          <div class="document-actions">
+            <a href="#" class="action-btn view-btn">View</a>
+            <a href="#" class="action-btn delete-btn" onclick="deleteDocument(this)">Delete</a>
+          </div>
+        `;
+        documentsContainer.insertBefore(newDocument, documentsContainer.firstChild);
+        
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = 'Upload Document';
+        status.innerHTML = '<div style="color: #059669;">✓ Document uploaded successfully!</div>';
+        fileInput.value = '';
+        document.getElementById('documentType').value = '';
+        
+        setTimeout(() => {
+          status.innerHTML = '';
+        }, 3000);
+      }, 2000);
+    }
+    
+    function deleteDocument(button) {
+      if (confirm('Are you sure you want to delete this document?')) {
+        button.closest('.document-item').remove();
+      }
+    }
+  </script>
+</body>
+</html>
