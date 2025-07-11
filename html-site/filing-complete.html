@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filing Complete - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; }
+    .container { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+    .success-card { background: #fff; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+    .success-header { background: linear-gradient(90deg, #22c55e, #16a34a); color: #fff; padding: 3rem 2rem; text-align: center; }
+    .success-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .success-header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .success-content { padding: 2rem; }
+    .acknowledgement { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 2rem; }
+    .acknowledgement h3 { color: #166534; font-weight: 600; margin-bottom: 0.5rem; }
+    .acknowledgement p { color: #15803d; font-size: 0.9rem; }
+    .next-steps { margin-bottom: 2rem; }
+    .next-steps h2 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; }
+    .step-item { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; }
+    .step-number { background: #2563eb; color: #fff; width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; flex-shrink: 0; }
+    .step-content h3 { font-weight: 600; margin-bottom: 0.25rem; }
+    .step-content p { color: #64748b; font-size: 0.9rem; }
+    .action-buttons { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+    .btn { padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 600; text-decoration: none; display: inline-block; transition: all 0.2s; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-outline { background: #fff; color: #2563eb; border: 1px solid #2563eb; }
+    .btn-outline:hover { background: #2563eb; color: #fff; }
+    .btn-secondary { background: #f1f5f9; color: #64748b; }
+    .btn-secondary:hover { background: #e2e8f0; }
+    .filing-details { background: #f8fafc; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 2rem; }
+    .filing-details h3 { font-weight: 600; margin-bottom: 1rem; }
+    .detail-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0; }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: #64748b; }
+    .detail-value { font-weight: 500; }
+    .download-section { background: #eff6ff; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 2rem; }
+    .download-section h3 { color: #1e40af; font-weight: 600; margin-bottom: 1rem; }
+    .download-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #fff; border-radius: 0.5rem; margin-bottom: 1rem; }
+    .download-item:last-child { margin-bottom: 0; }
+    .download-info h4 { font-weight: 600; margin-bottom: 0.25rem; }
+    .download-info p { color: #64748b; font-size: 0.9rem; }
+    .download-btn { background: #2563eb; color: #fff; padding: 0.5rem 1rem; border-radius: 0.25rem; text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+    .download-btn:hover { background: #1d4ed8; }
+    @media (max-width: 768px) { .action-buttons { flex-direction: column; } .detail-row { flex-direction: column; gap: 0.25rem; } }
+  </style>
+</head>
+<body>
+  <nav class="container" style="padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+  
+  <div class="container">
+    <div class="success-card">
+      <div class="success-header">
+        <div class="success-icon">✅</div>
+        <h1>Tax Filing Complete!</h1>
+        <p>Your income tax return has been successfully filed with the Income Tax Department</p>
+      </div>
+      
+      <div class="success-content">
+        <div class="acknowledgement">
+          <h3>📋 ITR Acknowledgement Number</h3>
+          <p><strong>ITR-1234567890123456</strong></p>
+          <p>Please save this number for future reference. You can use it to track your refund status.</p>
+        </div>
+        
+        <div class="filing-details">
+          <h3>📊 Filing Summary</h3>
+          <div class="detail-row">
+            <span class="detail-label">Assessment Year:</span>
+            <span class="detail-value">2025-26</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">ITR Form Used:</span>
+            <span class="detail-value">ITR-1 (Sahaj)</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Filing Date:</span>
+            <span class="detail-value">15 April 2025</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Total Income:</span>
+            <span class="detail-value">₹8,50,000</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Tax Paid:</span>
+            <span class="detail-value">₹45,000</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Refund Amount:</span>
+            <span class="detail-value" style="color: #22c55e; font-weight: 600;">₹12,450</span>
+          </div>
+        </div>
+        
+        <div class="download-section">
+          <h3>📥 Download Documents</h3>
+          <div class="download-item">
+            <div class="download-info">
+              <h4>ITR Acknowledgement</h4>
+              <p>Official acknowledgement from Income Tax Department</p>
+            </div>
+            <a href="#" class="download-btn" onclick="downloadDocument('acknowledgement')">Download PDF</a>
+          </div>
+          <div class="download-item">
+            <div class="download-info">
+              <h4>Filled ITR Form</h4>
+              <p>Complete filled ITR form for your records</p>
+            </div>
+            <a href="#" class="download-btn" onclick="downloadDocument('itr-form')">Download PDF</a>
+          </div>
+          <div class="download-item">
+            <div class="download-info">
+              <h4>Computation Sheet</h4>
+              <p>Detailed tax computation and calculations</p>
+            </div>
+            <a href="#" class="download-btn" onclick="downloadDocument('computation')">Download PDF</a>
+          </div>
+        </div>
+        
+        <div class="next-steps">
+          <h2>🔄 What Happens Next?</h2>
+          
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>ITR Verification</h3>
+              <p>Your return will be processed by the Income Tax Department. This usually takes 2-3 weeks.</p>
+            </div>
+          </div>
+          
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Refund Processing</h3>
+              <p>If you're eligible for a refund, it will be processed and credited to your bank account within 21 days.</p>
+            </div>
+          </div>
+          
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Track Your Status</h3>
+              <p>You can track your refund status using your PAN and Assessment Year on the Income Tax Department website.</p>
+            </div>
+          </div>
+          
+          <div class="step-item">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h3>Keep Records</h3>
+              <p>Maintain all supporting documents for at least 6 years as they may be required for future reference.</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <a href="profile.html" class="btn btn-primary">View My Filings</a>
+          <a href="start-filing.html" class="btn btn-outline">File Another Return</a>
+          <a href="tax-expert.html" class="btn btn-secondary">Get Expert Help</a>
+          <a href="index.html" class="btn btn-secondary">Back to Home</a>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+          <p style="color: #64748b; font-size: 0.9rem;">
+            Need help? Contact our support team at <strong>support@myeca.in</strong> or call <strong>+91-1800-123-4567</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+  
+  <script>
+    function downloadDocument(type) {
+      // Simulate document download
+      alert(`Downloading ${type} document... This would trigger a file download in the real application.`);
+    }
+    
+    // Auto-save acknowledgement number to localStorage
+    localStorage.setItem('lastAckNumber', 'ITR-1234567890123456');
+    localStorage.setItem('lastFilingDate', '2025-04-15');
+  </script>
+</body>
+</html>

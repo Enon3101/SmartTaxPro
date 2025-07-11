@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Resources - MyeCA.in</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+    .hero { background: linear-gradient(90deg, #2563eb, #7c3aed); color: #fff; padding: 4rem 0; text-align: center; }
+    .hero h1 { font-size: 3rem; font-weight: bold; margin-bottom: 1rem; }
+    .hero p { font-size: 1.25rem; opacity: 0.9; max-width: 600px; margin: 0 auto; }
+    .tabs { margin: 3rem 0; }
+    .tab-list { display: flex; border-bottom: 1px solid #e2e8f0; margin-bottom: 2rem; overflow-x: auto; }
+    .tab-button { padding: 1rem 2rem; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-weight: 500; color: #64748b; transition: all 0.2s; white-space: nowrap; }
+    .tab-button.active { color: #2563eb; border-bottom-color: #2563eb; }
+    .tab-button:hover { color: #2563eb; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .card { background: #fff; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 2rem; margin-bottom: 2rem; }
+    .card h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; }
+    .controls { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .form-group label { font-weight: 500; font-size: 0.9rem; }
+    .form-group select { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 0.9rem; }
+    .tax-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    .tax-table th, .tax-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    .tax-table th { background: #f8fafc; font-weight: 600; }
+    .tax-table tr:hover { background: #f8fafc; }
+    .resource-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .resource-card { border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1.5rem; transition: all 0.2s; }
+    .resource-card:hover { border-color: #2563eb; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1); }
+    .resource-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .resource-title { font-weight: 600; margin-bottom: 0.5rem; }
+    .resource-desc { color: #64748b; font-size: 0.9rem; margin-bottom: 1rem; }
+    .resource-link { color: #2563eb; text-decoration: none; font-weight: 500; }
+    .resource-link:hover { text-decoration: underline; }
+    .deadline-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; margin-bottom: 1rem; }
+    .deadline-info h3 { font-weight: 600; margin-bottom: 0.25rem; }
+    .deadline-info p { color: #64748b; font-size: 0.9rem; }
+    .deadline-date { background: #eff6ff; color: #1e40af; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; }
+    .deadline-urgent { background: #fef2f2; color: #dc2626; }
+    .guide-section { margin-bottom: 2rem; }
+    .guide-item { border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.2s; }
+    .guide-item:hover { border-color: #2563eb; background: #f8fafc; }
+    .guide-title { font-weight: 600; margin-bottom: 0.5rem; }
+    .guide-desc { color: #64748b; font-size: 0.9rem; }
+    .search-box { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem; margin-bottom: 2rem; }
+    .search-box:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+    @media (max-width: 768px) { .hero h1 { font-size: 2rem; } .controls { flex-direction: column; } .deadline-item { flex-direction: column; align-items: flex-start; gap: 1rem; } }
+  </style>
+</head>
+<body>
+  <nav class="container" style="padding: 1rem 0; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-weight: bold; font-size: 1.5rem; color: #2563eb;">MyeCA.in</div>
+    <ul style="display: flex; gap: 2rem; list-style: none; margin: 0; padding: 0;">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="start-filing.html">Start Filing</a></li>
+      <li><a href="calculators.html">Calculators</a></li>
+      <li><a href="document-vault.html">Document Vault</a></li>
+      <li><a href="tax-expert.html">Tax Expert</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="support.html">Support</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+  
+  <div class="hero">
+    <div class="container">
+      <div style="font-size: 4rem; margin-bottom: 1.5rem;">📚</div>
+      <h1>Tax Resources Center</h1>
+      <p>Comprehensive tax information, guides, and resources to help you understand and file your taxes correctly</p>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="tabs">
+      <div class="tab-list">
+        <button class="tab-button active" onclick="showTab('slabs')">Tax Slabs</button>
+        <button class="tab-button" onclick="showTab('deadlines')">Tax Deadlines</button>
+        <button class="tab-button" onclick="showTab('resources')">Government Resources</button>
+        <button class="tab-button" onclick="showTab('guides')">Tax Guides</button>
+      </div>
+      
+      <div id="slabs" class="tab-content active">
+        <div class="card">
+          <h2>Income Tax Slabs</h2>
+          <p>Understand the tax rates applicable to different income levels and categories</p>
+          
+          <div class="controls">
+            <div class="form-group">
+              <label for="taxYear">Assessment Year</label>
+              <select id="taxYear" onchange="updateTaxSlabs()">
+                <option value="2025-26">AY 2025-26</option>
+                <option value="2024-25">AY 2024-25</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="taxRegime">Tax Regime</label>
+              <select id="taxRegime" onchange="updateTaxSlabs()">
+                <option value="new">New Tax Regime</option>
+                <option value="old">Old Tax Regime</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="personType">Person Type</label>
+              <select id="personType" onchange="updateTaxSlabs()">
+                <option value="individual">Individual</option>
+                <option value="huf">HUF</option>
+                <option value="company">Company</option>
+                <option value="firm">Firm/LLP</option>
+                <option value="aop">AOP/BOI</option>
+              </select>
+            </div>
+          </div>
+          
+          <div id="taxSlabsTable">
+            <table class="tax-table">
+              <thead>
+                <tr>
+                  <th>Income Range</th>
+                  <th>Tax Rate</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Up to ₹3,00,000</td>
+                  <td>0%</td>
+                  <td>No tax on income up to ₹3 lakhs</td>
+                </tr>
+                <tr>
+                  <td>₹3,00,001 - ₹6,00,000</td>
+                  <td>5%</td>
+                  <td>5% tax on income between ₹3-6 lakhs</td>
+                </tr>
+                <tr>
+                  <td>₹6,00,001 - ₹9,00,000</td>
+                  <td>10%</td>
+                  <td>10% tax on income between ₹6-9 lakhs</td>
+                </tr>
+                <tr>
+                  <td>₹9,00,001 - ₹12,00,000</td>
+                  <td>15%</td>
+                  <td>15% tax on income between ₹9-12 lakhs</td>
+                </tr>
+                <tr>
+                  <td>₹12,00,001 - ₹15,00,000</td>
+                  <td>20%</td>
+                  <td>20% tax on income between ₹12-15 lakhs</td>
+                </tr>
+                <tr>
+                  <td>Above ₹15,00,000</td>
+                  <td>30%</td>
+                  <td>30% tax on income above ₹15 lakhs</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div id="deadlines" class="tab-content">
+        <div class="card">
+          <h2>Tax Filing Deadlines</h2>
+          <p>Important dates and deadlines for tax filing and compliance</p>
+          
+          <div class="controls">
+            <div class="form-group">
+              <label for="deadlineCategory">Category</label>
+              <select id="deadlineCategory" onchange="filterDeadlines()">
+                <option value="all">All Deadlines</option>
+                <option value="individual">Individual</option>
+                <option value="business">Business</option>
+                <option value="company">Company</option>
+                <option value="audit">Audit Cases</option>
+              </select>
+            </div>
+          </div>
+          
+          <div id="deadlinesList">
+            <div class="deadline-item">
+              <div class="deadline-info">
+                <h3>ITR Filing Deadline (Non-Audit Cases)</h3>
+                <p>Last date for filing income tax returns for individuals and businesses not requiring audit</p>
+              </div>
+              <div class="deadline-date">July 31, 2025</div>
+            </div>
+            
+            <div class="deadline-item">
+              <div class="deadline-info">
+                <h3>ITR Filing Deadline (Audit Cases)</h3>
+                <p>Last date for filing income tax returns for businesses requiring audit</p>
+              </div>
+              <div class="deadline-date">October 31, 2025</div>
+            </div>
+            
+            <div class="deadline-item">
+              <div class="deadline-info">
+                <h3>Advance Tax Payment - Q1</h3>
+                <p>First installment of advance tax for FY 2025-26</p>
+              </div>
+              <div class="deadline-date deadline-urgent">June 15, 2025</div>
+            </div>
+            
+            <div class="deadline-item">
+              <div class="deadline-info">
+                <h3>Advance Tax Payment - Q2</h3>
+                <p>Second installment of advance tax for FY 2025-26</p>
+              </div>
+              <div class="deadline-date">September 15, 2025</div>
+            </div>
+            
+            <div class="deadline-item">
+              <div class="deadline-info">
+                <h3>Advance Tax Payment - Q3</h3>
+                <p>Third installment of advance tax for FY 2025-26</p>
+              </div>
+              <div class="deadline-date">December 15, 2025</div>
+            </div>
+            
+            <div class="deadline-item">
+              <div class="deadline-info">
+                <h3>Advance Tax Payment - Q4</h3>
+                <p>Final installment of advance tax for FY 2025-26</p>
+              </div>
+              <div class="deadline-date">March 15, 2026</div>
+            </div>
+            
+            <div class="deadline-item">
+              <div class="deadline-info">
+                <h3>TDS Return Filing (Q1)</h3>
+                <p>Quarterly TDS return for April-June 2025</p>
+              </div>
+              <div class="deadline-date">July 31, 2025</div>
+            </div>
+            
+            <div class="deadline-item">
+              <div class="deadline-info">
+                <h3>TDS Return Filing (Q2)</h3>
+                <p>Quarterly TDS return for July-September 2025</p>
+              </div>
+              <div class="deadline-date">October 31, 2025</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="resources" class="tab-content">
+        <div class="card">
+          <h2>Government Resources</h2>
+          <p>Official government websites and tools for tax-related information</p>
+          
+          <input type="text" class="search-box" placeholder="Search resources..." onkeyup="searchResources(this.value)">
+          
+          <div class="resource-grid" id="resourcesGrid">
+            <div class="resource-card">
+              <div class="resource-icon">🏛️</div>
+              <div class="resource-title">Income Tax Department</div>
+              <div class="resource-desc">Official website of the Income Tax Department with forms, circulars, and notifications</div>
+              <a href="https://www.incometax.gov.in" class="resource-link" target="_blank">Visit Website →</a>
+            </div>
+            
+            <div class="resource-card">
+              <div class="resource-icon">📊</div>
+              <div class="resource-title">e-Filing Portal</div>
+              <div class="resource-desc">File your income tax returns online and access your tax information</div>
+              <a href="https://www.incometax.gov.in/iec/foportal" class="resource-link" target="_blank">Visit Website →</a>
+            </div>
+            
+            <div class="resource-card">
+              <div class="resource-icon">📋</div>
+              <div class="resource-title">Form 26AS</div>
+              <div class="resource-desc">View your tax credit statement showing TDS, TCS, and advance tax payments</div>
+              <a href="https://www.incometax.gov.in/iec/foportal/form-26as" class="resource-link" target="_blank">View Statement →</a>
+            </div>
+            
+            <div class="resource-card">
+              <div class="resource-icon">📈</div>
+              <div class="resource-title">Annual Information Statement (AIS)</div>
+              <div class="resource-desc">Comprehensive view of your financial transactions and tax information</div>
+              <a href="https://www.incometax.gov.in/iec/foportal/ais" class="resource-link" target="_blank">View AIS →</a>
+            </div>
+            
+            <div class="resource-card">
+              <div class="resource-icon">🔍</div>
+              <div class="resource-title">Tax Calculator</div>
+              <div class="resource-desc">Official tax calculator to compute your income tax liability</div>
+              <a href="https://www.incometax.gov.in/iec/foportal/tax-calculator" class="resource-link" target="_blank">Calculate Tax →</a>
+            </div>
+            
+            <div class="resource-card">
+              <div class="resource-icon">📅</div>
+              <div class="resource-title">Tax Calendar</div>
+              <div class="resource-desc">Important dates and deadlines for tax filing and compliance</div>
+              <a href="https://www.incometax.gov.in/iec/foportal/tax-calendar" class="resource-link" target="_blank">View Calendar →</a>
+            </div>
+            
+            <div class="resource-card">
+              <div class="resource-icon">📚</div>
+              <div class="resource-title">Tax Laws & Rules</div>
+              <div class="resource-desc">Complete text of Income Tax Act, rules, and circulars</div>
+              <a href="https://www.incometax.gov.in/iec/foportal/tax-laws" class="resource-link" target="_blank">Browse Laws →</a>
+            </div>
+            
+            <div class="resource-card">
+              <div class="resource-icon">❓</div>
+              <div class="resource-title">FAQs & Help</div>
+              <div class="resource-desc">Frequently asked questions and help documentation</div>
+              <a href="https://www.incometax.gov.in/iec/foportal/faqs" class="resource-link" target="_blank">View FAQs →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div id="guides" class="tab-content">
+        <div class="card">
+          <h2>Tax Guides & Tutorials</h2>
+          <p>Comprehensive guides to help you understand tax concepts and filing procedures</p>
+          
+          <div class="guide-section">
+            <h3 style="margin-bottom: 1rem;">📖 Basic Tax Concepts</h3>
+            <div class="guide-item" onclick="openGuide('basics')">
+              <div class="guide-title">Basics of Income Tax</div>
+              <div class="guide-desc">Understanding what is income tax, who needs to pay, and basic concepts</div>
+            </div>
+            <div class="guide-item" onclick="openGuide('slabs')">
+              <div class="guide-title">Understanding Tax Slabs</div>
+              <div class="guide-desc">How tax slabs work, progressive taxation, and calculating your tax liability</div>
+            </div>
+            <div class="guide-item" onclick="openGuide('regimes')">
+              <div class="guide-title">Old vs New Tax Regime</div>
+              <div class="guide-desc">Comparison between old and new tax regimes, which one to choose</div>
+            </div>
+          </div>
+          
+          <div class="guide-section">
+            <h3 style="margin-bottom: 1rem;">💰 Income & Deductions</h3>
+            <div class="guide-item" onclick="openGuide('income')">
+              <div class="guide-title">Types of Income</div>
+              <div class="guide-desc">Different heads of income - salary, business, capital gains, and other sources</div>
+            </div>
+            <div class="guide-item" onclick="openGuide('deductions')">
+              <div class="guide-title">Tax Deductions</div>
+              <div class="guide-desc">Section 80C, 80D, and other deductions to reduce your tax liability</div>
+            </div>
+            <div class="guide-item" onclick="openGuide('exemptions')">
+              <div class="guide-title">Tax Exemptions</div>
+              <div class="guide-desc">Income that is exempt from tax - HRA, LTA, and other allowances</div>
+            </div>
+          </div>
+          
+          <div class="guide-section">
+            <h3 style="margin-bottom: 1rem;">📝 Filing Process</h3>
+            <div class="guide-item" onclick="openGuide('itr-forms')">
+              <div class="guide-title">ITR Forms Guide</div>
+              <div class="guide-desc">Which ITR form to use based on your income sources and type</div>
+            </div>
+            <div class="guide-item" onclick="openGuide('filing-process')">
+              <div class="guide-title">Step-by-Step Filing Process</div>
+              <div class="guide-desc">Complete guide to filing your income tax return online</div>
+            </div>
+            <div class="guide-item" onclick="openGuide('documents')">
+              <div class="guide-title">Required Documents</div>
+              <div class="guide-desc">List of documents and proofs needed for filing your tax return</div>
+            </div>
+          </div>
+          
+          <div class="guide-section">
+            <h3 style="margin-bottom: 1rem;">✅ Post-Filing</h3>
+            <div class="guide-item" onclick="openGuide('acknowledgement')">
+              <div class="guide-title">ITR Acknowledgement</div>
+              <div class="guide-desc">Understanding your ITR acknowledgement and what to do next</div>
+            </div>
+            <div class="guide-item" onclick="openGuide('refund')">
+              <div class="guide-title">Tax Refund Process</div>
+              <div class="guide-desc">How to track and receive your tax refund</div>
+            </div>
+            <div class="guide-item" onclick="openGuide('verification')">
+              <div class="guide-title">ITR Verification</div>
+              <div class="guide-desc">Process of verifying your filed return and handling notices</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="container" style="padding: 2rem 0; text-align: center; color: #64748b; font-size: 0.95rem;">
+    &copy; 2024 MyeCA.in. All rights reserved.
+  </footer>
+  
+  <script>
+    function showTab(tabName) {
+      // Hide all tab contents
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabContents.forEach(content => content.classList.remove('active'));
+      
+      // Remove active class from all tab buttons
+      const tabButtons = document.querySelectorAll('.tab-button');
+      tabButtons.forEach(button => button.classList.remove('active'));
+      
+      // Show selected tab content
+      document.getElementById(tabName).classList.add('active');
+      
+      // Add active class to clicked button
+      event.target.classList.add('active');
+    }
+    
+    function updateTaxSlabs() {
+      const taxYear = document.getElementById('taxYear').value;
+      const regime = document.getElementById('taxRegime').value;
+      const personType = document.getElementById('personType').value;
+      
+      // This would update the tax slabs table based on selections
+      console.log(`Updating tax slabs for ${personType} under ${regime} regime for ${taxYear}`);
+    }
+    
+    function filterDeadlines() {
+      const category = document.getElementById('deadlineCategory').value;
+      console.log(`Filtering deadlines for category: ${category}`);
+    }
+    
+    function searchResources(query) {
+      const resources = document.querySelectorAll('.resource-card');
+      resources.forEach(resource => {
+        const title = resource.querySelector('.resource-title').textContent.toLowerCase();
+        const desc = resource.querySelector('.resource-desc').textContent.toLowerCase();
+        const queryLower = query.toLowerCase();
+        
+        if (title.includes(queryLower) || desc.includes(queryLower)) {
+          resource.style.display = 'block';
+        } else {
+          resource.style.display = 'none';
+        }
+      });
+    }
+    
+    function openGuide(guideType) {
+      alert(`Opening guide: ${guideType} - This would navigate to a detailed guide page.`);
+    }
+  </script>
+</body>
+</html>
