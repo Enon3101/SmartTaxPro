@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Services - MyeCA.in | Complete Investment Solutions</title>
+    <meta name="description" content="Complete investment services including mutual funds, stocks, insurance, retirement planning, and tax-saving investments. Expert investment advisory and portfolio management.">
+    <meta name="keywords" content="investment services, mutual funds, stock market, insurance, retirement planning, tax saving investments, MyeCA.in investment">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="canonical" href="https://myeca.in/investment-services">
+    <meta property="og:title" content="Investment Services - MyeCA.in">
+    <meta property="og:description" content="Complete investment solutions and advisory">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://myeca.in/investment-services">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="index.html">
+                        <img src="assets/logo.png" alt="MyeCA.in" class="logo">
+                    </a>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="start-filing.html">Start Filing</a></li>
+                    <li><a href="calculators.html">Calculators</a></li>
+                    <li><a href="document-vault.html">Document Vault</a></li>
+                    <li><a href="tax-expert.html">Tax Expert</a></li>
+                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="support.html">Support</a></li>
+                    <li><a href="login.html" class="btn-login">Login</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section class="hero-section investment-hero">
+            <div class="container">
+                <h1>Investment Services</h1>
+                <p>Complete investment solutions for wealth creation, tax savings, and financial planning</p>
+                <div class="investment-badges">
+                    <div class="badge">
+                        <span class="badge-icon">📈</span>
+                        <span>Mutual Funds</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">💼</span>
+                        <span>Stocks</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">🛡️</span>
+                        <span>Insurance</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="investment-overview">
+            <div class="container">
+                <div class="investment-grid">
+                    <div class="investment-card">
+                        <div class="investment-icon">📈</div>
+                        <h3>Mutual Funds</h3>
+                        <p>Expert mutual fund advisory and portfolio management services.</p>
+                        <ul>
+                            <li>Fund selection & analysis</li>
+                            <li>Portfolio construction</li>
+                            <li>SIP planning</li>
+                            <li>Performance tracking</li>
+                        </ul>
+                        <button onclick="startMutualFundInvestment()" class="investment-btn">Start Investing</button>
+                    </div>
+                    
+                    <div class="investment-card">
+                        <div class="investment-icon">💼</div>
+                        <h3>Stock Market</h3>
+                        <p>Professional stock market advisory and trading support.</p>
+                        <ul>
+                            <li>Stock research & analysis</li>
+                            <li>Portfolio management</li>
+                            <li>Risk assessment</li>
+                            <li>Trading strategies</li>
+                        </ul>
+                        <button onclick="startStockInvestment()" class="investment-btn">Start Trading</button>
+                    </div>
+                    
+                    <div class="investment-card">
+                        <div class="investment-icon">🛡️</div>
+                        <h3>Insurance Planning</h3>
+                        <p>Comprehensive insurance solutions for life and health protection.</p>
+                        <ul>
+                            <li>Life insurance</li>
+                            <li>Health insurance</li>
+                            <li>Term insurance</li>
+                            <li>ULIP plans</li>
+                        </ul>
+                        <button onclick="startInsurancePlanning()" class="investment-btn">Get Quote</button>
+                    </div>
+                    
+                    <div class="investment-card">
+                        <div class="investment-icon">💰</div>
+                        <h3>Tax Saving Investments</h3>
+                        <p>Strategic tax-saving investment solutions under Section 80C.</p>
+                        <ul>
+                            <li>ELSS funds</li>
+                            <li>PPF & NPS</li>
+                            <li>Tax-saving FDs</li>
+                            <li>Insurance policies</li>
+                        </ul>
+                        <button onclick="startTaxSavingInvestment()" class="investment-btn">Save Tax</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mutual-funds">
+            <div class="container">
+                <h2>Mutual Fund Services</h2>
+                <div class="mf-content">
+                    <div class="mf-categories">
+                        <h3>Fund Categories</h3>
+                        <div class="category-grid">
+                            <div class="category-card">
+                                <div class="category-icon">📊</div>
+                                <h4>Equity Funds</h4>
+                                <p>High growth potential with moderate to high risk</p>
+                                <div class="category-features">
+                                    <span>Long-term growth</span>
+                                    <span>Market-linked returns</span>
+                                    <span>Diversification</span>
+                                </div>
+                                <div class="expected-return">Expected Return: 12-15%</div>
+                                <button onclick="exploreEquityFunds()" class="category-btn">Explore Funds</button>
+                            </div>
+                            
+                            <div class="category-card">
+                                <div class="category-icon">🏦</div>
+                                <h4>Debt Funds</h4>
+                                <p>Stable returns with lower risk profile</p>
+                                <div class="category-features">
+                                    <span>Stable returns</span>
+                                    <span>Lower risk</span>
+                                    <span>Regular income</span>
+                                </div>
+                                <div class="expected-return">Expected Return: 6-9%</div>
+                                <button onclick="exploreDebtFunds()" class="category-btn">Explore Funds</button>
+                            </div>
+                            
+                            <div class="category-card">
+                                <div class="category-icon">⚖️</div>
+                                <h4>Hybrid Funds</h4>
+                                <p>Balanced approach with equity and debt exposure</p>
+                                <div class="category-features">
+                                    <span>Balanced risk</span>
+                                    <span>Growth + stability</span>
+                                    <span>Tax efficiency</span>
+                                </div>
+                                <div class="expected-return">Expected Return: 8-12%</div>
+                                <button onclick="exploreHybridFunds()" class="category-btn">Explore Funds</button>
+                            </div>
+                            
+                            <div class="category-card">
+                                <div class="category-icon">🎯</div>
+                                <h4>ELSS Funds</h4>
+                                <p>Tax-saving mutual funds with equity exposure</p>
+                                <div class="category-features">
+                                    <span>Tax deduction</span>
+                                    <span>3-year lock-in</span>
+                                    <span>Equity growth</span>
+                                </div>
+                                <div class="expected-return">Expected Return: 10-14%</div>
+                                <button onclick="exploreELSSFunds()" class="category-btn">Explore Funds</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sip-calculator">
+                        <h3>SIP Calculator</h3>
+                        <div class="calculator-form">
+                            <div class="form-group">
+                                <label for="sip-amount">Monthly Investment (₹)</label>
+                                <input type="number" id="sip-amount" placeholder="Enter amount" value="5000">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sip-duration">Investment Period (Years)</label>
+                                <input type="number" id="sip-duration" placeholder="Enter years" value="10">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sip-return">Expected Return (%)</label>
+                                <input type="number" id="sip-return" placeholder="Enter return" value="12">
+                            </div>
+                            
+                            <button onclick="calculateSIP()" class="calculate-btn">Calculate Returns</button>
+                            
+                            <div class="calculation-result" id="sip-result">
+                                <div class="result-item">
+                                    <span>Total Investment:</span>
+                                    <span id="total-investment">₹0.00</span>
+                                </div>
+                                <div class="result-item">
+                                    <span>Total Returns:</span>
+                                    <span id="total-returns">₹0.00</span>
+                                </div>
+                                <div class="result-item">
+                                    <span>Maturity Amount:</span>
+                                    <span id="maturity-amount">₹0.00</span>
+                                </div>
+                                <div class="result-item total">
+                                    <span>Wealth Multiplier:</span>
+                                    <span id="wealth-multiplier">0x</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stock-market">
+            <div class="container">
+                <h2>Stock Market Services</h2>
+                <div class="stock-content">
+                    <div class="stock-services">
+                        <h3>Stock Market Solutions</h3>
+                        <div class="services-grid">
+                            <div class="service-card">
+                                <div class="service-icon">📊</div>
+                                <h4>Stock Research</h4>
+                                <p>Comprehensive stock analysis and research reports</p>
+                                <ul>
+                                    <li>Fundamental analysis</li>
+                                    <li>Technical analysis</li>
+                                    <li>Company reports</li>
+                                    <li>Market insights</li>
+                                </ul>
+                                <button onclick="startStockResearch()" class="service-btn">Get Research</button>
+                            </div>
+                            
+                            <div class="service-card">
+                                <div class="service-icon">💼</div>
+                                <h4>Portfolio Management</h4>
+                                <p>Professional portfolio management services</p>
+                                <ul>
+                                    <li>Portfolio construction</li>
+                                    <li>Risk management</li>
+                                    <li>Rebalancing</li>
+                                    <li>Performance tracking</li>
+                                </ul>
+                                <button onclick="startPortfolioManagement()" class="service-btn">Manage Portfolio</button>
+                            </div>
+                            
+                            <div class="service-card">
+                                <div class="service-icon">📈</div>
+                                <h4>Trading Strategies</h4>
+                                <p>Advanced trading strategies and signals</p>
+                                <ul>
+                                    <li>Intraday strategies</li>
+                                    <li>Swing trading</li>
+                                    <li>Positional trading</li>
+                                    <li>Risk management</li>
+                                </ul>
+                                <button onclick="getTradingStrategies()" class="service-btn">Get Strategies</button>
+                            </div>
+                            
+                            <div class="service-card">
+                                <div class="service-icon">🎯</div>
+                                <h4>IPO Services</h4>
+                                <p>Complete IPO investment and advisory services</p>
+                                <ul>
+                                    <li>IPO analysis</li>
+                                    <li>Application support</li>
+                                    <li>Allotment tracking</li>
+                                    <li>Listing guidance</li>
+                                </ul>
+                                <button onclick="startIPOServices()" class="service-btn">Apply for IPO</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stock-calculator">
+                        <h3>Stock Return Calculator</h3>
+                        <div class="calculator-form">
+                            <div class="form-group">
+                                <label for="buy-price">Buy Price (₹)</label>
+                                <input type="number" id="buy-price" placeholder="Enter buy price">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sell-price">Sell Price (₹)</label>
+                                <input type="number" id="sell-price" placeholder="Enter sell price">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="quantity">Quantity</label>
+                                <input type="number" id="quantity" placeholder="Enter quantity" value="100">
+                            </div>
+                            
+                            <button onclick="calculateStockReturns()" class="calculate-btn">Calculate Returns</button>
+                            
+                            <div class="calculation-result" id="stock-result">
+                                <div class="result-item">
+                                    <span>Investment Amount:</span>
+                                    <span id="investment-amount">₹0.00</span>
+                                </div>
+                                <div class="result-item">
+                                    <span>Sale Amount:</span>
+                                    <span id="sale-amount">₹0.00</span>
+                                </div>
+                                <div class="result-item">
+                                    <span>Profit/Loss:</span>
+                                    <span id="profit-loss">₹0.00</span>
+                                </div>
+                                <div class="result-item total">
+                                    <span>Return %:</span>
+                                    <span id="return-percentage">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="insurance-services">
+            <div class="container">
+                <h2>Insurance Planning Services</h2>
+                <div class="insurance-grid">
+                    <div class="insurance-card">
+                        <div class="insurance-icon">🛡️</div>
+                        <h3>Life Insurance</h3>
+                        <p>Comprehensive life insurance solutions for family protection.</p>
+                        <ul>
+                            <li>Term insurance</li>
+                            <li>Whole life insurance</li>
+                            <li>Endowment plans</li>
+                            <li>Money back policies</li>
+                        </ul>
+                        <button onclick="getLifeInsurance()" class="insurance-btn">Get Quote</button>
+                    </div>
+                    
+                    <div class="insurance-card">
+                        <div class="insurance-icon">🏥</div>
+                        <h3>Health Insurance</h3>
+                        <p>Complete health insurance coverage for medical expenses.</p>
+                        <ul>
+                            <li>Individual health plans</li>
+                            <li>Family floater plans</li>
+                            <li>Critical illness</li>
+                            <li>Senior citizen plans</li>
+                        </ul>
+                        <button onclick="getHealthInsurance()" class="insurance-btn">Get Quote</button>
+                    </div>
+                    
+                    <div class="insurance-card">
+                        <div class="insurance-icon">🚗</div>
+                        <h3>Motor Insurance</h3>
+                        <p>Comprehensive motor insurance for cars and bikes.</p>
+                        <ul>
+                            <li>Comprehensive coverage</li>
+                            <li>Third-party liability</li>
+                            <li>Add-on covers</li>
+                            <li>Claim assistance</li>
+                        </ul>
+                        <button onclick="getMotorInsurance()" class="insurance-btn">Get Quote</button>
+                    </div>
+                    
+                    <div class="insurance-card">
+                        <div class="insurance-icon">🏠</div>
+                        <h3>Property Insurance</h3>
+                        <p>Complete property insurance for home and business.</p>
+                        <ul>
+                            <li>Home insurance</li>
+                            <li>Commercial property</li>
+                            <li>Fire insurance</li>
+                            <li>Natural calamities</li>
+                        </ul>
+                        <button onclick="getPropertyInsurance()" class="insurance-btn">Get Quote</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="retirement-planning">
+            <div class="container">
+                <h2>Retirement Planning</h2>
+                <div class="retirement-content">
+                    <div class="retirement-products">
+                        <h3>Retirement Products</h3>
+                        <div class="products-grid">
+                            <div class="product-card">
+                                <div class="product-icon">🏦</div>
+                                <h4>National Pension System (NPS)</h4>
+                                <p>Government-backed retirement savings scheme</p>
+                                <div class="product-features">
+                                    <span>Tax benefits</span>
+                                    <span>Flexible contributions</span>
+                                    <span>Low cost</span>
+                                    <span>Annuity options</span>
+                                </div>
+                                <div class="product-benefits">
+                                    <strong>Tax Benefits:</strong> Up to ₹1.5 lakhs under 80C + ₹50,000 under 80CCD(1B)
+                                </div>
+                                <button onclick="startNPS()" class="product-btn">Start NPS</button>
+                            </div>
+                            
+                            <div class="product-card">
+                                <div class="product-icon">📈</div>
+                                <h4>Pension Plans</h4>
+                                <p>Insurance company pension plans for retirement</p>
+                                <div class="product-features">
+                                    <span>Guaranteed returns</span>
+                                    <span>Life cover</span>
+                                    <span>Regular pension</span>
+                                    <span>Tax benefits</span>
+                                </div>
+                                <div class="product-benefits">
+                                    <strong>Tax Benefits:</strong> Premium up to ₹1.5 lakhs under 80C
+                                </div>
+                                <button onclick="startPensionPlan()" class="product-btn">Get Quote</button>
+                            </div>
+                            
+                            <div class="product-card">
+                                <div class="product-icon">💰</div>
+                                <h4>Public Provident Fund (PPF)</h4>
+                                <p>Long-term savings with government guarantee</p>
+                                <div class="product-features">
+                                    <span>Government backed</span>
+                                    <span>Fixed returns</span>
+                                    <span>15-year term</span>
+                                    <span>Tax free</span>
+                                </div>
+                                <div class="product-benefits">
+                                    <strong>Tax Benefits:</strong> Investment and interest both tax-free
+                                </div>
+                                <button onclick="startPPF()" class="product-btn">Open PPF</button>
+                            </div>
+                            
+                            <div class="product-card">
+                                <div class="product-icon">📊</div>
+                                <h4>Retirement Mutual Funds</h4>
+                                <p>Target date funds for retirement planning</p>
+                                <div class="product-features">
+                                    <span>Target date</span>
+                                    <span>Auto rebalancing</span>
+                                    <span>Diversified</span>
+                                    <span>Professional management</span>
+                                </div>
+                                <div class="product-benefits">
+                                    <strong>Tax Benefits:</strong> LTCG benefits after 1 year
+                                </div>
+                                <button onclick="startRetirementMF()" class="product-btn">Invest Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="retirement-calculator">
+                        <h3>Retirement Calculator</h3>
+                        <div class="calculator-form">
+                            <div class="form-group">
+                                <label for="current-age">Current Age</label>
+                                <input type="number" id="current-age" placeholder="Enter age" value="30">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="retirement-age">Retirement Age</label>
+                                <input type="number" id="retirement-age" placeholder="Enter age" value="60">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="monthly-expense">Monthly Expense (₹)</label>
+                                <input type="number" id="monthly-expense" placeholder="Enter amount" value="50000">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="inflation-rate">Inflation Rate (%)</label>
+                                <input type="number" id="inflation-rate" placeholder="Enter rate" value="6">
+                            </div>
+                            
+                            <button onclick="calculateRetirement()" class="calculate-btn">Calculate Corpus</button>
+                            
+                            <div class="calculation-result" id="retirement-result">
+                                <div class="result-item">
+                                    <span>Years to Retirement:</span>
+                                    <span id="years-to-retirement">0</span>
+                                </div>
+                                <div class="result-item">
+                                    <span>Required Corpus:</span>
+                                    <span id="required-corpus">₹0.00</span>
+                                </div>
+                                <div class="result-item">
+                                    <span>Monthly Investment:</span>
+                                    <span id="monthly-investment">₹0.00</span>
+                                </div>
+                                <div class="result-item total">
+                                    <span>Total Investment:</span>
+                                    <span id="total-retirement-investment">₹0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="investment-pricing">
+            <div class="container">
+                <h2>Investment Services Pricing</h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Basic Investment Plan</h3>
+                            <div class="pricing-amount">₹999/month</div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li>Mutual Fund Advisory</li>
+                                <li>Basic Portfolio Review</li>
+                                <li>Tax-saving Guidance</li>
+                                <li>Email Support</li>
+                                <li>Monthly Reports</li>
+                            </ul>
+                        </div>
+                        <button onclick="selectInvestmentPlan('basic')" class="pricing-btn">Choose Plan</button>
+                    </div>
+                    
+                    <div class="pricing-card featured">
+                        <div class="pricing-header">
+                            <h3>Professional Investment Plan</h3>
+                            <div class="pricing-amount">₹2,999/month</div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li>All Basic features</li>
+                                <li>Stock Market Advisory</li>
+                                <li>Portfolio Management</li>
+                                <li>Insurance Planning</li>
+                                <li>Retirement Planning</li>
+                                <li>Priority Support</li>
+                            </ul>
+                        </div>
+                        <button onclick="selectInvestmentPlan('professional')" class="pricing-btn featured">Choose Plan</button>
+                    </div>
+                    
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Premium Investment Plan</h3>
+                            <div class="pricing-amount">₹5,999/month</div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li>All Professional features</li>
+                                <li>Dedicated Investment Advisor</li>
+                                <li>Custom Portfolio</li>
+                                <li>Wealth Management</li>
+                                <li>24/7 Support</li>
+                                <li>Exclusive Research</li>
+                            </ul>
+                        </div>
+                        <button onclick="selectInvestmentPlan('premium')" class="pricing-btn">Choose Plan</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="investment-tools">
+            <div class="container">
+                <h2>Investment Tools & Calculators</h2>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-icon">📊</div>
+                        <h3>Portfolio Tracker</h3>
+                        <p>Track and analyze your investment portfolio performance.</p>
+                        <button onclick="openPortfolioTracker()" class="tool-btn">Track Portfolio</button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">💰</div>
+                        <h3>Goal Calculator</h3>
+                        <p>Calculate investment needed to achieve your financial goals.</p>
+                        <button onclick="openGoalCalculator()" class="tool-btn">Calculate Goal</button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">📈</div>
+                        <h3>Risk Assessment</h3>
+                        <p>Assess your risk profile and get personalized recommendations.</p>
+                        <button onclick="startRiskAssessment()" class="tool-btn">Assess Risk</button>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <div class="tool-icon">📋</div>
+                        <h3>Investment Checklist</h3>
+                        <p>Get a comprehensive checklist for smart investing.</p>
+                        <button onclick="getInvestmentChecklist()" class="tool-btn">Get Checklist</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="investment-faq">
+            <div class="container">
+                <h2>Investment Services FAQ</h2>
+                <div class="faq-content">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleInvestmentFAQ(this)">
+                            <h3>How do I start investing in mutual funds?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>To start investing in mutual funds, you need to complete KYC, choose the right funds based on your goals and risk profile, and start with SIP or lump sum investment. Our advisors can help you select the best funds.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleInvestmentFAQ(this)">
+                            <h3>What is the minimum amount for SIP?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Most mutual funds allow SIP investments starting from ₹500 per month. Some funds may have higher minimum amounts. You can start with a small amount and increase it gradually.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleInvestmentFAQ(this)">
+                            <h3>How much life insurance do I need?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Life insurance coverage should be 10-15 times your annual income. Consider factors like dependents, loans, and future expenses. Our insurance calculator can help determine the right coverage amount.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleInvestmentFAQ(this)">
+                            <h3>Which tax-saving investments are best?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>ELSS funds offer the best combination of tax benefits and growth potential. Other options include PPF, NPS, and tax-saving FDs. The choice depends on your risk appetite and investment horizon.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleInvestmentFAQ(this)">
+                            <h3>How to plan for retirement?</h3>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Start early, calculate your retirement corpus, choose the right retirement products like NPS, PPF, or pension plans, and maintain a diversified portfolio. Our retirement calculator can help plan your corpus.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="investment-cta">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Ready to Start Your Investment Journey?</h2>
+                    <p>Get expert investment advice and build wealth for your future.</p>
+                    <div class="cta-buttons">
+                        <button onclick="startInvestmentConsultation()" class="btn-primary">Free Consultation</button>
+                        <button onclick="downloadInvestmentGuide()" class="btn-secondary">Download Guide</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MyeCA.in</h3>
+                    <p>Your trusted partner for hassle-free tax filing and financial planning.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">📘</a>
+                        <a href="#" aria-label="Twitter">🐦</a>
+                        <a href="#" aria-label="LinkedIn">💼</a>
+                        <a href="#" aria-label="Instagram">📷</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="start-filing.html">Tax Filing</a></li>
+                        <li><a href="calculators.html">Tax Calculators</a></li>
+                        <li><a href="document-vault.html">Document Vault</a></li>
+                        <li><a href="tax-expert.html">Tax Expert</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="tax-resources.html">Tax Resources</a></li>
+                        <li><a href="support.html">Support</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="terms-of-service.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MyeCA.in. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Investment FAQ toggle functionality
+        function toggleInvestmentFAQ(element) {
+            const answer = element.nextElementSibling;
+            const toggle = element.querySelector('.faq-toggle');
+            
+            if (answer.style.maxHeight) {
+                answer.style.maxHeight = null;
+                toggle.textContent = '+';
+            } else {
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                toggle.textContent = '−';
+            }
+        }
+
+        // SIP Calculator
+        function calculateSIP() {
+            const monthlyAmount = parseFloat(document.getElementById('sip-amount').value) || 0;
+            const years = parseFloat(document.getElementById('sip-duration').value) || 0;
+            const rate = parseFloat(document.getElementById('sip-return').value) || 0;
+            
+            if (monthlyAmount <= 0 || years <= 0 || rate <= 0) {
+                alert('Please enter valid values');
+                return;
+            }
+            
+            const monthlyRate = rate / 12 / 100;
+            const months = years * 12;
+            
+            const totalInvestment = monthlyAmount * months;
+            const maturityAmount = monthlyAmount * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+            const totalReturns = maturityAmount - totalInvestment;
+            const wealthMultiplier = (maturityAmount / totalInvestment).toFixed(2);
+            
+            document.getElementById('total-investment').textContent = `₹${totalInvestment.toLocaleString('en-IN')}`;
+            document.getElementById('total-returns').textContent = `₹${totalReturns.toLocaleString('en-IN')}`;
+            document.getElementById('maturity-amount').textContent = `₹${maturityAmount.toLocaleString('en-IN')}`;
+            document.getElementById('wealth-multiplier').textContent = `${wealthMultiplier}x`;
+        }
+
+        // Stock Return Calculator
+        function calculateStockReturns() {
+            const buyPrice = parseFloat(document.getElementById('buy-price').value) || 0;
+            const sellPrice = parseFloat(document.getElementById('sell-price').value) || 0;
+            const quantity = parseFloat(document.getElementById('quantity').value) || 0;
+            
+            if (buyPrice <= 0 || sellPrice <= 0 || quantity <= 0) {
+                alert('Please enter valid values');
+                return;
+            }
+            
+            const investmentAmount = buyPrice * quantity;
+            const saleAmount = sellPrice * quantity;
+            const profitLoss = saleAmount - investmentAmount;
+            const returnPercentage = ((profitLoss / investmentAmount) * 100).toFixed(2);
+            
+            document.getElementById('investment-amount').textContent = `₹${investmentAmount.toLocaleString('en-IN')}`;
+            document.getElementById('sale-amount').textContent = `₹${saleAmount.toLocaleString('en-IN')}`;
+            document.getElementById('profit-loss').textContent = `₹${profitLoss.toLocaleString('en-IN')}`;
+            document.getElementById('return-percentage').textContent = `${returnPercentage}%`;
+            
+            // Color coding for profit/loss
+            const profitLossElement = document.getElementById('profit-loss');
+            if (profitLoss > 0) {
+                profitLossElement.style.color = 'green';
+            } else if (profitLoss < 0) {
+                profitLossElement.style.color = 'red';
+            } else {
+                profitLossElement.style.color = 'black';
+            }
+        }
+
+        // Retirement Calculator
+        function calculateRetirement() {
+            const currentAge = parseFloat(document.getElementById('current-age').value) || 0;
+            const retirementAge = parseFloat(document.getElementById('retirement-age').value) || 0;
+            const monthlyExpense = parseFloat(document.getElementById('monthly-expense').value) || 0;
+            const inflationRate = parseFloat(document.getElementById('inflation-rate').value) || 0;
+            
+            if (currentAge <= 0 || retirementAge <= 0 || monthlyExpense <= 0 || inflationRate <= 0) {
+                alert('Please enter valid values');
+                return;
+            }
+            
+            if (currentAge >= retirementAge) {
+                alert('Retirement age should be greater than current age');
+                return;
+            }
+            
+            const yearsToRetirement = retirementAge - currentAge;
+            const annualExpense = monthlyExpense * 12;
+            const inflatedExpense = annualExpense * Math.pow(1 + inflationRate / 100, yearsToRetirement);
+            const requiredCorpus = inflatedExpense * 25; // 25 years of expenses
+            
+            const expectedReturn = 8; // 8% expected return
+            const monthlyInvestment = (requiredCorpus * (expectedReturn / 100 / 12)) / (Math.pow(1 + expectedReturn / 100 / 12, yearsToRetirement * 12) - 1);
+            const totalInvestment = monthlyInvestment * yearsToRetirement * 12;
+            
+            document.getElementById('years-to-retirement').textContent = yearsToRetirement;
+            document.getElementById('required-corpus').textContent = `₹${requiredCorpus.toLocaleString('en-IN')}`;
+            document.getElementById('monthly-investment').textContent = `₹${monthlyInvestment.toLocaleString('en-IN')}`;
+            document.getElementById('total-retirement-investment').textContent = `₹${totalInvestment.toLocaleString('en-IN')}`;
+        }
+
+        // Investment Services
+        function startMutualFundInvestment() {
+            alert('Mutual fund investment service started! Our investment advisor will contact you within 2 hours.');
+        }
+
+        function startStockInvestment() {
+            alert('Stock market investment service started! Our stock advisor will contact you within 2 hours.');
+        }
+
+        function startInsurancePlanning() {
+            alert('Insurance planning service started! Our insurance expert will contact you within 2 hours.');
+        }
+
+        function startTaxSavingInvestment() {
+            alert('Tax-saving investment service started! Our tax advisor will contact you within 2 hours.');
+        }
+
+        // Fund Categories
+        function exploreEquityFunds() {
+            alert('Equity funds exploration started! You will receive a curated list of top equity funds.');
+        }
+
+        function exploreDebtFunds() {
+            alert('Debt funds exploration started! You will receive a curated list of top debt funds.');
+        }
+
+        function exploreHybridFunds() {
+            alert('Hybrid funds exploration started! You will receive a curated list of top hybrid funds.');
+        }
+
+        function exploreELSSFunds() {
+            alert('ELSS funds exploration started! You will receive a curated list of top tax-saving funds.');
+        }
+
+        // Stock Services
+        function startStockResearch() {
+            alert('Stock research service started! You will receive detailed research reports.');
+        }
+
+        function startPortfolioManagement() {
+            alert('Portfolio management service started! Our portfolio manager will contact you.');
+        }
+
+        function getTradingStrategies() {
+            alert('Trading strategies will be shared! You will receive personalized trading strategies.');
+        }
+
+        function startIPOServices() {
+            alert('IPO services started! You will receive IPO analysis and application support.');
+        }
+
+        // Insurance Services
+        function getLifeInsurance() {
+            alert('Life insurance quote requested! Our insurance expert will contact you with quotes.');
+        }
+
+        function getHealthInsurance() {
+            alert('Health insurance quote requested! Our insurance expert will contact you with quotes.');
+        }
+
+        function getMotorInsurance() {
+            alert('Motor insurance quote requested! Our insurance expert will contact you with quotes.');
+        }
+
+        function getPropertyInsurance() {
+            alert('Property insurance quote requested! Our insurance expert will contact you with quotes.');
+        }
+
+        // Retirement Products
+        function startNPS() {
+            alert('NPS account opening initiated! Our retirement expert will guide you through the process.');
+        }
+
+        function startPensionPlan() {
+            alert('Pension plan quote requested! Our insurance expert will contact you with quotes.');
+        }
+
+        function startPPF() {
+            alert('PPF account opening initiated! Our investment expert will guide you through the process.');
+        }
+
+        function startRetirementMF() {
+            alert('Retirement mutual fund investment started! Our investment advisor will contact you.');
+        }
+
+        // Package selection
+        function selectInvestmentPlan(plan) {
+            const plans = {
+                'basic': 'Basic Investment Plan - ₹999/month',
+                'professional': 'Professional Investment Plan - ₹2,999/month',
+                'premium': 'Premium Investment Plan - ₹5,999/month'
+            };
+            
+            if (confirm(`You have selected ${plans[plan]}. Would you like to proceed with the subscription?`)) {
+                alert('Investment plan subscription confirmed! Our team will contact you within 2 hours to set up your account.');
+            }
+        }
+
+        // Tool functions
+        function openPortfolioTracker() {
+            alert('Portfolio tracker will open in a new window. Please log in to track your investments.');
+        }
+
+        function openGoalCalculator() {
+            alert('Goal calculator will open. Please enter your financial goals to calculate required investments.');
+        }
+
+        function startRiskAssessment() {
+            alert('Risk assessment started! Please complete the questionnaire to get your risk profile.');
+        }
+
+        function getInvestmentChecklist() {
+            alert('Investment checklist will be generated based on your profile and goals.');
+        }
+
+        // CTA functions
+        function startInvestmentConsultation() {
+            alert('Free investment consultation booked! Our investment expert will contact you within 24 hours.');
+        }
+
+        function downloadInvestmentGuide() {
+            // Simulate download
+            const link = document.createElement('a');
+            link.href = '#';
+            link.download = 'investment-guide.pdf';
+            link.click();
+            alert('Investment guide download started!');
+        }
+
+        // Auto-calculate on input change
+        document.getElementById('sip-amount').addEventListener('input', calculateSIP);
+        document.getElementById('sip-duration').addEventListener('input', calculateSIP);
+        document.getElementById('sip-return').addEventListener('input', calculateSIP);
+
+        document.getElementById('buy-price').addEventListener('input', calculateStockReturns);
+        document.getElementById('sell-price').addEventListener('input', calculateStockReturns);
+        document.getElementById('quantity').addEventListener('input', calculateStockReturns);
+
+        document.getElementById('current-age').addEventListener('input', calculateRetirement);
+        document.getElementById('retirement-age').addEventListener('input', calculateRetirement);
+        document.getElementById('monthly-expense').addEventListener('input', calculateRetirement);
+        document.getElementById('inflation-rate').addEventListener('input', calculateRetirement);
+
+        // Initialize calculators on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateSIP();
+            calculateRetirement();
+        });
+    </script>
+</body>
+</html>
