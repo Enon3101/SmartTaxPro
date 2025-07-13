@@ -1,0 +1,810 @@
+================================================================================
+                           SMARTTAXPRO COMPLETE REFERENCE GUIDE
+================================================================================
+
+📋 PROJECT OVERVIEW
+==================
+Project Name: SmartTaxPro (MyeCA.in)
+Description: India's Premier Digital Platform for Professional Tax Services
+Type: Full-Stack Tax Filing Platform
+Tech Stack: React 18 + TypeScript + Node.js + PostgreSQL
+Domain: Tax Filing, Calculators, Expert Consultation
+
+🌐 WEBSITE DETAILS
+==================
+Primary Domain: myeca.in
+Target Market: Indian Taxpayers, Businesses, Chartered Accountants
+Languages: English, Hindi
+Responsive Design: Mobile-first approach
+Accessibility: WCAG 2.1 compliant
+
+🎨 DESIGN SYSTEM & THEME
+========================
+
+COLOR PALETTE:
+--------------
+Primary Blue: #3B82F6 (rgb(59, 130, 246))
+Primary Dark: #1D4ED8 (rgb(29, 78, 216))
+Secondary Gray: #F1F5F9 (rgb(241, 245, 249))
+Text Primary: #1F2937 (rgb(31, 41, 55))
+Text Secondary: #6B7280 (rgb(107, 114, 128))
+Success Green: #059669 (rgb(5, 150, 105))
+Warning Yellow: #D97706 (rgb(217, 119, 6))
+Error Red: #DC2626 (rgb(220, 38, 38))
+
+GRADIENTS:
+----------
+Hero Gradient: linear-gradient(135deg, #EBF8FF 0%, #DBEAFE 100%)
+Primary Gradient: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)
+Trusted Section: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%)
+
+TYPOGRAPHY:
+-----------
+Font Family: Inter (Google Fonts)
+Heading 1: 3xl-4xl, font-bold, text-gray-900
+Heading 2: 2xl, font-semibold, text-gray-800
+Body Text: base, text-gray-600, leading-relaxed
+Accent Text: text-blue-600, font-medium
+
+SPACING:
+--------
+Container: max-width 1280px, mx-auto, px-4
+Section Padding: py-16 (desktop), py-12 (mobile)
+Card Padding: p-6
+Button Padding: px-6 py-3
+Border Radius: rounded-lg (8px), rounded-xl (12px)
+
+📊 TAX CALCULATION FORMULAE
+===========================
+
+1. INCOME TAX CALCULATIONS
+--------------------------
+
+OLD TAX REGIME (FY 2023-24):
+----------------------------
+Up to ₹2.5 lakhs: Nil
+₹2.5 lakhs to ₹5 lakhs: 5% of (Total Income - ₹2.5 lakhs)
+₹5 lakhs to ₹10 lakhs: ₹12,500 + 20% of (Total Income - ₹5 lakhs)
+Above ₹10 lakhs: ₹1,12,500 + 30% of (Total Income - ₹10 lakhs)
+
+NEW TAX REGIME (FY 2023-24):
+----------------------------
+Up to ₹3 lakhs: Nil
+₹3 lakhs to ₹6 lakhs: 5% of (Total Income - ₹3 lakhs)
+₹6 lakhs to ₹9 lakhs: ₹15,000 + 10% of (Total Income - ₹6 lakhs)
+₹9 lakhs to ₹12 lakhs: ₹45,000 + 15% of (Total Income - ₹9 lakhs)
+₹12 lakhs to ₹15 lakhs: ₹90,000 + 20% of (Total Income - ₹12 lakhs)
+Above ₹15 lakhs: ₹1,50,000 + 30% of (Total Income - ₹15 lakhs)
+
+2. HRA EXEMPTION CALCULATION
+----------------------------
+HRA Exemption = Minimum of:
+1. Actual HRA received
+2. 50% of basic salary (metro cities) / 40% (non-metro)
+3. Rent paid - 10% of basic salary
+
+Formula: min(Actual HRA, 50% of Basic, Rent - 10% of Basic)
+
+3. TDS CALCULATIONS
+-------------------
+TDS on Salary (Section 192):
+- Calculate total taxable income
+- Apply applicable tax slab
+- Divide by 12 for monthly TDS
+
+TDS on Interest (Section 194A):
+- 10% on interest income above ₹40,000 (₹50,000 for senior citizens)
+
+TDS on Rent (Section 194I):
+- 2% on rent for machinery/equipment
+- 10% on rent for land/building
+
+4. CAPITAL GAINS CALCULATIONS
+-----------------------------
+Short Term Capital Gains (STCG):
+- Holding period < 12 months (equity) / < 36 months (others)
+- Tax rate: 15% (equity) / Normal slab rate (others)
+
+Long Term Capital Gains (LTCG):
+- Holding period ≥ 12 months (equity) / ≥ 36 months (others)
+- Tax rate: 10% above ₹1 lakh (equity) / 20% with indexation (others)
+
+Formula: Sale Price - Purchase Price - Indexation Benefit
+
+5. TAKE-HOME SALARY CALCULATION
+-------------------------------
+Basic Salary: Base amount
+HRA: House Rent Allowance
+DA: Dearness Allowance
+Special Allowance: Other allowances
+Gross Salary = Basic + HRA + DA + Special Allowance
+
+Deductions:
+- PF: 12% of Basic
+- Professional Tax: As per state
+- TDS: As calculated
+
+Net Salary = Gross Salary - Total Deductions
+
+6. INVESTMENT CALCULATORS
+-------------------------
+
+SIP CALCULATOR:
+---------------
+Future Value = P × [(1 + r)^n - 1] × (1 + r) / r
+Where:
+P = Monthly investment
+r = Monthly interest rate (annual rate / 12)
+n = Number of months
+
+FD CALCULATOR:
+--------------
+Maturity Amount = Principal × (1 + r)^n
+Where:
+r = Annual interest rate
+n = Number of years
+
+PPF CALCULATOR:
+---------------
+Maturity Amount = P × [(1 + r)^n - 1] / r
+Where:
+P = Annual contribution
+r = Interest rate (7.1% for FY 2023-24)
+n = Number of years
+
+7. LOAN EMI CALCULATIONS
+------------------------
+EMI = P × r × (1 + r)^n / [(1 + r)^n - 1]
+Where:
+P = Principal amount
+r = Monthly interest rate (annual rate / 12 / 100)
+n = Total number of months
+
+Total Interest = (EMI × n) - P
+Total Amount = EMI × n
+
+8. GST CALCULATIONS
+-------------------
+GST Amount = Base Amount × GST Rate / 100
+Total Amount = Base Amount + GST Amount
+
+GST Rates:
+- 0%: Essential items
+- 5%: Basic necessities
+- 12%: Standard items
+- 18%: Most goods and services
+- 28%: Luxury items
+
+📱 COMPONENT SPECIFICATIONS
+===========================
+
+1. HEADER COMPONENT
+-------------------
+Features:
+- Sticky positioning with backdrop blur
+- Logo with blue accent background
+- Navigation dropdowns
+- User avatar with dropdown
+- Mobile hamburger menu
+- Search functionality
+
+Navigation Items:
+- File ITR
+- Calculators (with dropdown)
+- Tax Expert
+- Tax Resources (with dropdown)
+- Learning (with dropdown)
+- Pricing
+- Support
+
+2. HOMEPAGE COMPONENTS
+----------------------
+Bulletin Banner:
+- Animated announcements
+- Color-coded messages (orange, yellow, green)
+- Smooth scrolling animation
+
+Hero Section:
+- Gradient background
+- Main heading with gradient text
+- Star rating display
+- Assessment year selector
+- CTA buttons
+
+Features Section:
+- Grid layout with icons
+- Hover animations
+- Blue accent colors
+
+3. TESTIMONIALS COMPONENT
+-------------------------
+Features:
+- Horizontal scrolling carousel
+- White cards with shadow
+- Star ratings (yellow-400)
+- User avatars with initials
+- Smooth animations
+- Gradient fade edges
+
+4. TRUSTED BY SECTION
+---------------------
+Features:
+- Company logos with testimonials
+- Blue gradient background
+- Statistics section
+- Smooth scrolling animation
+- Hover effects
+
+5. CALCULATOR PAGES
+-------------------
+Common Features:
+- Form validation
+- Real-time calculations
+- Results display
+- Download/print functionality
+- Responsive design
+
+📋 PAGE STRUCTURE
+=================
+
+1. HOMEPAGE (/)
+--------------
+- Bulletin Banner
+- Hero Section
+- Features Section
+- Testimonials
+- Trusted By Section
+- Footer
+
+2. CALCULATORS (/calculators)
+-----------------------------
+- Income Tax Calculator
+- Tax Regime Calculator
+- HRA Calculator
+- TDS Calculator
+- Capital Gains Calculator
+- Take-home Salary Calculator
+- SIP Calculator
+- FD Calculator
+- PPF Calculator
+- Loan EMI Calculator
+- GST Calculator
+
+3. TAX FILING (/start-filing)
+-----------------------------
+- Personal Information
+- Income Sources
+- Deductions
+- Tax Computation
+- Document Upload
+- Review & Submit
+
+4. PRICING (/pricing)
+---------------------
+- Basic Plan: ₹499
+- Standard Plan: ₹999
+- Premium Plan: ₹1,999
+- Enterprise Plan: Custom
+
+5. TAX RESOURCES (/tax-resources)
+--------------------------------
+- ITR Forms Guide
+- Tax Deductions
+- Tax Slabs
+- e-Filing Guide
+- Due Dates
+
+🔧 TECHNICAL SPECIFICATIONS
+===========================
+
+FRONTEND STACK:
+---------------
+Framework: React 18.3.1
+Language: TypeScript 5.6.3
+Build Tool: Vite 5.4.19
+Styling: TailwindCSS 3.4.17
+State Management: React Query 5.60.5 + Context API
+Forms: React Hook Form 7.55.0 + Zod 3.24.2
+UI Components: shadcn/ui + Radix UI
+Animations: Framer Motion 11.18.2
+Routing: Wouter 3.3.5
+Charts: Recharts 2.15.2
+Rich Text: Tiptap 2.5.7
+
+BACKEND STACK:
+--------------
+Runtime: Node.js 20+
+Framework: Express.js 4.21.2
+Database: PostgreSQL 15+
+ORM: Drizzle ORM 0.39.1
+Authentication: Google OAuth + JWT
+File Storage: Local + AWS S3
+API: RESTful with TypeScript
+
+KEY DEPENDENCIES:
+-----------------
+@radix-ui/react-* (UI primitives)
+lucide-react (Icons)
+@tanstack/react-query (Data fetching)
+react-hook-form (Form handling)
+zod (Validation)
+recharts (Charts)
+@tiptap/react (Rich text)
+wouter (Routing)
+framer-motion (Animations)
+
+📁 PROJECT STRUCTURE
+====================
+
+SmartTaxPro/
+├── client/
+│   ├── public/
+│   │   ├── company-logos-new/
+│   │   │   ├── Tata_Consultancy_Services_old_logo.svg
+│   │   │   ├── Wipro_Primary_Logo_Color_RGB.svg
+│   │   │   ├── infosys.png
+│   │   │   ├── hindustan-unilever.svg
+│   │   │   ├── ITC_Limited_Logo.svg
+│   │   │   ├── mahindra.svg
+│   │   │   ├── Asian_Paints_Logo.svg
+│   │   │   ├── bajaj-finserv.svg
+│   │   │   └── [other company logos]
+│   │   ├── favicon.svg
+│   │   ├── logo.svg
+│   │   └── robots.txt
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── layout/
+│   │   │   │   ├── Header.tsx
+│   │   │   │   ├── Footer.tsx
+│   │   │   │   └── BottomNav.tsx
+│   │   │   ├── ui/
+│   │   │   │   ├── button.tsx
+│   │   │   │   ├── card.tsx
+│   │   │   │   ├── input.tsx
+│   │   │   │   ├── select.tsx
+│   │   │   │   ├── tabs.tsx
+│   │   │   │   ├── dropdown-menu.tsx
+│   │   │   │   ├── sheet.tsx
+│   │   │   │   ├── avatar.tsx
+│   │   │   │   ├── toast.tsx
+│   │   │   │   └── [other UI components]
+│   │   │   ├── Testimonials.tsx
+│   │   │   ├── TrustedBySection.tsx
+│   │   │   ├── GstCalculator.tsx
+│   │   │   ├── TaxExpertWidget.tsx
+│   │   │   └── modals/
+│   │   │       └── LoginDialog.tsx
+│   │   ├── pages/
+│   │   │   ├── home.page.tsx
+│   │   │   ├── calculators.page.tsx
+│   │   │   ├── pricing.page.tsx
+│   │   │   ├── tax-filing.page.tsx
+│   │   │   ├── profile.page.tsx
+│   │   │   ├── support.page.tsx
+│   │   │   └── calculators/
+│   │   │       ├── income-tax.tsx
+│   │   │       ├── tax-regime.tsx
+│   │   │       ├── hra.tsx
+│   │   │       ├── tds.tsx
+│   │   │       ├── capital-gains.tsx
+│   │   │       ├── take-home-salary.tsx
+│   │   │       ├── sip.tsx
+│   │   │       ├── fd.tsx
+│   │   │       ├── ppf.tsx
+│   │   │       ├── loan-emi.tsx
+│   │   │       ├── gst.tsx
+│   │   │       └── [other calculators]
+│   │   ├── features/
+│   │   │   ├── auth/
+│   │   │   │   ├── AuthContext.tsx
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── GoogleAuthProvider.tsx
+│   │   │   │   │   ├── GoogleLoginButton.tsx
+│   │   │   │   │   └── GoogleAuthCheck.tsx
+│   │   │   │   └── hooks/
+│   │   │   │       └── useGoogleAuth.ts
+│   │   │   ├── tax-filing/
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── itr-filing.page.tsx
+│   │   │   │   │   ├── itr-wizard.page.tsx
+│   │   │   │   │   └── IncomeSourceStep.tsx
+│   │   │   │   └── hooks/
+│   │   │   └── admin/
+│   │   │       ├── components/
+│   │   │       │   ├── admin-dashboard.page.tsx
+│   │   │       │   ├── admin-login.page.tsx
+│   │   │       │   └── admin-user-management.page.tsx
+│   │   │       └── hooks/
+│   │   │           └── useAdminGuard.ts
+│   │   ├── context/
+│   │   │   ├── AuthContext.tsx
+│   │   │   ├── TaxDataProvider.tsx
+│   │   │   ├── ThemeProvider.tsx
+│   │   │   └── ItrWizardContext.tsx
+│   │   ├── hooks/
+│   │   │   ├── use-mobile.tsx
+│   │   │   ├── use-toast.ts
+│   │   │   ├── usePerformanceMonitoring.ts
+│   │   │   ├── usePreloadCalculator.ts
+│   │   │   └── useTaxFiling.ts
+│   │   ├── lib/
+│   │   │   ├── analytics.ts
+│   │   │   ├── calculatorClient.ts
+│   │   │   ├── formatters.ts
+│   │   │   ├── indexedDbDrafts.ts
+│   │   │   ├── itrJsonGenerator.ts
+│   │   │   ├── performanceMonitor.ts
+│   │   │   ├── queryClient.ts
+│   │   │   ├── sentry.ts
+│   │   │   ├── supabaseClient.ts
+│   │   │   ├── taxCalculations.ts
+│   │   │   ├── taxInterfaces.ts
+│   │   │   ├── utils.ts
+│   │   │   ├── validation.ts
+│   │   │   └── webVitals.ts
+│   │   ├── data/
+│   │   │   ├── compulsoryFields.json
+│   │   │   ├── formRules.json
+│   │   │   ├── govtResources.ts
+│   │   │   ├── taxDeadlines.ts
+│   │   │   └── taxSlabs.ts
+│   │   ├── types/
+│   │   │   ├── auth.ts
+│   │   │   ├── index.ts
+│   │   │   └── tax.ts
+│   │   ├── utils/
+│   │   │   ├── compulsoryFieldsLoader.ts
+│   │   │   ├── itrSelector.d.ts
+│   │   │   ├── itrSelector.js
+│   │   │   └── [other utilities]
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   ├── index.css
+│   │   └── i18n.ts
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.ts
+├── server/
+│   ├── auth.ts
+│   ├── blogRoutes.ts
+│   ├── calculatorRoutes.ts
+│   ├── calculatorRoutesFixed.ts
+│   ├── db.ts
+│   ├── fileManagementRoutes.ts
+│   ├── fileUpload.ts
+│   ├── googleAuth.ts
+│   ├── index.ts
+│   ├── logger.ts
+│   ├── otel.ts
+│   ├── routes.ts
+│   ├── secureFile.ts
+│   ├── securityMiddleware.ts
+│   ├── storage.ts
+│   ├── supabaseClient.ts
+│   ├── userProfileRoutes.ts
+│   ├── vite.ts
+│   ├── jobs/
+│   │   └── cleanupExpiredUploads.ts
+│   ├── services/
+│   │   └── FileManagerService.ts
+│   ├── storage/
+│   │   ├── blogStorage.ts
+│   │   └── index.ts
+│   └── storageProviders/
+│       └── S3StorageProvider.ts
+├── shared/
+│   ├── schema.ts
+│   └── tax-calculations.ts
+├── migrations/
+│   ├── 0000_mean_sharon_ventura.sql
+│   ├── 0001_enhanced_schema.sql
+│   ├── 0002_file_management_system.sql
+│   ├── 0003_admin_user_management.sql
+│   ├── 0004_enhanced_roles_and_blog_schema.sql
+│   ├── add_indexes.sql
+│   ├── add_performance_indexes.sql
+│   └── meta/
+│       ├── _journal.json
+│       └── 0000_snapshot.json
+├── scripts/
+│   ├── checkPlanFiles.ts
+│   ├── generatePlanUtility.ts
+│   ├── generateSitemap.ts
+│   ├── printRoutes.ts
+│   └── seedTaxGuides.ts
+├── tests/
+├── uploads/
+├── package.json
+├── package-lock.json
+├── tailwind.config.ts
+├── tsconfig.json
+├── vite.config.ts
+├── postcss.config.js
+├── jest.config.js
+├── drizzle.config.ts
+├── docker-compose.yml
+├── env.example
+├── README.md
+├── CHANGELOG_v2.1.md
+├── API_DOCUMENTATION.md
+├── BLOG_SYSTEM_DOCUMENTATION.md
+├── COMPREHENSIVE_PLATFORM_PLAN.md
+├── CONTENT_STYLE_GUIDE.md
+├── DATABASE_BACKEND_ARCHITECTURE.md
+├── MOBILE_OPTIMIZATION_SUMMARY.md
+├── PERFORMANCE_OPTIMIZATIONS.md
+├── PLATFORM_EXPANSION_PLAN.md
+├── REBRANDING_STATUS_REPORT.md
+├── REBRANDING_SUMMARY.md
+├── structure.md
+├── structure.txt
+├── plan.md
+├── plan.txt
+├── progress.md
+├── checklist.md
+├── calculator.md
+├── datastorage.txt
+├── SEOpane.txt
+├── existingplan.md
+├── error_log_itrfiling.txt
+├── find-orphaned-documents.ts
+├── generate-secrets.sh
+├── download_logos.sh
+├── server-check.js
+├── setup-admin.js
+├── components.json
+├── generated-icon.png
+└── bash.exe.stackdump
+
+🎯 IMPLEMENTATION GUIDELINES
+============================
+
+1. SETUP PROCESS
+----------------
+1. Clone repository
+2. Install dependencies: npm install
+3. Copy env.example to .env
+4. Configure environment variables
+5. Run database migrations: npm run db:push
+6. Start development server: npm run dev
+
+2. ENVIRONMENT VARIABLES
+------------------------
+Required variables in .env:
+- DATABASE_URL
+- GOOGLE_CLIENT_ID
+- GOOGLE_CLIENT_SECRET
+- JWT_SECRET
+- NODE_ENV
+- PORT
+- FILE_STORAGE_PROVIDER
+- AWS_ACCESS_KEY_ID (if using S3)
+- AWS_SECRET_ACCESS_KEY (if using S3)
+- AWS_S3_BUCKET (if using S3)
+
+3. DEVELOPMENT WORKFLOW
+-----------------------
+- Use TypeScript for all new code
+- Follow ESLint and Prettier rules
+- Write unit tests for critical functions
+- Use conventional commit messages
+- Create feature branches for new development
+
+4. PERFORMANCE OPTIMIZATIONS
+----------------------------
+- Lazy load calculator components
+- Implement code splitting
+- Optimize images and assets
+- Use React.memo for expensive components
+- Implement proper caching strategies
+- Monitor Core Web Vitals
+
+5. SECURITY CONSIDERATIONS
+--------------------------
+- Validate all user inputs
+- Implement proper authentication
+- Use HTTPS in production
+- Sanitize file uploads
+- Implement rate limiting
+- Regular security audits
+
+6. ACCESSIBILITY REQUIREMENTS
+-----------------------------
+- WCAG 2.1 AA compliance
+- Keyboard navigation support
+- Screen reader compatibility
+- Proper color contrast ratios
+- Alt text for images
+- Focus management
+
+7. TESTING STRATEGY
+-------------------
+- Unit tests for utility functions
+- Integration tests for API endpoints
+- E2E tests for critical user flows
+- Performance testing
+- Accessibility testing
+- Cross-browser testing
+
+📊 DATABASE SCHEMA
+==================
+
+USERS TABLE:
+------------
+- id (UUID, Primary Key)
+- email (VARCHAR, Unique)
+- name (VARCHAR)
+- avatar_url (VARCHAR)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+- role (ENUM: user, admin, expert)
+
+TAX_FILINGS TABLE:
+------------------
+- id (UUID, Primary Key)
+- user_id (UUID, Foreign Key)
+- assessment_year (VARCHAR)
+- filing_status (ENUM: draft, submitted, processed)
+- total_income (DECIMAL)
+- tax_payable (DECIMAL)
+- refund_amount (DECIMAL)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+DOCUMENTS TABLE:
+----------------
+- id (UUID, Primary Key)
+- user_id (UUID, Foreign Key)
+- filing_id (UUID, Foreign Key)
+- file_name (VARCHAR)
+- file_path (VARCHAR)
+- file_type (VARCHAR)
+- file_size (INTEGER)
+- uploaded_at (TIMESTAMP)
+
+CALCULATIONS TABLE:
+-------------------
+- id (UUID, Primary Key)
+- user_id (UUID, Foreign Key)
+- calculator_type (VARCHAR)
+- input_data (JSONB)
+- result_data (JSONB)
+- created_at (TIMESTAMP)
+
+📱 RESPONSIVE BREAKPOINTS
+=========================
+Mobile: 375px - 640px
+Tablet: 768px - 1024px
+Desktop: 1280px+
+Large Desktop: 1536px+
+
+🎨 ANIMATION SPECIFICATIONS
+===========================
+
+FRAMER MOTION ANIMATIONS:
+-------------------------
+Fade In: opacity: 0 → 1, duration: 0.3s
+Fade In Up: opacity: 0, y: 20 → opacity: 1, y: 0, duration: 0.5s
+Scale In: scale: 0.95, opacity: 0 → scale: 1, opacity: 1, duration: 0.3s
+Slide In Left: x: -50, opacity: 0 → x: 0, opacity: 1, duration: 0.3s
+
+HOVER EFFECTS:
+--------------
+Buttons: transform: translateY(-1px), shadow increase
+Cards: shadow increase, duration: 0.3s
+Logos: scale: 1.05, duration: 0.2s
+
+TRANSITIONS:
+------------
+Default: 300ms ease-out
+Fast: 200ms ease-out
+Slow: 500ms ease-out
+
+🔧 DEPLOYMENT SPECIFICATIONS
+============================
+
+PRODUCTION REQUIREMENTS:
+------------------------
+- Node.js 18+ runtime
+- PostgreSQL 15+ database
+- Redis for caching (optional)
+- CDN for static assets
+- SSL certificate
+- Domain configuration
+
+DOCKER DEPLOYMENT:
+------------------
+- Multi-stage builds
+- Health checks
+- Environment-specific configs
+- Volume mounts for persistence
+- Network isolation
+
+CI/CD PIPELINE:
+---------------
+- Automated testing
+- Code quality checks
+- Security scanning
+- Automated deployment
+- Rollback capabilities
+
+📈 ANALYTICS & MONITORING
+=========================
+
+GOOGLE ANALYTICS:
+-----------------
+- Page views tracking
+- User behavior analysis
+- Conversion tracking
+- Performance monitoring
+
+SENTRY INTEGRATION:
+-------------------
+- Error tracking
+- Performance monitoring
+- User feedback collection
+
+CUSTOM METRICS:
+---------------
+- Calculator usage
+- Filing completion rates
+- User engagement
+- Feature adoption
+
+🔐 SECURITY MEASURES
+====================
+
+AUTHENTICATION:
+---------------
+- Google OAuth 2.0
+- JWT token management
+- Refresh token rotation
+- Session management
+
+DATA PROTECTION:
+----------------
+- Input validation
+- SQL injection prevention
+- XSS protection
+- CSRF protection
+- Rate limiting
+
+FILE SECURITY:
+--------------
+- File type validation
+- Size limits
+- Virus scanning
+- Secure storage
+
+📞 SUPPORT & MAINTENANCE
+========================
+
+CUSTOMER SUPPORT:
+-----------------
+- Live chat integration
+- Email support
+- Phone support
+- FAQ section
+- Help documentation
+
+MAINTENANCE SCHEDULE:
+---------------------
+- Regular security updates
+- Performance optimization
+- Database maintenance
+- Backup verification
+- Monitoring alerts
+
+UPDATES & PATCHES:
+------------------
+- Monthly feature updates
+- Weekly security patches
+- Quarterly major releases
+- Emergency hotfixes
+
+================================================================================
+                           END OF REFERENCE GUIDE
+================================================================================
+
+This comprehensive reference guide contains all the essential information needed to understand, develop, and maintain the SmartTaxPro platform. It includes technical specifications, design guidelines, calculation formulae, and implementation details for creating a professional tax filing platform. 
